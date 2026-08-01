@@ -280,7 +280,46 @@
   .btn.danger{color:#B0554C;border-color:color-mix(in srgb,#B0554C 40%,var(--hair))}
   :root[data-theme="dark"] .btn.danger,.btn.danger{color:#C56B61}
   .swipe-hint{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;padding:2px 2px 10px}
+  .onboarding{position:absolute;inset:0;z-index:90;background:
+      radial-gradient(120% 65% at 50% 0%, var(--amber-soft), transparent 55%),var(--paper);
+    display:flex;flex-direction:column;padding:24px 22px 20px;border-radius:36px}
+  .ob-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;min-height:24px}
+  .ob-dots{display:flex;gap:6px}
+  .ob-dots i{width:7px;height:7px;border-radius:50%;background:var(--hair);display:block;transition:background .2s,width .2s}
+  .ob-dots i.on{background:var(--accent);width:18px;border-radius:4px}
+  .ob-skip{background:none;border:none;color:var(--muted);font-family:var(--font-ui);font-size:13px;font-weight:600;cursor:pointer}
+  .ob-body{flex:1;display:flex;flex-direction:column;justify-content:center;overflow-y:auto}
+  .ob-body::-webkit-scrollbar{width:0}
+  .ob-step{animation:obIn .35s cubic-bezier(.2,.9,.2,1)}
+  @keyframes obIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .ob-logo{font-family:var(--font-round);font-weight:700;font-size:42px;letter-spacing:-.03em;color:var(--accent);margin-bottom:18px}
+  .ob-eyebrow{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--amber-ink);margin:0 0 8px}
+  .ob-h{font-family:var(--font-round);font-size:25px;font-weight:600;letter-spacing:-.02em;line-height:1.15;margin:0 0 10px;text-wrap:balance;color:var(--ink)}
+  .ob-p{font-size:14px;color:var(--muted);line-height:1.5;margin:0 0 18px}
+  .ob-choices{display:flex;flex-direction:column;gap:10px}
+  .ob-choice{display:flex;align-items:center;gap:13px;background:var(--card);border:1.5px solid var(--hair);border-radius:15px;padding:15px 16px;cursor:pointer;font-family:var(--font-round);font-size:15px;font-weight:600;color:var(--ink);text-align:left;transition:border-color .15s,background .15s}
+  .ob-choice i,.ob-choice svg{font-size:22px;color:var(--accent)}
+  .ob-choice.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .ob-qa{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .ob-qa button{display:flex;flex-direction:column;align-items:flex-start;gap:6px;background:var(--card);border:1.5px solid var(--hair);border-radius:15px;padding:13px 14px;cursor:pointer;font-family:var(--font-ui);text-align:left;position:relative;transition:border-color .15s,background .15s}
+  .ob-qa button .qic{width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:17px}
+  .ob-qa button .qn{font-size:14px;font-weight:600;color:var(--ink)}
+  .ob-qa button .qp{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .ob-qa button.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .ob-qa button .qtick{display:none;position:absolute;top:10px;right:10px;color:var(--accent);font-size:16px}
+  .ob-qa button.sel .qtick{display:block}
+  .ob-celebrate{text-align:center;padding:18px;background:var(--card);border:1px solid var(--hair);border-radius:16px;margin-top:16px}
+  .ob-celebrate .big{font-family:var(--font-round);font-weight:700;font-size:26px;color:var(--ink)}
+  .ob-celebrate .sm{font-size:13px;color:var(--amber-ink);font-weight:600;margin-top:4px}
+  .ob-foot{display:flex;gap:10px;margin-top:16px;padding-bottom:env(safe-area-inset-bottom)}
+  .set-row{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:14px 15px;cursor:pointer;font-family:var(--font-ui);margin-bottom:10px;text-align:left}
+  .set-row span{display:flex;flex-direction:column}
+  .set-row b{font-family:var(--font-round);font-size:15px;font-weight:600;color:var(--ink)}
+  .set-row small{font-size:12px;color:var(--muted);margin-top:1px}
+  .set-row i,.set-row svg{color:var(--muted);font-size:18px;flex:0 0 auto}
+  .set-row.danger b{color:#B0554C}
   @media (display-mode:standalone),(max-width:480px){
+    .onboarding{border-radius:0;padding-top:calc(env(safe-area-inset-top) + 20px);padding-bottom:calc(env(safe-area-inset-bottom) + 14px)}
     .stage{padding:0;min-height:100dvh;display:block;gap:0}
     .stage-head{display:none}
     .phone{width:100%;max-width:none;height:100dvh;max-height:none;border-radius:0;padding:0;box-shadow:none}
@@ -320,7 +359,7 @@
         </div>
 
         <div class="card goal">
-          <div class="card-h"><div class="t">Invest £250 this month</div></div>
+          <div class="card-h"><div class="t" id="goalTitle">Invest £250 this month</div></div>
           <div class="bar"><div class="fill" id="goalFill"></div></div>
           <div class="row"><span id="goalNow">£183.40 kept</span><span><b id="goalLeft">£66.60</b> to go</span></div>
         </div>
@@ -490,6 +529,70 @@
         <button class="undo" id="toastUndo">Undo</button>
       </div>
 
+      <!-- ONBOARDING -->
+      <div class="onboarding hidden" id="onboarding">
+        <div class="ob-top">
+          <div class="ob-dots" id="obDots"></div>
+          <button class="ob-skip" id="obSkip">Skip</button>
+        </div>
+        <div class="ob-body" id="obBody">
+          <div class="ob-step" data-step="0">
+            <div class="ob-logo">Kept</div>
+            <h2 class="ob-h">Turn the money you don’t spend into your future.</h2>
+            <p class="ob-p">Log the little things you skip. Watch them add up — and grow.</p>
+          </div>
+          <div class="ob-step hidden" data-step="1">
+            <p class="ob-eyebrow">A quick setup</p>
+            <h2 class="ob-h">What brings you here?</h2>
+            <div class="ob-choices" id="obObjectives">
+              <button class="ob-choice" data-name="Invest more"><i class="ti ti-chart-line"></i><span>Invest more</span></button>
+              <button class="ob-choice" data-name="Emergency fund"><i class="ti ti-shield-check"></i><span>Build an emergency fund</span></button>
+              <button class="ob-choice" data-name="Save for a goal"><i class="ti ti-target"></i><span>Save for a goal</span></button>
+              <button class="ob-choice" data-name="Spend consciously"><i class="ti ti-coffee"></i><span>Spend more consciously</span></button>
+            </div>
+          </div>
+          <div class="ob-step hidden" data-step="2">
+            <p class="ob-eyebrow">Your goal</p>
+            <h2 class="ob-h">What are you working toward?</h2>
+            <div class="field"><label>Goal name</label><input class="text-in" id="obGoalName" type="text" placeholder="Invest more"></div>
+            <div class="field"><label>Monthly target</label><div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="obMonthly" value="250"></div></div>
+            <p class="ob-eyebrow" style="margin-top:18px">Growth assumptions</p>
+            <div class="seg" id="obRate"><button data-rate="3">3%</button><button data-rate="5" class="on">5%</button><button data-rate="7">7%</button></div>
+            <div class="ctrl" style="margin-top:8px"><div class="lab"><span>Plan until</span><b id="obYrsOut">20 years</b></div><input type="range" id="obYrs" min="5" max="60" step="1" value="20"></div>
+          </div>
+          <div class="ob-step hidden" data-step="3">
+            <p class="ob-eyebrow">Quick logs</p>
+            <h2 class="ob-h">Pick your one-tap saves.</h2>
+            <p class="ob-p">Tap to keep the ones you’ll use most. Change them anytime.</p>
+            <div class="ob-qa" id="obQuick"></div>
+          </div>
+          <div class="ob-step hidden" data-step="4">
+            <p class="ob-eyebrow">You’re set</p>
+            <h2 class="ob-h">Log your first Saving Win.</h2>
+            <p class="ob-p" id="obFirstP">Skipped something today? Tap it to log your first win.</p>
+            <div class="ob-qa" id="obFirst"></div>
+            <div class="ob-celebrate hidden" id="obCelebrate"></div>
+          </div>
+        </div>
+        <div class="ob-foot">
+          <button class="btn ghost" id="obBack" style="flex:0 0 30%">Back</button>
+          <button class="btn primary" id="obNext" style="flex:1">Get started</button>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="overlay" id="settingsOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>You</h3>
+          <p class="sub">Your data lives on this device.</p>
+          <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
+          <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
+          <button class="set-row danger" id="setReset"><span><b>Reset app</b><small>Erase everything and start over</small></span><i class="ti ti-trash"></i></button>
+          <button class="btn ghost" id="setClose" style="margin-top:16px">Close</button>
+        </div>
+      </div>
+
       <!-- TAB BAR -->
       <nav class="tabbar">
         <button class="tab active" data-tab="home"><i class="ti ti-home"></i><span>Home</span></button>
@@ -533,6 +636,8 @@
     'arrow-right':'<path d="M5 12h14M13 6l6 6-6 6"/>',
     pencil:'<path d="M4 20h4L18.5 9.5l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
     trash:'<path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"/>',
+    target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+    download:'<path d="M12 4v11M8 11l4 4 4-4"/><path d="M5 19h14"/>',
     moon:'<path d="M20 14a8 8 0 1 1-10-10 6 6 0 0 0 10 10z"/>',
     wifi:'<path d="M5 12a10 10 0 0 1 14 0M8 15a6 6 0 0 1 8 0"/><path d="M12 18h.01"/>',
     'battery-3':'<rect x="3" y="8" width="16" height="8" rx="2"/><path d="M21 11v2"/><rect x="5" y="10" width="9" height="4" fill="currentColor" stroke="none"/>',
@@ -557,29 +662,63 @@
     {id:'transport',name:'Taxi',icon:'ti-car',amt:1200},
     {id:'subscription',name:'Subscription',icon:'ti-repeat',amt:999}
   ];
-  const quick = [cats[0],cats[1],cats[2],{id:'transport',name:'Taxi',icon:'ti-car',amt:1200}];
 
   const NOW=new Date(); const BASE_YEAR=NOW.getFullYear(); const DAY=86400000;
-  const CUR='2026-07';
-  const MONTHNAMES={'2026-07':'July','2026-06':'June'};
-  let wins=[], transfers=[];
-  let t=Date.now();
-  const dThisMonth=new Date(NOW.getTime()-10*DAY);  // this-month Wins ≈ 10 days old
-  const dLastMonth=new Date(NOW.getTime()-45*DAY);  // last-month Wins ≈ 45 days old — grow a little longer
-  // July (current) — 16 wins, all waiting in the pot
-  const julySeed=[[420,'food_drink','Made coffee at home',8],[250,'snack','Skipped the vending machine',4],
-    [2200,'takeaway','Cooked instead of takeaway',2],[1200,'transport','Walked instead of a taxi',1],
-    [8380,'shopping','Chose the cheaper coat',1]];
-  julySeed.forEach(([amt,cat,desc,n])=>{for(let i=0;i<n;i++)wins.push({id:t--,net:amt,cat,name:desc,state:'confirmed',credibility:'verified',month:CUR,date:dThisMonth});});
-  // June — already transferred, with a matching transfer record
-  const juneSeed=[[420,'food_drink','Made coffee at home',6],[250,'snack','Brought a snack from home',3],
-    [2200,'takeaway','Cooked instead of takeaway',2],[4000,'shopping','Skipped an impulse buy',1]];
-  juneSeed.forEach(([amt,cat,desc,n])=>{for(let i=0;i<n;i++)wins.push({id:t--,net:amt,cat,name:desc,state:'transferred',credibility:'verified',month:'2026-06',date:dLastMonth});});
-  const juneTotal=juneSeed.reduce((s,r)=>s+r[0]*r[3],0), juneCount=juneSeed.reduce((s,r)=>s+r[3],0);
-  transfers.push({id:t--,amount:juneTotal,month:'2026-06',date:'28 June',count:juneCount});
+  const MNAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const ym = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  const monthLabel = k => { const p=k.split('-'); return MNAMES[+p[1]-1]; };
+  const CUR = ym(NOW);
 
-  let goalTarget = 25000;
-  let proj = {rate:5, years:20};
+  // Default quick actions a new user starts with.
+  const DEFAULT_QUICK = [
+    {id:'food_drink',name:'Coffee',icon:'ti-coffee',amt:420},
+    {id:'snack',name:'Snack',icon:'ti-cookie',amt:250},
+    {id:'takeaway',name:'Takeaway',icon:'ti-tools-kitchen-2',amt:2200},
+    {id:'transport',name:'Taxi',icon:'ti-car',amt:1200}
+  ];
+
+  // Mutable app state — filled by onboarding, sample data, or storage.
+  let wins=[], transfers=[];
+  let goalTarget=25000, goalName='Invest more';
+  let proj={rate:5, years:20};
+  let quick=DEFAULT_QUICK.map(q=>({...q}));
+  let onboarded=false;
+
+  function sampleData(){
+    const dCur=new Date(NOW.getTime()-10*DAY), dPrev=new Date(NOW.getTime()-45*DAY);
+    const prevKey=ym(new Date(NOW.getFullYear(), NOW.getMonth()-1, 15));
+    const w=[]; let tt=Date.now();
+    [[420,'food_drink','Made coffee at home',8],[250,'snack','Skipped the vending machine',4],[2200,'takeaway','Cooked instead of takeaway',2],[1200,'transport','Walked instead of a taxi',1],[8380,'shopping','Chose the cheaper coat',1]]
+      .forEach(([amt,cat,desc,n])=>{for(let i=0;i<n;i++)w.push({id:tt--,net:amt,cat,name:desc,state:'confirmed',credibility:'verified',month:CUR,date:dCur});});
+    [[420,'food_drink','Made coffee at home',6],[250,'snack','Brought a snack from home',3],[2200,'takeaway','Cooked instead of takeaway',2],[4000,'shopping','Skipped an impulse buy',1]]
+      .forEach(([amt,cat,desc,n])=>{for(let i=0;i<n;i++)w.push({id:tt--,net:amt,cat,name:desc,state:'transferred',credibility:'verified',month:prevKey,date:dPrev});});
+    const pt=w.filter(x=>x.month===prevKey).reduce((s,x)=>s+x.net,0);
+    return {wins:w, transfers:[{id:tt--,amount:pt,month:prevKey,date:'28th',count:12}], goalTarget:25000, goalName:'Invest more', proj:{rate:5,years:20}, quick:DEFAULT_QUICK.map(q=>({...q}))};
+  }
+
+  // ---------- persistence (localStorage) ----------
+  const LSKEY='kept_state_v2';
+  function saveState(){
+    if(!onboarded) return;
+    try{ localStorage.setItem(LSKEY, JSON.stringify({
+      onboarded:true,
+      wins:wins.map(w=>({...w, date:(w.date instanceof Date? w.date.toISOString(): w.date)})),
+      transfers, goalTarget, goalName, proj, quick, rollover
+    })); }catch(e){}
+  }
+  function applyState(s){
+    wins=(s.wins||[]).map(w=>({...w, date:new Date(w.date)}));
+    transfers=s.transfers||[];
+    goalTarget=(s.goalTarget!=null)?s.goalTarget:25000;
+    goalName=s.goalName||'Invest more';
+    proj=s.proj||{rate:5,years:20};
+    quick=(s.quick&&s.quick.length)? s.quick : DEFAULT_QUICK.map(q=>({...q}));
+    rollover=s.rollover||0;
+    onboarded=true;
+  }
+  function loadState(){
+    try{ const raw=localStorage.getItem(LSKEY); return raw? JSON.parse(raw): null; }catch(e){ return null; }
+  }
   const cur = ()=>document.querySelector('.screen');
 
   const monthWins = m => wins.filter(w=>w.month===m);
@@ -601,8 +740,9 @@
   function render(){
     const rec=recordedThisMonth(), wait=waiting(), tr=transferredTotal();
     document.getElementById('homeAmount').textContent = P(rec);
-    document.getElementById('homeCount').textContent = monthWins(CUR).length+' Saving Wins · '+MONTHNAMES[CUR];
+    document.getElementById('homeCount').textContent = monthWins(CUR).length+' Saving Wins · '+monthLabel(CUR);
     document.getElementById('heroFV').textContent = '≈ '+Pn(monthFV())+' by '+targetYear()+' invested';
+    document.getElementById('goalTitle').textContent = goalName+' · £'+Math.round(goalTarget/100)+'/mo';
     const pct = Math.min(100, rec/goalTarget*100);
     document.getElementById('goalFill').style.width = pct+'%';
     document.getElementById('goalNow').textContent = P(rec)+' kept';
@@ -622,11 +762,12 @@
     drawCurve();
     renderActivity();
     replaceIcons();
+    saveState();
   }
 
   const catIcon={food_drink:'ti-coffee',snack:'ti-cookie',takeaway:'ti-tools-kitchen-2',
     shopping:'ti-shopping-bag',transport:'ti-car',subscription:'ti-repeat',other:'ti-circle'};
-  let openMonth='2026-07';
+  let openMonth=CUR;
   let actFilter='all';
   let rollover=0;            // signed pence carried into the next transfer from edits/deletes of transferred Wins
   let openRow=null;          // currently swiped-open row
@@ -698,7 +839,7 @@
       const isOpen=(openMonth===m);
       const sec=document.createElement('div'); sec.className='month-sec';
       const head=document.createElement('button'); head.type='button'; head.className='month-head'+(isOpen?' open':'');
-      head.innerHTML=`<div class="mh-l"><i class="ti ti-chevron-right"></i><span>${MONTHNAMES[m]||m}</span></div>
+      head.innerHTML=`<div class="mh-l"><i class="ti ti-chevron-right"></i><span>${monthLabel(m)}</span></div>
         <div class="mh-r"><b>${P(total)}</b><small>${mWins.length} Wins${mTrans.length?' · '+mTrans.length+' transfer'+(mTrans.length>1?'s':''):''}</small></div>`;
       head.addEventListener('click',()=>{ openMonth=(openMonth===m?null:m); renderActivity(); });
       sec.appendChild(head);
@@ -768,17 +909,21 @@
     cur().querySelector('.view:not(.hidden)')?.scrollTo(0,0);
   }
   document.querySelectorAll('.tab[data-tab]').forEach(b=>{
-    b.addEventListener('click',()=>{ if(b.dataset.tab==='settings'){toast('“You” — settings, export, delete',null,'ti-adjustments');return;} show(b.dataset.tab);});
+    b.addEventListener('click',()=>{ if(b.dataset.tab==='settings'){openSettings();return;} show(b.dataset.tab);});
   });
 
   // ---------- one-tap quick log ----------
   const qr=document.getElementById('quickRow');
-  quick.forEach(q=>{
-    const b=document.createElement('button'); b.className='qa';
-    b.innerHTML=`<div class="ic"><i class="ti ${q.icon}"></i></div><div class="n">${q.name}</div><div class="p">${P(q.amt)}</div>`;
-    b.addEventListener('click',()=>logWin(q.amt,q.id,'Made '+q.name.toLowerCase()+' the cheaper way',true));
-    qr.appendChild(b);
-  });
+  function renderQuick(){
+    qr.innerHTML='';
+    quick.forEach(q=>{
+      const b=document.createElement('button'); b.className='qa';
+      b.innerHTML=`<div class="ic"><i class="ti ${q.icon}"></i></div><div class="n">${q.name}</div><div class="p">${P(q.amt)}</div>`;
+      b.addEventListener('click',()=>logWin(q.amt,q.id,'Made '+q.name.toLowerCase()+' the cheaper way',true));
+      qr.appendChild(b);
+    });
+    replaceIcons(qr);
+  }
 
   // toast/preview: what a single amount kept today becomes by the target year
   function projSub(net){ return '≈ '+Pn(fvNow(net))+' by '+targetYear()+', invested'; }
@@ -966,10 +1111,96 @@
     setTimeout(drawCurve,30);
   });
 
-  // clock
-  const now=new Date(); document.getElementById('clock').textContent=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  // ---------- onboarding ----------
+  const obEl=document.getElementById('onboarding');
+  let obStep=0; const OB_LAST=4;
+  const OB_QUICK_POOL=[
+    {id:'food_drink',name:'Coffee',icon:'ti-coffee',amt:420},
+    {id:'snack',name:'Snack',icon:'ti-cookie',amt:250},
+    {id:'takeaway',name:'Takeaway',icon:'ti-tools-kitchen-2',amt:2200},
+    {id:'transport',name:'Taxi',icon:'ti-car',amt:1200},
+    {id:'takeaway',name:'Lunch out',icon:'ti-tools-kitchen-2',amt:800},
+    {id:'subscription',name:'Subscription',icon:'ti-repeat',amt:999}
+  ];
+  let obQuickSel=[0,1,2,3];
+  let config={ goalName:'Invest more', monthly:25000, rate:5, years:20, first:null };
 
-  render(); setTimeout(drawCurve,60);
+  function obDots(){ const d=document.getElementById('obDots'); d.innerHTML='';
+    for(let i=0;i<=OB_LAST;i++){ const s=document.createElement('i'); if(i===obStep)s.className='on'; d.appendChild(s);} }
+  function obShow(){
+    obEl.querySelectorAll('.ob-step').forEach(el=>el.classList.toggle('hidden', +el.dataset.step!==obStep));
+    document.getElementById('obBack').style.visibility = obStep===0?'hidden':'visible';
+    document.getElementById('obNext').textContent = obStep===0?'Get started' : obStep===OB_LAST?'Enter Kept' : 'Continue';
+    document.getElementById('obSkip').style.display = obStep===0?'none':'block';
+    if(obStep===2) obYrsLbl();
+    if(obStep===3) obRenderQuick();
+    if(obStep===4) obRenderFirst();
+    obDots(); replaceIcons(obEl);
+  }
+  function startOnboarding(){ obStep=0; obEl.classList.remove('hidden'); obShow(); }
+
+  obEl.querySelectorAll('#obObjectives .ob-choice').forEach(b=>{
+    b.addEventListener('click',()=>{ obEl.querySelectorAll('#obObjectives .ob-choice').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel'); config.goalName=b.dataset.name; document.getElementById('obGoalName').value=b.dataset.name; });
+  });
+  document.getElementById('obRate').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
+    config.rate=+b.dataset.rate; document.querySelectorAll('#obRate button').forEach(x=>x.classList.toggle('on',x===b)); });
+  const obYrs=document.getElementById('obYrs');
+  function obYrsLbl(){ document.getElementById('obYrsOut').textContent=config.years+' years · '+(BASE_YEAR+config.years); }
+  obYrs.addEventListener('input',()=>{ config.years=+obYrs.value; obYrsLbl(); });
+
+  function obRenderQuick(){ const g=document.getElementById('obQuick'); g.innerHTML='';
+    OB_QUICK_POOL.forEach((q,i)=>{ const b=document.createElement('button'); if(obQuickSel.includes(i)) b.className='sel';
+      b.innerHTML=`<span class="qtick"><i class="ti ti-check"></i></span><div class="qic"><i class="ti ${q.icon}"></i></div><div class="qn">${q.name}</div><div class="qp">${P(q.amt)}</div>`;
+      b.addEventListener('click',()=>{ if(obQuickSel.includes(i)) obQuickSel=obQuickSel.filter(x=>x!==i); else obQuickSel.push(i); obRenderQuick(); });
+      g.appendChild(b); });
+    replaceIcons(g);
+  }
+  function obRenderFirst(){ const g=document.getElementById('obFirst'); g.innerHTML='';
+    obQuickSel.map(i=>OB_QUICK_POOL[i]).forEach(q=>{ const b=document.createElement('button');
+      b.innerHTML=`<div class="qic"><i class="ti ${q.icon}"></i></div><div class="qn">${q.name}</div><div class="qp">${P(q.amt)}</div>`;
+      b.addEventListener('click',()=>obPickFirst(q.amt,q.id,'Made '+q.name.toLowerCase()+' the cheaper way'));
+      g.appendChild(b); });
+    replaceIcons(g);
+  }
+  function obPickFirst(net,cat,name){
+    config.first={net,cat,name}; proj={rate:config.rate,years:config.years};
+    const cel=document.getElementById('obCelebrate'); cel.classList.remove('hidden');
+    cel.innerHTML=`<div class="big">${P(net)} kept</div><div class="sm">↗ ≈ ${Pn(fvNow(net))} by ${BASE_YEAR+config.years} if invested</div>`;
+    document.getElementById('obFirstP').textContent='Nice — that’s your first win. Tap Enter Kept.';
+  }
+  document.getElementById('obNext').addEventListener('click',()=>{
+    if(obStep===2){ config.goalName=(document.getElementById('obGoalName').value||'').trim()||'Invest more';
+      const m=parseM(document.getElementById('obMonthly').value); config.monthly=m>0?m:25000; }
+    if(obStep<OB_LAST){ obStep++; obShow(); } else finishOnboarding();
+  });
+  document.getElementById('obBack').addEventListener('click',()=>{ if(obStep>0){obStep--; obShow();} });
+  document.getElementById('obSkip').addEventListener('click',finishOnboarding);
+  function finishOnboarding(){
+    let q=obQuickSel.map(i=>({...OB_QUICK_POOL[i]})); if(!q.length) q=DEFAULT_QUICK.map(x=>({...x}));
+    wins=[]; transfers=[]; rollover=0;
+    goalName=config.goalName; goalTarget=config.monthly; proj={rate:config.rate,years:config.years}; quick=q; openMonth=CUR; onboarded=true;
+    if(config.first) wins.push({id:Date.now(),net:config.first.net,cat:config.first.cat,name:config.first.name,state:'confirmed',credibility:'verified',month:CUR,date:new Date()});
+    obEl.classList.add('hidden'); renderQuick(); show('home'); render();
+    if(config.first) setTimeout(()=>toast(P(config.first.net)+' kept', projSub(config.first.net),'ti-check',false),450);
+  }
+
+  // ---------- settings (You tab) ----------
+  const setOv=document.getElementById('settingsOverlay');
+  function openSettings(){ setOv.classList.add('show'); }
+  document.getElementById('setClose').addEventListener('click',()=>setOv.classList.remove('show'));
+  setOv.addEventListener('click',e=>{ if(e.target===setOv) setOv.classList.remove('show'); });
+  document.getElementById('setSample').addEventListener('click',()=>{ applyState(sampleData()); saveState(); renderQuick(); show('home'); render(); setOv.classList.remove('show'); toast('Sample data loaded',null,'ti-check'); });
+  document.getElementById('setExport').addEventListener('click',()=>toast('Export','The real app downloads your data as a file','ti-download'));
+  document.getElementById('setReset').addEventListener('click',()=>{ try{localStorage.removeItem(LSKEY);}catch(e){} setOv.classList.remove('show'); location.reload(); });
+
+  // clock
+  document.getElementById('clock').textContent=NOW.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+
+  function boot(){ renderQuick(); render(); setTimeout(drawCurve,60); }
+  const saved=loadState();
+  if(saved && saved.onboarded){ applyState(saved); boot(); }
+  else { boot(); startOnboarding(); }
   window.addEventListener('resize',drawCurve);
 })();
 </script>
