@@ -170,6 +170,7 @@
   .state-pill{font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;display:inline-block;margin-top:3px;letter-spacing:.02em}
   .st-wait{background:var(--accent-soft);color:var(--accent-ink)}
   .st-done{background:var(--amber-soft);color:var(--amber-ink)}
+  .st-confirm{background:var(--accent);color:#fff;cursor:pointer}
 
   .seg{display:flex;background:var(--card-2);border-radius:12px;padding:3px;gap:2px;margin:4px 0 16px}
   .seg button{flex:1;border:none;background:none;font-family:var(--font-round);font-weight:600;font-size:13px;
@@ -600,6 +601,7 @@
           <p class="sub">Your data lives on this device.</p>
           <button class="set-row" id="setGoal"><span><b>Edit goal</b><small id="setGoalSub">—</small></span><i class="ti ti-target"></i></button>
           <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
+          <button class="set-row" id="setRecurring"><span><b>Recurring savings</b><small id="setRecurringSub">—</small></span><i class="ti ti-repeat"></i></button>
           <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
           <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
           <button class="set-row danger" id="setReset"><span><b>Reset app</b><small>Erase everything and start over</small></span><i class="ti ti-trash"></i></button>
@@ -647,6 +649,35 @@
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost danger" id="qaeDelete" style="flex:0 0 34%"><i class="ti ti-trash"></i>Delete</button>
             <button class="btn primary" id="qaeSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECURRING MANAGER -->
+      <div class="overlay" id="recurListOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Recurring savings</h3>
+          <p class="sub">Permanent cuts — a cancelled subscription, a cheaper bill. One is added each month; you confirm it's still active.</p>
+          <div id="recurList"></div>
+          <button class="btn ghost" id="recurAdd" style="margin-top:10px"><i class="ti ti-plus"></i>Add recurring saving</button>
+          <button class="btn primary" id="recurListClose" style="margin-top:10px">Done</button>
+        </div>
+      </div>
+
+      <!-- RECURRING EDITOR -->
+      <div class="overlay" id="recurEditOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3 id="recurEditTitle">Add recurring saving</h3>
+          <p class="sub">e.g. cancelled a £9.99 subscription.</p>
+          <div class="field"><label>Name</label><input class="text-in" id="reName" type="text" placeholder="e.g. Cancelled streaming"></div>
+          <div class="field"><label>Amount per month</label><div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="reAmt" placeholder="0.00"></div></div>
+          <p class="eyebrow" style="margin:16px 0 8px">Category</p>
+          <div class="cat-grid" id="reCats"></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost danger" id="reDelete" style="flex:0 0 34%"><i class="ti ti-trash"></i>Delete</button>
+            <button class="btn primary" id="reSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
           </div>
         </div>
       </div>
@@ -743,7 +774,9 @@
   let goalTarget=25000, goalName='Invest more';
   let proj={rate:5, years:20};
   let quick=DEFAULT_QUICK.map(q=>({...q}));
+  let recurring=[];
   let onboarded=false;
+  const SOFT_CAP=10000; // £100 — Wins above this log as unverified until confirmed
 
   function sampleData(){
     const dCur=new Date(NOW.getTime()-10*DAY), dPrev=new Date(NOW.getTime()-45*DAY);
@@ -764,7 +797,7 @@
     try{ localStorage.setItem(LSKEY, JSON.stringify({
       onboarded:true,
       wins:wins.map(w=>({...w, date:(w.date instanceof Date? w.date.toISOString(): w.date)})),
-      transfers, goalTarget, goalName, proj, quick, rollover
+      transfers, goalTarget, goalName, proj, quick, recurring, rollover
     })); }catch(e){}
   }
   function applyState(s){
@@ -774,8 +807,18 @@
     goalName=s.goalName||'Invest more';
     proj=s.proj||{rate:5,years:20};
     quick=(s.quick&&s.quick.length)? s.quick : DEFAULT_QUICK.map(q=>({...q}));
+    recurring=s.recurring||[];
     rollover=s.rollover||0;
     onboarded=true;
+  }
+  // Create this month's Win for each active recurring saving (once). It's 'recorded' until confirmed.
+  function materializeRecurring(){
+    recurring.forEach(r=>{ if(r.status!=='active') return;
+      if(!wins.some(w=>w.source===r.id && w.periodKey===CUR)){
+        wins.push({id:Date.now()+Math.floor(Math.random()*1e4), net:r.amount, cat:r.cat, name:r.name,
+          state:'recorded', credibility:'recurring', month:CUR, date:new Date(), source:r.id, periodKey:CUR});
+      }
+    });
   }
   function loadState(){
     try{ const raw=localStorage.getItem(LSKEY); return raw? JSON.parse(raw): null; }catch(e){ return null; }
@@ -861,19 +904,26 @@
     wrap.querySelector('.sw-del').addEventListener('click',e=>{ e.stopPropagation(); doDelete(w); });
   }
 
+  function confirmWin(w){ w.state='confirmed'; if(w.credibility==='unverified') w.credibility='verified'; render(); toast('Confirmed','Added to your pot','ti-circle-check'); }
   function winItem(w){
-    const done=w.state==='transferred';
     const wrap=document.createElement('div'); wrap.className='swipe-wrap'; wrap._open=false;
+    let pillCls, pillTxt, tap='';
+    if(w.state==='transferred'){ pillCls='st-done'; pillTxt='Transferred'; }
+    else if(w.state==='confirmed'){ pillCls='st-wait'; pillTxt='Waiting'; }
+    else { pillCls='st-confirm'; pillTxt='Confirm'; tap='data-confirm="1"'; }
+    const tag = w.credibility==='recurring' ? ' · Recurring' : (w.credibility==='unverified' ? ' · Large' : '');
     wrap.innerHTML=`<div class="swipe-actions">
         <button class="sw-edit"><i class="ti ti-pencil"></i>Edit</button>
         <button class="sw-del"><i class="ti ti-trash"></i>Delete</button>
       </div>
       <div class="swipe-content activity-item">
         <div class="ic"><i class="ti ${catIcon[w.cat]||'ti-circle'}"></i></div>
-        <div class="mid"><div class="nm">${w.name}</div><div class="mt">${cats.find(c=>c.id===w.cat)?.name||w.cat}</div></div>
+        <div class="mid"><div class="nm">${w.name}</div><div class="mt">${(cats.find(c=>c.id===w.cat)?.name||w.cat)+tag}</div></div>
         <div class="rt"><div class="rv">${P(w.net)}</div>
-        <span class="state-pill ${done?'st-done':'st-wait'}">${done?'Transferred':'Waiting'}</span></div>
+        <span class="state-pill ${pillCls}" ${tap}>${pillTxt}</span></div>
       </div>`;
+    const pill=wrap.querySelector('.state-pill[data-confirm]');
+    if(pill) pill.addEventListener('click',e=>{ e.stopPropagation(); confirmWin(w); });
     attachSwipe(wrap, w);
     return wrap;
   }
@@ -991,11 +1041,15 @@
 
   let lastWinId=null;
   function logWin(net,cat,name,quickToast){
-    const w={id:Date.now(),net,cat,name,state:'confirmed',credibility:'verified',month:CUR,date:new Date()};
+    const big=net>SOFT_CAP;
+    const w={id:Date.now(),net,cat,name, state:big?'recorded':'confirmed', credibility:big?'unverified':'verified', month:CUR,date:new Date()};
     wins.push(w); lastWinId=w.id;
     render();
     const a=document.getElementById('homeAmount'); a.classList.add('pulse'); setTimeout(()=>a.classList.remove('pulse'),450);
-    if(quickToast) toast(P(net)+' kept', projSub(net),'ti-check',true);
+    if(quickToast){
+      if(big) toast(P(net)+' logged','Large Win — tap Confirm in Activity to add it to your pot','ti-shield-check');
+      else toast(P(net)+' kept', projSub(net),'ti-check',true);
+    }
   }
 
   // ---------- toast + undo ----------
@@ -1057,11 +1111,8 @@
     const catId = selCat ? selCat.id : 'other';
     const typed = (document.getElementById('nameInput').value||'').trim();
     const name = typed || (selCat ? (altOn?('Cheaper '+selCat.name.toLowerCase()):selCat.name) : 'Saving Win');
-    const big = net>10000; // £100 soft-cap demo
-    logWin(net, catId, name, false);
+    logWin(net, catId, name, true);
     closeAdd();
-    if(big) toast(P(net)+' — nice one','Logged as unverified · tap to confirm','ti-shield-check');
-    else toast(P(net)+' kept', projSub(net),'ti-check',true);
   });
 
   // ---------- edit sheet + delete (rollover for transferred Wins) ----------
@@ -1251,6 +1302,8 @@
   function refreshSettings(){
     document.getElementById('setGoalSub').textContent = goalName+' · £'+Math.round(goalTarget/100)+'/mo';
     document.getElementById('setQuickSub').textContent = quick.length+' one-tap log'+(quick.length!==1?'s':'');
+    const ra=recurring.filter(r=>r.status==='active').length;
+    document.getElementById('setRecurringSub').textContent = ra? (ra+' active') : 'None yet';
   }
   function openSettings(){ refreshSettings(); setOv.classList.add('show'); }
   document.getElementById('setClose').addEventListener('click',()=>setOv.classList.remove('show'));
@@ -1340,10 +1393,66 @@
   });
   qaOv.addEventListener('click',e=>{ if(e.target===qaOv){ closeQaEdit(); renderQuickList(); } });
 
+  // ---------- recurring savings manager ----------
+  const recurLOv=document.getElementById('recurListOverlay');
+  function afterRecurChange(){ materializeRecurring(); renderRecurList(); refreshSettings(); render(); }
+  function renderRecurList(){
+    const list=document.getElementById('recurList'); list.innerHTML='';
+    const active=recurring.filter(r=>r.status==='active');
+    if(!active.length){ list.innerHTML='<p class="empty-note">No recurring savings yet. Add one below.</p>'; return; }
+    active.forEach(r=>{ const row=document.createElement('div'); row.className='qle-row';
+      row.innerHTML=`<div class="qle-ic"><i class="ti ${r.icon}"></i></div>
+        <div class="qle-mid"><b>${r.name}</b><small>${P(r.amount)} / month</small></div>
+        <button class="qle-del" aria-label="Remove"><i class="ti ti-trash"></i></button>`;
+      row.querySelector('.qle-mid').addEventListener('click',()=>openRecurEdit(r.id));
+      row.querySelector('.qle-del').addEventListener('click',()=>{ r.status='ended'; afterRecurChange(); });
+      list.appendChild(row);
+    });
+    replaceIcons(list);
+  }
+  document.getElementById('setRecurring').addEventListener('click',()=>{ renderRecurList(); recurLOv.classList.add('show'); });
+  document.getElementById('recurListClose').addEventListener('click',()=>recurLOv.classList.remove('show'));
+  recurLOv.addEventListener('click',e=>{ if(e.target===recurLOv) recurLOv.classList.remove('show'); });
+
+  const recurEOv=document.getElementById('recurEditOverlay');
+  let recurEditId=null, reCat=null;
+  const reCatsEl=document.getElementById('reCats');
+  cats.forEach(c=>{ const el=document.createElement('button'); el.className='cat'; el.dataset.cid=c.id;
+    el.innerHTML=`<i class="ti ${c.icon}"></i><span>${c.name}</span>`;
+    el.addEventListener('click',()=>{ reCat=c; reCatsEl.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel')); el.classList.add('sel'); });
+    reCatsEl.appendChild(el);
+  });
+  function selectReCat(id){ reCat=cats.find(c=>c.id===id)||cats[0]; reCatsEl.querySelectorAll('.cat').forEach(x=>x.classList.toggle('sel', x.dataset.cid===reCat.id)); }
+  function openRecurEdit(id){
+    recurEditId=id;
+    if(id==null){ document.getElementById('recurEditTitle').textContent='Add recurring saving';
+      document.getElementById('reName').value=''; document.getElementById('reAmt').value=''; selectReCat('subscription'); document.getElementById('reDelete').style.display='none';
+    } else { const r=recurring.find(x=>x.id===id); document.getElementById('recurEditTitle').textContent='Edit recurring saving';
+      document.getElementById('reName').value=r.name; document.getElementById('reAmt').value=(r.amount/100).toFixed(2); selectReCat(r.cat); document.getElementById('reDelete').style.display='';
+    }
+    recurLOv.classList.remove('show'); recurEOv.classList.add('show'); replaceIcons(recurEOv);
+  }
+  function closeRecurEdit(){ recurEOv.classList.remove('show'); recurLOv.classList.add('show'); }
+  document.getElementById('recurAdd').addEventListener('click',()=>openRecurEdit(null));
+  document.getElementById('reSave').addEventListener('click',()=>{
+    const amt=parseM(document.getElementById('reAmt').value);
+    if(amt<1){ toast('Enter an amount','A recurring saving needs a value','ti-alert-circle'); return; }
+    const name=(document.getElementById('reName').value||'').trim()||reCat.name;
+    if(recurEditId==null){ recurring.push({id:Date.now(), name, amount:amt, cat:reCat.id, icon:reCat.icon, start:new Date().toISOString(), end:null, status:'active'}); }
+    else { const r=recurring.find(x=>x.id===recurEditId); if(r){ r.name=name; r.amount=amt; r.cat=reCat.id; r.icon=reCat.icon;
+      const mw=wins.find(w=>w.source===r.id && w.periodKey===CUR); if(mw){ mw.net=amt; mw.name=name; mw.cat=reCat.id; } } }
+    closeRecurEdit(); afterRecurChange(); toast('Recurring saving saved',null,'ti-check');
+  });
+  document.getElementById('reDelete').addEventListener('click',()=>{
+    if(recurEditId!=null){ const r=recurring.find(x=>x.id===recurEditId); if(r) r.status='ended'; }
+    closeRecurEdit(); afterRecurChange();
+  });
+  recurEOv.addEventListener('click',e=>{ if(e.target===recurEOv){ closeRecurEdit(); renderRecurList(); } });
+
   // clock
   document.getElementById('clock').textContent=NOW.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 
-  function boot(){ renderQuick(); render(); setTimeout(drawCurve,60); }
+  function boot(){ materializeRecurring(); renderQuick(); render(); setTimeout(drawCurve,60); }
   const saved=loadState();
   if(saved && saved.onboarded){ applyState(saved); boot(); }
   else { boot(); startOnboarding(); }
