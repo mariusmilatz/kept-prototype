@@ -319,6 +319,17 @@
   .set-row small{font-size:12px;color:var(--muted);margin-top:1px}
   .set-row i,.set-row svg{color:var(--muted);font-size:18px;flex:0 0 auto}
   .set-row.danger b{color:#B0554C}
+  .qle-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--hair)}
+  .qle-move{display:flex;flex-direction:column;gap:2px}
+  .qle-move button{width:26px;height:22px;border:1px solid var(--hair);background:var(--card);border-radius:7px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;color:var(--muted);padding:0}
+  .qle-move button:disabled{opacity:.35;cursor:default}
+  .qle-move button i,.qle-move button svg{font-size:14px}
+  .qle-ic{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto}
+  .qle-mid{flex:1;min-width:0;cursor:pointer}
+  .qle-mid b{font-family:var(--font-round);font-weight:600;font-size:14.5px;display:block}
+  .qle-mid small{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .qle-del{border:none;background:none;color:#B0554C;cursor:pointer;font-size:18px;padding:6px;flex:0 0 auto}
   @media (display-mode:standalone),(max-width:480px){
     .onboarding{border-radius:0;padding-top:calc(env(safe-area-inset-top) + 20px);padding-bottom:calc(env(safe-area-inset-bottom) + 14px)}
     .stage{padding:0;min-height:100dvh;display:block;gap:0}
@@ -587,10 +598,56 @@
           <div class="grip"></div>
           <h3>You</h3>
           <p class="sub">Your data lives on this device.</p>
+          <button class="set-row" id="setGoal"><span><b>Edit goal</b><small id="setGoalSub">—</small></span><i class="ti ti-target"></i></button>
+          <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
           <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
           <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
           <button class="set-row danger" id="setReset"><span><b>Reset app</b><small>Erase everything and start over</small></span><i class="ti ti-trash"></i></button>
           <button class="btn ghost" id="setClose" style="margin-top:16px">Close</button>
+        </div>
+      </div>
+
+      <!-- EDIT GOAL -->
+      <div class="overlay" id="goalEditOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Edit goal</h3>
+          <p class="sub">Rename it or change your monthly target.</p>
+          <div class="field"><label>Goal name</label><input class="text-in" id="geName" type="text"></div>
+          <div class="field"><label>Monthly target</label><div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="geMonthly"></div></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost" id="geCancel" style="flex:0 0 40%">Cancel</button>
+            <button class="btn primary" id="geSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS MANAGER -->
+      <div class="overlay" id="quickListOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Quick actions</h3>
+          <p class="sub">Your one-tap logs. Reorder, edit, or add your own.</p>
+          <div id="quickList"></div>
+          <button class="btn ghost" id="qaAdd" style="margin-top:10px"><i class="ti ti-plus"></i>Add quick action</button>
+          <button class="btn primary" id="quickListClose" style="margin-top:10px">Done</button>
+        </div>
+      </div>
+
+      <!-- QUICK ACTION EDITOR -->
+      <div class="overlay" id="qaEditOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3 id="qaEditTitle">Add quick action</h3>
+          <p class="sub">Name it, set the amount, pick a category.</p>
+          <div class="field"><label>Name</label><input class="text-in" id="qaeName" type="text" placeholder="e.g. Coffee"></div>
+          <div class="field"><label>Amount</label><div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="qaeAmt" placeholder="0.00"></div></div>
+          <p class="eyebrow" style="margin:16px 0 8px">Category</p>
+          <div class="cat-grid" id="qaeCats"></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost danger" id="qaeDelete" style="flex:0 0 34%"><i class="ti ti-trash"></i>Delete</button>
+            <button class="btn primary" id="qaeSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
+          </div>
         </div>
       </div>
 
@@ -639,6 +696,9 @@
     trash:'<path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"/>',
     target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
     download:'<path d="M12 4v11M8 11l4 4 4-4"/><path d="M5 19h14"/>',
+    bolt:'<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>',
+    'chevron-up':'<path d="M6 15l6-6 6 6"/>',
+    'chevron-down':'<path d="M6 9l6 6 6-6"/>',
     moon:'<path d="M20 14a8 8 0 1 1-10-10 6 6 0 0 0 10 10z"/>',
     wifi:'<path d="M5 12a10 10 0 0 1 14 0M8 15a6 6 0 0 1 8 0"/><path d="M12 18h.01"/>',
     'battery-3':'<rect x="3" y="8" width="16" height="8" rx="2"/><path d="M21 11v2"/><rect x="5" y="10" width="9" height="4" fill="currentColor" stroke="none"/>',
@@ -1188,12 +1248,95 @@
 
   // ---------- settings (You tab) ----------
   const setOv=document.getElementById('settingsOverlay');
-  function openSettings(){ setOv.classList.add('show'); }
+  function refreshSettings(){
+    document.getElementById('setGoalSub').textContent = goalName+' · £'+Math.round(goalTarget/100)+'/mo';
+    document.getElementById('setQuickSub').textContent = quick.length+' one-tap log'+(quick.length!==1?'s':'');
+  }
+  function openSettings(){ refreshSettings(); setOv.classList.add('show'); }
   document.getElementById('setClose').addEventListener('click',()=>setOv.classList.remove('show'));
   setOv.addEventListener('click',e=>{ if(e.target===setOv) setOv.classList.remove('show'); });
   document.getElementById('setSample').addEventListener('click',()=>{ applyState(sampleData()); saveState(); renderQuick(); show('home'); render(); setOv.classList.remove('show'); toast('Sample data loaded',null,'ti-check'); });
   document.getElementById('setExport').addEventListener('click',()=>toast('Export','The real app downloads your data as a file','ti-download'));
   document.getElementById('setReset').addEventListener('click',()=>{ try{localStorage.removeItem(LSKEY);}catch(e){} setOv.classList.remove('show'); location.reload(); });
+
+  // ---------- edit goal ----------
+  const geOv=document.getElementById('goalEditOverlay');
+  document.getElementById('setGoal').addEventListener('click',()=>{
+    document.getElementById('geName').value=goalName;
+    document.getElementById('geMonthly').value=(goalTarget/100).toFixed(2);
+    geOv.classList.add('show');
+  });
+  document.getElementById('geCancel').addEventListener('click',()=>geOv.classList.remove('show'));
+  geOv.addEventListener('click',e=>{ if(e.target===geOv) geOv.classList.remove('show'); });
+  document.getElementById('geSave').addEventListener('click',()=>{
+    goalName=(document.getElementById('geName').value||'').trim()||goalName;
+    const m=parseM(document.getElementById('geMonthly').value); if(m>0) goalTarget=m;
+    geOv.classList.remove('show'); refreshSettings(); render(); toast('Goal updated',null,'ti-check');
+  });
+
+  // ---------- quick actions manager ----------
+  const qlOv=document.getElementById('quickListOverlay');
+  function afterQuickChange(){ renderQuick(); renderQuickList(); refreshSettings(); saveState(); }
+  function renderQuickList(){
+    const list=document.getElementById('quickList'); list.innerHTML='';
+    if(!quick.length){ list.innerHTML='<p class="empty-note">No quick actions yet. Add one below.</p>'; return; }
+    quick.forEach((q,i)=>{
+      const row=document.createElement('div'); row.className='qle-row';
+      row.innerHTML=`<div class="qle-move">
+          <button class="qle-up" ${i===0?'disabled':''} aria-label="Move up"><i class="ti ti-chevron-up"></i></button>
+          <button class="qle-down" ${i===quick.length-1?'disabled':''} aria-label="Move down"><i class="ti ti-chevron-down"></i></button>
+        </div>
+        <div class="qle-ic"><i class="ti ${q.icon}"></i></div>
+        <div class="qle-mid"><b>${q.name}</b><small>${P(q.amt)}</small></div>
+        <button class="qle-del" aria-label="Delete"><i class="ti ti-trash"></i></button>`;
+      row.querySelector('.qle-up').addEventListener('click',()=>{ if(i>0){ [quick[i-1],quick[i]]=[quick[i],quick[i-1]]; afterQuickChange(); } });
+      row.querySelector('.qle-down').addEventListener('click',()=>{ if(i<quick.length-1){ [quick[i+1],quick[i]]=[quick[i],quick[i+1]]; afterQuickChange(); } });
+      row.querySelector('.qle-del').addEventListener('click',()=>{ quick.splice(i,1); afterQuickChange(); });
+      row.querySelector('.qle-mid').addEventListener('click',()=>openQaEdit(i));
+      list.appendChild(row);
+    });
+    replaceIcons(list);
+  }
+  document.getElementById('setQuick').addEventListener('click',()=>{ renderQuickList(); qlOv.classList.add('show'); });
+  document.getElementById('quickListClose').addEventListener('click',()=>qlOv.classList.remove('show'));
+  qlOv.addEventListener('click',e=>{ if(e.target===qlOv) qlOv.classList.remove('show'); });
+
+  // ---------- quick action editor ----------
+  const qaOv=document.getElementById('qaEditOverlay');
+  let qaEditIdx=null, qaeCat=null;
+  const qaeCatsEl=document.getElementById('qaeCats');
+  cats.forEach(c=>{ const el=document.createElement('button'); el.className='cat'; el.dataset.cid=c.id;
+    el.innerHTML=`<i class="ti ${c.icon}"></i><span>${c.name}</span>`;
+    el.addEventListener('click',()=>{ qaeCat=c; qaeCatsEl.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel')); el.classList.add('sel'); });
+    qaeCatsEl.appendChild(el);
+  });
+  function selectQaCat(id){ qaeCat=cats.find(c=>c.id===id)||cats[0];
+    qaeCatsEl.querySelectorAll('.cat').forEach(x=>x.classList.toggle('sel', x.dataset.cid===qaeCat.id)); }
+  function openQaEdit(idx){
+    qaEditIdx=idx;
+    if(idx==null){ document.getElementById('qaEditTitle').textContent='Add quick action';
+      document.getElementById('qaeName').value=''; document.getElementById('qaeAmt').value='';
+      selectQaCat('food_drink'); document.getElementById('qaeDelete').style.display='none';
+    } else { const q=quick[idx]; document.getElementById('qaEditTitle').textContent='Edit quick action';
+      document.getElementById('qaeName').value=q.name; document.getElementById('qaeAmt').value=(q.amt/100).toFixed(2);
+      selectQaCat(q.id); document.getElementById('qaeDelete').style.display='';
+    }
+    qaOv.classList.add('show'); replaceIcons(qaOv);
+  }
+  document.getElementById('qaAdd').addEventListener('click',()=>openQaEdit(null));
+  document.getElementById('qaeSave').addEventListener('click',()=>{
+    const amt=parseM(document.getElementById('qaeAmt').value);
+    if(amt<1){ toast('Enter an amount','A quick action needs a value','ti-alert-circle'); return; }
+    const name=(document.getElementById('qaeName').value||'').trim()||qaeCat.name;
+    const q={id:qaeCat.id, name, icon:qaeCat.icon, amt};
+    if(qaEditIdx==null) quick.push(q); else quick[qaEditIdx]=q;
+    qaOv.classList.remove('show'); afterQuickChange(); toast('Quick action saved',null,'ti-check');
+  });
+  document.getElementById('qaeDelete').addEventListener('click',()=>{
+    if(qaEditIdx!=null) quick.splice(qaEditIdx,1);
+    qaOv.classList.remove('show'); afterQuickChange();
+  });
+  qaOv.addEventListener('click',e=>{ if(e.target===qaOv) qaOv.classList.remove('show'); });
 
   // clock
   document.getElementById('clock').textContent=NOW.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
