@@ -238,6 +238,30 @@
   .toast .undo{margin-left:auto;color:var(--amber);font-weight:700;font-size:13px;cursor:pointer;
     background:none;border:none;font-family:var(--font-round);padding:4px 6px}
 
+  .tap-hint{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;font-weight:600;color:var(--amber-ink)}
+  .tap-hint i{font-size:14px}
+  .opt{color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0}
+  .text-in{width:100%;background:var(--card);border:1px solid var(--hair);border-radius:13px;padding:12px 14px;margin-top:6px;
+    font-family:var(--font-ui);font-size:15px;color:var(--ink);outline:none}
+  .text-in::placeholder{color:var(--muted)}
+  .text-in:focus{border-color:var(--accent)}
+  .money-in:focus-within{border-color:var(--accent)}
+  .curve-legend{display:flex;gap:16px;margin-top:12px;font-size:11.5px;color:var(--muted)}
+  .curve-legend span{display:inline-flex;align-items:center;gap:6px}
+  .curve-legend .dash{width:16px;height:0;border-top:2px solid var(--accent);display:inline-block}
+  .curve-legend .dash.dot{border-top-style:dotted;border-top-width:2px}
+  .month-sec{margin-bottom:10px;border:1px solid var(--hair);border-radius:14px;overflow:hidden;background:var(--card)}
+  .month-head{width:100%;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:13px 14px}
+  .month-head .mh-l{display:flex;align-items:center;gap:9px;font-family:var(--font-round);font-weight:600;font-size:15px;color:var(--ink)}
+  .month-head .mh-l i,.month-head .mh-l svg{color:var(--muted);transition:transform .2s}
+  .month-head.open .mh-l i,.month-head.open .mh-l svg{transform:rotate(90deg)}
+  .month-head .mh-r{text-align:right}
+  .month-head .mh-r b{font-family:var(--font-round);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums}
+  .month-head .mh-r small{display:block;font-size:11px;color:var(--muted)}
+  .month-body{padding:0 14px 4px}
+  .month-body .activity-item:last-child{border-bottom:none}
+  .activity-item .ic.tr{background:var(--amber-soft);color:var(--amber-ink)}
+  .empty-note{font-size:12.5px;color:var(--muted);text-align:center;padding:24px 0}
   @media (display-mode:standalone),(max-width:480px){
     .stage{padding:0;min-height:100dvh;display:block;gap:0}
     .stage-head{display:none}
@@ -276,17 +300,6 @@
           <p class="sub" id="homeCount">16 Saving Wins · July</p>
         </div>
 
-        <div class="states">
-          <div class="chip">
-            <div class="k"><span class="dot wait"></span>Waiting to transfer</div>
-            <div class="v" id="homeWaiting">£183.40</div>
-          </div>
-          <div class="chip">
-            <div class="k"><span class="dot done"></span>Transferred</div>
-            <div class="v" id="homeTransferred">£0.00</div>
-          </div>
-        </div>
-
         <div class="card goal">
           <div class="card-h"><div class="t">Invest £250 this month</div></div>
           <div class="bar"><div class="fill" id="goalFill"></div></div>
@@ -302,7 +315,7 @@
           <div class="cap"><i class="ti ti-arrow-up-right"></i>Could become</div>
           <div class="big" id="teaserFuture">£75,900</div>
           <div class="note">estimated in 20 years · if kept and invested</div>
-          <canvas class="spark" id="sparkCanvas" width="192" height="88" aria-hidden="true"></canvas>
+          <div class="tap-hint"><i class="ti ti-arrow-right"></i>See your future</div>
         </div>
 
         <div class="card" style="padding:14px 16px">
@@ -315,16 +328,17 @@
             <i class="ti ti-chevron-right" style="color:var(--muted)" aria-hidden="true"></i>
           </div>
         </div>
-
-        <div class="fab-wrap">
-          <button class="btn primary" id="openAdd"><i class="ti ti-plus"></i>Add Saving Win</button>
-        </div>
       </div>
 
       <!-- ACTIVITY -->
       <div class="view hidden" id="view-activity">
-        <p class="eyebrow" style="margin-top:8px">This month</p>
+        <p class="eyebrow" style="margin-top:8px">Your record</p>
         <h2 class="h-screen">Activity</h2>
+        <div class="seg" id="actSeg">
+          <button data-f="all" class="on">All</button>
+          <button data-f="win">Saving Wins</button>
+          <button data-f="transfer">Transfers</button>
+        </div>
         <div id="activityList"></div>
       </div>
 
@@ -352,7 +366,8 @@
           </div>
           <div class="ctrl">
             <div class="lab"><span>Time horizon</span><b id="yrsOut">20 years</b></div>
-            <input type="range" id="yrs" min="5" max="40" step="1" value="20">
+            <input type="range" id="yrs" min="5" max="60" step="1" value="20">
+            <div class="curve-legend"><span><i class="dash solid"></i>To your horizon</span><span><i class="dash dot"></i>Beyond, up to 60y</span></div>
           </div>
         </div>
 
@@ -365,12 +380,15 @@
       <div class="overlay" id="addOverlay">
         <div class="sheet">
           <div class="grip"></div>
-          <h3>What did you choose not to spend on?</h3>
-          <p class="sub">Pick a category, set the amount, done.</p>
-          <div class="cat-grid" id="catGrid"></div>
+          <h3>Add a Saving Win</h3>
+          <p class="sub">Enter any amount you kept. A name is optional.</p>
           <div class="field">
             <label id="origLabel">Amount kept</label>
-            <div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="origInput" value="4.20"></div>
+            <div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="origInput" placeholder="0.00"></div>
+          </div>
+          <div class="field">
+            <label>Name <span class="opt">optional</span></label>
+            <input type="text" class="text-in" id="nameInput" placeholder="e.g. Skipped the afternoon coffee">
           </div>
           <div class="altrow">
             <div>Bought a cheaper version instead<br><small style="color:var(--muted)">e.g. cooked instead of takeaway</small></div>
@@ -383,6 +401,8 @@
           <div class="net-preview" id="netPreview" style="display:none">
             <span class="k">Net Saving Win</span><span class="v" id="netVal">£0.00</span>
           </div>
+          <p class="eyebrow" style="margin:18px 0 8px">Category <span class="opt">optional</span></p>
+          <div class="cat-grid" id="catGrid"></div>
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost" id="addCancel" style="flex:0 0 40%">Cancel</button>
             <button class="btn primary" id="addConfirm" style="flex:1"><i class="ti ti-check"></i>Add Win</button>
@@ -396,6 +416,16 @@
           <div class="grip"></div>
           <h3>Move your kept money</h3>
           <p class="sub">Kept never touches your money — you move it, then mark it here. Honest by design.</p>
+          <div class="states" style="margin:4px 0 6px">
+            <div class="chip">
+              <div class="k"><span class="dot wait"></span>Waiting to transfer</div>
+              <div class="v" id="tsWaiting">£0.00</div>
+            </div>
+            <div class="chip">
+              <div class="k"><span class="dot done"></span>Transferred</div>
+              <div class="v" id="tsTransferred">£0.00</div>
+            </div>
+          </div>
           <div class="transfer-amt">
             <div class="k">Marking as transferred</div>
             <div class="v" id="transferAmt">£183.40</div>
@@ -481,90 +511,157 @@
   ];
   const quick = [cats[0],cats[1],cats[2],{id:'transport',name:'Taxi',icon:'ti-car',amt:1200}];
 
-  // seed: 16 wins summing 18340p, all confirmed & waiting (transfer_id null)
-  let wins = [];
-  const seed = [[420,'food_drink','Coffee','Made coffee at home',8],[250,'snack','Snack','Skipped the vending machine',4],
-    [2200,'takeaway','Takeaway','Cooked instead',2],[1200,'transport','Taxi','Walked instead',1],
-    [8380,'shopping','Shopping','Chose the cheaper coat',1]];
-  let t = Date.now();
-  seed.forEach(([amt,cat,nm,desc,n])=>{ for(let i=0;i<n;i++){ wins.push({id:t--,net:amt,cat,name:desc,state:'confirmed',credibility:'verified'});}});
+  const CUR='2026-07';
+  const MONTHNAMES={'2026-07':'July','2026-06':'June'};
+  let wins=[], transfers=[];
+  let t=Date.now();
+  // July (current) — 16 wins, all waiting in the pot
+  const julySeed=[[420,'food_drink','Made coffee at home',8],[250,'snack','Skipped the vending machine',4],
+    [2200,'takeaway','Cooked instead of takeaway',2],[1200,'transport','Walked instead of a taxi',1],
+    [8380,'shopping','Chose the cheaper coat',1]];
+  julySeed.forEach(([amt,cat,desc,n])=>{for(let i=0;i<n;i++)wins.push({id:t--,net:amt,cat,name:desc,state:'confirmed',credibility:'verified',month:CUR});});
+  // June — already transferred, with a matching transfer record
+  const juneSeed=[[420,'food_drink','Made coffee at home',6],[250,'snack','Brought a snack from home',3],
+    [2200,'takeaway','Cooked instead of takeaway',2],[4000,'shopping','Skipped an impulse buy',1]];
+  juneSeed.forEach(([amt,cat,desc,n])=>{for(let i=0;i<n;i++)wins.push({id:t--,net:amt,cat,name:desc,state:'transferred',credibility:'verified',month:'2026-06'});});
+  const juneTotal=juneSeed.reduce((s,r)=>s+r[0]*r[3],0), juneCount=juneSeed.reduce((s,r)=>s+r[3],0);
+  transfers.push({id:t--,amount:juneTotal,month:'2026-06',date:'28 June',count:juneCount});
 
   let goalTarget = 25000;
   let proj = {rate:5, years:20};
   const cur = ()=>document.querySelector('.screen');
 
-  const sum = pred => wins.filter(pred).reduce((s,w)=>s+w.net,0);
-  const recorded = ()=> sum(_=>true);
-  const waiting = ()=> sum(w=>w.state==='confirmed');
-  const transferred = ()=> sum(w=>w.state==='transferred');
+  const monthWins = m => wins.filter(w=>w.month===m);
+  const recordedThisMonth = ()=> monthWins(CUR).reduce((s,w)=>s+w.net,0);
+  const allLogged = ()=> wins.reduce((s,w)=>s+w.net,0);
+  const waiting = ()=> wins.filter(w=>w.state==='confirmed').reduce((s,w)=>s+w.net,0);
+  const transferredTotal = ()=> transfers.reduce((s,x)=>s+x.amount,0);
 
   function futureValue(baseMinor, rate, years){
     const r = rate/100/12, n = years*12;
-    const monthly = recorded(); // "if you keep doing this" contribution
+    const monthly = recordedThisMonth(); // "if you keep doing this" contribution
     const growthBase = baseMinor * Math.pow(1+r,n);
-    const series = monthly * ((Math.pow(1+r,n)-1)/r);
+    const series = n>0 ? monthly * ((Math.pow(1+r,n)-1)/r) : 0;
     return growthBase + series;
   }
 
   function render(){
-    const rec=recorded(), wait=waiting(), tr=transferred();
+    const rec=recordedThisMonth(), wait=waiting(), tr=transferredTotal();
     document.getElementById('homeAmount').textContent = P(rec);
-    document.getElementById('homeCount').textContent = wins.length+' Saving Wins · July';
-    document.getElementById('homeWaiting').textContent = P(wait);
-    document.getElementById('homeTransferred').textContent = P(tr);
+    document.getElementById('homeCount').textContent = monthWins(CUR).length+' Saving Wins · '+MONTHNAMES[CUR];
     const pct = Math.min(100, rec/goalTarget*100);
     document.getElementById('goalFill').style.width = pct+'%';
     document.getElementById('goalNow').textContent = P(rec)+' kept';
     document.getElementById('goalLeft').textContent = P(Math.max(0,goalTarget-rec));
-    document.getElementById('transferStatusLine').textContent = tr>0 ? P(tr)+' moved · '+P(wait)+' still waiting' : P(wait)+' ready to move';
+    document.getElementById('transferStatusLine').textContent = P(wait)+' ready to move';
+    const tsW=document.getElementById('tsWaiting'), tsT=document.getElementById('tsTransferred');
+    if(tsW) tsW.textContent=P(wait); if(tsT) tsT.textContent=P(tr);
 
-    const fv = futureValue(rec, proj.rate, proj.years);
+    const fv = futureValue(allLogged(), proj.rate, proj.years);
     document.getElementById('teaserFuture').textContent = Pn(fv);
     document.getElementById('futureBig').textContent = Pn(fv);
     document.getElementById('futureAssume').textContent = 'estimated · '+proj.rate+'% return · '+proj.years+' years';
     document.getElementById('futTransferred').textContent = Pn(tr);
     document.getElementById('futKept').textContent = Pn(rec);
-    drawSpark(); drawCurve();
+    drawCurve();
     renderActivity();
     replaceIcons();
   }
 
+  const catIcon={food_drink:'ti-coffee',snack:'ti-cookie',takeaway:'ti-tools-kitchen-2',
+    shopping:'ti-shopping-bag',transport:'ti-car',subscription:'ti-repeat',other:'ti-circle'};
+  let openMonths={'2026-07':true};
+  let actFilter='all';
+  function winItem(w){
+    const done=w.state==='transferred';
+    const el=document.createElement('div'); el.className='activity-item';
+    el.innerHTML=`<div class="ic"><i class="ti ${catIcon[w.cat]||'ti-circle'}"></i></div>
+      <div class="mid"><div class="nm">${w.name}</div><div class="mt">${cats.find(c=>c.id===w.cat)?.name||w.cat}</div></div>
+      <div class="rt"><div class="rv">${P(w.net)}</div>
+      <span class="state-pill ${done?'st-done':'st-wait'}">${done?'Transferred':'Waiting'}</span></div>`;
+    return el;
+  }
+  function transferItem(x){
+    const el=document.createElement('div'); el.className='activity-item';
+    el.innerHTML=`<div class="ic tr"><i class="ti ti-arrow-up-right"></i></div>
+      <div class="mid"><div class="nm">Transferred to savings</div><div class="mt">${x.count} Wins · ${x.date}</div></div>
+      <div class="rt"><div class="rv">${P(x.amount)}</div><span class="state-pill st-done">Transfer</span></div>`;
+    return el;
+  }
   function renderActivity(){
     const list = document.getElementById('activityList'); list.innerHTML='';
-    const label = {food_drink:'ti-coffee',snack:'ti-cookie',takeaway:'ti-tools-kitchen-2',
-      shopping:'ti-shopping-bag',transport:'ti-car',subscription:'ti-repeat'};
-    wins.slice().reverse().forEach(w=>{
-      const done = w.state==='transferred';
-      const el=document.createElement('div'); el.className='activity-item';
-      el.innerHTML=`<div class="ic"><i class="ti ${label[w.cat]||'ti-circle'}"></i></div>
-        <div class="mid"><div class="nm">${w.name}</div><div class="mt">${cats.find(c=>c.id===w.cat)?.name||w.cat}</div></div>
-        <div class="rt"><div class="rv">${P(w.net)}</div>
-        <span class="state-pill ${done?'st-done':'st-wait'}">${done?'Transferred':'Waiting'}</span></div>`;
-      list.appendChild(el);
+    const months=[...new Set([...wins.map(w=>w.month),...transfers.map(x=>x.month)])].sort().reverse();
+    let shown=0;
+    months.forEach(m=>{
+      const mWins=wins.filter(w=>w.month===m);
+      const mTrans=transfers.filter(x=>x.month===m);
+      const items=[];
+      if(actFilter!=='transfer') mWins.slice().reverse().forEach(w=>items.push({t:'w',o:w}));
+      if(actFilter!=='win') mTrans.forEach(x=>items.push({t:'x',o:x}));
+      if(items.length===0) return;
+      shown++;
+      const total=mWins.reduce((s,w)=>s+w.net,0);
+      const isOpen=!!openMonths[m];
+      const sec=document.createElement('div'); sec.className='month-sec';
+      const head=document.createElement('button'); head.type='button'; head.className='month-head'+(isOpen?' open':'');
+      head.innerHTML=`<div class="mh-l"><i class="ti ti-chevron-right"></i><span>${MONTHNAMES[m]||m}</span></div>
+        <div class="mh-r"><b>${P(total)}</b><small>${mWins.length} Wins${mTrans.length?' · '+mTrans.length+' transfer'+(mTrans.length>1?'s':''):''}</small></div>`;
+      head.addEventListener('click',()=>{ openMonths[m]=!openMonths[m]; renderActivity(); });
+      sec.appendChild(head);
+      if(isOpen){
+        const body=document.createElement('div'); body.className='month-body';
+        items.forEach(it=> body.appendChild(it.t==='w'?winItem(it.o):transferItem(it.o)));
+        sec.appendChild(body);
+      }
+      list.appendChild(sec);
     });
+    if(shown===0){ const e=document.createElement('div'); e.className='empty-note';
+      e.textContent = actFilter==='transfer'?'No transfers yet. Mark one from your pot.':'Nothing here yet.'; list.appendChild(e); }
+    replaceIcons(list);
   }
 
-  // ---------- canvases ----------
+  // ---------- growth curve ----------
   function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
-  function curvePts(w,h,years,rate){
-    const pts=[]; const steps=48; const monthly=recorded(); const base=recorded();
-    for(let i=0;i<=steps;i++){const yr=years*i/steps; const r=rate/100/12,n=yr*12;
-      const v = base*Math.pow(1+r,n)+ (n>0?monthly*((Math.pow(1+r,n)-1)/r):0); pts.push(v);}
-    const max=pts[pts.length-1]||1;
-    return pts.map((v,i)=>[ i/steps*w, h-(v/max)*h ]);
+  function balanceAt(years){ const base=allLogged(), monthly=recordedThisMonth(), r=proj.rate/100/12, n=years*12;
+    return base*Math.pow(1+r,n) + (n>0? monthly*((Math.pow(1+r,n)-1)/r) : base); }
+  function abbr(minor){ const p=minor/100;
+    if(p>=1e6) return '£'+(p/1e6).toFixed(1).replace(/\.0$/,'')+'m';
+    if(p>=1e3) return '£'+Math.round(p/1e3)+'k';
+    return '£'+Math.round(p); }
+  function drawCurve(){
+    const cv=document.getElementById('curveCanvas'); if(!cv||!cv.clientWidth)return;
+    const dpr=window.devicePixelRatio||1, w=cv.clientWidth, h=cv.clientHeight;
+    cv.width=w*dpr; cv.height=h*dpr; const c=cv.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,w,h);
+    const MAX=60, padL=6, padR=12, padT=22, padB=20;
+    const gw=w-padL-padR, gh=h-padT-padB, maxV=balanceAt(MAX)||1, hi=proj.years;
+    const X=yr=> padL+(yr/MAX)*gw, Y=v=> padT+gh-(v/maxV)*gh;
+    const acc=cssv('--accent'), amb=cssv('--amber'), mut=cssv('--muted');
+    const pts=[]; for(let i=0;i<=180;i++){ const yr=MAX*i/180; pts.push([X(yr),Y(balanceAt(yr)),yr]); }
+    // area fill up to horizon
+    c.beginPath(); c.moveTo(X(0),padT+gh);
+    pts.filter(p=>p[2]<=hi).forEach(p=>c.lineTo(p[0],p[1])); c.lineTo(X(hi),padT+gh); c.closePath();
+    const g=c.createLinearGradient(0,padT,0,padT+gh); g.addColorStop(0,amb+'55'); g.addColorStop(1,amb+'00'); c.fillStyle=g; c.fill();
+    // solid line to horizon
+    c.beginPath(); pts.filter(p=>p[2]<=hi).forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));
+    c.strokeStyle=acc; c.lineWidth=2.5; c.lineJoin='round'; c.stroke();
+    // dotted continuation beyond horizon
+    c.setLineDash([2,4]); c.beginPath(); let started=false;
+    pts.filter(p=>p[2]>=hi).forEach(p=>{ if(started)c.lineTo(p[0],p[1]); else {c.moveTo(p[0],p[1]);started=true;} });
+    c.strokeStyle=acc; c.lineWidth=1.75; c.stroke(); c.setLineDash([]);
+    // decade markers: year on axis, value above, dot on curve
+    c.textAlign='center';
+    for(let d=10; d<=60; d+=10){ const x=X(d), yv=balanceAt(d), y=Y(yv);
+      c.font='600 9px -apple-system,system-ui';
+      c.fillStyle=mut; c.fillText(d+'y', x, padT+gh+13);
+      c.fillStyle=(d<=hi?acc:mut); c.fillText(abbr(yv), x, Math.max(padT+7, y-8));
+      c.beginPath(); c.arc(x,y,2,0,7); c.fillStyle=(d<=hi?acc:mut); c.fill();
+    }
+    // horizon marker
+    const hx=X(hi), hy=Y(balanceAt(hi));
+    c.setLineDash([3,3]); c.strokeStyle=amb+'AA'; c.lineWidth=1; c.beginPath(); c.moveTo(hx,padT-4); c.lineTo(hx,padT+gh); c.stroke(); c.setLineDash([]);
+    c.beginPath(); c.arc(hx,hy,5,0,7); c.fillStyle=amb; c.fill();
+    c.beginPath(); c.arc(hx,hy,2.2,0,7); c.fillStyle='#fff'; c.fill();
   }
-  function paintCurve(cv,years,rate,fill){
-    const dpr=window.devicePixelRatio||1; const w=cv.clientWidth,h=cv.clientHeight;
-    cv.width=w*dpr; cv.height=h*dpr; const c=cv.getContext('2d'); c.scale(dpr,dpr); c.clearRect(0,0,w,h);
-    const pts=curvePts(w,h,years,rate); const acc=cssv('--accent'),amb=cssv('--amber');
-    if(fill){const g=c.createLinearGradient(0,0,0,h); g.addColorStop(0,amb+'55'); g.addColorStop(1,amb+'00');
-      c.beginPath(); c.moveTo(0,h); pts.forEach(p=>c.lineTo(p[0],p[1])); c.lineTo(w,h); c.closePath(); c.fillStyle=g; c.fill();}
-    c.beginPath(); pts.forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));
-    c.strokeStyle=acc; c.lineWidth=fill?2.5:2; c.lineJoin='round'; c.stroke();
-    const last=pts[pts.length-1]; c.beginPath(); c.arc(last[0],last[1],fill?4.5:3,0,7); c.fillStyle=amb; c.fill();
-  }
-  function drawSpark(){const cv=document.getElementById('sparkCanvas'); if(cv.clientWidth)paintCurve(cv,proj.years,proj.rate,false);}
-  function drawCurve(){const cv=document.getElementById('curveCanvas'); if(cv.clientWidth)paintCurve(cv,proj.years,proj.rate,true);}
 
   // ---------- tabs ----------
   const views={home:'view-home',activity:'view-activity',future:'view-future'};
@@ -590,11 +687,11 @@
 
   let lastWinId=null;
   function logWin(net,cat,name,quickToast){
-    const w={id:Date.now(),net,cat,name,state:'confirmed',credibility:'verified'};
+    const w={id:Date.now(),net,cat,name,state:'confirmed',credibility:'verified',month:CUR};
     wins.push(w); lastWinId=w.id;
     render();
     const a=document.getElementById('homeAmount'); a.classList.add('pulse'); setTimeout(()=>a.classList.remove('pulse'),450);
-    if(quickToast) toast(P(net)+' kept','Added to your July pot','ti-check',true);
+    if(quickToast) toast(P(net)+' kept','Added to your '+MONTHNAMES[CUR]+' pot','ti-check',true);
   }
 
   // ---------- toast + undo ----------
@@ -612,16 +709,23 @@
 
   // ---------- add sheet ----------
   const addOv=document.getElementById('addOverlay');
-  const catGrid=document.getElementById('catGrid'); let selCat=cats[0];
-  cats.forEach((c,i)=>{ const el=document.createElement('button'); el.className='cat'+(i===0?' sel':'');
+  const catGrid=document.getElementById('catGrid'); let selCat=null;
+  cats.forEach((c)=>{ const el=document.createElement('button'); el.className='cat';
     el.innerHTML=`<i class="ti ${c.icon}"></i><span>${c.name}</span>`;
-    el.addEventListener('click',()=>{ selCat=c; document.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel'));
-      el.classList.add('sel'); document.getElementById('origInput').value=(c.amt/100).toFixed(2); updateNet();});
+    el.addEventListener('click',()=>{ const was=el.classList.contains('sel');
+      document.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel'));
+      if(was){ selCat=null; } else { selCat=c; el.classList.add('sel'); } });
     catGrid.appendChild(el);
   });
-  function openAdd(){ addOv.classList.add('show'); updateNet(); }
+  function openAdd(){
+    document.getElementById('origInput').value='';
+    document.getElementById('nameInput').value='';
+    selCat=null; document.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel'));
+    if(altOn) altSwitch.click();
+    updateNet(); addOv.classList.add('show');
+    setTimeout(()=>document.getElementById('origInput').focus(),150);
+  }
   function closeAdd(){ addOv.classList.remove('show'); }
-  document.getElementById('openAdd').addEventListener('click',openAdd);
   document.getElementById('tabAdd').addEventListener('click',openAdd);
   document.getElementById('addCancel').addEventListener('click',closeAdd);
   addOv.addEventListener('click',e=>{if(e.target===addOv)closeAdd();});
@@ -641,14 +745,16 @@
   document.getElementById('origInput').addEventListener('input',updateNet);
   document.getElementById('altInput').addEventListener('input',updateNet);
   document.getElementById('addConfirm').addEventListener('click',()=>{
-    const net=updateNet(); if(net<1){toast('That’s not a saving yet','The cheaper option cost the same or more','ti-alert-circle');return;}
+    const net=updateNet();
+    if(net<1){toast('Enter an amount first','A Saving Win needs a value','ti-alert-circle');return;}
+    const catId = selCat ? selCat.id : 'other';
+    const typed = (document.getElementById('nameInput').value||'').trim();
+    const name = typed || (selCat ? (altOn?('Cheaper '+selCat.name.toLowerCase()):selCat.name) : 'Saving Win');
     const big = net>10000; // £100 soft-cap demo
-    logWin(net,selCat.id, altOn?('Cheaper '+selCat.name.toLowerCase()):('Skipped '+selCat.name.toLowerCase()),false);
+    logWin(net, catId, name, false);
     closeAdd();
     if(big) toast(P(net)+' — nice one','Logged as unverified · tap to confirm','ti-shield-check');
-    else toast(P(net)+' kept','Added to your July pot','ti-check',true);
-    document.getElementById('origInput').value=(selCat.amt/100).toFixed(2);
-    if(altOn)altSwitch.click();
+    else toast(P(net)+' kept','Added to your '+MONTHNAMES[CUR]+' pot','ti-check',true);
   });
 
   // ---------- transfer sheet ----------
@@ -679,7 +785,9 @@
   document.getElementById('transferConfirm').addEventListener('click',()=>{
     const chosen=parseInt(trRange.value);
     const pot=wins.filter(w=>w.state==='confirmed').sort((a,b)=>a.id-b.id);
-    let covered=0; for(const w of pot){ if(covered+w.net<=chosen){w.state='transferred'; covered+=w.net;} else break; }
+    let covered=0, cnt=0; for(const w of pot){ if(covered+w.net<=chosen){w.state='transferred'; covered+=w.net; cnt++;} else break; }
+    if(covered>0){ const dt=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long'});
+      transfers.push({id:Date.now(),amount:covered,month:CUR,date:dt,count:cnt}); openMonths[CUR]=true; }
     trOv.classList.remove('show'); render();
     toast(P(covered)+' marked as transferred','You moved it — Kept just tracked it','ti-circle-check');
   });
@@ -692,20 +800,26 @@
   const yrs=document.getElementById('yrs');
   yrs.addEventListener('input',()=>{proj.years=parseInt(yrs.value); document.getElementById('yrsOut').textContent=proj.years+' years'; render();});
 
+  // ---------- activity filter ----------
+  document.getElementById('actSeg').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b)return; actFilter=b.dataset.f;
+    document.querySelectorAll('#actSeg button').forEach(x=>x.classList.toggle('on',x===b)); renderActivity();
+  });
+
   // ---------- theme ----------
   document.getElementById('themeToggle').addEventListener('click',()=>{
     const root=document.documentElement;
     const dark = root.getAttribute('data-theme')==='dark' ||
       (!root.getAttribute('data-theme') && matchMedia('(prefers-color-scheme:dark)').matches);
     root.setAttribute('data-theme', dark?'light':'dark');
-    setTimeout(()=>{drawSpark();drawCurve();},30);
+    setTimeout(drawCurve,30);
   });
 
   // clock
   const now=new Date(); document.getElementById('clock').textContent=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 
-  render(); setTimeout(()=>{drawSpark();drawCurve();},60);
-  window.addEventListener('resize',()=>{drawSpark();drawCurve();});
+  render(); setTimeout(drawCurve,60);
+  window.addEventListener('resize',drawCurve);
 })();
 </script>
 
