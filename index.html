@@ -92,6 +92,9 @@
     transition:transform .5s cubic-bezier(.2,.9,.2,1)}
   .hero .amount.pulse{transform:scale(1.05)}
   .hero .sub{font-size:13px;color:var(--muted);margin:8px 0 0}
+  .hero-fv{display:inline-flex;align-items:center;gap:5px;margin:12px 0 0;font-size:12.5px;font-weight:600;
+    color:var(--amber-ink);background:var(--amber-soft);padding:6px 11px;border-radius:999px;font-variant-numeric:tabular-nums}
+  .hero-fv i,.hero-fv svg{font-size:13px}
 
   .states{display:flex;gap:10px;margin:16px 0 4px}
   .chip{flex:1;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:11px 13px}
@@ -311,6 +314,7 @@
           <p class="lbl">Kept this month</p>
           <div class="amount" id="homeAmount">£183.40</div>
           <p class="sub" id="homeCount">16 Saving Wins · July</p>
+          <p class="hero-fv"><i class="ti ti-arrow-up-right"></i><span id="heroFV">≈ £498 in 20 years invested</span></p>
         </div>
 
         <div class="card goal">
@@ -578,18 +582,17 @@
   const waiting = ()=> wins.filter(w=>w.state==='confirmed').reduce((s,w)=>s+w.net,0);
   const transferredTotal = ()=> transfers.reduce((s,x)=>s+x.amount,0);
 
+  // Pure lump-sum growth of money already kept. Every figure — one Win, this month,
+  // the running total — grows the same way, so they stay consistent and additive.
   function futureValue(baseMinor, rate, years){
-    const r = rate/100/12, n = years*12;
-    const monthly = recordedThisMonth(); // "if you keep doing this" contribution
-    const growthBase = baseMinor * Math.pow(1+r,n);
-    const series = n>0 ? monthly * ((Math.pow(1+r,n)-1)/r) : 0;
-    return growthBase + series;
+    return baseMinor * Math.pow(1+rate/100/12, years*12);
   }
 
   function render(){
     const rec=recordedThisMonth(), wait=waiting(), tr=transferredTotal();
     document.getElementById('homeAmount').textContent = P(rec);
     document.getElementById('homeCount').textContent = monthWins(CUR).length+' Saving Wins · '+MONTHNAMES[CUR];
+    document.getElementById('heroFV').textContent = '≈ '+Pn(lumpFV(rec))+' in '+proj.years+' years invested';
     const pct = Math.min(100, rec/goalTarget*100);
     document.getElementById('goalFill').style.width = pct+'%';
     document.getElementById('goalNow').textContent = P(rec)+' kept';
@@ -704,8 +707,7 @@
 
   // ---------- growth curve ----------
   function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
-  function balanceAt(years){ const base=allLogged(), monthly=recordedThisMonth(), r=proj.rate/100/12, n=years*12;
-    return base*Math.pow(1+r,n) + (n>0? monthly*((Math.pow(1+r,n)-1)/r) : base); }
+  function balanceAt(years){ return allLogged()*Math.pow(1+proj.rate/100/12, years*12); }
   function abbr(minor){ const p=minor/100;
     if(p>=1e6) return '£'+(p/1e6).toFixed(1).replace(/\.0$/,'')+'m';
     if(p>=1e3) return '£'+Math.round(p/1e3)+'k';
