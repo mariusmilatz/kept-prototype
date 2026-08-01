@@ -313,6 +313,13 @@
   .ob-celebrate{text-align:center;padding:18px;background:var(--card);border:1px solid var(--hair);border-radius:16px;margin-top:16px}
   .ob-celebrate .big{font-family:var(--font-round);font-weight:700;font-size:26px;color:var(--ink)}
   .ob-celebrate .sm{font-size:13px;color:var(--amber-ink);font-weight:600;margin-top:4px}
+  .ob-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .ob-chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1.5px solid var(--hair);border-radius:12px;padding:9px 13px;cursor:pointer;font-family:var(--font-round);font-weight:600;font-size:13.5px;color:var(--ink)}
+  .ob-chip i,.ob-chip svg{font-size:16px;color:var(--accent)}
+  .ob-chip.custom{border-style:dashed;color:var(--accent)}
+  .ob-chosen-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--hair)}
+  .ob-empty{font-size:13px;color:var(--muted);padding:6px 0}
+  .ob-inline{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:12px 14px;margin-top:12px}
   .ob-foot{display:flex;gap:10px;margin-top:16px;padding-bottom:env(safe-area-inset-bottom)}
   .set-row{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:14px 15px;cursor:pointer;font-family:var(--font-ui);margin-bottom:10px;text-align:left}
   .set-row span{display:flex;flex-direction:column}
@@ -377,7 +384,7 @@
           <div class="row"><span id="goalNow">£183.40 kept</span><span><b id="goalLeft">£66.60</b> to go</span></div>
         </div>
 
-        <div style="margin-top:18px">
+        <div style="margin-top:18px" id="quickSection">
           <p class="eyebrow">Log in one tap</p>
           <div class="quick-row" id="quickRow"></div>
         </div>
@@ -575,9 +582,19 @@
           </div>
           <div class="ob-step hidden" data-step="3">
             <p class="ob-eyebrow">Quick logs</p>
-            <h2 class="ob-h">Pick your one-tap saves.</h2>
-            <p class="ob-p">Tap to keep the ones you’ll use most. Change them anytime.</p>
-            <div class="ob-qa" id="obQuick"></div>
+            <h2 class="ob-h">Set up your one-tap saves.</h2>
+            <p class="ob-p">Add the things you skip most — with the amount you’d normally spend.</p>
+            <div id="obChosen"></div>
+            <p class="ob-eyebrow" style="margin-top:14px">Add one</p>
+            <div class="ob-chips" id="obChips"></div>
+            <div class="ob-inline hidden" id="obInline">
+              <div class="field"><label id="obInlineLbl">Name</label><input class="text-in" id="obInName" type="text"></div>
+              <div class="field"><label>Amount you’d spend</label><div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="obInAmt" placeholder="0.00"></div></div>
+              <div style="display:flex;gap:10px;margin-top:12px">
+                <button class="btn ghost" id="obInCancel" style="flex:0 0 34%">Cancel</button>
+                <button class="btn primary" id="obInAdd" style="flex:1"><i class="ti ti-plus"></i>Add</button>
+              </div>
+            </div>
           </div>
           <div class="ob-step hidden" data-step="4">
             <p class="ob-eyebrow">You’re set</p>
@@ -678,6 +695,21 @@
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost danger" id="reDelete" style="flex:0 0 34%"><i class="ti ti-trash"></i>Delete</button>
             <button class="btn primary" id="reSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VERIFY / CONFIRM POPUP -->
+      <div class="overlay" id="verifyOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3 id="vfTitle">Confirm this Win</h3>
+          <p class="sub" id="vfSub"></p>
+          <div class="field"><label id="vfAmtLbl">Amount</label><div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="vfAmt"></div></div>
+          <div class="add-fv" id="vfFv"></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost" id="vfSecondary" style="flex:0 0 44%">Keep unverified</button>
+            <button class="btn primary" id="vfConfirm" style="flex:1"><i class="ti ti-check"></i>Confirm</button>
           </div>
         </div>
       </div>
@@ -1026,6 +1058,7 @@
   // ---------- one-tap quick log ----------
   const qr=document.getElementById('quickRow');
   function renderQuick(){
+    const sec=document.getElementById('quickSection'); if(sec) sec.style.display = quick.length? '' : 'none';
     qr.innerHTML='';
     quick.forEach(q=>{
       const b=document.createElement('button'); b.className='qa';
@@ -1046,10 +1079,8 @@
     wins.push(w); lastWinId=w.id;
     render();
     const a=document.getElementById('homeAmount'); a.classList.add('pulse'); setTimeout(()=>a.classList.remove('pulse'),450);
-    if(quickToast){
-      if(big) toast(P(net)+' logged','Large Win — tap Confirm in Activity to add it to your pot','ti-shield-check');
-      else toast(P(net)+' kept', projSub(net),'ti-check',true);
-    }
+    if(big){ openVerify({type:'big',winId:w.id}); }
+    else if(quickToast){ toast(P(net)+' kept', projSub(net),'ti-check',true); }
   }
 
   // ---------- toast + undo ----------
@@ -1226,15 +1257,14 @@
   // ---------- onboarding ----------
   const obEl=document.getElementById('onboarding');
   let obStep=0; const OB_LAST=4;
-  const OB_QUICK_POOL=[
-    {id:'food_drink',name:'Coffee',icon:'ti-coffee',amt:420},
-    {id:'snack',name:'Snack',icon:'ti-cookie',amt:250},
-    {id:'takeaway',name:'Takeaway',icon:'ti-tools-kitchen-2',amt:2200},
-    {id:'transport',name:'Taxi',icon:'ti-car',amt:1200},
-    {id:'takeaway',name:'Lunch out',icon:'ti-tools-kitchen-2',amt:800},
-    {id:'subscription',name:'Subscription',icon:'ti-repeat',amt:999}
+  const OB_PRESETS=[
+    {id:'food_drink',name:'Coffee',icon:'ti-coffee'},
+    {id:'snack',name:'Snack',icon:'ti-cookie'},
+    {id:'takeaway',name:'Takeaway',icon:'ti-tools-kitchen-2'},
+    {id:'transport',name:'Taxi',icon:'ti-car'}
   ];
-  let obQuickSel=[0,1,2,3];
+  let obQuickChosen=[];     // {id,name,icon,amt} — none by default
+  let obInlineCat=null;
   let config={ goalName:'Invest more', monthly:25000, rate:5, years:20, first:null };
 
   function obDots(){ const d=document.getElementById('obDots'); d.innerHTML='';
@@ -1245,7 +1275,7 @@
     document.getElementById('obNext').textContent = obStep===0?'Get started' : obStep===OB_LAST?'Enter Kept' : 'Continue';
     document.getElementById('obSkip').style.display = obStep===0?'none':'block';
     if(obStep===2) obYrsLbl();
-    if(obStep===3) obRenderQuick();
+    if(obStep===3) obRenderStep3();
     if(obStep===4) obRenderFirst();
     obDots(); replaceIcons(obEl);
   }
@@ -1261,15 +1291,43 @@
   function obYrsLbl(){ document.getElementById('obYrsOut').textContent=config.years+' years · '+(BASE_YEAR+config.years); }
   obYrs.addEventListener('input',()=>{ config.years=+obYrs.value; obYrsLbl(); });
 
-  function obRenderQuick(){ const g=document.getElementById('obQuick'); g.innerHTML='';
-    OB_QUICK_POOL.forEach((q,i)=>{ const b=document.createElement('button'); if(obQuickSel.includes(i)) b.className='sel';
-      b.innerHTML=`<span class="qtick"><i class="ti ti-check"></i></span><div class="qic"><i class="ti ${q.icon}"></i></div><div class="qn">${q.name}</div><div class="qp">${P(q.amt)}</div>`;
-      b.addEventListener('click',()=>{ if(obQuickSel.includes(i)) obQuickSel=obQuickSel.filter(x=>x!==i); else obQuickSel.push(i); obRenderQuick(); });
-      g.appendChild(b); });
-    replaceIcons(g);
+  function obRenderStep3(){ obRenderChosen(); obRenderChips(); document.getElementById('obInline').classList.add('hidden'); }
+  function obRenderChosen(){ const el=document.getElementById('obChosen'); el.innerHTML='';
+    if(!obQuickChosen.length){ el.innerHTML='<p class="ob-empty">None yet — add at least one below.</p>'; return; }
+    obQuickChosen.forEach((q,i)=>{ const row=document.createElement('div'); row.className='ob-chosen-row';
+      row.innerHTML=`<div class="qle-ic"><i class="ti ${q.icon}"></i></div><div class="qle-mid"><b>${q.name}</b><small>${P(q.amt)}</small></div><button class="qle-del" aria-label="Remove"><i class="ti ti-trash"></i></button>`;
+      row.querySelector('.qle-del').addEventListener('click',()=>{ obQuickChosen.splice(i,1); obRenderStep3(); });
+      el.appendChild(row); });
+    replaceIcons(el);
   }
+  function obRenderChips(){ const el=document.getElementById('obChips'); el.innerHTML='';
+    OB_PRESETS.forEach(p=>{ const b=document.createElement('button'); b.className='ob-chip';
+      b.innerHTML=`<i class="ti ${p.icon}"></i>${p.name}`;
+      b.addEventListener('click',()=>openObInline(p)); el.appendChild(b); });
+    const c=document.createElement('button'); c.className='ob-chip custom'; c.innerHTML='<i class="ti ti-plus"></i>Custom';
+    c.addEventListener('click',()=>openObInline(null)); el.appendChild(c);
+    replaceIcons(el);
+  }
+  function openObInline(preset){
+    obInlineCat = preset ? {id:preset.id, icon:preset.icon} : {id:'other', icon:'ti-bolt'};
+    document.getElementById('obInName').value = preset? preset.name : '';
+    document.getElementById('obInAmt').value='';
+    document.getElementById('obInlineLbl').textContent = preset? 'Name' : 'Name your saving';
+    document.getElementById('obInline').classList.remove('hidden');
+    setTimeout(()=>document.getElementById('obInAmt').focus(),120);
+  }
+  document.getElementById('obInAdd').addEventListener('click',()=>{
+    const amt=parseM(document.getElementById('obInAmt').value);
+    if(amt<1){ toast('Enter the amount','How much would you normally spend?','ti-alert-circle'); return; }
+    const name=(document.getElementById('obInName').value||'').trim()||'Saving';
+    obQuickChosen.push({id:obInlineCat.id, name, icon:obInlineCat.icon, amt});
+    obRenderStep3();
+  });
+  document.getElementById('obInCancel').addEventListener('click',()=>document.getElementById('obInline').classList.add('hidden'));
+
   function obRenderFirst(){ const g=document.getElementById('obFirst'); g.innerHTML='';
-    obQuickSel.map(i=>OB_QUICK_POOL[i]).forEach(q=>{ const b=document.createElement('button');
+    if(!obQuickChosen.length){ g.innerHTML='<p class="ob-empty">No quick logs yet — you can skip this and add Wins anytime.</p>'; return; }
+    obQuickChosen.forEach(q=>{ const b=document.createElement('button');
       b.innerHTML=`<div class="qic"><i class="ti ${q.icon}"></i></div><div class="qn">${q.name}</div><div class="qp">${P(q.amt)}</div>`;
       b.addEventListener('click',()=>obPickFirst(q.amt,q.id,'Made '+q.name.toLowerCase()+' the cheaper way'));
       g.appendChild(b); });
@@ -1289,7 +1347,7 @@
   document.getElementById('obBack').addEventListener('click',()=>{ if(obStep>0){obStep--; obShow();} });
   document.getElementById('obSkip').addEventListener('click',finishOnboarding);
   function finishOnboarding(){
-    let q=obQuickSel.map(i=>({...OB_QUICK_POOL[i]})); if(!q.length) q=DEFAULT_QUICK.map(x=>({...x}));
+    let q=obQuickChosen.map(x=>({...x}));
     wins=[]; transfers=[]; rollover=0;
     goalName=config.goalName; goalTarget=config.monthly; proj={rate:config.rate,years:config.years}; quick=q; openMonth=CUR; onboarded=true;
     if(config.first) wins.push({id:Date.now(),net:config.first.net,cat:config.first.cat,name:config.first.name,state:'confirmed',credibility:'verified',month:CUR,date:new Date()});
@@ -1438,10 +1496,18 @@
     const amt=parseM(document.getElementById('reAmt').value);
     if(amt<1){ toast('Enter an amount','A recurring saving needs a value','ti-alert-circle'); return; }
     const name=(document.getElementById('reName').value||'').trim()||reCat.name;
-    if(recurEditId==null){ recurring.push({id:Date.now(), name, amount:amt, cat:reCat.id, icon:reCat.icon, start:new Date().toISOString(), end:null, status:'active'}); }
-    else { const r=recurring.find(x=>x.id===recurEditId); if(r){ r.name=name; r.amount=amt; r.cat=reCat.id; r.icon=reCat.icon;
-      const mw=wins.find(w=>w.source===r.id && w.periodKey===CUR); if(mw){ mw.net=amt; mw.name=name; mw.cat=reCat.id; } } }
-    closeRecurEdit(); afterRecurChange(); toast('Recurring saving saved',null,'ti-check');
+    if(recurEditId==null){
+      const newId=Date.now();
+      recurring.push({id:newId, name, amount:amt, cat:reCat.id, icon:reCat.icon, start:new Date().toISOString(), end:null, status:'active'});
+      recurEOv.classList.remove('show'); recurLOv.classList.remove('show'); setOv.classList.remove('show');
+      materializeRecurring(); refreshSettings(); render();
+      const mw=wins.find(w=>w.source===newId && w.periodKey===CUR);
+      if(mw) openVerify({type:'recur', winId:mw.id, recurId:newId});
+    } else {
+      const r=recurring.find(x=>x.id===recurEditId); if(r){ r.name=name; r.amount=amt; r.cat=reCat.id; r.icon=reCat.icon;
+        const mw=wins.find(w=>w.source===r.id && w.periodKey===CUR); if(mw){ mw.net=amt; mw.name=name; mw.cat=reCat.id; } }
+      closeRecurEdit(); afterRecurChange(); toast('Recurring saving saved',null,'ti-check');
+    }
   });
   document.getElementById('reDelete').addEventListener('click',()=>{
     if(recurEditId!=null){ const r=recurring.find(x=>x.id===recurEditId); if(r) r.status='ended'; }
@@ -1449,10 +1515,51 @@
   });
   recurEOv.addEventListener('click',e=>{ if(e.target===recurEOv){ closeRecurEdit(); renderRecurList(); } });
 
+  // ---------- verify / confirm popup (big Wins + recurring monthly check) ----------
+  const verifyOv=document.getElementById('verifyOverlay');
+  let verifyCtx=null, verifyQueue=[];
+  function updateVfFv(){ const amt=parseM(document.getElementById('vfAmt').value);
+    document.getElementById('vfFv').textContent = amt>0? ('↗ ≈ '+Pn(fvNow(amt))+' by '+targetYear()+' if invested'):''; }
+  document.getElementById('vfAmt').addEventListener('input',updateVfFv);
+  function openVerify(ctx){
+    verifyCtx=ctx; const w=wins.find(x=>x.id===ctx.winId); if(!w){ nextVerify(); return; }
+    document.getElementById('vfAmt').value=(w.net/100).toFixed(2);
+    if(ctx.type==='big'){
+      document.getElementById('vfTitle').textContent='Confirm large Win';
+      document.getElementById('vfSub').textContent='This one’s over £100. Check the amount is right, then confirm to add it to your pot.';
+      document.getElementById('vfSecondary').textContent='Keep unverified';
+    } else {
+      document.getElementById('vfTitle').textContent='Still saving?';
+      document.getElementById('vfSub').textContent='“'+w.name+'” — '+P(w.net)+' a month. Still active this month? Adjust the amount if it changed.';
+      document.getElementById('vfSecondary').textContent='It ended';
+    }
+    updateVfFv(); verifyOv.classList.add('show'); replaceIcons(verifyOv);
+  }
+  function nextVerify(){ if(verifyQueue.length) openVerify(verifyQueue.shift()); else verifyOv.classList.remove('show'); }
+  function queueRecurringConfirms(){
+    const ob=document.getElementById('onboarding'); if(ob && !ob.classList.contains('hidden')) return;
+    if(verifyOv.classList.contains('show')) return;
+    verifyQueue = wins.filter(w=>w.state==='recorded' && w.credibility==='recurring').map(w=>({type:'recur',winId:w.id,recurId:w.source}));
+    nextVerify();
+  }
+  document.getElementById('vfConfirm').addEventListener('click',()=>{
+    const w=wins.find(x=>x.id===(verifyCtx&&verifyCtx.winId)); if(!w){ nextVerify(); return; }
+    const amt=parseM(document.getElementById('vfAmt').value);
+    if(amt<1){ toast('Enter an amount','It needs a value','ti-alert-circle'); return; }
+    w.net=amt; w.state='confirmed'; if(w.credibility==='unverified') w.credibility='verified';
+    verifyOv.classList.remove('show'); render(); toast('Confirmed','Added to your pot','ti-circle-check'); nextVerify();
+  });
+  document.getElementById('vfSecondary').addEventListener('click',()=>{
+    const w=wins.find(x=>x.id===(verifyCtx&&verifyCtx.winId));
+    if(verifyCtx && verifyCtx.type==='recur'){ const r=recurring.find(x=>x.id===verifyCtx.recurId); if(r) r.status='ended'; if(w) wins=wins.filter(x=>x.id!==w.id); toast('Stopped','We won’t add this one again','ti-check'); }
+    verifyOv.classList.remove('show'); render(); nextVerify();
+  });
+  verifyOv.addEventListener('click',e=>{ if(e.target===verifyOv) verifyOv.classList.remove('show'); });
+
   // clock
   document.getElementById('clock').textContent=NOW.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 
-  function boot(){ materializeRecurring(); renderQuick(); render(); setTimeout(drawCurve,60); }
+  function boot(){ materializeRecurring(); renderQuick(); render(); setTimeout(drawCurve,60); setTimeout(queueRecurringConfirms,700); }
   const saved=loadState();
   if(saved && saved.onboarded){ applyState(saved); boot(); }
   else { boot(); startOnboarding(); }
