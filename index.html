@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kept</title>
+<meta name="description" content="Turn the money you choose not to spend into your future.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#F3F1EA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1114" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Kept">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<style>html,body{background:#F3F1EA}@media(prefers-color-scheme:dark){html,body{background:#0E1114}}</style>
+</head>
+<body>
+<style>
+  :root{
+    --paper:#F3F1EA; --card:#FBFAF6; --card-2:#EFEDE4;
+    --ink:#1C2024; --muted:#71757C; --hair:#E2DFD5;
+    --accent:#2F5568; --accent-soft:#E4ECEF; --accent-ink:#22404F;
+    --amber:#C98A45; --amber-soft:#F6E9D6; --amber-ink:#8A5A22;
+    --good:#5F8A6E; --shadow:rgba(28,32,36,.16);
+    --font-round:ui-rounded,"SF Pro Rounded","Nunito",system-ui,sans-serif;
+    --font-ui:-apple-system,"SF Pro Text",system-ui,"Segoe UI",sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0E1114; --card:#191D22; --card-2:#212830;
+      --ink:#ECEAE3; --muted:#9096A0; --hair:#2A3138;
+      --accent:#6F9DB4; --accent-soft:#1E2E37; --accent-ink:#BFE0EE;
+      --amber:#E0A968; --amber-soft:#33281A; --amber-ink:#F0CE9C;
+      --good:#84B394; --shadow:rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0E1114; --card:#191D22; --card-2:#212830;
+    --ink:#ECEAE3; --muted:#9096A0; --hair:#2A3138;
+    --accent:#6F9DB4; --accent-soft:#1E2E37; --accent-ink:#BFE0EE;
+    --amber:#E0A968; --amber-soft:#33281A; --amber-ink:#F0CE9C;
+    --good:#84B394; --shadow:rgba(0,0,0,.5);
+  }
+  :root[data-theme="light"]{
+    --paper:#F3F1EA; --card:#FBFAF6; --card-2:#EFEDE4;
+    --ink:#1C2024; --muted:#71757C; --hair:#E2DFD5;
+    --accent:#2F5568; --accent-soft:#E4ECEF; --accent-ink:#22404F;
+    --amber:#C98A45; --amber-soft:#F6E9D6; --amber-ink:#8A5A22;
+    --good:#5F8A6E; --shadow:rgba(28,32,36,.16);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--font-ui);color:var(--ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, color-mix(in srgb,var(--amber-soft) 55%, transparent), transparent 60%),
+      var(--paper);
+    min-height:100vh;-webkit-font-smoothing:antialiased;}
+  .stage{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:18px;padding:28px 16px 40px;}
+  .stage-head{text-align:center;max-width:360px}
+  .stage-head h1{font-family:var(--font-round);font-size:19px;font-weight:600;margin:0 0 4px;letter-spacing:-.02em}
+  .stage-head p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+  .theme-btn{margin-top:12px;border:1px solid var(--hair);background:var(--card);
+    color:var(--muted);font:inherit;font-size:12px;padding:7px 14px;border-radius:999px;cursor:pointer;
+    display:inline-flex;gap:7px;align-items:center}
+  .theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  .phone{width:376px;max-width:calc(100vw - 24px);height:788px;max-height:calc(100vh - 40px);
+    background:var(--paper);border-radius:46px;padding:12px;position:relative;
+    box-shadow:0 2px 2px rgba(0,0,0,.12),0 24px 60px -12px var(--shadow),0 0 0 1px var(--hair);}
+  .screen{position:absolute;inset:12px;border-radius:36px;overflow:hidden;
+    background:linear-gradient(180deg,color-mix(in srgb,var(--amber-soft) 30%,var(--paper)),var(--paper) 22%);
+    display:flex;flex-direction:column}
+  .notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);
+    width:118px;height:28px;background:var(--ink);border-radius:0 0 16px 16px;z-index:40;opacity:.92}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;
+    padding:14px 26px 6px;font-size:13px;font-weight:600;font-family:var(--font-round);z-index:30}
+  .statusbar .icons{display:flex;gap:6px;color:var(--ink);font-size:13px}
+
+  .view{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 20px 96px;-webkit-overflow-scrolling:touch}
+  .view::-webkit-scrollbar{width:0}
+  .hidden{display:none}
+
+  .eyebrow{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0}
+  .h-screen{font-family:var(--font-round);font-size:22px;font-weight:600;letter-spacing:-.02em;margin:2px 0 14px}
+
+  .hero{padding:8px 2px 2px}
+  .hero .lbl{font-size:13px;color:var(--muted);margin:0 0 2px}
+  .hero .amount{font-family:var(--font-round);font-weight:700;letter-spacing:-.03em;
+    font-size:52px;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink);
+    transition:transform .5s cubic-bezier(.2,.9,.2,1)}
+  .hero .amount.pulse{transform:scale(1.05)}
+  .hero .sub{font-size:13px;color:var(--muted);margin:8px 0 0}
+
+  .states{display:flex;gap:10px;margin:16px 0 4px}
+  .chip{flex:1;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:11px 13px}
+  .chip .k{font-size:11px;color:var(--muted);letter-spacing:.02em;display:flex;align-items:center;gap:5px}
+  .chip .v{font-family:var(--font-round);font-weight:600;font-size:18px;margin-top:3px;font-variant-numeric:tabular-nums}
+  .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+  .dot.wait{background:var(--accent)} .dot.done{background:var(--amber)}
+
+  .card{background:var(--card);border:1px solid var(--hair);border-radius:18px;padding:16px;margin-top:16px}
+  .card-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+  .card-h .t{font-family:var(--font-round);font-weight:600;font-size:15px}
+  .card-h .a{font-size:12px;color:var(--accent);font-weight:600;cursor:pointer}
+
+  .goal .bar{height:9px;border-radius:6px;background:var(--card-2);overflow:hidden;margin:10px 0 8px}
+  .goal .fill{height:100%;border-radius:6px;background:var(--accent);width:0;transition:width .7s cubic-bezier(.2,.9,.2,1)}
+  .goal .row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+  .goal .row b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+
+  .quick-row{display:flex;gap:9px;overflow-x:auto;padding:2px 0 4px;margin:0 -20px;padding-left:20px;padding-right:20px}
+  .quick-row::-webkit-scrollbar{height:0}
+  .qa{flex:0 0 auto;background:var(--card);border:1px solid var(--hair);border-radius:15px;
+    padding:11px 13px;min-width:88px;cursor:pointer;transition:transform .12s,border-color .15s;text-align:left}
+  .qa:hover{border-color:var(--accent)} .qa:active{transform:scale(.95)}
+  .qa .ic{width:30px;height:30px;border-radius:9px;background:var(--accent-soft);color:var(--accent-ink);
+    display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px}
+  .qa .n{font-size:12.5px;font-weight:600} .qa .p{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:1px}
+
+  .future-teaser{background:
+      radial-gradient(120% 130% at 100% 0%, var(--amber-soft), transparent 62%),var(--card);
+    border:1px solid var(--hair);position:relative;overflow:hidden}
+  .future-teaser .cap{font-size:12px;color:var(--amber-ink);font-weight:600;display:flex;gap:6px;align-items:center}
+  .future-teaser .big{font-family:var(--font-round);font-weight:700;font-size:30px;letter-spacing:-.02em;
+    margin:6px 0 2px;font-variant-numeric:tabular-nums;transition:opacity .3s}
+  .future-teaser .note{font-size:11.5px;color:var(--muted)}
+  .spark{position:absolute;right:12px;bottom:10px;width:96px;height:44px;opacity:.9}
+
+  .btn{width:100%;border:none;border-radius:16px;padding:16px;font-family:var(--font-round);
+    font-weight:600;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .12s,filter .15s}
+  .btn:active{transform:scale(.98)}
+  .btn.primary{background:var(--accent);color:#fff}
+  :root[data-theme="dark"] .btn.primary,@media(prefers-color-scheme:dark){}
+  .btn.primary{color:#fff}
+  .btn.amber{background:var(--amber);color:#fff}
+  .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--hair)}
+  .fab-wrap{padding:14px 0 2px}
+
+  .tabbar{position:absolute;left:12px;right:12px;bottom:12px;height:78px;border-radius:0 0 36px 36px;
+    background:color-mix(in srgb,var(--card) 88%,transparent);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--hair);display:flex;align-items:flex-start;justify-content:space-around;
+    padding:12px 20px 0;z-index:30}
+  .tab{background:none;border:none;cursor:pointer;color:var(--muted);display:flex;flex-direction:column;
+    align-items:center;gap:3px;font-family:var(--font-ui);font-size:10.5px;font-weight:600;padding:2px 10px}
+  .tab i,.tab svg{font-size:22px}
+  .tab.active{color:var(--accent)}
+  .tab.add{margin-top:-26px}
+  .tab.add .plus{width:54px;height:54px;border-radius:50%;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:26px;
+    box-shadow:0 8px 18px -4px color-mix(in srgb,var(--accent) 60%,transparent)}
+  .tab.add span{color:var(--muted)}
+
+  .activity-item{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--hair)}
+  .activity-item .ic{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent-ink);
+    display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto}
+  .activity-item .mid{flex:1;min-width:0}
+  .activity-item .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .activity-item .mt{font-size:11.5px;color:var(--muted);margin-top:1px}
+  .activity-item .rt{text-align:right;flex:0 0 auto}
+  .activity-item .rv{font-family:var(--font-round);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums}
+  .state-pill{font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;display:inline-block;margin-top:3px;letter-spacing:.02em}
+  .st-wait{background:var(--accent-soft);color:var(--accent-ink)}
+  .st-done{background:var(--amber-soft);color:var(--amber-ink)}
+
+  .seg{display:flex;background:var(--card-2);border-radius:12px;padding:3px;gap:2px;margin:4px 0 16px}
+  .seg button{flex:1;border:none;background:none;font-family:var(--font-round);font-weight:600;font-size:13px;
+    color:var(--muted);padding:8px;border-radius:9px;cursor:pointer;font-variant-numeric:tabular-nums}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px var(--shadow)}
+
+  .future-hero{text-align:center;padding:14px 0 4px}
+  .future-hero .cap{font-size:12px;color:var(--amber-ink);font-weight:600}
+  .future-hero .big{font-family:var(--font-round);font-weight:700;font-size:46px;letter-spacing:-.03em;
+    line-height:1.05;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+  .future-hero .as{font-size:11.5px;color:var(--muted)}
+  .curve-wrap{position:relative;height:150px;margin:10px 0 6px}
+  #curveCanvas{display:block;width:100%;height:100%}
+  .two-up{display:flex;gap:10px;margin-top:10px}
+  .two-up .b{flex:1;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:12px}
+  .two-up .b .k{font-size:11px;color:var(--muted)} .two-up .b .v{font-family:var(--font-round);font-weight:600;font-size:17px;margin-top:2px;font-variant-numeric:tabular-nums}
+  .ctrl{margin-top:8px}
+  .ctrl .lab{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+  .ctrl .lab b{color:var(--ink);font-family:var(--font-round);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+  .disclaimer{font-size:11px;color:var(--muted);line-height:1.5;margin-top:14px;
+    background:var(--card);border:1px solid var(--hair);border-radius:12px;padding:11px 13px}
+
+  .overlay{position:absolute;inset:0;z-index:60;background:color-mix(in srgb,var(--ink) 34%,transparent);
+    display:flex;align-items:flex-end;border-radius:36px;opacity:0;pointer-events:none;transition:opacity .28s}
+  .overlay.show{opacity:1;pointer-events:auto}
+  .sheet{width:100%;background:var(--paper);border-radius:28px 28px 36px 36px;padding:8px 20px 26px;
+    transform:translateY(18px);transition:transform .3s cubic-bezier(.2,.9,.2,1);max-height:92%;overflow-y:auto}
+  .overlay.show .sheet{transform:translateY(0)}
+  .grip{width:38px;height:5px;border-radius:3px;background:var(--hair);margin:8px auto 14px}
+  .sheet h3{font-family:var(--font-round);font-size:19px;margin:0 0 3px;font-weight:600}
+  .sheet .sub{font-size:12.5px;color:var(--muted);margin:0 0 16px}
+  .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:8px}
+  .cat{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:12px 6px;cursor:pointer;
+    text-align:center;transition:border-color .15s,transform .1s}
+  .cat:hover{border-color:var(--accent)} .cat:active{transform:scale(.96)}
+  .cat.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .cat i,.cat svg{font-size:21px;color:var(--accent-ink)} .cat span{display:block;font-size:11px;font-weight:600;margin-top:5px}
+  .field{margin-top:12px}
+  .field label{font-size:12px;color:var(--muted);font-weight:600}
+  .field .money-in{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--hair);
+    border-radius:13px;padding:12px 14px;margin-top:6px}
+  .field .money-in span{font-family:var(--font-round);font-size:20px;color:var(--muted)}
+  .field .money-in input{border:none;background:none;font-family:var(--font-round);font-weight:600;font-size:22px;
+    color:var(--ink);width:100%;outline:none;font-variant-numeric:tabular-nums}
+  .altrow{display:flex;align-items:center;justify-content:space-between;margin-top:14px;
+    font-size:13px;color:var(--ink)}
+  .switch{width:44px;height:26px;border-radius:999px;background:var(--card-2);position:relative;cursor:pointer;transition:background .2s;flex:0 0 auto}
+  .switch.on{background:var(--accent)}
+  .switch .k{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}
+  .switch.on .k{left:21px}
+  .net-preview{display:flex;justify-content:space-between;align-items:center;background:var(--accent-soft);
+    border-radius:13px;padding:12px 14px;margin-top:14px}
+  .net-preview .k{font-size:12.5px;color:var(--accent-ink);font-weight:600}
+  .net-preview .v{font-family:var(--font-round);font-weight:700;font-size:20px;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+
+  .transfer-amt{text-align:center;padding:10px 0 4px}
+  .transfer-amt .k{font-size:12px;color:var(--muted)}
+  .transfer-amt .v{font-family:var(--font-round);font-weight:700;font-size:40px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;transition:color .2s}
+  .fifo-note{font-size:11.5px;color:var(--amber-ink);background:var(--amber-soft);border-radius:11px;
+    padding:10px 12px;margin-top:12px;line-height:1.5;display:none}
+  .fifo-note.show{display:block}
+
+  .toast{position:absolute;left:50%;bottom:104px;transform:translate(-50%,20px);z-index:70;
+    background:var(--ink);color:var(--paper);border-radius:15px;padding:12px 14px 12px 16px;
+    display:flex;align-items:center;gap:14px;min-width:250px;box-shadow:0 10px 26px -6px var(--shadow);
+    opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+  .toast.show{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+  .toast .tx{font-size:13px;font-weight:600;font-family:var(--font-round)}
+  .toast .tx small{display:block;font-weight:400;opacity:.7;font-family:var(--font-ui);font-size:11px;margin-top:1px}
+  .toast .undo{margin-left:auto;color:var(--amber);font-weight:700;font-size:13px;cursor:pointer;
+    background:none;border:none;font-family:var(--font-round);padding:4px 6px}
+
+  @media (display-mode:standalone),(max-width:480px){
+    .stage{padding:0;min-height:100dvh;display:block;gap:0}
+    .stage-head{display:none}
+    .phone{width:100%;max-width:none;height:100dvh;max-height:none;border-radius:0;padding:0;box-shadow:none}
+    .screen{inset:0;border-radius:0}
+    .notch{display:none}
+    .statusbar{display:none}
+    .view{padding-top:calc(env(safe-area-inset-top) + 16px);padding-bottom:calc(104px + env(safe-area-inset-bottom))}
+    .tabbar{left:0;right:0;bottom:0;border-radius:0;height:calc(64px + env(safe-area-inset-bottom));padding-bottom:calc(env(safe-area-inset-bottom))}
+    .overlay{border-radius:0}
+    .toast{bottom:calc(96px + env(safe-area-inset-bottom))}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="stage">
+  <div class="stage-head">
+    <h1>Kept — core loop prototype</h1>
+    <p>Tap a quick action, watch the total and the future value move together, then mark a transfer. Everything reacts live — this is the reward loop, not a static mockup.</p>
+    <button class="theme-btn" id="themeToggle" aria-label="Toggle light and dark theme"><i class="ti ti-moon"></i><span>Toggle theme</span></button>
+  </div>
+
+  <div class="phone">
+    <div class="notch" aria-hidden="true"></div>
+    <div class="screen">
+      <div class="statusbar">
+        <span id="clock">9:41</span>
+        <span class="icons"><i class="ti ti-signal-4g"></i><i class="ti ti-wifi"></i><i class="ti ti-battery-3"></i></span>
+      </div>
+
+      <!-- HOME -->
+      <div class="view" id="view-home">
+        <div class="hero">
+          <p class="lbl">Kept this month</p>
+          <div class="amount" id="homeAmount">£183.40</div>
+          <p class="sub" id="homeCount">16 Saving Wins · July</p>
+        </div>
+
+        <div class="states">
+          <div class="chip">
+            <div class="k"><span class="dot wait"></span>Waiting to transfer</div>
+            <div class="v" id="homeWaiting">£183.40</div>
+          </div>
+          <div class="chip">
+            <div class="k"><span class="dot done"></span>Transferred</div>
+            <div class="v" id="homeTransferred">£0.00</div>
+          </div>
+        </div>
+
+        <div class="card goal">
+          <div class="card-h"><div class="t">Invest £250 this month</div></div>
+          <div class="bar"><div class="fill" id="goalFill"></div></div>
+          <div class="row"><span id="goalNow">£183.40 kept</span><span><b id="goalLeft">£66.60</b> to go</span></div>
+        </div>
+
+        <div style="margin-top:18px">
+          <p class="eyebrow">Log in one tap</p>
+          <div class="quick-row" id="quickRow"></div>
+        </div>
+
+        <div class="card future-teaser" role="button" tabindex="0" id="teaserCard">
+          <div class="cap"><i class="ti ti-arrow-up-right"></i>Could become</div>
+          <div class="big" id="teaserFuture">£75,900</div>
+          <div class="note">estimated in 20 years · if kept and invested</div>
+          <canvas class="spark" id="sparkCanvas" width="192" height="88" aria-hidden="true"></canvas>
+        </div>
+
+        <div class="card" style="padding:14px 16px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:38px;height:38px;border-radius:11px;background:var(--amber-soft);color:var(--amber-ink);display:flex;align-items:center;justify-content:center;font-size:18px"><i class="ti ti-calendar-clock"></i></div>
+            <div style="flex:1">
+              <div style="font-size:13.5px;font-weight:600">Next transfer · 28 July</div>
+              <div style="font-size:11.5px;color:var(--muted)" id="transferStatusLine">£183.40 ready to move</div>
+            </div>
+            <i class="ti ti-chevron-right" style="color:var(--muted)" aria-hidden="true"></i>
+          </div>
+        </div>
+
+        <div class="fab-wrap">
+          <button class="btn primary" id="openAdd"><i class="ti ti-plus"></i>Add Saving Win</button>
+        </div>
+      </div>
+
+      <!-- ACTIVITY -->
+      <div class="view hidden" id="view-activity">
+        <p class="eyebrow" style="margin-top:8px">This month</p>
+        <h2 class="h-screen">Activity</h2>
+        <div id="activityList"></div>
+      </div>
+
+      <!-- FUTURE -->
+      <div class="view hidden" id="view-future">
+        <p class="eyebrow" style="margin-top:8px">The point of it all</p>
+        <h2 class="h-screen">Your future</h2>
+        <div class="future-hero">
+          <div class="cap">Could become</div>
+          <div class="big" id="futureBig">£75,900</div>
+          <div class="as" id="futureAssume">estimated · 5% return · 20 years</div>
+        </div>
+        <div class="curve-wrap"><canvas id="curveCanvas" aria-label="Projected growth curve"></canvas></div>
+        <div class="two-up">
+          <div class="b"><div class="k">Transferred so far</div><div class="v" id="futTransferred">£0</div></div>
+          <div class="b"><div class="k">Kept this month</div><div class="v" id="futKept">£183</div></div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <p class="eyebrow" style="margin-bottom:10px">Assumptions</p>
+          <div class="seg" id="rateSeg">
+            <button data-rate="3">3%</button>
+            <button data-rate="5" class="on">5%</button>
+            <button data-rate="7">7%</button>
+          </div>
+          <div class="ctrl">
+            <div class="lab"><span>Time horizon</span><b id="yrsOut">20 years</b></div>
+            <input type="range" id="yrs" min="5" max="40" step="1" value="20">
+          </div>
+        </div>
+
+        <div class="disclaimer">
+          <b style="color:var(--ink)">Estimated, not promised.</b> Based on the assumptions you set here. It counts money you’ve logged as well as transferred, so you can see the impact straight away. Investments can go down as well as up. Not financial advice.
+        </div>
+      </div>
+
+      <!-- ADD SHEET -->
+      <div class="overlay" id="addOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>What did you choose not to spend on?</h3>
+          <p class="sub">Pick a category, set the amount, done.</p>
+          <div class="cat-grid" id="catGrid"></div>
+          <div class="field">
+            <label id="origLabel">Amount kept</label>
+            <div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="origInput" value="4.20"></div>
+          </div>
+          <div class="altrow">
+            <div>Bought a cheaper version instead<br><small style="color:var(--muted)">e.g. cooked instead of takeaway</small></div>
+            <div class="switch" id="altSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
+          </div>
+          <div class="field hidden" id="altField">
+            <label>What you actually spent</label>
+            <div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="altInput" value="7.00"></div>
+          </div>
+          <div class="net-preview" id="netPreview" style="display:none">
+            <span class="k">Net Saving Win</span><span class="v" id="netVal">£0.00</span>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost" id="addCancel" style="flex:0 0 40%">Cancel</button>
+            <button class="btn primary" id="addConfirm" style="flex:1"><i class="ti ti-check"></i>Add Win</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRANSFER SHEET -->
+      <div class="overlay" id="transferOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Move your kept money</h3>
+          <p class="sub">Kept never touches your money — you move it, then mark it here. Honest by design.</p>
+          <div class="transfer-amt">
+            <div class="k">Marking as transferred</div>
+            <div class="v" id="transferAmt">£183.40</div>
+          </div>
+          <div class="ctrl" style="margin-top:14px">
+            <div class="lab"><span>How much did you move?</span><b id="transferWaitingLbl">of £183.40</b></div>
+            <input type="range" id="transferRange" min="0" max="18340" step="10" value="18340">
+          </div>
+          <div class="fifo-note" id="fifoNote"></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost" id="transferCancel" style="flex:0 0 40%">Not now</button>
+            <button class="btn amber" id="transferConfirm" style="flex:1"><i class="ti ti-check"></i>Mark transferred</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="toast">
+        <div class="tx" id="toastText">£4.20 kept<small>Added to your July pot</small></div>
+        <button class="undo" id="toastUndo">Undo</button>
+      </div>
+
+      <!-- TAB BAR -->
+      <nav class="tabbar">
+        <button class="tab active" data-tab="home"><i class="ti ti-home"></i><span>Home</span></button>
+        <button class="tab" data-tab="activity"><i class="ti ti-list-details"></i><span>Activity</span></button>
+        <button class="tab add" id="tabAdd"><span class="plus"><i class="ti ti-plus"></i></span><span>Add</span></button>
+        <button class="tab" data-tab="future"><i class="ti ti-chart-line"></i><span>Future</span></button>
+        <button class="tab" data-tab="settings"><i class="ti ti-adjustments"></i><span>You</span></button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const P = v => '£'+ (v/100).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const Pn = v => '£'+ Math.round(v/100).toLocaleString('en-GB');
+
+  const ICONS = {
+    home:'<path d="M4 11l8-6 8 6"/><path d="M6 10v9h12v-9"/>',
+    'list-details':'<path d="M8 6h11M8 12h11M8 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>',
+    'chart-line':'<path d="M4 5v15h16"/><path d="M7 14l4-4 3 3 5-6"/>',
+    adjustments:'<path d="M5 21v-7M5 10V3M12 21v-9M12 8V3M19 21v-5M19 12V3"/><path d="M3 14h4M10 8h4M17 16h4"/>',
+    plus:'<path d="M12 5v14M5 12h14"/>',
+    check:'<path d="M5 12l5 5L20 7"/>',
+    'circle-check':'<circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 5-5"/>',
+    'shield-check':'<path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>',
+    'alert-circle':'<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>',
+    'info-circle':'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+    circle:'<circle cx="12" cy="12" r="9"/>',
+    coffee:'<path d="M4 8h13v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M17 9h2a2 2 0 0 1 0 4h-2"/><path d="M7 4.5v1M10 4.5v1M13 4.5v1"/>',
+    cookie:'<circle cx="12" cy="12" r="8"/><path d="M9 9h.01M14.5 10h.01M15 15h.01M10 15h.01M12 12.5h.01"/>',
+    'tools-kitchen-2':'<path d="M7 3v6M10 3v6M8.5 3v9M8.5 12v9"/><path d="M16.5 3c-1.4 1-2 3-2 5.5h4c0-2.5-.6-4.5-2-5.5zM16.5 8.5V21"/>',
+    'shopping-bag':'<path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+    car:'<path d="M4 13l2-5h12l2 5"/><path d="M4 13h16v4H4z"/><circle cx="7.5" cy="17.5" r="1.3"/><circle cx="16.5" cy="17.5" r="1.3"/>',
+    repeat:'<path d="M4 9l3-3 3 3"/><path d="M7 6v5a3 3 0 0 0 3 3h7"/><path d="M20 15l-3 3-3-3"/><path d="M17 18v-5a3 3 0 0 0-3-3H7"/>',
+    'calendar-clock':'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8 3v3M16 3v3"/><path d="M14.5 13.5v2.5l1.6 1"/>',
+    'chevron-right':'<path d="M9 6l6 6-6 6"/>',
+    'arrow-up-right':'<path d="M7 17L17 7M9 7h8v8"/>',
+    moon:'<path d="M20 14a8 8 0 1 1-10-10 6 6 0 0 0 10 10z"/>',
+    wifi:'<path d="M5 12a10 10 0 0 1 14 0M8 15a6 6 0 0 1 8 0"/><path d="M12 18h.01"/>',
+    'battery-3':'<rect x="3" y="8" width="16" height="8" rx="2"/><path d="M21 11v2"/><rect x="5" y="10" width="9" height="4" fill="currentColor" stroke="none"/>',
+    'signal-4g':'<path d="M4 18v-2M9 18v-5M14 18v-8M19 18V6" stroke-width="2.2"/>'
+  };
+  const SW='viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.125em;flex:0 0 auto"';
+  const icon = n => '<svg '+SW+' aria-hidden="true">'+(ICONS[n]||ICONS.circle)+'</svg>';
+  function replaceIcons(root){
+    (root||document).querySelectorAll('i.ti').forEach(el=>{
+      const c=[...el.classList].find(x=>x.startsWith('ti-')); const nm=c?c.slice(3):'circle';
+      const st=el.getAttribute('style'); const svg=icon(nm);
+      const tmp=document.createElement('span'); tmp.innerHTML=svg; const node=tmp.firstChild;
+      if(st) node.setAttribute('style', node.getAttribute('style')+';'+st);
+      el.replaceWith(node);
+    });
+  }
+  const cats = [
+    {id:'food_drink',name:'Coffee',icon:'ti-coffee',amt:420},
+    {id:'snack',name:'Snack',icon:'ti-cookie',amt:250},
+    {id:'takeaway',name:'Takeaway',icon:'ti-tools-kitchen-2',amt:2200},
+    {id:'shopping',name:'Shopping',icon:'ti-shopping-bag',amt:1500},
+    {id:'transport',name:'Taxi',icon:'ti-car',amt:1200},
+    {id:'subscription',name:'Subscription',icon:'ti-repeat',amt:999}
+  ];
+  const quick = [cats[0],cats[1],cats[2],{id:'transport',name:'Taxi',icon:'ti-car',amt:1200}];
+
+  // seed: 16 wins summing 18340p, all confirmed & waiting (transfer_id null)
+  let wins = [];
+  const seed = [[420,'food_drink','Coffee','Made coffee at home',8],[250,'snack','Snack','Skipped the vending machine',4],
+    [2200,'takeaway','Takeaway','Cooked instead',2],[1200,'transport','Taxi','Walked instead',1],
+    [8380,'shopping','Shopping','Chose the cheaper coat',1]];
+  let t = Date.now();
+  seed.forEach(([amt,cat,nm,desc,n])=>{ for(let i=0;i<n;i++){ wins.push({id:t--,net:amt,cat,name:desc,state:'confirmed',credibility:'verified'});}});
+
+  let goalTarget = 25000;
+  let proj = {rate:5, years:20};
+  const cur = ()=>document.querySelector('.screen');
+
+  const sum = pred => wins.filter(pred).reduce((s,w)=>s+w.net,0);
+  const recorded = ()=> sum(_=>true);
+  const waiting = ()=> sum(w=>w.state==='confirmed');
+  const transferred = ()=> sum(w=>w.state==='transferred');
+
+  function futureValue(baseMinor, rate, years){
+    const r = rate/100/12, n = years*12;
+    const monthly = recorded(); // "if you keep doing this" contribution
+    const growthBase = baseMinor * Math.pow(1+r,n);
+    const series = monthly * ((Math.pow(1+r,n)-1)/r);
+    return growthBase + series;
+  }
+
+  function render(){
+    const rec=recorded(), wait=waiting(), tr=transferred();
+    document.getElementById('homeAmount').textContent = P(rec);
+    document.getElementById('homeCount').textContent = wins.length+' Saving Wins · July';
+    document.getElementById('homeWaiting').textContent = P(wait);
+    document.getElementById('homeTransferred').textContent = P(tr);
+    const pct = Math.min(100, rec/goalTarget*100);
+    document.getElementById('goalFill').style.width = pct+'%';
+    document.getElementById('goalNow').textContent = P(rec)+' kept';
+    document.getElementById('goalLeft').textContent = P(Math.max(0,goalTarget-rec));
+    document.getElementById('transferStatusLine').textContent = tr>0 ? P(tr)+' moved · '+P(wait)+' still waiting' : P(wait)+' ready to move';
+
+    const fv = futureValue(rec, proj.rate, proj.years);
+    document.getElementById('teaserFuture').textContent = Pn(fv);
+    document.getElementById('futureBig').textContent = Pn(fv);
+    document.getElementById('futureAssume').textContent = 'estimated · '+proj.rate+'% return · '+proj.years+' years';
+    document.getElementById('futTransferred').textContent = Pn(tr);
+    document.getElementById('futKept').textContent = Pn(rec);
+    drawSpark(); drawCurve();
+    renderActivity();
+    replaceIcons();
+  }
+
+  function renderActivity(){
+    const list = document.getElementById('activityList'); list.innerHTML='';
+    const label = {food_drink:'ti-coffee',snack:'ti-cookie',takeaway:'ti-tools-kitchen-2',
+      shopping:'ti-shopping-bag',transport:'ti-car',subscription:'ti-repeat'};
+    wins.slice().reverse().forEach(w=>{
+      const done = w.state==='transferred';
+      const el=document.createElement('div'); el.className='activity-item';
+      el.innerHTML=`<div class="ic"><i class="ti ${label[w.cat]||'ti-circle'}"></i></div>
+        <div class="mid"><div class="nm">${w.name}</div><div class="mt">${cats.find(c=>c.id===w.cat)?.name||w.cat}</div></div>
+        <div class="rt"><div class="rv">${P(w.net)}</div>
+        <span class="state-pill ${done?'st-done':'st-wait'}">${done?'Transferred':'Waiting'}</span></div>`;
+      list.appendChild(el);
+    });
+  }
+
+  // ---------- canvases ----------
+  function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+  function curvePts(w,h,years,rate){
+    const pts=[]; const steps=48; const monthly=recorded(); const base=recorded();
+    for(let i=0;i<=steps;i++){const yr=years*i/steps; const r=rate/100/12,n=yr*12;
+      const v = base*Math.pow(1+r,n)+ (n>0?monthly*((Math.pow(1+r,n)-1)/r):0); pts.push(v);}
+    const max=pts[pts.length-1]||1;
+    return pts.map((v,i)=>[ i/steps*w, h-(v/max)*h ]);
+  }
+  function paintCurve(cv,years,rate,fill){
+    const dpr=window.devicePixelRatio||1; const w=cv.clientWidth,h=cv.clientHeight;
+    cv.width=w*dpr; cv.height=h*dpr; const c=cv.getContext('2d'); c.scale(dpr,dpr); c.clearRect(0,0,w,h);
+    const pts=curvePts(w,h,years,rate); const acc=cssv('--accent'),amb=cssv('--amber');
+    if(fill){const g=c.createLinearGradient(0,0,0,h); g.addColorStop(0,amb+'55'); g.addColorStop(1,amb+'00');
+      c.beginPath(); c.moveTo(0,h); pts.forEach(p=>c.lineTo(p[0],p[1])); c.lineTo(w,h); c.closePath(); c.fillStyle=g; c.fill();}
+    c.beginPath(); pts.forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));
+    c.strokeStyle=acc; c.lineWidth=fill?2.5:2; c.lineJoin='round'; c.stroke();
+    const last=pts[pts.length-1]; c.beginPath(); c.arc(last[0],last[1],fill?4.5:3,0,7); c.fillStyle=amb; c.fill();
+  }
+  function drawSpark(){const cv=document.getElementById('sparkCanvas'); if(cv.clientWidth)paintCurve(cv,proj.years,proj.rate,false);}
+  function drawCurve(){const cv=document.getElementById('curveCanvas'); if(cv.clientWidth)paintCurve(cv,proj.years,proj.rate,true);}
+
+  // ---------- tabs ----------
+  const views={home:'view-home',activity:'view-activity',future:'view-future'};
+  function show(tab){
+    Object.values(views).forEach(v=>document.getElementById(v).classList.add('hidden'));
+    if(views[tab])document.getElementById(views[tab]).classList.remove('hidden');
+    document.querySelectorAll('.tab[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+    if(tab==='future')setTimeout(drawCurve,30);
+    cur().querySelector('.view:not(.hidden)')?.scrollTo(0,0);
+  }
+  document.querySelectorAll('.tab[data-tab]').forEach(b=>{
+    b.addEventListener('click',()=>{ if(b.dataset.tab==='settings'){toast('“You” — settings, export, delete',null,'ti-adjustments');return;} show(b.dataset.tab);});
+  });
+
+  // ---------- one-tap quick log ----------
+  const qr=document.getElementById('quickRow');
+  quick.forEach(q=>{
+    const b=document.createElement('button'); b.className='qa';
+    b.innerHTML=`<div class="ic"><i class="ti ${q.icon}"></i></div><div class="n">${q.name}</div><div class="p">${P(q.amt)}</div>`;
+    b.addEventListener('click',()=>logWin(q.amt,q.id,'Made '+q.name.toLowerCase()+' the cheaper way',true));
+    qr.appendChild(b);
+  });
+
+  let lastWinId=null;
+  function logWin(net,cat,name,quickToast){
+    const w={id:Date.now(),net,cat,name,state:'confirmed',credibility:'verified'};
+    wins.push(w); lastWinId=w.id;
+    render();
+    const a=document.getElementById('homeAmount'); a.classList.add('pulse'); setTimeout(()=>a.classList.remove('pulse'),450);
+    if(quickToast) toast(P(net)+' kept','Added to your July pot','ti-check',true);
+  }
+
+  // ---------- toast + undo ----------
+  const toastEl=document.getElementById('toast'); let toastTimer=null;
+  function toast(main,sub,icon,undoable){
+    document.getElementById('toastText').innerHTML = main + (sub?`<small>${sub}</small>`:'');
+    document.getElementById('toastUndo').style.display = undoable?'block':'none';
+    toastEl.classList.add('show'); clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>toastEl.classList.remove('show'), undoable?3200:1800);
+  }
+  document.getElementById('toastUndo').addEventListener('click',()=>{
+    if(lastWinId){wins=wins.filter(w=>w.id!==lastWinId); lastWinId=null; render();}
+    toastEl.classList.remove('show');
+  });
+
+  // ---------- add sheet ----------
+  const addOv=document.getElementById('addOverlay');
+  const catGrid=document.getElementById('catGrid'); let selCat=cats[0];
+  cats.forEach((c,i)=>{ const el=document.createElement('button'); el.className='cat'+(i===0?' sel':'');
+    el.innerHTML=`<i class="ti ${c.icon}"></i><span>${c.name}</span>`;
+    el.addEventListener('click',()=>{ selCat=c; document.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel'));
+      el.classList.add('sel'); document.getElementById('origInput').value=(c.amt/100).toFixed(2); updateNet();});
+    catGrid.appendChild(el);
+  });
+  function openAdd(){ addOv.classList.add('show'); updateNet(); }
+  function closeAdd(){ addOv.classList.remove('show'); }
+  document.getElementById('openAdd').addEventListener('click',openAdd);
+  document.getElementById('tabAdd').addEventListener('click',openAdd);
+  document.getElementById('addCancel').addEventListener('click',closeAdd);
+  addOv.addEventListener('click',e=>{if(e.target===addOv)closeAdd();});
+
+  const altSwitch=document.getElementById('altSwitch'), altField=document.getElementById('altField'),
+    netPrev=document.getElementById('netPreview'), origLabel=document.getElementById('origLabel');
+  let altOn=false;
+  altSwitch.addEventListener('click',()=>{ altOn=!altOn; altSwitch.classList.toggle('on',altOn);
+    altSwitch.setAttribute('aria-checked',altOn); altField.classList.toggle('hidden',!altOn);
+    netPrev.style.display=altOn?'flex':'none'; origLabel.textContent=altOn?'What it would have cost':'Amount kept'; updateNet();});
+  function parseM(v){ const n=Math.round(parseFloat(v||'0')*100); return isNaN(n)?0:n; }
+  function updateNet(){
+    const o=parseM(document.getElementById('origInput').value);
+    const a=altOn?parseM(document.getElementById('altInput').value):0;
+    const net=Math.max(0,o-a); document.getElementById('netVal').textContent=P(net); return net;
+  }
+  document.getElementById('origInput').addEventListener('input',updateNet);
+  document.getElementById('altInput').addEventListener('input',updateNet);
+  document.getElementById('addConfirm').addEventListener('click',()=>{
+    const net=updateNet(); if(net<1){toast('That’s not a saving yet','The cheaper option cost the same or more','ti-alert-circle');return;}
+    const big = net>10000; // £100 soft-cap demo
+    logWin(net,selCat.id, altOn?('Cheaper '+selCat.name.toLowerCase()):('Skipped '+selCat.name.toLowerCase()),false);
+    closeAdd();
+    if(big) toast(P(net)+' — nice one','Logged as unverified · tap to confirm','ti-shield-check');
+    else toast(P(net)+' kept','Added to your July pot','ti-check',true);
+    document.getElementById('origInput').value=(selCat.amt/100).toFixed(2);
+    if(altOn)altSwitch.click();
+  });
+
+  // ---------- transfer sheet ----------
+  const trOv=document.getElementById('transferOverlay'), trRange=document.getElementById('transferRange'),
+    fifoNote=document.getElementById('fifoNote');
+  function openTransfer(){
+    const wait=waiting(); if(wait<=0){toast('Nothing waiting to transfer','Log a few Saving Wins first','ti-info-circle');return;}
+    trRange.max=wait; trRange.value=wait;
+    document.getElementById('transferWaitingLbl').textContent='of '+P(wait);
+    updateTransfer(); trOv.classList.add('show');
+  }
+  function updateTransfer(){
+    const chosen=parseInt(trRange.value);
+    // whole-Win FIFO: cover oldest wins fully up to chosen
+    const pot=wins.filter(w=>w.state==='confirmed').sort((a,b)=>a.id-b.id);
+    let covered=0; for(const w of pot){ if(covered+w.net<=chosen) covered+=w.net; else break; }
+    document.getElementById('transferAmt').textContent=P(covered);
+    if(covered<chosen){ fifoNote.classList.add('show');
+      fifoNote.innerHTML=`We’ll mark <b>${P(covered)}</b>, not ${P(chosen)} — Saving Wins move whole, never split. The rest stays in your pot.`;
+    } else fifoNote.classList.remove('show');
+    return covered;
+  }
+  trRange.addEventListener('input',updateTransfer);
+  document.getElementById('teaserCard').addEventListener('click',()=>show('future'));
+  document.getElementById('transferStatusLine').closest('.card').addEventListener('click',openTransfer);
+  document.getElementById('transferCancel').addEventListener('click',()=>trOv.classList.remove('show'));
+  trOv.addEventListener('click',e=>{if(e.target===trOv)trOv.classList.remove('show');});
+  document.getElementById('transferConfirm').addEventListener('click',()=>{
+    const chosen=parseInt(trRange.value);
+    const pot=wins.filter(w=>w.state==='confirmed').sort((a,b)=>a.id-b.id);
+    let covered=0; for(const w of pot){ if(covered+w.net<=chosen){w.state='transferred'; covered+=w.net;} else break; }
+    trOv.classList.remove('show'); render();
+    toast(P(covered)+' marked as transferred','You moved it — Kept just tracked it','ti-circle-check');
+  });
+
+  // ---------- future controls ----------
+  document.getElementById('rateSeg').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b)return; proj.rate=parseInt(b.dataset.rate);
+    document.querySelectorAll('#rateSeg button').forEach(x=>x.classList.toggle('on',x===b)); render();
+  });
+  const yrs=document.getElementById('yrs');
+  yrs.addEventListener('input',()=>{proj.years=parseInt(yrs.value); document.getElementById('yrsOut').textContent=proj.years+' years'; render();});
+
+  // ---------- theme ----------
+  document.getElementById('themeToggle').addEventListener('click',()=>{
+    const root=document.documentElement;
+    const dark = root.getAttribute('data-theme')==='dark' ||
+      (!root.getAttribute('data-theme') && matchMedia('(prefers-color-scheme:dark)').matches);
+    root.setAttribute('data-theme', dark?'light':'dark');
+    setTimeout(()=>{drawSpark();drawCurve();},30);
+  });
+
+  // clock
+  const now=new Date(); document.getElementById('clock').textContent=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+
+  render(); setTimeout(()=>{drawSpark();drawCurve();},60);
+  window.addEventListener('resize',()=>{drawSpark();drawCurve();});
+})();
+</script>
+
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+</script>
+</body>
+</html>
