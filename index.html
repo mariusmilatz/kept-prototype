@@ -499,6 +499,8 @@
 (function(){
   const P = v => '£'+ (v/100).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
   const Pn = v => '£'+ Math.round(v/100).toLocaleString('en-GB');
+  const Pabs = v => '£'+ Math.abs(v/100).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const Psig = v => (v>0?'+':v<0?'−':'')+Pabs(v);
 
   const ICONS = {
     home:'<path d="M4 11l8-6 8 6"/><path d="M6 10v9h12v-9"/>',
@@ -860,8 +862,8 @@
     const d=parseM(document.getElementById('editAmount').value)-w.net;
     if(d===0){ roll.style.display='none'; return; }
     roll.style.display='block';
-    roll.innerHTML = d>0 ? `<b>+${P(d)}</b> will be added to your next transfer.`
-                         : `<b>${P(d)}</b> will come off your next transfer.`;
+    roll.innerHTML = d>0 ? `<b>${Psig(d)}</b> will be added to your next transfer.`
+                         : `<b>${Psig(d)}</b> will come off your next transfer.`;
   }
   document.getElementById('editAmount').addEventListener('input',updateEditRoll);
   document.getElementById('editSave').addEventListener('click',()=>{
@@ -871,7 +873,7 @@
     const nm=(document.getElementById('editName').value||'').trim()||w.name;
     if(w.state==='transferred'){ const d=nv-w.net; rollover+=d; w.net=nv; w.name=nm;
       editOv.classList.remove('show'); render();
-      toast('Win updated', d!==0 ? ((d>0?'+':'')+P(d)+' rolls into your next transfer') : null,'ti-check');
+      toast('Win updated', d!==0 ? (Psig(d)+' rolls into your next transfer') : null,'ti-check');
     } else { w.net=nv; w.name=nm; editOv.classList.remove('show'); render(); toast('Win updated', null,'ti-check'); }
   });
   document.getElementById('editDelete').addEventListener('click',()=>{ const w=curEdit(); editOv.classList.remove('show'); if(w) doDelete(w); });
@@ -904,8 +906,8 @@
     } else fifoNote.classList.remove('show');
     const rn=document.getElementById('rolloverNote');
     if(rollover!==0){ rn.style.display='block';
-      rn.innerHTML = rollover>0 ? `Includes <b>+${P(rollover)}</b> carried over from an edit.`
-                                : `Adjusted by <b>${P(rollover)}</b> from an edit or deletion.`;
+      rn.innerHTML = rollover>0 ? `Includes <b>${Psig(rollover)}</b> carried over from an edit.`
+                                : `Adjusted by <b>${Psig(rollover)}</b> from an edit or deletion.`;
     } else rn.style.display='none';
     return {covered, mark};
   }
