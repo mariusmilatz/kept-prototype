@@ -1321,8 +1321,10 @@
       document.getElementById('qaeName').value=q.name; document.getElementById('qaeAmt').value=(q.amt/100).toFixed(2);
       selectQaCat(q.id); document.getElementById('qaeDelete').style.display='';
     }
+    qlOv.classList.remove('show');   // hide the list behind while editing
     qaOv.classList.add('show'); replaceIcons(qaOv);
   }
+  function closeQaEdit(){ qaOv.classList.remove('show'); qlOv.classList.add('show'); }
   document.getElementById('qaAdd').addEventListener('click',()=>openQaEdit(null));
   document.getElementById('qaeSave').addEventListener('click',()=>{
     const amt=parseM(document.getElementById('qaeAmt').value);
@@ -1330,13 +1332,13 @@
     const name=(document.getElementById('qaeName').value||'').trim()||qaeCat.name;
     const q={id:qaeCat.id, name, icon:qaeCat.icon, amt};
     if(qaEditIdx==null) quick.push(q); else quick[qaEditIdx]=q;
-    qaOv.classList.remove('show'); afterQuickChange(); toast('Quick action saved',null,'ti-check');
+    closeQaEdit(); afterQuickChange(); toast('Quick action saved',null,'ti-check');
   });
   document.getElementById('qaeDelete').addEventListener('click',()=>{
     if(qaEditIdx!=null) quick.splice(qaEditIdx,1);
-    qaOv.classList.remove('show'); afterQuickChange();
+    closeQaEdit(); afterQuickChange();
   });
-  qaOv.addEventListener('click',e=>{ if(e.target===qaOv) qaOv.classList.remove('show'); });
+  qaOv.addEventListener('click',e=>{ if(e.target===qaOv){ closeQaEdit(); renderQuickList(); } });
 
   // clock
   document.getElementById('clock').textContent=NOW.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
