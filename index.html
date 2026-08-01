@@ -262,6 +262,19 @@
   .month-body .activity-item:last-child{border-bottom:none}
   .activity-item .ic.tr{background:var(--amber-soft);color:var(--amber-ink)}
   .empty-note{font-size:12.5px;color:var(--muted);text-align:center;padding:24px 0}
+  .swipe-wrap{position:relative;overflow:hidden}
+  .swipe-actions{position:absolute;top:0;left:0;bottom:0;display:flex}
+  .swipe-actions button{border:none;color:#fff;font-family:var(--font-round);font-weight:600;font-size:11px;
+    width:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
+  .swipe-actions button i,.swipe-actions button svg{font-size:18px}
+  .swipe-actions .sw-edit{background:var(--accent)}
+  .swipe-actions .sw-del{background:#B0554C}
+  .swipe-content{position:relative;background:var(--card);will-change:transform;touch-action:pan-y;transition:transform .18s cubic-bezier(.2,.9,.2,1)}
+  .swipe-content.dragging{transition:none}
+  .month-body > *:last-child .activity-item,.month-body > .activity-item:last-child{border-bottom:none}
+  .btn.danger{color:#B0554C;border-color:color-mix(in srgb,#B0554C 40%,var(--hair))}
+  :root[data-theme="dark"] .btn.danger,.btn.danger{color:#C56B61}
+  .swipe-hint{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;padding:2px 2px 10px}
   @media (display-mode:standalone),(max-width:480px){
     .stage{padding:0;min-height:100dvh;display:block;gap:0}
     .stage-head{display:none}
@@ -314,7 +327,7 @@
         <div class="card future-teaser" role="button" tabindex="0" id="teaserCard">
           <div class="cap"><i class="ti ti-arrow-up-right"></i>Could become</div>
           <div class="big" id="teaserFuture">£75,900</div>
-          <div class="note">estimated in 20 years · if kept and invested</div>
+          <div class="note" id="teaserNote">estimated in 20 years · if kept and invested</div>
           <div class="tap-hint"><i class="ti ti-arrow-right"></i>See your future</div>
         </div>
 
@@ -435,9 +448,32 @@
             <input type="range" id="transferRange" min="0" max="18340" step="10" value="18340">
           </div>
           <div class="fifo-note" id="fifoNote"></div>
+          <div class="fifo-note" id="rolloverNote" style="display:none"></div>
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost" id="transferCancel" style="flex:0 0 40%">Not now</button>
             <button class="btn amber" id="transferConfirm" style="flex:1"><i class="ti ti-check"></i>Mark transferred</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- EDIT SHEET -->
+      <div class="overlay" id="editOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Edit Saving Win</h3>
+          <p class="sub" id="editSub">Change the amount or name.</p>
+          <div class="field">
+            <label>Amount kept</label>
+            <div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="editAmount"></div>
+          </div>
+          <div class="field">
+            <label>Name</label>
+            <input type="text" class="text-in" id="editName">
+          </div>
+          <div class="fifo-note" id="editRoll" style="display:none"></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost danger" id="editDelete" style="flex:0 0 40%"><i class="ti ti-trash"></i>Delete</button>
+            <button class="btn primary" id="editSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
           </div>
         </div>
       </div>
@@ -486,6 +522,8 @@
     'chevron-right':'<path d="M9 6l6 6-6 6"/>',
     'arrow-up-right':'<path d="M7 17L17 7M9 7h8v8"/>',
     'arrow-right':'<path d="M5 12h14M13 6l6 6-6 6"/>',
+    pencil:'<path d="M4 20h4L18.5 9.5l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+    trash:'<path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"/>',
     moon:'<path d="M20 14a8 8 0 1 1-10-10 6 6 0 0 0 10 10z"/>',
     wifi:'<path d="M5 12a10 10 0 0 1 14 0M8 15a6 6 0 0 1 8 0"/><path d="M12 18h.01"/>',
     'battery-3':'<rect x="3" y="8" width="16" height="8" rx="2"/><path d="M21 11v2"/><rect x="5" y="10" width="9" height="4" fill="currentColor" stroke="none"/>',
@@ -560,6 +598,7 @@
 
     const fv = futureValue(allLogged(), proj.rate, proj.years);
     document.getElementById('teaserFuture').textContent = Pn(fv);
+    document.getElementById('teaserNote').textContent = 'estimated in '+proj.years+' years · if kept and invested';
     document.getElementById('futureBig').textContent = Pn(fv);
     document.getElementById('futureAssume').textContent = 'estimated · '+proj.rate+'% return · '+proj.years+' years';
     document.getElementById('futTransferred').textContent = Pn(tr);
@@ -571,16 +610,54 @@
 
   const catIcon={food_drink:'ti-coffee',snack:'ti-cookie',takeaway:'ti-tools-kitchen-2',
     shopping:'ti-shopping-bag',transport:'ti-car',subscription:'ti-repeat',other:'ti-circle'};
-  let openMonths={'2026-07':true};
+  let openMonth='2026-07';
   let actFilter='all';
+  let rollover=0;            // signed pence carried into the next transfer from edits/deletes of transferred Wins
+  let openRow=null;          // currently swiped-open row
+
+  function closeOpenRow(){ if(openRow){ openRow.querySelector('.swipe-content').style.transform='translateX(0)'; openRow._open=false; openRow=null; } }
+
+  function attachSwipe(wrap, w){
+    const content=wrap.querySelector('.swipe-content'); const REV=140;
+    let sx=0, sy=0, base=0, dir=null, t=0;
+    content.addEventListener('pointerdown',e=>{
+      if(openRow && openRow!==wrap) closeOpenRow();
+      sx=e.clientX; sy=e.clientY; base=wrap._open?REV:0; dir=null; t=base;
+      content.classList.add('dragging'); content.setPointerCapture(e.pointerId);
+    });
+    content.addEventListener('pointermove',e=>{
+      if(!content.classList.contains('dragging'))return;
+      const dx=e.clientX-sx, dy=e.clientY-sy;
+      if(dir===null){ if(Math.abs(dx)>6||Math.abs(dy)>6) dir=Math.abs(dx)>Math.abs(dy)?'h':'v'; }
+      if(dir==='h'){ t=Math.max(0,Math.min(REV,base+dx)); content.style.transform='translateX('+t+'px)'; }
+    });
+    function end(){ if(!content.classList.contains('dragging'))return;
+      content.classList.remove('dragging');
+      const open = t>REV/2; content.style.transform='translateX('+(open?REV:0)+'px)';
+      wrap._open=open; openRow = open?wrap:(openRow===wrap?null:openRow);
+    }
+    content.addEventListener('pointerup',end);
+    content.addEventListener('pointercancel',end);
+    content.addEventListener('click',e=>{ if(wrap._open && dir!=='h'){ e.stopPropagation(); closeOpenRow(); } });
+    wrap.querySelector('.sw-edit').addEventListener('click',e=>{ e.stopPropagation(); closeOpenRow(); openEdit(w); });
+    wrap.querySelector('.sw-del').addEventListener('click',e=>{ e.stopPropagation(); doDelete(w); });
+  }
+
   function winItem(w){
     const done=w.state==='transferred';
-    const el=document.createElement('div'); el.className='activity-item';
-    el.innerHTML=`<div class="ic"><i class="ti ${catIcon[w.cat]||'ti-circle'}"></i></div>
-      <div class="mid"><div class="nm">${w.name}</div><div class="mt">${cats.find(c=>c.id===w.cat)?.name||w.cat}</div></div>
-      <div class="rt"><div class="rv">${P(w.net)}</div>
-      <span class="state-pill ${done?'st-done':'st-wait'}">${done?'Transferred':'Waiting'}</span></div>`;
-    return el;
+    const wrap=document.createElement('div'); wrap.className='swipe-wrap'; wrap._open=false;
+    wrap.innerHTML=`<div class="swipe-actions">
+        <button class="sw-edit"><i class="ti ti-pencil"></i>Edit</button>
+        <button class="sw-del"><i class="ti ti-trash"></i>Delete</button>
+      </div>
+      <div class="swipe-content activity-item">
+        <div class="ic"><i class="ti ${catIcon[w.cat]||'ti-circle'}"></i></div>
+        <div class="mid"><div class="nm">${w.name}</div><div class="mt">${cats.find(c=>c.id===w.cat)?.name||w.cat}</div></div>
+        <div class="rt"><div class="rv">${P(w.net)}</div>
+        <span class="state-pill ${done?'st-done':'st-wait'}">${done?'Transferred':'Waiting'}</span></div>
+      </div>`;
+    attachSwipe(wrap, w);
+    return wrap;
   }
   function transferItem(x){
     const el=document.createElement('div'); el.className='activity-item';
@@ -590,7 +667,7 @@
     return el;
   }
   function renderActivity(){
-    const list = document.getElementById('activityList'); list.innerHTML='';
+    const list = document.getElementById('activityList'); list.innerHTML=''; openRow=null;
     const months=[...new Set([...wins.map(w=>w.month),...transfers.map(x=>x.month)])].sort().reverse();
     let shown=0;
     months.forEach(m=>{
@@ -602,15 +679,17 @@
       if(items.length===0) return;
       shown++;
       const total=mWins.reduce((s,w)=>s+w.net,0);
-      const isOpen=!!openMonths[m];
+      const isOpen=(openMonth===m);
       const sec=document.createElement('div'); sec.className='month-sec';
       const head=document.createElement('button'); head.type='button'; head.className='month-head'+(isOpen?' open':'');
       head.innerHTML=`<div class="mh-l"><i class="ti ti-chevron-right"></i><span>${MONTHNAMES[m]||m}</span></div>
         <div class="mh-r"><b>${P(total)}</b><small>${mWins.length} Wins${mTrans.length?' · '+mTrans.length+' transfer'+(mTrans.length>1?'s':''):''}</small></div>`;
-      head.addEventListener('click',()=>{ openMonths[m]=!openMonths[m]; renderActivity(); });
+      head.addEventListener('click',()=>{ openMonth=(openMonth===m?null:m); renderActivity(); });
       sec.appendChild(head);
       if(isOpen){
         const body=document.createElement('div'); body.className='month-body';
+        if(actFilter!=='transfer' && mWins.length){ const h=document.createElement('div'); h.className='swipe-hint';
+          h.innerHTML='<i class="ti ti-chevron-right"></i>Swipe a Win to edit or delete'; body.appendChild(h); }
         items.forEach(it=> body.appendChild(it.t==='w'?winItem(it.o):transferItem(it.o)));
         sec.appendChild(body);
       }
@@ -686,13 +765,17 @@
     qr.appendChild(b);
   });
 
+  // future value of a single amount left to grow at the current horizon/rate
+  function lumpFV(net){ const r=proj.rate/100/12, n=proj.years*12; return net*Math.pow(1+r,n); }
+  function projSub(net){ return '≈ '+Pn(lumpFV(net))+' in '+proj.years+' years, invested'; }
+
   let lastWinId=null;
   function logWin(net,cat,name,quickToast){
     const w={id:Date.now(),net,cat,name,state:'confirmed',credibility:'verified',month:CUR};
     wins.push(w); lastWinId=w.id;
     render();
     const a=document.getElementById('homeAmount'); a.classList.add('pulse'); setTimeout(()=>a.classList.remove('pulse'),450);
-    if(quickToast) toast(P(net)+' kept','Added to your '+MONTHNAMES[CUR]+' pot','ti-check',true);
+    if(quickToast) toast(P(net)+' kept', projSub(net),'ti-check',true);
   }
 
   // ---------- toast + undo ----------
@@ -755,8 +838,50 @@
     logWin(net, catId, name, false);
     closeAdd();
     if(big) toast(P(net)+' — nice one','Logged as unverified · tap to confirm','ti-shield-check');
-    else toast(P(net)+' kept','Added to your '+MONTHNAMES[CUR]+' pot','ti-check',true);
+    else toast(P(net)+' kept', projSub(net),'ti-check',true);
   });
+
+  // ---------- edit sheet + delete (rollover for transferred Wins) ----------
+  const editOv=document.getElementById('editOverlay');
+  let editingId=null;
+  const curEdit=()=>wins.find(w=>w.id===editingId);
+  function openEdit(w){
+    editingId=w.id;
+    document.getElementById('editAmount').value=(w.net/100).toFixed(2);
+    document.getElementById('editName').value=w.name;
+    document.getElementById('editSub').textContent = w.state==='transferred'
+      ? 'Already transferred — a change rolls into your next transfer.'
+      : 'Change the amount or name.';
+    updateEditRoll(); editOv.classList.add('show');
+  }
+  function updateEditRoll(){
+    const w=curEdit(), roll=document.getElementById('editRoll');
+    if(!w || w.state!=='transferred'){ roll.style.display='none'; return; }
+    const d=parseM(document.getElementById('editAmount').value)-w.net;
+    if(d===0){ roll.style.display='none'; return; }
+    roll.style.display='block';
+    roll.innerHTML = d>0 ? `<b>+${P(d)}</b> will be added to your next transfer.`
+                         : `<b>${P(d)}</b> will come off your next transfer.`;
+  }
+  document.getElementById('editAmount').addEventListener('input',updateEditRoll);
+  document.getElementById('editSave').addEventListener('click',()=>{
+    const w=curEdit(); if(!w)return;
+    const nv=parseM(document.getElementById('editAmount').value);
+    if(nv<1){ toast('Enter an amount','A Saving Win needs a value','ti-alert-circle'); return; }
+    const nm=(document.getElementById('editName').value||'').trim()||w.name;
+    if(w.state==='transferred'){ const d=nv-w.net; rollover+=d; w.net=nv; w.name=nm;
+      editOv.classList.remove('show'); render();
+      toast('Win updated', d!==0 ? ((d>0?'+':'')+P(d)+' rolls into your next transfer') : null,'ti-check');
+    } else { w.net=nv; w.name=nm; editOv.classList.remove('show'); render(); toast('Win updated', null,'ti-check'); }
+  });
+  document.getElementById('editDelete').addEventListener('click',()=>{ const w=curEdit(); editOv.classList.remove('show'); if(w) doDelete(w); });
+  editOv.addEventListener('click',e=>{ if(e.target===editOv) editOv.classList.remove('show'); });
+
+  function doDelete(w){
+    if(w.state==='transferred'){ rollover-=w.net; wins=wins.filter(x=>x.id!==w.id); render();
+      toast('Win removed', P(w.net)+' will come off your next transfer','ti-trash');
+    } else { wins=wins.filter(x=>x.id!==w.id); render(); toast('Win removed', null,'ti-trash'); }
+  }
 
   // ---------- transfer sheet ----------
   const trOv=document.getElementById('transferOverlay'), trRange=document.getElementById('transferRange'),
@@ -772,11 +897,17 @@
     // whole-Win FIFO: cover oldest wins fully up to chosen
     const pot=wins.filter(w=>w.state==='confirmed').sort((a,b)=>a.id-b.id);
     let covered=0; for(const w of pot){ if(covered+w.net<=chosen) covered+=w.net; else break; }
-    document.getElementById('transferAmt').textContent=P(covered);
+    const mark=Math.max(0, covered+rollover);
+    document.getElementById('transferAmt').textContent=P(mark);
     if(covered<chosen){ fifoNote.classList.add('show');
-      fifoNote.innerHTML=`We’ll mark <b>${P(covered)}</b>, not ${P(chosen)} — Saving Wins move whole, never split. The rest stays in your pot.`;
+      fifoNote.innerHTML=`We’ll mark whole Wins up to <b>${P(covered)}</b>, not ${P(chosen)} — Wins move whole, never split. The rest stays in your pot.`;
     } else fifoNote.classList.remove('show');
-    return covered;
+    const rn=document.getElementById('rolloverNote');
+    if(rollover!==0){ rn.style.display='block';
+      rn.innerHTML = rollover>0 ? `Includes <b>+${P(rollover)}</b> carried over from an edit.`
+                                : `Adjusted by <b>${P(rollover)}</b> from an edit or deletion.`;
+    } else rn.style.display='none';
+    return {covered, mark};
   }
   trRange.addEventListener('input',updateTransfer);
   document.getElementById('teaserCard').addEventListener('click',()=>show('future'));
@@ -787,10 +918,12 @@
     const chosen=parseInt(trRange.value);
     const pot=wins.filter(w=>w.state==='confirmed').sort((a,b)=>a.id-b.id);
     let covered=0, cnt=0; for(const w of pot){ if(covered+w.net<=chosen){w.state='transferred'; covered+=w.net; cnt++;} else break; }
-    if(covered>0){ const dt=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long'});
-      transfers.push({id:Date.now(),amount:covered,month:CUR,date:dt,count:cnt}); openMonths[CUR]=true; }
+    const mark=Math.max(0, covered+rollover);
+    if(mark>0 || cnt>0){ const dt=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long'});
+      transfers.push({id:Date.now(),amount:mark,month:CUR,date:dt,count:cnt}); openMonth=CUR; }
+    rollover=0;
     trOv.classList.remove('show'); render();
-    toast(P(covered)+' marked as transferred','You moved it — Kept just tracked it','ti-circle-check');
+    toast(P(mark)+' marked as transferred','You moved it — Kept just tracked it','ti-circle-check');
   });
 
   // ---------- future controls ----------
