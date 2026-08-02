@@ -588,6 +588,7 @@
             <p class="ob-eyebrow" style="margin-top:18px">Growth assumptions</p>
             <div class="seg" id="obRate"><button data-rate="3">3%</button><button data-rate="5" class="on">5%</button><button data-rate="7">7%</button></div>
             <div class="ctrl" style="margin-top:8px"><div class="lab"><span>Plan until</span><b id="obYrsOut">20 years</b></div><input type="range" id="obYrs" min="5" max="60" step="1" value="20"></div>
+            <div class="field"><label>Date of birth <span class="opt">optional — shows the age you’ll be</span></label><input class="text-in" type="date" id="obDob"></div>
           </div>
           <div class="ob-step hidden" data-step="3">
             <p class="ob-eyebrow">Quick logs</p>
@@ -629,6 +630,7 @@
           <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
           <button class="set-row" id="setRecurring"><span><b>Recurring savings</b><small id="setRecurringSub">—</small></span><i class="ti ti-repeat"></i></button>
           <button class="set-row" id="setCurrency"><span><b>Currency</b><small id="setCurrencySub">—</small></span><i class="ti ti-coin"></i></button>
+          <button class="set-row" id="setDob"><span><b>Date of birth</b><small id="setDobSub">—</small></span><i class="ti ti-calendar"></i></button>
           <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
           <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
           <button class="set-row danger" id="setReset"><span><b>Reset app</b><small>Erase everything and start over</small></span><i class="ti ti-trash"></i></button>
@@ -722,6 +724,20 @@
         </div>
       </div>
 
+      <!-- DATE OF BIRTH -->
+      <div class="overlay" id="dobOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Date of birth</h3>
+          <p class="sub">Optional. Add it and your projections show the age you’ll be — e.g. “by age 60” — instead of just a year. It stays on your device.</p>
+          <div class="field"><label>Date of birth</label><input class="text-in" type="date" id="dobInput"></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost" id="dobRemove" style="flex:0 0 40%">Remove</button>
+            <button class="btn primary" id="dobSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
+          </div>
+        </div>
+      </div>
+
       <!-- CURRENCY PICKER -->
       <div class="overlay" id="currencyOverlay">
         <div class="sheet">
@@ -807,6 +823,7 @@
     download:'<path d="M12 4v11M8 11l4 4 4-4"/><path d="M5 19h14"/>',
     bolt:'<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>',
     coin:'<circle cx="12" cy="12" r="8"/><path d="M12 7.5v9M14.3 9.4C13.8 8.6 13 8.2 12 8.2c-1.4 0-2.4.8-2.4 1.9s1 1.6 2.4 1.9 2.4.8 2.4 1.9-1 1.9-2.4 1.9c-1 0-1.9-.5-2.4-1.3"/>',
+    calendar:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8 3v3M16 3v3"/>',
     'chevron-up':'<path d="M6 15l6-6 6 6"/>',
     'chevron-down':'<path d="M6 9l6 6 6-6"/>',
     moon:'<path d="M20 14a8 8 0 1 1-10-10 6 6 0 0 0 10 10z"/>',
@@ -854,6 +871,7 @@
   let proj={rate:5, years:20};
   let quick=DEFAULT_QUICK.map(q=>({...q}));
   let recurring=[];
+  let dob=null;             // ISO date string, optional — enables "by age N" projections
   let onboarded=false;
   const SOFT_CAP=10000; // £100 — Wins above this log as unverified until confirmed
 
@@ -876,7 +894,7 @@
     try{ localStorage.setItem(LSKEY, JSON.stringify({
       onboarded:true,
       wins:wins.map(w=>({...w, date:(w.date instanceof Date? w.date.toISOString(): w.date)})),
-      transfers, goalTarget, goalName, proj, quick, recurring, rollover, currencyCode
+      transfers, goalTarget, goalName, proj, quick, recurring, rollover, currencyCode, dob
     })); }catch(e){}
   }
   function applyState(s){
@@ -889,6 +907,7 @@
     recurring=s.recurring||[];
     rollover=s.rollover||0;
     currencyCode=s.currencyCode||'GBP';
+    dob=s.dob||null;
     onboarded=true;
   }
   // Create this month's Win for each active recurring saving (once). It's 'recorded' until confirmed.
@@ -914,6 +933,7 @@
   // Projection toward a FIXED target year. Each Win grows from its own date to the target
   // date, so figures stay consistent and additive, and older money gets more time to grow.
   function targetYear(){ return BASE_YEAR + proj.years; }
+  function ageAtTarget(){ if(!dob) return null; const by=new Date(dob).getFullYear(); return isNaN(by)?null:(targetYear()-by); }
   function targetDate(){ return new Date(targetYear(), NOW.getMonth(), NOW.getDate()); }
   function yrsBetween(a,b){ return (b.getTime()-a.getTime())/(365.25*DAY); }
   function grow(net, fromDate, toDate){ return net*Math.pow(1+proj.rate/100, Math.max(0, yrsBetween(fromDate,toDate))); }
@@ -925,7 +945,8 @@
     const rec=recordedThisMonth(), wait=waiting(), tr=transferredTotal();
     document.getElementById('homeAmount').textContent = P(rec);
     document.getElementById('homeCount').textContent = monthWins(CUR).length+' Saving Wins · '+monthLabel(CUR);
-    document.getElementById('heroFV').textContent = '≈ '+Pn(monthFV())+' by '+targetYear()+' invested';
+    const _age=ageAtTarget();
+    document.getElementById('heroFV').textContent = '≈ '+Pn(monthFV())+(_age!=null?(' by age '+_age):(' by '+targetYear()))+' invested';
     document.getElementById('goalTitle').textContent = goalName+' · '+Pn(goalTarget)+'/mo';
     const pct = Math.min(100, rec/goalTarget*100);
     document.getElementById('goalFill').style.width = pct+'%';
@@ -937,10 +958,12 @@
 
     const fv = totalFV();
     document.getElementById('teaserFuture').textContent = Pn(fv);
-    document.getElementById('teaserNote').textContent = 'estimated by '+targetYear()+' ('+proj.years+' years) · if kept and invested';
+    document.getElementById('teaserNote').textContent = _age!=null
+      ? ('estimated by age '+_age+' — '+targetYear()+' · if kept and invested')
+      : ('estimated by '+targetYear()+' ('+proj.years+' years) · if kept and invested');
     document.getElementById('futureBig').textContent = Pn(fv);
-    document.getElementById('futureAssume').textContent = 'estimated · '+proj.rate+'% return · by '+targetYear();
-    document.getElementById('yrsOut').textContent = proj.years+' years · '+targetYear();
+    document.getElementById('futureAssume').textContent = 'estimated · '+proj.rate+'% return · by '+(_age!=null?('age '+_age+' ('+targetYear()+')'):targetYear());
+    document.getElementById('yrsOut').textContent = _age!=null ? ('age '+_age+' · '+proj.years+' years') : (proj.years+' years · '+targetYear());
     document.getElementById('futTransferred').textContent = Pn(tr);
     document.getElementById('futKept').textContent = Pn(rec);
     drawCurve();
@@ -1314,7 +1337,7 @@
   ];
   let obQuickChosen=[];     // {id,name,icon,amt} — none by default
   let obInlineCat=null;
-  let config={ goalName:'Invest more', monthly:25000, rate:5, years:20, currency:'GBP', first:null };
+  let config={ goalName:'Invest more', monthly:25000, rate:5, years:20, currency:'GBP', dob:null, first:null };
   function obRenderCur(){ const el=document.getElementById('obCur'); el.innerHTML='';
     CURRENCIES.forEach(c=>{ const b=document.createElement('button'); b.className='cur-chip'+(config.currency===c.code?' sel':'');
       b.innerHTML=c.sym+'<small>'+c.code+'</small>';
@@ -1343,8 +1366,11 @@
   document.getElementById('obRate').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
     config.rate=+b.dataset.rate; document.querySelectorAll('#obRate button').forEach(x=>x.classList.toggle('on',x===b)); });
   const obYrs=document.getElementById('obYrs');
-  function obYrsLbl(){ document.getElementById('obYrsOut').textContent=config.years+' years · '+(BASE_YEAR+config.years); }
+  function obYrsLbl(){ const ty=BASE_YEAR+config.years; const by=config.dob?new Date(config.dob).getFullYear():null;
+    const a=(by&&!isNaN(by))?(ty-by):null;
+    document.getElementById('obYrsOut').textContent = a!=null ? ('age '+a+' · '+config.years+' years') : (config.years+' years · '+ty); }
   obYrs.addEventListener('input',()=>{ config.years=+obYrs.value; obYrsLbl(); });
+  document.getElementById('obDob').addEventListener('change',()=>{ config.dob=document.getElementById('obDob').value||null; obYrsLbl(); });
 
   function obRenderStep3(){ obRenderChosen(); obRenderChips(); document.getElementById('obInline').classList.add('hidden'); }
   function obRenderChosen(){ const el=document.getElementById('obChosen'); el.innerHTML='';
@@ -1405,6 +1431,7 @@
     let q=obQuickChosen.map(x=>({...x}));
     wins=[]; transfers=[]; rollover=0;
     goalName=config.goalName; goalTarget=config.monthly; proj={rate:config.rate,years:config.years}; quick=q; openMonth=CUR; onboarded=true;
+    dob=config.dob||null;
     applyCurrency(config.currency);
     if(config.first) wins.push({id:Date.now(),net:config.first.net,cat:config.first.cat,name:config.first.name,state:'confirmed',credibility:'verified',month:CUR,date:new Date()});
     obEl.classList.add('hidden'); renderQuick(); show('home'); render();
@@ -1419,7 +1446,13 @@
     const ra=recurring.filter(r=>r.status==='active').length;
     document.getElementById('setRecurringSub').textContent = ra? (ra+' active') : 'None yet';
     document.getElementById('setCurrencySub').textContent = curSym+' · '+currencyCode;
+    document.getElementById('setDobSub').textContent = dob ? ('Set — projections show your age') : 'Not set';
   }
+  const dobOv=document.getElementById('dobOverlay');
+  document.getElementById('setDob').addEventListener('click',()=>{ document.getElementById('dobInput').value=dob||''; dobOv.classList.add('show'); });
+  document.getElementById('dobSave').addEventListener('click',()=>{ dob=document.getElementById('dobInput').value||null; dobOv.classList.remove('show'); refreshSettings(); render(); saveState(); toast('Saved', dob?'Projections now show your age':'','ti-check'); });
+  document.getElementById('dobRemove').addEventListener('click',()=>{ dob=null; dobOv.classList.remove('show'); refreshSettings(); render(); saveState(); toast('Removed','Projections show the year again','ti-check'); });
+  dobOv.addEventListener('click',e=>{ if(e.target===dobOv) dobOv.classList.remove('show'); });
   const curOv=document.getElementById('currencyOverlay');
   function renderCurChips(){ const el=document.getElementById('curChips'); el.innerHTML='';
     CURRENCIES.forEach(c=>{ const b=document.createElement('button'); b.className='cur-chip'+(currencyCode===c.code?' sel':'');
