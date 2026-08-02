@@ -1410,7 +1410,7 @@
   function renderCurChips(){ const el=document.getElementById('curChips'); el.innerHTML='';
     CURRENCIES.forEach(c=>{ const b=document.createElement('button'); b.className='cur-chip'+(currencyCode===c.code?' sel':'');
       b.innerHTML=c.sym+'<small>'+c.code+'</small>';
-      b.addEventListener('click',()=>{ applyCurrency(c.code); refreshSettings(); render(); renderCurChips(); saveState(); });
+      b.addEventListener('click',()=>{ applyCurrency(c.code); refreshSettings(); renderQuick(); render(); renderCurChips(); saveState(); });
       el.appendChild(b); });
   }
   document.getElementById('setCurrency').addEventListener('click',()=>{ renderCurChips(); curOv.classList.add('show'); });
