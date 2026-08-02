@@ -1265,18 +1265,27 @@
     const nv=parseM(document.getElementById('editAmount').value);
     if(nv<1){ toast('Enter an amount','A Saving Win needs a value','ti-alert-circle'); return; }
     const nm=(document.getElementById('editName').value||'').trim()||w.name;
-    if(w.state==='transferred'){ const d=nv-w.net; rollover+=d; w.net=nv; w.name=nm;
-      editOv.classList.remove('show'); render();
-      toast('Win updated', d!==0 ? (Psig(d)+' rolls into your next transfer') : null,'ti-check');
-    } else { w.net=nv; w.name=nm; editOv.classList.remove('show'); render(); toast('Win updated', null,'ti-check'); }
+    let rollMsg=null;
+    if(w.state==='transferred'){ const d=nv-w.net; rollover+=d; if(d!==0) rollMsg=Psig(d)+' rolls into your next transfer'; }
+    w.net=nv; w.name=nm;
+    if(w.source){ const r=recurring.find(x=>x.id===w.source); if(r){ r.amount=nv; r.name=nm; } refreshSettings(); }
+    editOv.classList.remove('show'); render();
+    toast('Win updated', rollMsg, 'ti-check');
   });
   document.getElementById('editDelete').addEventListener('click',()=>{ const w=curEdit(); editOv.classList.remove('show'); if(w) doDelete(w); });
   editOv.addEventListener('click',e=>{ if(e.target===editOv) editOv.classList.remove('show'); });
 
   function doDelete(w){
+    if(w.source){ deleteRecurring(w.source); toast('Subscription removed','Stopped and cleared everywhere','ti-trash'); return; }
     if(w.state==='transferred'){ rollover-=w.net; wins=wins.filter(x=>x.id!==w.id); render();
       toast('Win removed', P(w.net)+' will come off your next transfer','ti-trash');
     } else { wins=wins.filter(x=>x.id!==w.id); render(); toast('Win removed', null,'ti-trash'); }
+  }
+  // Delete a subscription completely: its definition AND every Win it created, everywhere.
+  function deleteRecurring(recurId){
+    recurring = recurring.filter(r=>r.id!==recurId);
+    wins = wins.filter(w=>w.source!==recurId);
+    refreshSettings(); renderRecurList(); render();
   }
 
   // ---------- transfer sheet ----------
@@ -1584,7 +1593,7 @@
         <div class="qle-mid"><b>${r.name}</b><small>${P(r.amount)} / month</small></div>
         <button class="qle-del" aria-label="Remove"><i class="ti ti-trash"></i></button>`;
       row.querySelector('.qle-mid').addEventListener('click',()=>openRecurEdit(r.id));
-      row.querySelector('.qle-del').addEventListener('click',()=>{ r.status='ended'; afterRecurChange(); });
+      row.querySelector('.qle-del').addEventListener('click',()=>{ deleteRecurring(r.id); });
       list.appendChild(row);
     });
     replaceIcons(list);
@@ -1631,8 +1640,7 @@
     }
   });
   document.getElementById('reDelete').addEventListener('click',()=>{
-    if(recurEditId!=null){ const r=recurring.find(x=>x.id===recurEditId); if(r) r.status='ended'; }
-    closeRecurEdit(); afterRecurChange();
+    const id=recurEditId; closeRecurEdit(); if(id!=null) deleteRecurring(id);
   });
   recurEOv.addEventListener('click',e=>{ if(e.target===recurEOv){ closeRecurEdit(); renderRecurList(); } });
 
@@ -1683,11 +1691,11 @@
     const amt=parseM(document.getElementById('vfAmt').value);
     if(amt<1){ toast('Enter an amount','It needs a value','ti-alert-circle'); return; }
     w.net=amt; w.state='confirmed'; if(w.credibility==='unverified') w.credibility='verified';
+    if(w.source){ const r=recurring.find(x=>x.id===w.source); if(r) r.amount=amt; refreshSettings(); }
     verifyOv.classList.remove('show'); render(); toast('Confirmed','Added to your pot','ti-circle-check'); nextVerify();
   });
   document.getElementById('vfSecondary').addEventListener('click',()=>{
-    const w=wins.find(x=>x.id===(verifyCtx&&verifyCtx.winId));
-    if(verifyCtx && verifyCtx.type==='recur'){ const r=recurring.find(x=>x.id===verifyCtx.recurId); if(r) r.status='ended'; if(w) wins=wins.filter(x=>x.id!==w.id); toast('Stopped','We won’t add this one again','ti-check'); }
+    if(verifyCtx && verifyCtx.type==='recur'){ deleteRecurring(verifyCtx.recurId); toast('Stopped','We won’t add this one again','ti-trash'); }
     verifyOv.classList.remove('show'); render(); nextVerify();
   });
   verifyOv.addEventListener('click',e=>{ if(e.target===verifyOv) verifyOv.classList.remove('show'); });
