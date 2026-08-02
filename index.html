@@ -275,6 +275,10 @@
   .cur-chip small{display:block;font-size:10px;color:var(--muted);font-weight:400;letter-spacing:.03em}
   .cur-chip.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink)}
   .cur-chip.sel small{color:var(--accent-ink)}
+  .fut-toggle{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:11px 14px;margin:2px 0 14px}
+  .fut-toggle .ft-txt{flex:1}
+  .fut-toggle .ft-txt b{font-family:var(--font-round);font-weight:600;font-size:13.5px;display:block}
+  .fut-toggle .ft-txt small{font-size:11.5px;color:var(--muted);line-height:1.4;display:block;margin-top:1px}
   .swipe-wrap{position:relative;overflow:hidden}
   .swipe-actions{position:absolute;top:0;left:0;bottom:0;display:flex}
   .swipe-actions button{border:none;color:#fff;font-family:var(--font-round);font-weight:600;font-size:11px;
@@ -420,8 +424,8 @@
         <p class="eyebrow" style="margin-top:8px">Your record</p>
         <h2 class="h-screen">Activity</h2>
         <div class="seg" id="actSeg">
-          <button data-f="all" class="on">All</button>
-          <button data-f="win">Saving Wins</button>
+          <button data-f="win" class="on">Saving Wins</button>
+          <button data-f="sub">Subscriptions</button>
           <button data-f="transfer">Transfers</button>
         </div>
         <div id="activityList"></div>
@@ -431,6 +435,10 @@
       <div class="view hidden" id="view-future">
         <p class="eyebrow" style="margin-top:8px">The point of it all</p>
         <h2 class="h-screen">Your future</h2>
+        <div class="fut-toggle">
+          <div class="ft-txt"><b>Keep my subscriptions going</b><small>Assume your recurring savings keep going every month to your horizon</small></div>
+          <div class="switch" id="projRecurSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
+        </div>
         <div class="future-hero">
           <div class="cap">Could become</div>
           <div class="big" id="futureBig">£75,900</div>
@@ -961,8 +969,9 @@
     document.getElementById('teaserNote').textContent = _age!=null
       ? ('estimated by age '+_age+' — '+targetYear()+' · if kept and invested')
       : ('estimated by '+targetYear()+' ('+proj.years+' years) · if kept and invested');
-    document.getElementById('futureBig').textContent = Pn(fv);
-    document.getElementById('futureAssume').textContent = 'estimated · '+proj.rate+'% return · by '+(_age!=null?('age '+_age+' ('+targetYear()+')'):targetYear());
+    const recurAdd = projectRecurring ? annuityFV(recurMonthly(), proj.years) : 0;
+    document.getElementById('futureBig').textContent = Pn(fv + recurAdd);
+    document.getElementById('futureAssume').textContent = 'estimated · '+proj.rate+'% return · by '+(_age!=null?('age '+_age+' ('+targetYear()+')'):targetYear()) + (recurAdd>0?' · incl. subscriptions':'');
     document.getElementById('yrsOut').textContent = _age!=null ? ('age '+_age+' · '+proj.years+' years') : (proj.years+' years · '+targetYear());
     document.getElementById('futTransferred').textContent = Pn(tr);
     document.getElementById('futKept').textContent = Pn(rec);
@@ -975,7 +984,10 @@
   const catIcon={food_drink:'ti-coffee',snack:'ti-cookie',takeaway:'ti-tools-kitchen-2',
     shopping:'ti-shopping-bag',transport:'ti-car',subscription:'ti-repeat',other:'ti-circle'};
   let openMonth=CUR;
-  let actFilter='all';
+  let actFilter='win';
+  let projectRecurring=false;   // Future-page toggle: assume recurring savings continue to the horizon
+  function recurMonthly(){ return recurring.filter(r=>r.status==='active').reduce((s,r)=>s+r.amount,0); }
+  function annuityFV(monthly, years){ if(monthly<=0||years<=0) return 0; const m=Math.pow(1+proj.rate/100,1/12)-1; const n=Math.round(years*12); return m<=0? monthly*n : monthly*((Math.pow(1+m,n)-1)/m); }
   let rollover=0;            // signed pence carried into the next transfer from edits/deletes of transferred Wins
   let openRow=null;          // currently swiped-open row
 
@@ -1042,38 +1054,45 @@
     const months=[...new Set([...wins.map(w=>w.month),...transfers.map(x=>x.month)])].sort().reverse();
     let shown=0;
     months.forEach(m=>{
-      const mWins=wins.filter(w=>w.month===m);
+      const mAll=wins.filter(w=>w.month===m);
+      const mSubs=mAll.filter(w=>w.credibility==='recurring');
+      const mWins=mAll.filter(w=>w.credibility!=='recurring');
       const mTrans=transfers.filter(x=>x.month===m);
-      const items=[];
-      if(actFilter!=='transfer') mWins.slice().reverse().forEach(w=>items.push({t:'w',o:w}));
-      if(actFilter!=='win') mTrans.forEach(x=>items.push({t:'x',o:x}));
+      let items=[], total=0, countLabel='';
+      if(actFilter==='win'){ mWins.slice().reverse().forEach(w=>items.push({t:'w',o:w})); total=mWins.reduce((s,w)=>s+w.net,0); countLabel=mWins.length+' Win'+(mWins.length!==1?'s':''); }
+      else if(actFilter==='sub'){ mSubs.slice().reverse().forEach(w=>items.push({t:'w',o:w})); total=mSubs.reduce((s,w)=>s+w.net,0); countLabel=mSubs.length+' subscription'+(mSubs.length!==1?'s':''); }
+      else { mTrans.forEach(x=>items.push({t:'x',o:x})); total=mTrans.reduce((s,x)=>s+x.amount,0); countLabel=mTrans.length+' transfer'+(mTrans.length!==1?'s':''); }
       if(items.length===0) return;
       shown++;
-      const total=mWins.reduce((s,w)=>s+w.net,0);
       const isOpen=(openMonth===m);
-      const sec=document.createElement('div'); sec.className='month-sec';
+      const sec=document.createElement('div'); sec.className='month-sec'; sec.dataset.m=m;
       const head=document.createElement('button'); head.type='button'; head.className='month-head'+(isOpen?' open':'');
       head.innerHTML=`<div class="mh-l"><i class="ti ti-chevron-right"></i><span>${monthLabel(m)}</span></div>
-        <div class="mh-r"><b>${P(total)}</b><small>${mWins.length} Wins${mTrans.length?' · '+mTrans.length+' transfer'+(mTrans.length>1?'s':''):''}</small></div>`;
-      head.addEventListener('click',()=>{ openMonth=(openMonth===m?null:m); renderActivity(); });
+        <div class="mh-r"><b>${P(total)}</b><small>${countLabel}</small></div>`;
+      head.addEventListener('click',()=>{ const wasOpen=(openMonth===m); openMonth=wasOpen?null:m; renderActivity();
+        if(!wasOpen){ const el=document.querySelector('.month-sec[data-m="'+m+'"]'); if(el) el.scrollIntoView({block:'start',behavior:'smooth'}); } });
       sec.appendChild(head);
       if(isOpen){
         const body=document.createElement('div'); body.className='month-body';
-        if(actFilter!=='transfer' && mWins.length){ const h=document.createElement('div'); h.className='swipe-hint';
-          h.innerHTML='<i class="ti ti-chevron-right"></i>Swipe a Win to edit or delete'; body.appendChild(h); }
+        if(actFilter!=='transfer' && items.length){ const h=document.createElement('div'); h.className='swipe-hint';
+          h.innerHTML='<i class="ti ti-chevron-right"></i>Swipe to edit or delete'; body.appendChild(h); }
         items.forEach(it=> body.appendChild(it.t==='w'?winItem(it.o):transferItem(it.o)));
         sec.appendChild(body);
       }
       list.appendChild(sec);
     });
     if(shown===0){ const e=document.createElement('div'); e.className='empty-note';
-      e.textContent = actFilter==='transfer'?'No transfers yet. Mark one from your pot.':'Nothing here yet.'; list.appendChild(e); }
+      e.textContent = actFilter==='transfer' ? 'No transfers yet. Mark one from your pot.'
+        : actFilter==='sub' ? 'No subscriptions yet. Add one and choose “recurring”.'
+        : 'No Saving Wins yet.'; list.appendChild(e); }
     replaceIcons(list);
   }
 
   // ---------- growth curve ----------
   function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
-  function balanceAt(tYears){ const ev=new Date(NOW.getTime()+tYears*365.25*DAY); return wins.reduce((s,w)=>s+grow(w.net,w.date,ev),0); }
+  function balanceAt(tYears){ const ev=new Date(NOW.getTime()+tYears*365.25*DAY);
+    const base=wins.reduce((s,w)=>s+grow(w.net,w.date,ev),0);
+    return base + (projectRecurring ? annuityFV(recurMonthly(), tYears) : 0); }
   function abbr(minor){ const p=minor/100;
     if(p>=1e6) return symWrap((p/1e6).toFixed(1).replace(/\.0$/,'')+'m','');
     if(p>=1e3) return symWrap(Math.round(p/1e3)+'k','');
@@ -1310,6 +1329,8 @@
   });
   const yrs=document.getElementById('yrs');
   yrs.addEventListener('input',()=>{proj.years=parseInt(yrs.value); render();});
+  document.getElementById('projRecurSwitch').addEventListener('click',function(){ projectRecurring=!projectRecurring;
+    this.classList.toggle('on',projectRecurring); this.setAttribute('aria-checked',projectRecurring); render(); });
 
   // ---------- activity filter ----------
   document.getElementById('actSeg').addEventListener('click',e=>{
