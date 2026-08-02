@@ -709,6 +709,19 @@
         </div>
       </div>
 
+      <!-- ONE-OFF OR RECURRING CHOICE -->
+      <div class="overlay" id="recurChoiceOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>One-off or recurring?</h3>
+          <p class="sub">Is this a single saving, or something that repeats every month — like a subscription you cancelled?</p>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+            <button class="btn ghost" id="rcOneOff"><i class="ti ti-check"></i>Just this once</button>
+            <button class="btn primary" id="rcRecurring"><i class="ti ti-repeat"></i>Recurring — every month</button>
+          </div>
+        </div>
+      </div>
+
       <!-- CURRENCY PICKER -->
       <div class="overlay" id="currencyOverlay">
         <div class="sheet">
@@ -1177,8 +1190,9 @@
     const catId = selCat ? selCat.id : 'other';
     const typed = (document.getElementById('nameInput').value||'').trim();
     const name = typed || (selCat ? (altOn?('Cheaper '+selCat.name.toLowerCase()):selCat.name) : 'Saving Win');
-    logWin(net, catId, name, true);
     closeAdd();
+    if(catId==='subscription'){ openRecurChoice({net, name}); }
+    else { logWin(net, catId, name, true); }
   });
 
   // ---------- edit sheet + delete (rollover for transferred Wins) ----------
@@ -1567,6 +1581,21 @@
     closeRecurEdit(); afterRecurChange();
   });
   recurEOv.addEventListener('click',e=>{ if(e.target===recurEOv){ closeRecurEdit(); renderRecurList(); } });
+
+  // ---------- one-off vs recurring choice (Subscription category from Add) ----------
+  const rcOv=document.getElementById('recurChoiceOverlay');
+  let pendingRecur=null;
+  function openRecurChoice(p){ pendingRecur=p; rcOv.classList.add('show'); replaceIcons(rcOv); }
+  document.getElementById('rcOneOff').addEventListener('click',()=>{ const p=pendingRecur; rcOv.classList.remove('show'); if(p) logWin(p.net,'subscription',p.name,true); });
+  document.getElementById('rcRecurring').addEventListener('click',()=>{ const p=pendingRecur; rcOv.classList.remove('show'); if(!p)return;
+    const newId=Date.now();
+    recurring.push({id:newId, name:p.name, amount:p.net, cat:'subscription', icon:'ti-repeat', start:new Date().toISOString(), end:null, status:'active'});
+    materializeRecurring();
+    const mw=wins.find(w=>w.source===newId && w.periodKey===CUR); if(mw) mw.state='confirmed';
+    refreshSettings(); renderQuick(); render();
+    toast('Recurring saving added', p.name+' will be added each month','ti-repeat');
+  });
+  rcOv.addEventListener('click',e=>{ if(e.target===rcOv){ const p=pendingRecur; rcOv.classList.remove('show'); if(p) logWin(p.net,'subscription',p.name,true); } });
 
   // ---------- verify / confirm popup (big Wins + recurring monthly check) ----------
   const verifyOv=document.getElementById('verifyOverlay');
