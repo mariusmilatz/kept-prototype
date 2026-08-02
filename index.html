@@ -268,6 +268,13 @@
   .month-body .activity-item:last-child{border-bottom:none}
   .activity-item .ic.tr{background:var(--amber-soft);color:var(--amber-ink)}
   .empty-note{font-size:12.5px;color:var(--muted);text-align:center;padding:24px 0}
+  .money-in.sym-suffix .cur-sym{order:2;margin-left:6px} .money-in.sym-suffix input{order:1}
+  .cur-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .cur-chip{min-width:56px;background:var(--card);border:1.5px solid var(--hair);border-radius:12px;padding:8px 12px;cursor:pointer;
+    font-family:var(--font-round);font-weight:600;font-size:16px;color:var(--ink);text-align:center;line-height:1.15}
+  .cur-chip small{display:block;font-size:10px;color:var(--muted);font-weight:400;letter-spacing:.03em}
+  .cur-chip.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink)}
+  .cur-chip.sel small{color:var(--accent-ink)}
   .swipe-wrap{position:relative;overflow:hidden}
   .swipe-actions{position:absolute;top:0;left:0;bottom:0;display:flex}
   .swipe-actions button{border:none;color:#fff;font-family:var(--font-round);font-weight:600;font-size:11px;
@@ -462,7 +469,7 @@
           <p class="sub">Enter any amount you kept. A name is optional.</p>
           <div class="field">
             <label id="origLabel">Amount kept</label>
-            <div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="origInput" placeholder="0.00"></div>
+            <div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="origInput" placeholder="0.00"></div>
             <div class="add-fv" id="addFV"></div>
           </div>
           <div class="field">
@@ -475,7 +482,7 @@
           </div>
           <div class="field hidden" id="altField">
             <label>What you actually spent</label>
-            <div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="altInput" value="7.00"></div>
+            <div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="altInput" value="7.00"></div>
           </div>
           <div class="net-preview" id="netPreview" style="display:none">
             <span class="k">Net Saving Win</span><span class="v" id="netVal">£0.00</span>
@@ -530,7 +537,7 @@
           <p class="sub" id="editSub">Change the amount or name.</p>
           <div class="field">
             <label>Amount kept</label>
-            <div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="editAmount"></div>
+            <div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="editAmount"></div>
           </div>
           <div class="field">
             <label>Name</label>
@@ -574,8 +581,10 @@
           <div class="ob-step hidden" data-step="2">
             <p class="ob-eyebrow">Your goal</p>
             <h2 class="ob-h">What are you working toward?</h2>
+            <p class="ob-eyebrow" style="margin-bottom:8px">Currency</p>
+            <div class="cur-chips" id="obCur" style="margin-bottom:16px"></div>
             <div class="field"><label>Goal name</label><input class="text-in" id="obGoalName" type="text" placeholder="Invest more"></div>
-            <div class="field"><label>Monthly target</label><div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="obMonthly" value="250"></div></div>
+            <div class="field"><label>Monthly target</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obMonthly" value="250"></div></div>
             <p class="ob-eyebrow" style="margin-top:18px">Growth assumptions</p>
             <div class="seg" id="obRate"><button data-rate="3">3%</button><button data-rate="5" class="on">5%</button><button data-rate="7">7%</button></div>
             <div class="ctrl" style="margin-top:8px"><div class="lab"><span>Plan until</span><b id="obYrsOut">20 years</b></div><input type="range" id="obYrs" min="5" max="60" step="1" value="20"></div>
@@ -589,7 +598,7 @@
             <div class="ob-chips" id="obChips"></div>
             <div class="ob-inline hidden" id="obInline">
               <div class="field"><label id="obInlineLbl">Name</label><input class="text-in" id="obInName" type="text"></div>
-              <div class="field"><label>Amount you’d spend</label><div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="obInAmt" placeholder="0.00"></div></div>
+              <div class="field"><label>Amount you’d spend</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obInAmt" placeholder="0.00"></div></div>
               <div style="display:flex;gap:10px;margin-top:12px">
                 <button class="btn ghost" id="obInCancel" style="flex:0 0 34%">Cancel</button>
                 <button class="btn primary" id="obInAdd" style="flex:1"><i class="ti ti-plus"></i>Add</button>
@@ -619,6 +628,7 @@
           <button class="set-row" id="setGoal"><span><b>Edit goal</b><small id="setGoalSub">—</small></span><i class="ti ti-target"></i></button>
           <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
           <button class="set-row" id="setRecurring"><span><b>Recurring savings</b><small id="setRecurringSub">—</small></span><i class="ti ti-repeat"></i></button>
+          <button class="set-row" id="setCurrency"><span><b>Currency</b><small id="setCurrencySub">—</small></span><i class="ti ti-coin"></i></button>
           <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
           <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
           <button class="set-row danger" id="setReset"><span><b>Reset app</b><small>Erase everything and start over</small></span><i class="ti ti-trash"></i></button>
@@ -633,7 +643,7 @@
           <h3>Edit goal</h3>
           <p class="sub">Rename it or change your monthly target.</p>
           <div class="field"><label>Goal name</label><input class="text-in" id="geName" type="text"></div>
-          <div class="field"><label>Monthly target</label><div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="geMonthly"></div></div>
+          <div class="field"><label>Monthly target</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="geMonthly"></div></div>
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost" id="geCancel" style="flex:0 0 40%">Cancel</button>
             <button class="btn primary" id="geSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
@@ -660,7 +670,7 @@
           <h3 id="qaEditTitle">Add quick action</h3>
           <p class="sub">Name it, set the amount, pick a category.</p>
           <div class="field"><label>Name</label><input class="text-in" id="qaeName" type="text" placeholder="e.g. Coffee"></div>
-          <div class="field"><label>Amount</label><div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="qaeAmt" placeholder="0.00"></div></div>
+          <div class="field"><label>Amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="qaeAmt" placeholder="0.00"></div></div>
           <p class="eyebrow" style="margin:16px 0 8px">Category</p>
           <div class="cat-grid" id="qaeCats"></div>
           <div style="display:flex;gap:10px;margin-top:18px">
@@ -689,7 +699,7 @@
           <h3 id="recurEditTitle">Add recurring saving</h3>
           <p class="sub">e.g. cancelled a £9.99 subscription.</p>
           <div class="field"><label>Name</label><input class="text-in" id="reName" type="text" placeholder="e.g. Cancelled streaming"></div>
-          <div class="field"><label>Amount per month</label><div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="reAmt" placeholder="0.00"></div></div>
+          <div class="field"><label>Amount per month</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="reAmt" placeholder="0.00"></div></div>
           <p class="eyebrow" style="margin:16px 0 8px">Category</p>
           <div class="cat-grid" id="reCats"></div>
           <div style="display:flex;gap:10px;margin-top:18px">
@@ -699,13 +709,24 @@
         </div>
       </div>
 
+      <!-- CURRENCY PICKER -->
+      <div class="overlay" id="currencyOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Currency</h3>
+          <p class="sub">All amounts show in this currency. It doesn’t convert existing values.</p>
+          <div class="cur-chips" id="curChips"></div>
+          <button class="btn primary" id="curClose" style="margin-top:16px">Done</button>
+        </div>
+      </div>
+
       <!-- VERIFY / CONFIRM POPUP -->
       <div class="overlay" id="verifyOverlay">
         <div class="sheet">
           <div class="grip"></div>
           <h3 id="vfTitle">Confirm this Win</h3>
           <p class="sub" id="vfSub"></p>
-          <div class="field"><label id="vfAmtLbl">Amount</label><div class="money-in"><span>£</span><input type="text" inputmode="decimal" id="vfAmt"></div></div>
+          <div class="field"><label id="vfAmtLbl">Amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="vfAmt"></div></div>
           <div class="add-fv" id="vfFv"></div>
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost" id="vfSecondary" style="flex:0 0 44%">Keep unverified</button>
@@ -728,10 +749,22 @@
 
 <script>
 (function(){
-  const P = v => '£'+ (v/100).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const Pn = v => '£'+ Math.round(v/100).toLocaleString('en-GB');
-  const Pabs = v => '£'+ Math.abs(v/100).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const CURRENCIES=[
+    {code:'GBP',sym:'£'},{code:'EUR',sym:'€'},{code:'USD',sym:'$'},
+    {code:'CHF',sym:'CHF'},{code:'PLN',sym:'zł',suffix:true},{code:'SEK',sym:'kr',suffix:true}
+  ];
+  let currencyCode='GBP', curSym='£', curSuffix=false;
+  function symWrap(num,sign){ return curSuffix ? (sign+num+' '+curSym) : (sign+curSym+(curSym.length>1?' ':'')+num); }
+  const fmtN = (v,dec)=> (Math.abs(v)/100).toLocaleString('en-GB', dec? {minimumFractionDigits:2,maximumFractionDigits:2} : {maximumFractionDigits:0});
+  const P    = v => symWrap(fmtN(v,true),  v<0?'-':'');
+  const Pn   = v => symWrap(fmtN(v,false), v<0?'-':'');
+  const Pabs = v => symWrap(fmtN(v,true),  '');
   const Psig = v => (v>0?'+':v<0?'−':'')+Pabs(v);
+  function applyCurrency(code){
+    const c=CURRENCIES.find(x=>x.code===code)||CURRENCIES[0];
+    currencyCode=c.code; curSym=c.sym; curSuffix=!!c.suffix;
+    document.querySelectorAll('.cur-sym').forEach(el=>{ el.textContent=curSym; const mi=el.closest('.money-in'); if(mi) mi.classList.toggle('sym-suffix',curSuffix); });
+  }
 
   const ICONS = {
     home:'<path d="M4 11l8-6 8 6"/><path d="M6 10v9h12v-9"/>',
@@ -760,6 +793,7 @@
     target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
     download:'<path d="M12 4v11M8 11l4 4 4-4"/><path d="M5 19h14"/>',
     bolt:'<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>',
+    coin:'<circle cx="12" cy="12" r="8"/><path d="M12 7.5v9M14.3 9.4C13.8 8.6 13 8.2 12 8.2c-1.4 0-2.4.8-2.4 1.9s1 1.6 2.4 1.9 2.4.8 2.4 1.9-1 1.9-2.4 1.9c-1 0-1.9-.5-2.4-1.3"/>',
     'chevron-up':'<path d="M6 15l6-6 6 6"/>',
     'chevron-down':'<path d="M6 9l6 6 6-6"/>',
     moon:'<path d="M20 14a8 8 0 1 1-10-10 6 6 0 0 0 10 10z"/>',
@@ -829,7 +863,7 @@
     try{ localStorage.setItem(LSKEY, JSON.stringify({
       onboarded:true,
       wins:wins.map(w=>({...w, date:(w.date instanceof Date? w.date.toISOString(): w.date)})),
-      transfers, goalTarget, goalName, proj, quick, recurring, rollover
+      transfers, goalTarget, goalName, proj, quick, recurring, rollover, currencyCode
     })); }catch(e){}
   }
   function applyState(s){
@@ -841,6 +875,7 @@
     quick=(s.quick&&s.quick.length)? s.quick : DEFAULT_QUICK.map(q=>({...q}));
     recurring=s.recurring||[];
     rollover=s.rollover||0;
+    currencyCode=s.currencyCode||'GBP';
     onboarded=true;
   }
   // Create this month's Win for each active recurring saving (once). It's 'recorded' until confirmed.
@@ -878,7 +913,7 @@
     document.getElementById('homeAmount').textContent = P(rec);
     document.getElementById('homeCount').textContent = monthWins(CUR).length+' Saving Wins · '+monthLabel(CUR);
     document.getElementById('heroFV').textContent = '≈ '+Pn(monthFV())+' by '+targetYear()+' invested';
-    document.getElementById('goalTitle').textContent = goalName+' · £'+Math.round(goalTarget/100)+'/mo';
+    document.getElementById('goalTitle').textContent = goalName+' · '+Pn(goalTarget)+'/mo';
     const pct = Math.min(100, rec/goalTarget*100);
     document.getElementById('goalFill').style.width = pct+'%';
     document.getElementById('goalNow').textContent = P(rec)+' kept';
@@ -1004,9 +1039,9 @@
   function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
   function balanceAt(tYears){ const ev=new Date(NOW.getTime()+tYears*365.25*DAY); return wins.reduce((s,w)=>s+grow(w.net,w.date,ev),0); }
   function abbr(minor){ const p=minor/100;
-    if(p>=1e6) return '£'+(p/1e6).toFixed(1).replace(/\.0$/,'')+'m';
-    if(p>=1e3) return '£'+Math.round(p/1e3)+'k';
-    return '£'+Math.round(p); }
+    if(p>=1e6) return symWrap((p/1e6).toFixed(1).replace(/\.0$/,'')+'m','');
+    if(p>=1e3) return symWrap(Math.round(p/1e3)+'k','');
+    return symWrap(''+Math.round(p),''); }
   function drawCurve(){
     const cv=document.getElementById('curveCanvas'); if(!cv||!cv.clientWidth)return;
     const dpr=window.devicePixelRatio||1, w=cv.clientWidth, h=cv.clientHeight;
@@ -1265,7 +1300,13 @@
   ];
   let obQuickChosen=[];     // {id,name,icon,amt} — none by default
   let obInlineCat=null;
-  let config={ goalName:'Invest more', monthly:25000, rate:5, years:20, first:null };
+  let config={ goalName:'Invest more', monthly:25000, rate:5, years:20, currency:'GBP', first:null };
+  function obRenderCur(){ const el=document.getElementById('obCur'); el.innerHTML='';
+    CURRENCIES.forEach(c=>{ const b=document.createElement('button'); b.className='cur-chip'+(config.currency===c.code?' sel':'');
+      b.innerHTML=c.sym+'<small>'+c.code+'</small>';
+      b.addEventListener('click',()=>{ config.currency=c.code; applyCurrency(c.code); obRenderCur(); });
+      el.appendChild(b); });
+  }
 
   function obDots(){ const d=document.getElementById('obDots'); d.innerHTML='';
     for(let i=0;i<=OB_LAST;i++){ const s=document.createElement('i'); if(i===obStep)s.className='on'; d.appendChild(s);} }
@@ -1274,7 +1315,7 @@
     document.getElementById('obBack').style.visibility = obStep===0?'hidden':'visible';
     document.getElementById('obNext').textContent = obStep===0?'Get started' : obStep===OB_LAST?'Enter Kept' : 'Continue';
     document.getElementById('obSkip').style.display = obStep===0?'none':'block';
-    if(obStep===2) obYrsLbl();
+    if(obStep===2){ obYrsLbl(); obRenderCur(); }
     if(obStep===3) obRenderStep3();
     if(obStep===4) obRenderFirst();
     obDots(); replaceIcons(obEl);
@@ -1350,6 +1391,7 @@
     let q=obQuickChosen.map(x=>({...x}));
     wins=[]; transfers=[]; rollover=0;
     goalName=config.goalName; goalTarget=config.monthly; proj={rate:config.rate,years:config.years}; quick=q; openMonth=CUR; onboarded=true;
+    applyCurrency(config.currency);
     if(config.first) wins.push({id:Date.now(),net:config.first.net,cat:config.first.cat,name:config.first.name,state:'confirmed',credibility:'verified',month:CUR,date:new Date()});
     obEl.classList.add('hidden'); renderQuick(); show('home'); render();
     if(config.first) setTimeout(()=>toast(P(config.first.net)+' kept', projSub(config.first.net),'ti-check',false),450);
@@ -1358,11 +1400,22 @@
   // ---------- settings (You tab) ----------
   const setOv=document.getElementById('settingsOverlay');
   function refreshSettings(){
-    document.getElementById('setGoalSub').textContent = goalName+' · £'+Math.round(goalTarget/100)+'/mo';
+    document.getElementById('setGoalSub').textContent = goalName+' · '+Pn(goalTarget)+'/mo';
     document.getElementById('setQuickSub').textContent = quick.length+' one-tap log'+(quick.length!==1?'s':'');
     const ra=recurring.filter(r=>r.status==='active').length;
     document.getElementById('setRecurringSub').textContent = ra? (ra+' active') : 'None yet';
+    document.getElementById('setCurrencySub').textContent = curSym+' · '+currencyCode;
   }
+  const curOv=document.getElementById('currencyOverlay');
+  function renderCurChips(){ const el=document.getElementById('curChips'); el.innerHTML='';
+    CURRENCIES.forEach(c=>{ const b=document.createElement('button'); b.className='cur-chip'+(currencyCode===c.code?' sel':'');
+      b.innerHTML=c.sym+'<small>'+c.code+'</small>';
+      b.addEventListener('click',()=>{ applyCurrency(c.code); refreshSettings(); render(); renderCurChips(); saveState(); });
+      el.appendChild(b); });
+  }
+  document.getElementById('setCurrency').addEventListener('click',()=>{ renderCurChips(); curOv.classList.add('show'); });
+  document.getElementById('curClose').addEventListener('click',()=>curOv.classList.remove('show'));
+  curOv.addEventListener('click',e=>{ if(e.target===curOv) curOv.classList.remove('show'); });
   function openSettings(){ refreshSettings(); setOv.classList.add('show'); }
   document.getElementById('setClose').addEventListener('click',()=>setOv.classList.remove('show'));
   setOv.addEventListener('click',e=>{ if(e.target===setOv) setOv.classList.remove('show'); });
@@ -1526,7 +1579,7 @@
     document.getElementById('vfAmt').value=(w.net/100).toFixed(2);
     if(ctx.type==='big'){
       document.getElementById('vfTitle').textContent='Confirm large Win';
-      document.getElementById('vfSub').textContent='This one’s over £100. Check the amount is right, then confirm to add it to your pot.';
+      document.getElementById('vfSub').textContent='That’s a large Saving Win. Check the amount is right, then confirm to add it to your pot.';
       document.getElementById('vfSecondary').textContent='Keep unverified';
     } else {
       document.getElementById('vfTitle').textContent='Still saving?';
@@ -1559,7 +1612,7 @@
   // clock
   document.getElementById('clock').textContent=NOW.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 
-  function boot(){ materializeRecurring(); renderQuick(); render(); setTimeout(drawCurve,60); setTimeout(queueRecurringConfirms,700); }
+  function boot(){ applyCurrency(currencyCode); materializeRecurring(); renderQuick(); render(); setTimeout(drawCurve,60); setTimeout(queueRecurringConfirms,700); }
   const saved=loadState();
   if(saved && saved.onboarded){ applyState(saved); boot(); }
   else { boot(); startOnboarding(); }
