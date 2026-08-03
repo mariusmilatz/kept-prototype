@@ -392,7 +392,7 @@
         <div class="card goal">
           <div class="card-h"><div class="t" id="goalTitle">Invest £250 this month</div></div>
           <div class="bar"><div class="fill" id="goalFill"></div></div>
-          <div class="row"><span id="goalNow">£183.40 kept</span><span><b id="goalLeft">£66.60</b> to go</span></div>
+          <div class="row"><span id="goalNow">£183.40 kept</span><span id="goalRight"><b id="goalLeft">£66.60</b> to go</span></div>
         </div>
 
         <div style="margin-top:18px" id="quickSection">
@@ -530,6 +530,7 @@
           </div>
           <div class="fifo-note" id="fifoNote"></div>
           <div class="fifo-note" id="rolloverNote" style="display:none"></div>
+          <div class="field" style="margin-top:14px"><label>Date moved</label><input class="text-in" type="date" id="transferDate"></div>
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost" id="transferCancel" style="flex:0 0 40%">Not now</button>
             <button class="btn amber" id="transferConfirm" style="flex:1"><i class="ti ti-check"></i>Mark transferred</button>
@@ -591,8 +592,17 @@
             <h2 class="ob-h">What are you working toward?</h2>
             <p class="ob-eyebrow" style="margin-bottom:8px">Currency</p>
             <div class="cur-chips" id="obCur" style="margin-bottom:16px"></div>
-            <div class="field"><label>Goal name</label><input class="text-in" id="obGoalName" type="text" placeholder="Invest more"></div>
-            <div class="field"><label>Monthly target</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obMonthly" value="250"></div></div>
+            <div class="field"><label>Goal</label>
+              <select class="text-in" id="obGoalSel">
+                <option>Invest more</option><option>Emergency fund</option><option>Save for a goal</option><option>Spend consciously</option><option value="__other">Other…</option>
+              </select>
+            </div>
+            <div class="field hidden" id="obOtherWrap"><label>Goal name</label><input class="text-in" id="obGoalOther" type="text" placeholder="e.g. House deposit"></div>
+            <div class="seg" id="obMode"><button data-mode="monthly" class="on">Monthly amount</button><button data-mode="target">Target amount</button></div>
+            <div class="field" id="obMonthlyField"><label>Amount per month</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obMonthly" value="250"></div></div>
+            <div class="field hidden" id="obTargetField"><label>Target amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obAmount" placeholder="0.00"></div>
+              <div class="add-fv" id="obPreview"></div>
+            </div>
             <p class="ob-eyebrow" style="margin-top:18px">Growth assumptions</p>
             <div class="seg" id="obRate"><button data-rate="3">3%</button><button data-rate="5" class="on">5%</button><button data-rate="7">7%</button></div>
             <div class="ctrl" style="margin-top:8px"><div class="lab"><span>Plan until</span><b id="obYrsOut">20 years</b></div><input type="range" id="obYrs" min="5" max="60" step="1" value="20"></div>
@@ -651,9 +661,22 @@
         <div class="sheet">
           <div class="grip"></div>
           <h3>Edit goal</h3>
-          <p class="sub">Rename it or change your monthly target.</p>
-          <div class="field"><label>Goal name</label><input class="text-in" id="geName" type="text"></div>
-          <div class="field"><label>Monthly target</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="geMonthly"></div></div>
+          <p class="sub">Choose what you’re working toward, and how you’ll track it.</p>
+          <div class="field"><label>Goal</label>
+            <select class="text-in" id="geNameSel">
+              <option>Invest more</option>
+              <option>Emergency fund</option>
+              <option>Save for a goal</option>
+              <option>Spend consciously</option>
+              <option value="__other">Other…</option>
+            </select>
+          </div>
+          <div class="field hidden" id="geOtherWrap"><label>Goal name</label><input class="text-in" id="geOther" type="text" placeholder="e.g. House deposit"></div>
+          <div class="seg" id="geMode"><button data-mode="monthly" class="on">Monthly amount</button><button data-mode="target">Target amount</button></div>
+          <div class="field" id="geMonthlyField"><label>Amount per month</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="geMonthly"></div></div>
+          <div class="field hidden" id="geTargetField"><label>Target amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="geAmount"></div>
+            <div class="add-fv" id="gePreview"></div>
+          </div>
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost" id="geCancel" style="flex:0 0 40%">Cancel</button>
             <button class="btn primary" id="geSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
@@ -875,7 +898,14 @@
 
   // Mutable app state — filled by onboarding, sample data, or storage.
   let wins=[], transfers=[];
-  let goalTarget=25000, goalName='Invest more';
+  let goalTarget=25000, goalName='Invest more';   // goalTarget = monthly amount (monthly mode)
+  let goalMode='monthly', goalAmount=1000000;      // target mode: reach goalAmount by the horizon
+  // Monthly contribution needed to reach `amount` in `years` at `rate`% (annual, monthly compounding). Estimate.
+  function calcMonthly(amount, years, rate){ if(!amount||amount<=0||years<=0) return 0;
+    const m=Math.pow(1+rate/100,1/12)-1, n=Math.round(years*12);
+    return m<=0 ? Math.round(amount/n) : Math.round(amount*m/(Math.pow(1+m,n)-1)); }
+  function requiredMonthly(){ return calcMonthly(goalAmount, proj.years, proj.rate); }
+  function monthlyTargetVal(){ return goalMode==='target' ? requiredMonthly() : goalTarget; }
   let proj={rate:5, years:20};
   let quick=DEFAULT_QUICK.map(q=>({...q}));
   let recurring=[];
@@ -902,7 +932,7 @@
     try{ localStorage.setItem(LSKEY, JSON.stringify({
       onboarded:true,
       wins:wins.map(w=>({...w, date:(w.date instanceof Date? w.date.toISOString(): w.date)})),
-      transfers, goalTarget, goalName, proj, quick, recurring, rollover, currencyCode, dob
+      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob
     })); }catch(e){}
   }
   function applyState(s){
@@ -910,6 +940,8 @@
     transfers=s.transfers||[];
     goalTarget=(s.goalTarget!=null)?s.goalTarget:25000;
     goalName=s.goalName||'Invest more';
+    goalMode=s.goalMode||'monthly';
+    goalAmount=(s.goalAmount!=null)?s.goalAmount:1000000;
     proj=s.proj||{rate:5,years:20};
     quick=(s.quick&&s.quick.length)? s.quick : DEFAULT_QUICK.map(q=>({...q}));
     recurring=s.recurring||[];
@@ -955,11 +987,16 @@
     document.getElementById('homeCount').textContent = monthWins(CUR).length+' Saving Wins · '+monthLabel(CUR);
     const _age=ageAtTarget();
     document.getElementById('heroFV').textContent = '≈ '+Pn(monthFV())+(_age!=null?(' by age '+_age):(' by '+targetYear()))+' invested';
-    document.getElementById('goalTitle').textContent = goalName+' · '+Pn(goalTarget)+'/mo';
-    const pct = Math.min(100, rec/goalTarget*100);
+    const gm = monthlyTargetVal();
+    document.getElementById('goalTitle').textContent = goalMode==='target'
+      ? (goalName+' · '+Pn(goalAmount)+' by '+targetYear())
+      : (goalName+' · '+Pn(goalTarget)+'/mo');
+    const pct = Math.min(100, gm>0 ? rec/gm*100 : 0);
     document.getElementById('goalFill').style.width = pct+'%';
     document.getElementById('goalNow').textContent = P(rec)+' kept';
-    document.getElementById('goalLeft').textContent = P(Math.max(0,goalTarget-rec));
+    document.getElementById('goalRight').innerHTML = goalMode==='target'
+      ? ('<b>'+Pn(gm)+'</b>/mo to reach it')
+      : ('<b>'+P(Math.max(0,gm-rec))+'</b> to go');
     document.getElementById('transferStatusLine').textContent = P(wait)+' ready to move';
     const tsW=document.getElementById('tsWaiting'), tsT=document.getElementById('tsTransferred');
     if(tsW) tsW.textContent=P(wait); if(tsT) tsT.textContent=P(tr);
@@ -1295,6 +1332,8 @@
     const wait=waiting(); if(wait<=0){toast('Nothing waiting to transfer','Log a few Saving Wins first','ti-info-circle');return;}
     trRange.max=wait; trRange.value=wait;
     document.getElementById('transferWaitingLbl').textContent='of '+P(wait);
+    const td=document.getElementById('transferDate'); const t=new Date(); t.setMinutes(t.getMinutes()-t.getTimezoneOffset());
+    td.value = t.toISOString().slice(0,10);
     updateTransfer(); trOv.classList.add('show');
   }
   function updateTransfer(){
@@ -1324,7 +1363,8 @@
     const pot=wins.filter(w=>w.state==='confirmed').sort((a,b)=>a.id-b.id);
     let covered=0, cnt=0; for(const w of pot){ if(covered+w.net<=chosen){w.state='transferred'; covered+=w.net; cnt++;} else break; }
     const mark=Math.max(0, covered+rollover);
-    if(mark>0 || cnt>0){ const dt=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long'});
+    if(mark>0 || cnt>0){ const dv=document.getElementById('transferDate').value;
+      const dt=(dv?new Date(dv+'T00:00:00'):new Date()).toLocaleDateString('en-GB',{day:'numeric',month:'long'});
       transfers.push({id:Date.now(),amount:mark,month:CUR,date:dt,count:cnt}); openMonth=CUR; }
     rollover=0;
     trOv.classList.remove('show'); render();
@@ -1367,7 +1407,7 @@
   ];
   let obQuickChosen=[];     // {id,name,icon,amt} — none by default
   let obInlineCat=null;
-  let config={ goalName:'Invest more', monthly:25000, rate:5, years:20, currency:'GBP', dob:null, first:null };
+  let config={ goalName:'Invest more', monthly:25000, goalMode:'monthly', goalAmount:1000000, rate:5, years:20, currency:'GBP', dob:null, first:null };
   function obRenderCur(){ const el=document.getElementById('obCur'); el.innerHTML='';
     CURRENCIES.forEach(c=>{ const b=document.createElement('button'); b.className='cur-chip'+(config.currency===c.code?' sel':'');
       b.innerHTML=c.sym+'<small>'+c.code+'</small>';
@@ -1382,7 +1422,7 @@
     document.getElementById('obBack').style.visibility = obStep===0?'hidden':'visible';
     document.getElementById('obNext').textContent = obStep===0?'Get started' : obStep===OB_LAST?'Enter Kept' : 'Continue';
     document.getElementById('obSkip').style.display = obStep===0?'none':'block';
-    if(obStep===2){ obYrsLbl(); obRenderCur(); }
+    if(obStep===2){ obYrsLbl(); obRenderCur(); obGoalNameSync(); obPreview(); }
     if(obStep===3) obRenderStep3();
     if(obStep===4) obRenderFirst();
     obDots(); replaceIcons(obEl);
@@ -1391,16 +1431,31 @@
 
   obEl.querySelectorAll('#obObjectives .ob-choice').forEach(b=>{
     b.addEventListener('click',()=>{ obEl.querySelectorAll('#obObjectives .ob-choice').forEach(x=>x.classList.remove('sel'));
-      b.classList.add('sel'); config.goalName=b.dataset.name; document.getElementById('obGoalName').value=b.dataset.name; });
+      b.classList.add('sel'); config.goalName=b.dataset.name;
+      const sel=document.getElementById('obGoalSel'); if([...sel.options].some(o=>o.value===b.dataset.name)) sel.value=b.dataset.name;
+      document.getElementById('obOtherWrap').classList.add('hidden'); });
   });
   document.getElementById('obRate').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
-    config.rate=+b.dataset.rate; document.querySelectorAll('#obRate button').forEach(x=>x.classList.toggle('on',x===b)); });
+    config.rate=+b.dataset.rate; document.querySelectorAll('#obRate button').forEach(x=>x.classList.toggle('on',x===b)); obPreview(); });
   const obYrs=document.getElementById('obYrs');
   function obYrsLbl(){ const ty=BASE_YEAR+config.years; const by=config.dob?new Date(config.dob).getFullYear():null;
     const a=(by&&!isNaN(by))?(ty-by):null;
     document.getElementById('obYrsOut').textContent = a!=null ? ('age '+a+' · '+config.years+' years') : (config.years+' years · '+ty); }
-  obYrs.addEventListener('input',()=>{ config.years=+obYrs.value; obYrsLbl(); });
+  obYrs.addEventListener('input',()=>{ config.years=+obYrs.value; obYrsLbl(); obPreview(); });
   document.getElementById('obDob').addEventListener('change',()=>{ config.dob=document.getElementById('obDob').value||null; obYrsLbl(); });
+  let obGoalMode='monthly';
+  function obGoalSetMode(mode){ obGoalMode=mode; config.goalMode=mode;
+    document.querySelectorAll('#obMode button').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
+    document.getElementById('obMonthlyField').classList.toggle('hidden',mode!=='monthly');
+    document.getElementById('obTargetField').classList.toggle('hidden',mode!=='target');
+    obPreview(); }
+  function obGoalNameSync(){ document.getElementById('obOtherWrap').classList.toggle('hidden', document.getElementById('obGoalSel').value!=='__other'); }
+  function obPreview(){ const el=document.getElementById('obPreview'); if(!el) return; if(obGoalMode!=='target'){ el.textContent=''; return; }
+    const amt=parseM(document.getElementById('obAmount').value); const pm=calcMonthly(amt, config.years, config.rate);
+    el.textContent = amt>0 ? ('Save ≈ '+Pn(pm)+'/month to reach '+Pn(amt)+' by '+(BASE_YEAR+config.years)+' (estimate)') : ''; }
+  document.getElementById('obMode').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) obGoalSetMode(b.dataset.mode); });
+  document.getElementById('obGoalSel').addEventListener('change',obGoalNameSync);
+  document.getElementById('obAmount').addEventListener('input',obPreview);
 
   function obRenderStep3(){ obRenderChosen(); obRenderChips(); document.getElementById('obInline').classList.add('hidden'); }
   function obRenderChosen(){ const el=document.getElementById('obChosen'); el.innerHTML='';
@@ -1451,8 +1506,11 @@
     document.getElementById('obFirstP').textContent='Nice — that’s your first win. Tap Enter Kept.';
   }
   document.getElementById('obNext').addEventListener('click',()=>{
-    if(obStep===2){ config.goalName=(document.getElementById('obGoalName').value||'').trim()||'Invest more';
-      const m=parseM(document.getElementById('obMonthly').value); config.monthly=m>0?m:25000; }
+    if(obStep===2){ const sel=document.getElementById('obGoalSel').value;
+      config.goalName = sel==='__other' ? ((document.getElementById('obGoalOther').value||'').trim()||'My goal') : sel;
+      config.goalMode = obGoalMode;
+      const m=parseM(document.getElementById('obMonthly').value); config.monthly=m>0?m:25000;
+      const a=parseM(document.getElementById('obAmount').value); if(a>0) config.goalAmount=a; }
     if(obStep<OB_LAST){ obStep++; obShow(); } else finishOnboarding();
   });
   document.getElementById('obBack').addEventListener('click',()=>{ if(obStep>0){obStep--; obShow();} });
@@ -1460,7 +1518,7 @@
   function finishOnboarding(){
     let q=obQuickChosen.map(x=>({...x}));
     wins=[]; transfers=[]; rollover=0;
-    goalName=config.goalName; goalTarget=config.monthly; proj={rate:config.rate,years:config.years}; quick=q; openMonth=CUR; onboarded=true;
+    goalName=config.goalName; goalTarget=config.monthly; goalMode=config.goalMode||'monthly'; goalAmount=config.goalAmount||1000000; proj={rate:config.rate,years:config.years}; quick=q; openMonth=CUR; onboarded=true;
     dob=config.dob||null;
     applyCurrency(config.currency);
     if(config.first) wins.push({id:Date.now(),net:config.first.net,cat:config.first.cat,name:config.first.name,state:'confirmed',credibility:'verified',month:CUR,date:new Date()});
@@ -1471,7 +1529,9 @@
   // ---------- settings (You tab) ----------
   const setOv=document.getElementById('settingsOverlay');
   function refreshSettings(){
-    document.getElementById('setGoalSub').textContent = goalName+' · '+Pn(goalTarget)+'/mo';
+    document.getElementById('setGoalSub').textContent = goalMode==='target'
+      ? (goalName+' · '+Pn(goalAmount)+' by '+targetYear())
+      : (goalName+' · '+Pn(goalTarget)+'/mo');
     document.getElementById('setQuickSub').textContent = quick.length+' one-tap log'+(quick.length!==1?'s':'');
     const ra=recurring.filter(r=>r.status==='active').length;
     document.getElementById('setRecurringSub').textContent = ra? (ra+' active') : 'None yet';
@@ -1502,16 +1562,38 @@
 
   // ---------- edit goal ----------
   const geOv=document.getElementById('goalEditOverlay');
+  const GOAL_NAMES=['Invest more','Emergency fund','Save for a goal','Spend consciously'];
+  let geMode='monthly';
+  function geSetMode(mode){ geMode=mode;
+    document.querySelectorAll('#geMode button').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
+    document.getElementById('geMonthlyField').classList.toggle('hidden',mode!=='monthly');
+    document.getElementById('geTargetField').classList.toggle('hidden',mode!=='target');
+    gePreview(); }
+  function geNameSync(){ const sel=document.getElementById('geNameSel').value;
+    document.getElementById('geOtherWrap').classList.toggle('hidden',sel!=='__other'); }
+  function gePreview(){ const el=document.getElementById('gePreview'); if(geMode!=='target'){ el.textContent=''; return; }
+    const amt=parseM(document.getElementById('geAmount').value);
+    const pm=calcMonthly(amt, proj.years, proj.rate);
+    el.textContent = amt>0 ? ('Save ≈ '+Pn(pm)+'/month to reach '+Pn(amt)+' by '+targetYear()+' (estimate)') : ''; }
+  document.getElementById('geMode').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) geSetMode(b.dataset.mode); });
+  document.getElementById('geNameSel').addEventListener('change',geNameSync);
+  document.getElementById('geAmount').addEventListener('input',gePreview);
   document.getElementById('setGoal').addEventListener('click',()=>{
-    document.getElementById('geName').value=goalName;
+    const known=GOAL_NAMES.includes(goalName);
+    document.getElementById('geNameSel').value = known ? goalName : '__other';
+    document.getElementById('geOther').value = known ? '' : goalName;
     document.getElementById('geMonthly').value=(goalTarget/100).toFixed(2);
-    geOv.classList.add('show');
+    document.getElementById('geAmount').value=(goalAmount/100).toFixed(2);
+    geNameSync(); geSetMode(goalMode); geOv.classList.add('show');
   });
   document.getElementById('geCancel').addEventListener('click',()=>geOv.classList.remove('show'));
   geOv.addEventListener('click',e=>{ if(e.target===geOv) geOv.classList.remove('show'); });
   document.getElementById('geSave').addEventListener('click',()=>{
-    goalName=(document.getElementById('geName').value||'').trim()||goalName;
-    const m=parseM(document.getElementById('geMonthly').value); if(m>0) goalTarget=m;
+    const sel=document.getElementById('geNameSel').value;
+    goalName = sel==='__other' ? ((document.getElementById('geOther').value||'').trim()||'My goal') : sel;
+    goalMode = geMode;
+    if(geMode==='target'){ const a=parseM(document.getElementById('geAmount').value); if(a<1){ toast('Enter a target amount','How much do you want to reach?','ti-alert-circle'); return; } goalAmount=a; }
+    else { const m=parseM(document.getElementById('geMonthly').value); if(m>0) goalTarget=m; }
     geOv.classList.remove('show'); refreshSettings(); render(); toast('Goal updated',null,'ti-check');
   });
 
