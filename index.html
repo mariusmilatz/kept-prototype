@@ -902,10 +902,13 @@
   let wins=[], transfers=[];
   let goalTarget=25000, goalName='Invest more';   // goalTarget = monthly amount (monthly mode)
   let goalMode='monthly', goalAmount=1000000;      // target mode: reach goalAmount by the horizon
-  // Monthly contribution needed to reach `amount` in `years` at `rate`% (annual, monthly compounding). Estimate.
+  // Monthly still needed to reach `amount` by `years` at `rate`%, AFTER what you've already saved
+  // (which grows to the target too). Dynamic: save more → this drops; fall behind → it rises. Estimate.
   function calcMonthly(amount, years, rate){ if(!amount||amount<=0||years<=0) return 0;
+    const gap = amount - allLogged()*Math.pow(1+rate/100, years);
+    if(gap<=0) return 0;                                   // already on track — nothing more needed
     const m=Math.pow(1+rate/100,1/12)-1, n=Math.round(years*12);
-    return m<=0 ? Math.round(amount/n) : Math.round(amount*m/(Math.pow(1+m,n)-1)); }
+    return m<=0 ? Math.round(gap/n) : Math.round(gap*m/(Math.pow(1+m,n)-1)); }
   function requiredMonthly(){ return calcMonthly(goalAmount, proj.years, proj.rate); }
   function monthlyTargetVal(){ return goalMode==='target' ? requiredMonthly() : goalTarget; }
   let proj={rate:5, years:20};
@@ -1251,7 +1254,11 @@
   altSwitch.addEventListener('click',()=>{ altOn=!altOn; altSwitch.classList.toggle('on',altOn);
     altSwitch.setAttribute('aria-checked',altOn); altField.classList.toggle('hidden',!altOn);
     netPrev.style.display=altOn?'flex':'none'; origLabel.textContent=altOn?'What it would have cost':'Amount kept'; updateNet();});
-  function parseM(v){ const n=Math.round(parseFloat(v||'0')*100); return isNaN(n)?0:n; }
+  function parseM(v){ let s=(''+(v||'')).trim().replace(/[£€$\s]/g,'');
+    const c=s.lastIndexOf(','), d=s.lastIndexOf('.');
+    if(c>-1 && d>-1){ s = c>d ? s.replace(/\./g,'').replace(',','.') : s.replace(/,/g,''); }
+    else if(c>-1){ s=s.replace(',','.'); }   // single comma → decimal separator (e.g. "5,55" = 5.55)
+    const n=Math.round(parseFloat(s)*100); return isNaN(n)?0:n; }
   function updateNet(){
     const o=parseM(document.getElementById('origInput').value);
     const a=altOn?parseM(document.getElementById('altInput').value):0;
