@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: A4; margin: 12mm 15mm; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root{
+    --paper:#FBFAF6; --ink:#1C2024; --muted:#63666C; --hair:#E4E1D8;
+    --accent:#2F5568; --accent-soft:#E7EEF1; --accent-ink:#22404F;
+    --amber:#C98A45; --amber-soft:#F6E9D6; --amber-ink:#8A5A22;
+  }
+  body{ margin:0; font-family:-apple-system,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+    color:var(--ink); background:#fff; font-size:11.2px; line-height:1.55; }
+  .round{ font-family:ui-rounded,"SF Pro Rounded","Nunito",system-ui,sans-serif; }
+  .head{ display:flex; align-items:flex-end; justify-content:space-between; border-bottom:2px solid var(--accent); padding-bottom:12px; margin-bottom:16px; }
+  .brand{ font-family:ui-rounded,"SF Pro Rounded",system-ui,sans-serif; font-weight:700; font-size:30px; letter-spacing:-.02em; color:var(--accent); }
+  .brand span{ display:block; font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--amber-ink); margin-top:2px; }
+  .promise{ text-align:right; font-family:ui-rounded,system-ui,sans-serif; font-weight:600; font-size:13px; color:var(--ink); max-width:210px; }
+  h2{ font-family:ui-rounded,system-ui,sans-serif; font-size:15px; font-weight:700; letter-spacing:-.01em; color:var(--accent-ink);
+    margin:14px 0 6px; display:flex; align-items:center; gap:8px; }
+  h2 .n{ display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:6px;
+    background:var(--accent); color:#fff; font-size:11px; font-weight:700; flex:0 0 auto; }
+  p{ margin:0 0 8px; }
+  .lead{ font-size:12px; color:var(--ink); }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:6px 22px; margin:4px 0 4px; }
+  ul{ margin:2px 0 8px; padding-left:0; list-style:none; }
+  li{ position:relative; padding-left:16px; margin-bottom:4px; }
+  li::before{ content:""; position:absolute; left:2px; top:6px; width:6px; height:6px; border-radius:50%; background:var(--amber); }
+  .muted{ color:var(--muted); }
+  .steps{ counter-reset:s; }
+  .steps .li{ position:relative; padding-left:26px; margin-bottom:7px; }
+  .steps .li::before{ counter-increment:s; content:counter(s); position:absolute; left:0; top:-1px;
+    width:19px; height:19px; border-radius:50%; background:var(--accent-soft); color:var(--accent-ink);
+    font-family:ui-rounded,system-ui,sans-serif; font-weight:700; font-size:11px; display:flex; align-items:center; justify-content:center; }
+  .callout{ background:var(--amber-soft); border-radius:10px; padding:11px 14px; margin:6px 0 4px; }
+  .callout b{ color:var(--amber-ink); }
+  .link{ background:var(--accent-soft); border-radius:8px; padding:8px 12px; font-family:ui-rounded,system-ui,sans-serif;
+    font-weight:600; color:var(--accent-ink); display:inline-block; margin:2px 0 6px; }
+  .foot{ margin-top:12px; border-top:1px solid var(--hair); padding-top:8px; color:var(--muted); font-size:10px; }
+  .cols{ display:grid; grid-template-columns:1.15fr 1fr; gap:26px; }
+</style>
+</head>
+<body>
+
+  <div class="head">
+    <div class="brand">Kept<span>Early test · Stage 1</span></div>
+    <div class="promise">Turn the money you choose not to spend into your future.</div>
+  </div>
+
+  <p class="lead">Thanks for trying <b>Kept</b> this early. This is a first working version — a real, usable app, but a starting point, not the finished thing. Have a play with it however feels natural. There’s nothing you can break, and no right way to use it.</p>
+
+  <h2><span class="n">1</span> The idea</h2>
+  <p>Every day we decide <i>not</i> to buy things — a coffee, a takeaway, a taxi, an impulse buy. Usually that “saved” money just disappears back into your account. Kept captures that moment: you log the amount you chose not to spend, it keeps a running total, shows what that money could grow into over time, and helps you actually move it into savings or investments. It’s about rewarding conscious decisions, not budgeting or guilt.</p>
+
+  <div class="cols">
+    <div>
+      <h2><span class="n">2</span> What you can do right now</h2>
+      <p class="muted" style="margin-bottom:6px;">Explore any of these — no set order:</p>
+      <ul>
+        <li>Pick your currency and set a savings goal when you first open it</li>
+        <li>Log a “Saving Win” — something you skipped — in one or two taps</li>
+        <li>Use your own quick-tap shortcuts, or add and edit your own</li>
+        <li>Watch your monthly total, goal progress and projected future value react instantly</li>
+        <li>See what your savings could become — pick a target year and expected return</li>
+        <li>Mark money as transferred, and browse your history month by month</li>
+        <li>Set up a recurring saving (like a cancelled subscription)</li>
+        <li>Change your goal, quick actions or currency any time under <b>You</b></li>
+      </ul>
+    </div>
+    <div>
+      <h2><span class="n">3</span> Where it’s heading</h2>
+      <p>This first stage is about one question: does logging what you didn’t spend actually help people save more? If it does, next steps include:</p>
+      <ul>
+        <li>Connecting securely to your bank</li>
+        <li>Moving the money automatically</li>
+        <li>Investing it into long-term funds (ETFs)</li>
+        <li>Shared goals for couples</li>
+        <li>Watch, widgets and more</li>
+      </ul>
+      <p class="muted">None of that is in this test version yet — it’s the roadmap.</p>
+    </div>
+  </div>
+
+  <h2><span class="n">4</span> Get it on your phone (2 minutes)</h2>
+  <p class="muted" style="margin-bottom:6px;">It’s a web app — no App Store, no account. <b>Open the link in Safari</b> (on iPhone this only works in Safari):</p>
+  <div class="link">https://mariusmilatz.github.io/kept-prototype/</div>
+  <div class="steps">
+    <div class="li">Open the link above in <b>Safari</b> on your phone.</div>
+    <div class="li">Tap the <b>Share</b> button (the square with an arrow pointing up).</div>
+    <div class="li">Scroll down and tap <b>Add to Home Screen</b>, then <b>Add</b>.</div>
+    <div class="li">Tap the new <b>Kept</b> icon — it opens fullscreen, just like a normal app.</div>
+  </div>
+  <p class="muted" style="margin-top:2px;">Adding it to your Home Screen matters — that’s what lets it remember your data between visits.</p>
+
+  <h2><span class="n">5</span> Good to know</h2>
+  <div class="callout">
+    <p style="margin:0 0 5px;"><b>It’s a stage-1 test.</b> No real money moves anywhere — you just log and “mark” things yourself. Your data stays privately on your own phone (it isn’t sent to me or anyone else), and it’ll remember it between sessions once you add it to your Home Screen.</p>
+    <p style="margin:0;" class="muted">Want a clean slate any time? <b>You</b> → <b>Reset app</b>. Prefer to look around first? <b>You</b> → <b>Load sample data</b>.</p>
+  </div>
+
+  <div class="foot">
+    Kept — working name, early prototype. Not financial advice; projected values are estimates based on assumptions you set. Thanks for helping shape it. — Marius
+  </div>
+
+</body>
+</html>

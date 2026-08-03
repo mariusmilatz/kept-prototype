@@ -1,0 +1,1799 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kept</title>
+<meta name="description" content="Turn the money you choose not to spend into your future.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#F3F1EA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1114" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Kept">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<style>html,body{background:#F3F1EA}@media(prefers-color-scheme:dark){html,body{background:#0E1114}}</style>
+</head>
+<body>
+<style>
+  :root{
+    --paper:#F3F1EA; --card:#FBFAF6; --card-2:#EFEDE4;
+    --ink:#1C2024; --muted:#71757C; --hair:#E2DFD5;
+    --accent:#2F5568; --accent-soft:#E4ECEF; --accent-ink:#22404F;
+    --amber:#C98A45; --amber-soft:#F6E9D6; --amber-ink:#8A5A22;
+    --good:#5F8A6E; --shadow:rgba(28,32,36,.16);
+    --font-round:ui-rounded,"SF Pro Rounded","Nunito",system-ui,sans-serif;
+    --font-ui:-apple-system,"SF Pro Text",system-ui,"Segoe UI",sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0E1114; --card:#191D22; --card-2:#212830;
+      --ink:#ECEAE3; --muted:#9096A0; --hair:#2A3138;
+      --accent:#6F9DB4; --accent-soft:#1E2E37; --accent-ink:#BFE0EE;
+      --amber:#E0A968; --amber-soft:#33281A; --amber-ink:#F0CE9C;
+      --good:#84B394; --shadow:rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0E1114; --card:#191D22; --card-2:#212830;
+    --ink:#ECEAE3; --muted:#9096A0; --hair:#2A3138;
+    --accent:#6F9DB4; --accent-soft:#1E2E37; --accent-ink:#BFE0EE;
+    --amber:#E0A968; --amber-soft:#33281A; --amber-ink:#F0CE9C;
+    --good:#84B394; --shadow:rgba(0,0,0,.5);
+  }
+  :root[data-theme="light"]{
+    --paper:#F3F1EA; --card:#FBFAF6; --card-2:#EFEDE4;
+    --ink:#1C2024; --muted:#71757C; --hair:#E2DFD5;
+    --accent:#2F5568; --accent-soft:#E4ECEF; --accent-ink:#22404F;
+    --amber:#C98A45; --amber-soft:#F6E9D6; --amber-ink:#8A5A22;
+    --good:#5F8A6E; --shadow:rgba(28,32,36,.16);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--font-ui);color:var(--ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, color-mix(in srgb,var(--amber-soft) 55%, transparent), transparent 60%),
+      var(--paper);
+    min-height:100vh;-webkit-font-smoothing:antialiased;}
+  .stage{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:18px;padding:28px 16px 40px;}
+  .stage-head{text-align:center;max-width:360px}
+  .stage-head h1{font-family:var(--font-round);font-size:19px;font-weight:600;margin:0 0 4px;letter-spacing:-.02em}
+  .stage-head p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+  .theme-btn{margin-top:12px;border:1px solid var(--hair);background:var(--card);
+    color:var(--muted);font:inherit;font-size:12px;padding:7px 14px;border-radius:999px;cursor:pointer;
+    display:inline-flex;gap:7px;align-items:center}
+  .theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  .phone{width:376px;max-width:calc(100vw - 24px);height:788px;max-height:calc(100vh - 40px);
+    background:var(--paper);border-radius:46px;padding:12px;position:relative;
+    box-shadow:0 2px 2px rgba(0,0,0,.12),0 24px 60px -12px var(--shadow),0 0 0 1px var(--hair);}
+  .screen{position:absolute;inset:12px;border-radius:36px;overflow:hidden;
+    background:linear-gradient(180deg,color-mix(in srgb,var(--amber-soft) 30%,var(--paper)),var(--paper) 22%);
+    display:flex;flex-direction:column}
+  .notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);
+    width:118px;height:28px;background:var(--ink);border-radius:0 0 16px 16px;z-index:40;opacity:.92}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;
+    padding:14px 26px 6px;font-size:13px;font-weight:600;font-family:var(--font-round);z-index:30}
+  .statusbar .icons{display:flex;gap:6px;color:var(--ink);font-size:13px}
+
+  .view{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 20px 96px;-webkit-overflow-scrolling:touch}
+  .view::-webkit-scrollbar{width:0}
+  .hidden{display:none}
+
+  .eyebrow{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0}
+  .h-screen{font-family:var(--font-round);font-size:22px;font-weight:600;letter-spacing:-.02em;margin:2px 0 14px}
+
+  .hero{padding:8px 2px 2px}
+  .hero .lbl{font-size:13px;color:var(--muted);margin:0 0 2px}
+  .hero .amount{font-family:var(--font-round);font-weight:700;letter-spacing:-.03em;
+    font-size:52px;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink);
+    transition:transform .5s cubic-bezier(.2,.9,.2,1)}
+  .hero .amount.pulse{transform:scale(1.05)}
+  .hero .sub{font-size:13px;color:var(--muted);margin:8px 0 0}
+  .hero-fv{display:inline-flex;align-items:center;gap:5px;margin:12px 0 0;font-size:12.5px;font-weight:600;
+    color:var(--amber-ink);background:var(--amber-soft);padding:6px 11px;border-radius:999px;font-variant-numeric:tabular-nums}
+  .hero-fv i,.hero-fv svg{font-size:13px}
+  .add-fv{font-size:12px;color:var(--amber-ink);font-weight:600;margin-top:8px;min-height:15px;display:flex;align-items:center;gap:5px}
+  .add-fv i,.add-fv svg{font-size:13px}
+
+  .states{display:flex;gap:10px;margin:16px 0 4px}
+  .chip{flex:1;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:11px 13px}
+  .chip .k{font-size:11px;color:var(--muted);letter-spacing:.02em;display:flex;align-items:center;gap:5px}
+  .chip .v{font-family:var(--font-round);font-weight:600;font-size:18px;margin-top:3px;font-variant-numeric:tabular-nums}
+  .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+  .dot.wait{background:var(--accent)} .dot.done{background:var(--amber)}
+
+  .card{background:var(--card);border:1px solid var(--hair);border-radius:18px;padding:16px;margin-top:16px}
+  .card-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+  .card-h .t{font-family:var(--font-round);font-weight:600;font-size:15px}
+  .goal-sub{font-size:11.5px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+  .goal-sub:empty{display:none}
+  .card-h .a{font-size:12px;color:var(--accent);font-weight:600;cursor:pointer}
+
+  .goal .bar{height:9px;border-radius:6px;background:var(--card-2);overflow:hidden;margin:10px 0 8px}
+  .goal .fill{height:100%;border-radius:6px;background:var(--accent);width:0;transition:width .7s cubic-bezier(.2,.9,.2,1)}
+  .goal .row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+  .goal .row b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+
+  .quick-row{display:flex;gap:9px;overflow-x:auto;padding:2px 0 4px;margin:0 -20px;padding-left:20px;padding-right:20px}
+  .quick-row::-webkit-scrollbar{height:0}
+  .qa{flex:0 0 auto;background:var(--card);border:1px solid var(--hair);border-radius:15px;
+    padding:11px 13px;min-width:88px;cursor:pointer;transition:transform .12s,border-color .15s;text-align:left}
+  .qa:hover{border-color:var(--accent)} .qa:active{transform:scale(.95)}
+  .qa .ic{width:30px;height:30px;border-radius:9px;background:var(--accent-soft);color:var(--accent-ink);
+    display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px}
+  .qa .n{font-size:12.5px;font-weight:600} .qa .p{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:1px}
+
+  .future-teaser{background:
+      radial-gradient(120% 130% at 100% 0%, var(--amber-soft), transparent 62%),var(--card);
+    border:1px solid var(--hair);position:relative;overflow:hidden}
+  .future-teaser .cap{font-size:12px;color:var(--amber-ink);font-weight:600;display:flex;gap:6px;align-items:center}
+  .future-teaser .big{font-family:var(--font-round);font-weight:700;font-size:30px;letter-spacing:-.02em;
+    margin:6px 0 2px;font-variant-numeric:tabular-nums;transition:opacity .3s}
+  .future-teaser .note{font-size:11.5px;color:var(--muted)}
+  .spark{position:absolute;right:12px;bottom:10px;width:96px;height:44px;opacity:.9}
+
+  .btn{width:100%;border:none;border-radius:16px;padding:16px;font-family:var(--font-round);
+    font-weight:600;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .12s,filter .15s}
+  .btn:active{transform:scale(.98)}
+  .btn.primary{background:var(--accent);color:#fff}
+  :root[data-theme="dark"] .btn.primary,@media(prefers-color-scheme:dark){}
+  .btn.primary{color:#fff}
+  .btn.amber{background:var(--amber);color:#fff}
+  .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--hair)}
+  .fab-wrap{padding:14px 0 2px}
+
+  .tabbar{position:absolute;left:12px;right:12px;bottom:12px;height:78px;border-radius:0 0 36px 36px;
+    background:color-mix(in srgb,var(--card) 88%,transparent);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--hair);display:flex;align-items:flex-start;justify-content:space-around;
+    padding:12px 20px 0;z-index:30}
+  .tab{background:none;border:none;cursor:pointer;color:var(--muted);display:flex;flex-direction:column;
+    align-items:center;gap:3px;font-family:var(--font-ui);font-size:10.5px;font-weight:600;padding:2px 10px}
+  .tab i,.tab svg{font-size:22px}
+  .tab.active{color:var(--accent)}
+  .tab.add{margin-top:-26px}
+  .tab.add .plus{width:54px;height:54px;border-radius:50%;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:26px;
+    box-shadow:0 8px 18px -4px color-mix(in srgb,var(--accent) 60%,transparent)}
+  .tab.add span{color:var(--muted)}
+
+  .activity-item{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--hair)}
+  .activity-item .ic{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent-ink);
+    display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto}
+  .activity-item .mid{flex:1;min-width:0}
+  .activity-item .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .activity-item .mt{font-size:11.5px;color:var(--muted);margin-top:1px}
+  .activity-item .rt{text-align:right;flex:0 0 auto}
+  .activity-item .rv{font-family:var(--font-round);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums}
+  .state-pill{font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;display:inline-block;margin-top:3px;letter-spacing:.02em}
+  .st-wait{background:var(--accent-soft);color:var(--accent-ink)}
+  .st-done{background:var(--amber-soft);color:var(--amber-ink)}
+  .st-confirm{background:var(--accent);color:#fff;cursor:pointer}
+
+  .seg{display:flex;background:var(--card-2);border-radius:12px;padding:3px;gap:2px;margin:4px 0 16px}
+  .seg button{flex:1;border:none;background:none;font-family:var(--font-round);font-weight:600;font-size:13px;
+    color:var(--muted);padding:8px;border-radius:9px;cursor:pointer;font-variant-numeric:tabular-nums}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px var(--shadow)}
+
+  .future-hero{text-align:center;padding:14px 0 4px}
+  .future-hero .cap{font-size:12px;color:var(--amber-ink);font-weight:600}
+  .future-hero .big{font-family:var(--font-round);font-weight:700;font-size:46px;letter-spacing:-.03em;
+    line-height:1.05;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+  .future-hero .as{font-size:11.5px;color:var(--muted)}
+  .curve-wrap{position:relative;height:150px;margin:10px 0 6px}
+  #curveCanvas{display:block;width:100%;height:100%}
+  .two-up{display:flex;gap:10px;margin-top:10px}
+  .two-up .b{flex:1;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:12px}
+  .two-up .b .k{font-size:11px;color:var(--muted)} .two-up .b .v{font-family:var(--font-round);font-weight:600;font-size:17px;margin-top:2px;font-variant-numeric:tabular-nums}
+  .ctrl{margin-top:8px}
+  .ctrl .lab{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+  .ctrl .lab b{color:var(--ink);font-family:var(--font-round);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+  .disclaimer{font-size:11px;color:var(--muted);line-height:1.5;margin-top:14px;
+    background:var(--card);border:1px solid var(--hair);border-radius:12px;padding:11px 13px}
+
+  .overlay{position:absolute;inset:0;z-index:60;background:color-mix(in srgb,var(--ink) 34%,transparent);
+    display:flex;align-items:flex-end;border-radius:36px;opacity:0;pointer-events:none;transition:opacity .28s}
+  .overlay.show{opacity:1;pointer-events:auto}
+  .sheet{width:100%;background:var(--paper);border-radius:28px 28px 36px 36px;padding:8px 20px 26px;
+    transform:translateY(18px);transition:transform .3s cubic-bezier(.2,.9,.2,1);max-height:92%;overflow-y:auto}
+  .overlay.show .sheet{transform:translateY(0)}
+  .grip{width:38px;height:5px;border-radius:3px;background:var(--hair);margin:8px auto 14px}
+  .sheet h3{font-family:var(--font-round);font-size:19px;margin:0 0 3px;font-weight:600}
+  .sheet .sub{font-size:12.5px;color:var(--muted);margin:0 0 16px}
+  .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:8px}
+  .cat{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:12px 6px;cursor:pointer;
+    text-align:center;transition:border-color .15s,transform .1s}
+  .cat:hover{border-color:var(--accent)} .cat:active{transform:scale(.96)}
+  .cat.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .cat i,.cat svg{font-size:21px;color:var(--accent-ink)} .cat span{display:block;font-size:11px;font-weight:600;margin-top:5px}
+  .field{margin-top:12px}
+  .field label{font-size:12px;color:var(--muted);font-weight:600}
+  .field .money-in{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--hair);
+    border-radius:13px;padding:12px 14px;margin-top:6px}
+  .field .money-in span{font-family:var(--font-round);font-size:20px;color:var(--muted)}
+  .field .money-in input{border:none;background:none;font-family:var(--font-round);font-weight:600;font-size:22px;
+    color:var(--ink);width:100%;outline:none;font-variant-numeric:tabular-nums}
+  .altrow{display:flex;align-items:center;justify-content:space-between;margin-top:14px;
+    font-size:13px;color:var(--ink)}
+  .switch{width:44px;height:26px;border-radius:999px;background:var(--card-2);position:relative;cursor:pointer;transition:background .2s;flex:0 0 auto}
+  .switch.on{background:var(--accent)}
+  .switch .k{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}
+  .switch.on .k{left:21px}
+  .net-preview{display:flex;justify-content:space-between;align-items:center;background:var(--accent-soft);
+    border-radius:13px;padding:12px 14px;margin-top:14px}
+  .net-preview .k{font-size:12.5px;color:var(--accent-ink);font-weight:600}
+  .net-preview .v{font-family:var(--font-round);font-weight:700;font-size:20px;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+
+  .transfer-amt{text-align:center;padding:10px 0 4px}
+  .transfer-amt .k{font-size:12px;color:var(--muted)}
+  .transfer-amt .v{font-family:var(--font-round);font-weight:700;font-size:40px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;transition:color .2s}
+  .fifo-note{font-size:11.5px;color:var(--amber-ink);background:var(--amber-soft);border-radius:11px;
+    padding:10px 12px;margin-top:12px;line-height:1.5;display:none}
+  .fifo-note.show{display:block}
+
+  .toast{position:absolute;left:50%;bottom:104px;transform:translate(-50%,20px);z-index:70;
+    background:var(--ink);color:var(--paper);border-radius:15px;padding:12px 14px 12px 16px;
+    display:flex;align-items:center;gap:14px;min-width:250px;box-shadow:0 10px 26px -6px var(--shadow);
+    opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+  .toast.show{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+  .toast .tx{font-size:13px;font-weight:600;font-family:var(--font-round)}
+  .toast .tx small{display:block;font-weight:400;opacity:.7;font-family:var(--font-ui);font-size:11px;margin-top:1px}
+  .toast .undo{margin-left:auto;color:var(--amber);font-weight:700;font-size:13px;cursor:pointer;
+    background:none;border:none;font-family:var(--font-round);padding:4px 6px}
+
+  .tap-hint{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;font-weight:600;color:var(--amber-ink)}
+  .tap-hint i{font-size:14px}
+  .opt{color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0}
+  .text-in{width:100%;background:var(--card);border:1px solid var(--hair);border-radius:13px;padding:12px 14px;margin-top:6px;
+    font-family:var(--font-ui);font-size:15px;color:var(--ink);outline:none}
+  .text-in::placeholder{color:var(--muted)}
+  .text-in:focus{border-color:var(--accent)}
+  .money-in:focus-within{border-color:var(--accent)}
+  .curve-legend{display:flex;gap:16px;margin-top:12px;font-size:11.5px;color:var(--muted)}
+  .curve-legend span{display:inline-flex;align-items:center;gap:6px}
+  .curve-legend .dash{width:16px;height:0;border-top:2px solid var(--accent);display:inline-block}
+  .curve-legend .dash.dot{border-top-style:dotted;border-top-width:2px}
+  .month-sec{margin-bottom:10px;border:1px solid var(--hair);border-radius:14px;overflow:hidden;background:var(--card)}
+  .month-head{width:100%;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:13px 14px}
+  .month-head .mh-l{display:flex;align-items:center;gap:9px;font-family:var(--font-round);font-weight:600;font-size:15px;color:var(--ink)}
+  .month-head .mh-l i,.month-head .mh-l svg{color:var(--muted);transition:transform .2s}
+  .month-head.open .mh-l i,.month-head.open .mh-l svg{transform:rotate(90deg)}
+  .month-head .mh-r{text-align:right}
+  .month-head .mh-r b{font-family:var(--font-round);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums}
+  .month-head .mh-r small{display:block;font-size:11px;color:var(--muted)}
+  .month-body{padding:0 14px 4px}
+  .month-body .activity-item:last-child{border-bottom:none}
+  .activity-item .ic.tr{background:var(--amber-soft);color:var(--amber-ink)}
+  .empty-note{font-size:12.5px;color:var(--muted);text-align:center;padding:24px 0}
+  .money-in.sym-suffix .cur-sym{order:2;margin-left:6px} .money-in.sym-suffix input{order:1}
+  .cur-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .cur-chip{min-width:56px;background:var(--card);border:1.5px solid var(--hair);border-radius:12px;padding:8px 12px;cursor:pointer;
+    font-family:var(--font-round);font-weight:600;font-size:16px;color:var(--ink);text-align:center;line-height:1.15}
+  .cur-chip small{display:block;font-size:10px;color:var(--muted);font-weight:400;letter-spacing:.03em}
+  .cur-chip.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink)}
+  .cur-chip.sel small{color:var(--accent-ink)}
+  .fut-toggle{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:11px 14px;margin:2px 0 14px}
+  .fut-toggle .ft-txt{flex:1}
+  .fut-toggle .ft-txt b{font-family:var(--font-round);font-weight:600;font-size:13.5px;display:block}
+  .fut-toggle .ft-txt small{font-size:11.5px;color:var(--muted);line-height:1.4;display:block;margin-top:1px}
+  .swipe-wrap{position:relative;overflow:hidden}
+  .swipe-actions{position:absolute;top:0;left:0;bottom:0;display:flex}
+  .swipe-actions button{border:none;color:#fff;font-family:var(--font-round);font-weight:600;font-size:11px;
+    width:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
+  .swipe-actions button i,.swipe-actions button svg{font-size:18px}
+  .swipe-actions .sw-edit{background:var(--accent)}
+  .swipe-actions .sw-del{background:#B0554C}
+  .swipe-content{position:relative;background:var(--card);will-change:transform;touch-action:pan-y;transition:transform .18s cubic-bezier(.2,.9,.2,1)}
+  .swipe-content.dragging{transition:none}
+  .month-body > *:last-child .activity-item,.month-body > .activity-item:last-child{border-bottom:none}
+  .btn.danger{color:#B0554C;border-color:color-mix(in srgb,#B0554C 40%,var(--hair))}
+  :root[data-theme="dark"] .btn.danger,.btn.danger{color:#C56B61}
+  .swipe-hint{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;padding:2px 2px 10px}
+  .onboarding{position:absolute;inset:0;z-index:90;background:
+      radial-gradient(120% 65% at 50% 0%, var(--amber-soft), transparent 55%),var(--paper);
+    display:flex;flex-direction:column;padding:24px 22px 20px;border-radius:36px}
+  .onboarding.hidden{display:none}
+  .ob-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;min-height:24px}
+  .ob-dots{display:flex;gap:6px}
+  .ob-dots i{width:7px;height:7px;border-radius:50%;background:var(--hair);display:block;transition:background .2s,width .2s}
+  .ob-dots i.on{background:var(--accent);width:18px;border-radius:4px}
+  .ob-skip{background:none;border:none;color:var(--muted);font-family:var(--font-ui);font-size:13px;font-weight:600;cursor:pointer}
+  .ob-body{flex:1;display:flex;flex-direction:column;justify-content:center;overflow-y:auto}
+  .ob-body::-webkit-scrollbar{width:0}
+  .ob-step{animation:obIn .35s cubic-bezier(.2,.9,.2,1)}
+  @keyframes obIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .ob-logo{font-family:var(--font-round);font-weight:700;font-size:42px;letter-spacing:-.03em;color:var(--accent);margin-bottom:18px}
+  .ob-eyebrow{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--amber-ink);margin:0 0 8px}
+  .ob-h{font-family:var(--font-round);font-size:25px;font-weight:600;letter-spacing:-.02em;line-height:1.15;margin:0 0 10px;text-wrap:balance;color:var(--ink)}
+  .ob-p{font-size:14px;color:var(--muted);line-height:1.5;margin:0 0 18px}
+  .ob-choices{display:flex;flex-direction:column;gap:10px}
+  .ob-choice{display:flex;align-items:center;gap:13px;background:var(--card);border:1.5px solid var(--hair);border-radius:15px;padding:15px 16px;cursor:pointer;font-family:var(--font-round);font-size:15px;font-weight:600;color:var(--ink);text-align:left;transition:border-color .15s,background .15s}
+  .ob-choice i,.ob-choice svg{font-size:22px;color:var(--accent)}
+  .ob-choice.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .ob-qa{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .ob-qa button{display:flex;flex-direction:column;align-items:flex-start;gap:6px;background:var(--card);border:1.5px solid var(--hair);border-radius:15px;padding:13px 14px;cursor:pointer;font-family:var(--font-ui);text-align:left;position:relative;transition:border-color .15s,background .15s}
+  .ob-qa button .qic{width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:17px}
+  .ob-qa button .qn{font-size:14px;font-weight:600;color:var(--ink)}
+  .ob-qa button .qp{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .ob-qa button.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .ob-qa button .qtick{display:none;position:absolute;top:10px;right:10px;color:var(--accent);font-size:16px}
+  .ob-qa button.sel .qtick{display:block}
+  .ob-celebrate{text-align:center;padding:18px;background:var(--card);border:1px solid var(--hair);border-radius:16px;margin-top:16px}
+  .ob-celebrate .big{font-family:var(--font-round);font-weight:700;font-size:26px;color:var(--ink)}
+  .ob-celebrate .sm{font-size:13px;color:var(--amber-ink);font-weight:600;margin-top:4px}
+  .ob-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .ob-chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1.5px solid var(--hair);border-radius:12px;padding:9px 13px;cursor:pointer;font-family:var(--font-round);font-weight:600;font-size:13.5px;color:var(--ink)}
+  .ob-chip i,.ob-chip svg{font-size:16px;color:var(--accent)}
+  .ob-chip.custom{border-style:dashed;color:var(--accent)}
+  .ob-chosen-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--hair)}
+  .ob-empty{font-size:13px;color:var(--muted);padding:6px 0}
+  .ob-inline{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:12px 14px;margin-top:12px}
+  .ob-foot{display:flex;gap:10px;margin-top:16px;padding-bottom:env(safe-area-inset-bottom)}
+  .set-row{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:14px 15px;cursor:pointer;font-family:var(--font-ui);margin-bottom:10px;text-align:left}
+  .set-row span{display:flex;flex-direction:column}
+  .set-row b{font-family:var(--font-round);font-size:15px;font-weight:600;color:var(--ink)}
+  .set-row small{font-size:12px;color:var(--muted);margin-top:1px}
+  .set-row i,.set-row svg{color:var(--muted);font-size:18px;flex:0 0 auto}
+  .set-row.danger b{color:#B0554C}
+  .qle-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--hair)}
+  .qle-move{display:flex;flex-direction:column;gap:2px}
+  .qle-move button{width:26px;height:22px;border:1px solid var(--hair);background:var(--card);border-radius:7px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;color:var(--muted);padding:0}
+  .qle-move button:disabled{opacity:.35;cursor:default}
+  .qle-move button i,.qle-move button svg{font-size:14px}
+  .qle-ic{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto}
+  .qle-mid{flex:1;min-width:0;cursor:pointer}
+  .qle-mid b{font-family:var(--font-round);font-weight:600;font-size:14.5px;display:block}
+  .qle-mid small{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .qle-del{border:none;background:none;color:#B0554C;cursor:pointer;font-size:18px;padding:6px;flex:0 0 auto}
+  @media (display-mode:standalone),(max-width:480px){
+    .onboarding{border-radius:0;padding-top:calc(env(safe-area-inset-top) + 20px);padding-bottom:calc(env(safe-area-inset-bottom) + 14px)}
+    .stage{padding:0;min-height:100dvh;display:block;gap:0}
+    .stage-head{display:none}
+    .phone{width:100%;max-width:none;height:100dvh;max-height:none;border-radius:0;padding:0;box-shadow:none}
+    .screen{inset:0;border-radius:0}
+    .notch{display:none}
+    .statusbar{display:none}
+    .view{padding-top:calc(env(safe-area-inset-top) + 16px);padding-bottom:calc(104px + env(safe-area-inset-bottom))}
+    .tabbar{left:0;right:0;bottom:0;border-radius:0;height:calc(64px + env(safe-area-inset-bottom));padding-bottom:calc(env(safe-area-inset-bottom))}
+    .overlay{border-radius:0}
+    .toast{bottom:calc(96px + env(safe-area-inset-bottom))}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="stage">
+  <div class="stage-head">
+    <h1>Kept — core loop prototype</h1>
+    <p>Tap a quick action, watch the total and the future value move together, then mark a transfer. Everything reacts live — this is the reward loop, not a static mockup.</p>
+    <button class="theme-btn" id="themeToggle" aria-label="Toggle light and dark theme"><i class="ti ti-moon"></i><span>Toggle theme</span></button>
+  </div>
+
+  <div class="phone">
+    <div class="notch" aria-hidden="true"></div>
+    <div class="screen">
+      <div class="statusbar">
+        <span id="clock">9:41</span>
+        <span class="icons"><i class="ti ti-signal-4g"></i><i class="ti ti-wifi"></i><i class="ti ti-battery-3"></i></span>
+      </div>
+
+      <!-- HOME -->
+      <div class="view" id="view-home">
+        <div class="hero">
+          <p class="lbl">Kept this month</p>
+          <div class="amount" id="homeAmount">£183.40</div>
+          <p class="sub" id="homeCount">16 Saving Wins · July</p>
+          <p class="hero-fv"><i class="ti ti-arrow-up-right"></i><span id="heroFV">≈ £498 in 20 years invested</span></p>
+        </div>
+
+        <div class="card goal">
+          <div class="card-h"><div><div class="t" id="goalTitle">Invest £250 this month</div><div class="goal-sub" id="goalSub"></div></div></div>
+          <div class="bar"><div class="fill" id="goalFill"></div></div>
+          <div class="row"><span id="goalNow">£183.40 kept</span><span id="goalRight"><b id="goalLeft">£66.60</b> to go</span></div>
+        </div>
+
+        <div style="margin-top:18px" id="quickSection">
+          <p class="eyebrow">Log in one tap</p>
+          <div class="quick-row" id="quickRow"></div>
+        </div>
+
+        <div class="card future-teaser" role="button" tabindex="0" id="teaserCard">
+          <div class="cap"><i class="ti ti-arrow-up-right"></i>Could become</div>
+          <div class="big" id="teaserFuture">£75,900</div>
+          <div class="note" id="teaserNote">estimated in 20 years · if kept and invested</div>
+          <div class="tap-hint"><i class="ti ti-arrow-right"></i>See your future</div>
+        </div>
+
+        <div class="card" style="padding:14px 16px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:38px;height:38px;border-radius:11px;background:var(--amber-soft);color:var(--amber-ink);display:flex;align-items:center;justify-content:center;font-size:18px"><i class="ti ti-calendar-clock"></i></div>
+            <div style="flex:1">
+              <div style="font-size:13.5px;font-weight:600">Next transfer · 28 July</div>
+              <div style="font-size:11.5px;color:var(--muted)" id="transferStatusLine">£183.40 ready to move</div>
+            </div>
+            <i class="ti ti-chevron-right" style="color:var(--muted)" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY -->
+      <div class="view hidden" id="view-activity">
+        <p class="eyebrow" style="margin-top:8px">Your record</p>
+        <h2 class="h-screen">Activity</h2>
+        <div class="seg" id="actSeg">
+          <button data-f="win" class="on">Saving Wins</button>
+          <button data-f="sub">Subscriptions</button>
+          <button data-f="transfer">Transfers</button>
+        </div>
+        <div id="activityList"></div>
+      </div>
+
+      <!-- FUTURE -->
+      <div class="view hidden" id="view-future">
+        <p class="eyebrow" style="margin-top:8px">The point of it all</p>
+        <h2 class="h-screen">Your future</h2>
+        <div class="fut-toggle">
+          <div class="ft-txt"><b>Keep my subscriptions going</b><small>Assume your recurring savings keep going every month to your horizon</small></div>
+          <div class="switch" id="projRecurSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
+        </div>
+        <div class="future-hero">
+          <div class="cap">Could become</div>
+          <div class="big" id="futureBig">£75,900</div>
+          <div class="as" id="futureAssume">estimated · 5% return · 20 years</div>
+        </div>
+        <div class="curve-wrap"><canvas id="curveCanvas" aria-label="Projected growth curve"></canvas></div>
+        <div class="two-up">
+          <div class="b"><div class="k">Invested so far</div><div class="v" id="futTransferred">£0</div></div>
+          <div class="b"><div class="k">Kept this month</div><div class="v" id="futKept">£183</div></div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <p class="eyebrow" style="margin-bottom:10px">Assumptions</p>
+          <div class="seg" id="rateSeg">
+            <button data-rate="3">3%</button>
+            <button data-rate="5" class="on">5%</button>
+            <button data-rate="7">7%</button>
+          </div>
+          <div class="ctrl">
+            <div class="lab"><span>Time horizon</span><b id="yrsOut">20 years</b></div>
+            <input type="range" id="yrs" min="5" max="60" step="1" value="20">
+            <div class="curve-legend"><span><i class="dash solid"></i>To your horizon</span><span><i class="dash dot"></i>Beyond, up to 60y</span></div>
+          </div>
+        </div>
+
+        <div class="disclaimer">
+          <b style="color:var(--ink)">Estimated, not promised.</b> Based on the assumptions you set here. It counts money you’ve logged as well as transferred, so you can see the impact straight away. Investments can go down as well as up. Not financial advice.
+        </div>
+      </div>
+
+      <!-- ADD SHEET -->
+      <div class="overlay" id="addOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Add a Saving Win</h3>
+          <p class="sub">Enter any amount you kept. A name is optional.</p>
+          <div class="field">
+            <label id="origLabel">Amount kept</label>
+            <div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="origInput" placeholder="0.00"></div>
+            <div class="add-fv" id="addFV"></div>
+          </div>
+          <div class="field">
+            <label>Name <span class="opt">optional</span></label>
+            <input type="text" class="text-in" id="nameInput" placeholder="e.g. Skipped the afternoon coffee">
+          </div>
+          <div class="altrow">
+            <div>Bought a cheaper version instead<br><small style="color:var(--muted)">e.g. cooked instead of takeaway</small></div>
+            <div class="switch" id="altSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
+          </div>
+          <div class="field hidden" id="altField">
+            <label>What you actually spent</label>
+            <div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="altInput" value="7.00"></div>
+          </div>
+          <div class="net-preview" id="netPreview" style="display:none">
+            <span class="k">Net Saving Win</span><span class="v" id="netVal">£0.00</span>
+          </div>
+          <p class="eyebrow" style="margin:18px 0 8px">Category <span class="opt">optional</span></p>
+          <div class="cat-grid" id="catGrid"></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost" id="addCancel" style="flex:0 0 40%">Cancel</button>
+            <button class="btn primary" id="addConfirm" style="flex:1"><i class="ti ti-check"></i>Add Win</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRANSFER SHEET -->
+      <div class="overlay" id="transferOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Move your kept money</h3>
+          <p class="sub">Kept never touches your money — you move it, then mark it here. Honest by design.</p>
+          <div class="states" style="margin:4px 0 6px">
+            <div class="chip">
+              <div class="k"><span class="dot wait"></span>Waiting to transfer</div>
+              <div class="v" id="tsWaiting">£0.00</div>
+            </div>
+            <div class="chip">
+              <div class="k"><span class="dot done"></span>Transferred</div>
+              <div class="v" id="tsTransferred">£0.00</div>
+            </div>
+          </div>
+          <div class="transfer-amt">
+            <div class="k">Marking as transferred</div>
+            <div class="v" id="transferAmt">£183.40</div>
+          </div>
+          <div class="ctrl" style="margin-top:14px">
+            <div class="lab"><span>How much did you move?</span><b id="transferWaitingLbl">of £183.40</b></div>
+            <input type="range" id="transferRange" min="0" max="18340" step="10" value="18340">
+          </div>
+          <div class="fifo-note" id="fifoNote"></div>
+          <div class="fifo-note" id="rolloverNote" style="display:none"></div>
+          <div class="field" style="margin-top:14px"><label>Date moved</label><input class="text-in" type="date" id="transferDate"></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost" id="transferCancel" style="flex:0 0 40%">Not now</button>
+            <button class="btn amber" id="transferConfirm" style="flex:1"><i class="ti ti-check"></i>Mark transferred</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- EDIT SHEET -->
+      <div class="overlay" id="editOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Edit Saving Win</h3>
+          <p class="sub" id="editSub">Change the amount or name.</p>
+          <div class="field">
+            <label>Amount kept</label>
+            <div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="editAmount"></div>
+          </div>
+          <div class="field">
+            <label>Name</label>
+            <input type="text" class="text-in" id="editName">
+          </div>
+          <div class="fifo-note" id="editRoll" style="display:none"></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost danger" id="editDelete" style="flex:0 0 40%"><i class="ti ti-trash"></i>Delete</button>
+            <button class="btn primary" id="editSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="toast">
+        <div class="tx" id="toastText">£4.20 kept<small>Added to your July pot</small></div>
+        <button class="undo" id="toastUndo">Undo</button>
+      </div>
+
+      <!-- ONBOARDING -->
+      <div class="onboarding hidden" id="onboarding">
+        <div class="ob-top">
+          <div class="ob-dots" id="obDots"></div>
+          <button class="ob-skip" id="obSkip">Skip</button>
+        </div>
+        <div class="ob-body" id="obBody">
+          <div class="ob-step" data-step="0">
+            <div class="ob-logo">Kept</div>
+            <h2 class="ob-h">Turn the money you don’t spend into your future.</h2>
+            <p class="ob-p">Log the little things you skip. Watch them add up — and grow.</p>
+          </div>
+          <div class="ob-step hidden" data-step="1">
+            <p class="ob-eyebrow">A quick setup</p>
+            <h2 class="ob-h">What brings you here?</h2>
+            <div class="ob-choices" id="obObjectives">
+              <button class="ob-choice" data-name="Invest more"><i class="ti ti-chart-line"></i><span>Invest more</span></button>
+              <button class="ob-choice" data-name="Emergency fund"><i class="ti ti-shield-check"></i><span>Build an emergency fund</span></button>
+              <button class="ob-choice" data-name="Save for a goal"><i class="ti ti-target"></i><span>Save for a goal</span></button>
+              <button class="ob-choice" data-name="Spend consciously"><i class="ti ti-coffee"></i><span>Spend more consciously</span></button>
+            </div>
+          </div>
+          <div class="ob-step hidden" data-step="2">
+            <p class="ob-eyebrow">Your goal</p>
+            <h2 class="ob-h">What are you working toward?</h2>
+            <p class="ob-eyebrow" style="margin-bottom:8px">Currency</p>
+            <div class="cur-chips" id="obCur" style="margin-bottom:16px"></div>
+            <div class="field"><label>Goal</label>
+              <select class="text-in" id="obGoalSel">
+                <option>Invest more</option><option>Emergency fund</option><option>Save for a goal</option><option>Spend consciously</option><option value="__other">Other…</option>
+              </select>
+            </div>
+            <div class="field hidden" id="obOtherWrap"><label>Goal name</label><input class="text-in" id="obGoalOther" type="text" placeholder="e.g. House deposit"></div>
+            <div class="seg" id="obMode"><button data-mode="monthly" class="on">Monthly amount</button><button data-mode="target">Target amount</button></div>
+            <div class="field" id="obMonthlyField"><label>Amount per month</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obMonthly" value="250"></div></div>
+            <div class="field hidden" id="obTargetField"><label>Target amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obAmount" placeholder="0.00"></div>
+              <div class="add-fv" id="obPreview"></div>
+            </div>
+            <div class="field"><label>Date of birth <span class="opt">optional — shows the age you’ll be</span></label><input class="text-in" type="date" id="obDob"></div>
+            <p class="ob-eyebrow" style="margin-top:18px">Growth assumptions</p>
+            <div class="seg" id="obRate"><button data-rate="3">3%</button><button data-rate="5" class="on">5%</button><button data-rate="7">7%</button></div>
+            <div class="ctrl" style="margin-top:8px"><div class="lab"><span>Plan until</span><b id="obYrsOut">20 years</b></div><input type="range" id="obYrs" min="5" max="60" step="1" value="20"></div>
+          </div>
+          <div class="ob-step hidden" data-step="3">
+            <p class="ob-eyebrow">Quick logs</p>
+            <h2 class="ob-h">Set up your one-tap saves.</h2>
+            <p class="ob-p">Add the things you skip most — with the amount you’d normally spend.</p>
+            <div id="obChosen"></div>
+            <p class="ob-eyebrow" style="margin-top:14px">Add one</p>
+            <div class="ob-chips" id="obChips"></div>
+            <div class="ob-inline hidden" id="obInline">
+              <div class="field"><label id="obInlineLbl">Name</label><input class="text-in" id="obInName" type="text"></div>
+              <div class="field"><label>Amount you’d spend</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obInAmt" placeholder="0.00"></div></div>
+              <div style="display:flex;gap:10px;margin-top:12px">
+                <button class="btn ghost" id="obInCancel" style="flex:0 0 34%">Cancel</button>
+                <button class="btn primary" id="obInAdd" style="flex:1"><i class="ti ti-plus"></i>Add</button>
+              </div>
+            </div>
+          </div>
+          <div class="ob-step hidden" data-step="4">
+            <p class="ob-eyebrow">You’re set</p>
+            <h2 class="ob-h">Log your first Saving Win.</h2>
+            <p class="ob-p" id="obFirstP">Skipped something today? Tap it to log your first win.</p>
+            <div class="ob-qa" id="obFirst"></div>
+            <div class="ob-celebrate hidden" id="obCelebrate"></div>
+          </div>
+        </div>
+        <div class="ob-foot">
+          <button class="btn ghost" id="obBack" style="flex:0 0 30%">Back</button>
+          <button class="btn primary" id="obNext" style="flex:1">Get started</button>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="overlay" id="settingsOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>You</h3>
+          <p class="sub">Your data lives on this device.</p>
+          <button class="set-row" id="setGoal"><span><b>Edit goal</b><small id="setGoalSub">—</small></span><i class="ti ti-target"></i></button>
+          <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
+          <button class="set-row" id="setRecurring"><span><b>Recurring savings</b><small id="setRecurringSub">—</small></span><i class="ti ti-repeat"></i></button>
+          <button class="set-row" id="setCurrency"><span><b>Currency</b><small id="setCurrencySub">—</small></span><i class="ti ti-coin"></i></button>
+          <button class="set-row" id="setDob"><span><b>Date of birth</b><small id="setDobSub">—</small></span><i class="ti ti-calendar"></i></button>
+          <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
+          <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
+          <button class="set-row danger" id="setReset"><span><b>Reset app</b><small>Erase everything and start over</small></span><i class="ti ti-trash"></i></button>
+          <button class="btn ghost" id="setClose" style="margin-top:16px">Close</button>
+        </div>
+      </div>
+
+      <!-- EDIT GOAL -->
+      <div class="overlay" id="goalEditOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Edit goal</h3>
+          <p class="sub">Choose what you’re working toward, and how you’ll track it.</p>
+          <div class="field"><label>Goal</label>
+            <select class="text-in" id="geNameSel">
+              <option>Invest more</option>
+              <option>Emergency fund</option>
+              <option>Save for a goal</option>
+              <option>Spend consciously</option>
+              <option value="__other">Other…</option>
+            </select>
+          </div>
+          <div class="field hidden" id="geOtherWrap"><label>Goal name</label><input class="text-in" id="geOther" type="text" placeholder="e.g. House deposit"></div>
+          <div class="seg" id="geMode"><button data-mode="monthly" class="on">Monthly amount</button><button data-mode="target">Target amount</button></div>
+          <div class="field" id="geMonthlyField"><label>Amount per month</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="geMonthly"></div></div>
+          <div class="field hidden" id="geTargetField"><label>Target amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="geAmount"></div>
+            <div class="add-fv" id="gePreview"></div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost" id="geCancel" style="flex:0 0 40%">Cancel</button>
+            <button class="btn primary" id="geSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS MANAGER -->
+      <div class="overlay" id="quickListOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Quick actions</h3>
+          <p class="sub">Your one-tap logs. Reorder, edit, or add your own.</p>
+          <div id="quickList"></div>
+          <button class="btn ghost" id="qaAdd" style="margin-top:10px"><i class="ti ti-plus"></i>Add quick action</button>
+          <button class="btn primary" id="quickListClose" style="margin-top:10px">Done</button>
+        </div>
+      </div>
+
+      <!-- QUICK ACTION EDITOR -->
+      <div class="overlay" id="qaEditOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3 id="qaEditTitle">Add quick action</h3>
+          <p class="sub">Name it, set the amount, pick a category.</p>
+          <div class="field"><label>Name</label><input class="text-in" id="qaeName" type="text" placeholder="e.g. Coffee"></div>
+          <div class="field"><label>Amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="qaeAmt" placeholder="0.00"></div></div>
+          <p class="eyebrow" style="margin:16px 0 8px">Category</p>
+          <div class="cat-grid" id="qaeCats"></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost danger" id="qaeDelete" style="flex:0 0 34%"><i class="ti ti-trash"></i>Delete</button>
+            <button class="btn primary" id="qaeSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECURRING MANAGER -->
+      <div class="overlay" id="recurListOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Recurring savings</h3>
+          <p class="sub">Permanent cuts — a cancelled subscription, a cheaper bill. One is added each month; you confirm it's still active.</p>
+          <div id="recurList"></div>
+          <button class="btn ghost" id="recurAdd" style="margin-top:10px"><i class="ti ti-plus"></i>Add recurring saving</button>
+          <button class="btn primary" id="recurListClose" style="margin-top:10px">Done</button>
+        </div>
+      </div>
+
+      <!-- RECURRING EDITOR -->
+      <div class="overlay" id="recurEditOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3 id="recurEditTitle">Add recurring saving</h3>
+          <p class="sub">e.g. cancelled a £9.99 subscription.</p>
+          <div class="field"><label>Name</label><input class="text-in" id="reName" type="text" placeholder="e.g. Cancelled streaming"></div>
+          <div class="field"><label>Amount per month</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="reAmt" placeholder="0.00"></div></div>
+          <p class="eyebrow" style="margin:16px 0 8px">Category</p>
+          <div class="cat-grid" id="reCats"></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost danger" id="reDelete" style="flex:0 0 34%"><i class="ti ti-trash"></i>Delete</button>
+            <button class="btn primary" id="reSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ONE-OFF OR RECURRING CHOICE -->
+      <div class="overlay" id="recurChoiceOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>One-off or recurring?</h3>
+          <p class="sub">Is this a single saving, or something that repeats every month — like a subscription you cancelled?</p>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+            <button class="btn ghost" id="rcOneOff"><i class="ti ti-check"></i>Just this once</button>
+            <button class="btn primary" id="rcRecurring"><i class="ti ti-repeat"></i>Recurring — every month</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATE OF BIRTH -->
+      <div class="overlay" id="dobOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Date of birth</h3>
+          <p class="sub">Optional. Add it and your projections show the age you’ll be — e.g. “by age 60” — instead of just a year. It stays on your device.</p>
+          <div class="field"><label>Date of birth</label><input class="text-in" type="date" id="dobInput"></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost" id="dobRemove" style="flex:0 0 40%">Remove</button>
+            <button class="btn primary" id="dobSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CURRENCY PICKER -->
+      <div class="overlay" id="currencyOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Currency</h3>
+          <p class="sub">All amounts show in this currency. It doesn’t convert existing values.</p>
+          <div class="cur-chips" id="curChips"></div>
+          <button class="btn primary" id="curClose" style="margin-top:16px">Done</button>
+        </div>
+      </div>
+
+      <!-- VERIFY / CONFIRM POPUP -->
+      <div class="overlay" id="verifyOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3 id="vfTitle">Confirm this Win</h3>
+          <p class="sub" id="vfSub"></p>
+          <div class="field"><label id="vfAmtLbl">Amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="vfAmt"></div></div>
+          <div class="add-fv" id="vfFv"></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost" id="vfSecondary" style="flex:0 0 44%">Keep unverified</button>
+            <button class="btn primary" id="vfConfirm" style="flex:1"><i class="ti ti-check"></i>Confirm</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB BAR -->
+      <nav class="tabbar">
+        <button class="tab active" data-tab="home"><i class="ti ti-home"></i><span>Home</span></button>
+        <button class="tab" data-tab="activity"><i class="ti ti-list-details"></i><span>Activity</span></button>
+        <button class="tab add" id="tabAdd"><span class="plus"><i class="ti ti-plus"></i></span><span>Add</span></button>
+        <button class="tab" data-tab="future"><i class="ti ti-chart-line"></i><span>Future</span></button>
+        <button class="tab" data-tab="settings"><i class="ti ti-adjustments"></i><span>You</span></button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const CURRENCIES=[
+    {code:'GBP',sym:'£'},{code:'EUR',sym:'€'},{code:'USD',sym:'$'},
+    {code:'CHF',sym:'CHF'},{code:'PLN',sym:'zł',suffix:true},{code:'SEK',sym:'kr',suffix:true}
+  ];
+  let currencyCode='GBP', curSym='£', curSuffix=false;
+  function symWrap(num,sign){ return curSuffix ? (sign+num+' '+curSym) : (sign+curSym+(curSym.length>1?' ':'')+num); }
+  const fmtN = (v,dec)=> (Math.abs(v)/100).toLocaleString('en-GB', dec? {minimumFractionDigits:2,maximumFractionDigits:2} : {maximumFractionDigits:0});
+  const P    = v => symWrap(fmtN(v,true),  v<0?'-':'');
+  const Pn   = v => symWrap(fmtN(v,false), v<0?'-':'');
+  const Pabs = v => symWrap(fmtN(v,true),  '');
+  const Psig = v => (v>0?'+':v<0?'−':'')+Pabs(v);
+  function applyCurrency(code){
+    const c=CURRENCIES.find(x=>x.code===code)||CURRENCIES[0];
+    currencyCode=c.code; curSym=c.sym; curSuffix=!!c.suffix;
+    document.querySelectorAll('.cur-sym').forEach(el=>{ el.textContent=curSym; const mi=el.closest('.money-in'); if(mi) mi.classList.toggle('sym-suffix',curSuffix); });
+  }
+
+  const ICONS = {
+    home:'<path d="M4 11l8-6 8 6"/><path d="M6 10v9h12v-9"/>',
+    'list-details':'<path d="M8 6h11M8 12h11M8 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>',
+    'chart-line':'<path d="M4 5v15h16"/><path d="M7 14l4-4 3 3 5-6"/>',
+    adjustments:'<path d="M5 21v-7M5 10V3M12 21v-9M12 8V3M19 21v-5M19 12V3"/><path d="M3 14h4M10 8h4M17 16h4"/>',
+    plus:'<path d="M12 5v14M5 12h14"/>',
+    check:'<path d="M5 12l5 5L20 7"/>',
+    'circle-check':'<circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 5-5"/>',
+    'shield-check':'<path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>',
+    'alert-circle':'<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>',
+    'info-circle':'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+    circle:'<circle cx="12" cy="12" r="9"/>',
+    coffee:'<path d="M4 8h13v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M17 9h2a2 2 0 0 1 0 4h-2"/><path d="M7 4.5v1M10 4.5v1M13 4.5v1"/>',
+    cookie:'<circle cx="12" cy="12" r="8"/><path d="M9 9h.01M14.5 10h.01M15 15h.01M10 15h.01M12 12.5h.01"/>',
+    'tools-kitchen-2':'<path d="M7 3v6M10 3v6M8.5 3v9M8.5 12v9"/><path d="M16.5 3c-1.4 1-2 3-2 5.5h4c0-2.5-.6-4.5-2-5.5zM16.5 8.5V21"/>',
+    'shopping-bag':'<path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+    car:'<path d="M4 13l2-5h12l2 5"/><path d="M4 13h16v4H4z"/><circle cx="7.5" cy="17.5" r="1.3"/><circle cx="16.5" cy="17.5" r="1.3"/>',
+    repeat:'<path d="M4 9l3-3 3 3"/><path d="M7 6v5a3 3 0 0 0 3 3h7"/><path d="M20 15l-3 3-3-3"/><path d="M17 18v-5a3 3 0 0 0-3-3H7"/>',
+    'calendar-clock':'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8 3v3M16 3v3"/><path d="M14.5 13.5v2.5l1.6 1"/>',
+    'chevron-right':'<path d="M9 6l6 6-6 6"/>',
+    'arrow-up-right':'<path d="M7 17L17 7M9 7h8v8"/>',
+    'arrow-right':'<path d="M5 12h14M13 6l6 6-6 6"/>',
+    pencil:'<path d="M4 20h4L18.5 9.5l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+    trash:'<path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"/>',
+    target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+    download:'<path d="M12 4v11M8 11l4 4 4-4"/><path d="M5 19h14"/>',
+    bolt:'<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>',
+    coin:'<circle cx="12" cy="12" r="8"/><path d="M12 7.5v9M14.3 9.4C13.8 8.6 13 8.2 12 8.2c-1.4 0-2.4.8-2.4 1.9s1 1.6 2.4 1.9 2.4.8 2.4 1.9-1 1.9-2.4 1.9c-1 0-1.9-.5-2.4-1.3"/>',
+    calendar:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8 3v3M16 3v3"/>',
+    'chevron-up':'<path d="M6 15l6-6 6 6"/>',
+    'chevron-down':'<path d="M6 9l6 6 6-6"/>',
+    moon:'<path d="M20 14a8 8 0 1 1-10-10 6 6 0 0 0 10 10z"/>',
+    wifi:'<path d="M5 12a10 10 0 0 1 14 0M8 15a6 6 0 0 1 8 0"/><path d="M12 18h.01"/>',
+    'battery-3':'<rect x="3" y="8" width="16" height="8" rx="2"/><path d="M21 11v2"/><rect x="5" y="10" width="9" height="4" fill="currentColor" stroke="none"/>',
+    'signal-4g':'<path d="M4 18v-2M9 18v-5M14 18v-8M19 18V6" stroke-width="2.2"/>'
+  };
+  const SW='viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.125em;flex:0 0 auto"';
+  const icon = n => '<svg '+SW+' aria-hidden="true">'+(ICONS[n]||ICONS.circle)+'</svg>';
+  function replaceIcons(root){
+    (root||document).querySelectorAll('i.ti').forEach(el=>{
+      const c=[...el.classList].find(x=>x.startsWith('ti-')); const nm=c?c.slice(3):'circle';
+      const st=el.getAttribute('style'); const svg=icon(nm);
+      const tmp=document.createElement('span'); tmp.innerHTML=svg; const node=tmp.firstChild;
+      if(st) node.setAttribute('style', node.getAttribute('style')+';'+st);
+      el.replaceWith(node);
+    });
+  }
+  const cats = [
+    {id:'food_drink',name:'Coffee',icon:'ti-coffee',amt:420},
+    {id:'snack',name:'Snack',icon:'ti-cookie',amt:250},
+    {id:'takeaway',name:'Takeaway',icon:'ti-tools-kitchen-2',amt:2200},
+    {id:'shopping',name:'Shopping',icon:'ti-shopping-bag',amt:1500},
+    {id:'transport',name:'Taxi',icon:'ti-car',amt:1200},
+    {id:'subscription',name:'Subscription',icon:'ti-repeat',amt:999}
+  ];
+
+  const NOW=new Date(); const BASE_YEAR=NOW.getFullYear(); const DAY=86400000;
+  const MNAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const ym = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  const monthLabel = k => { const p=k.split('-'); return MNAMES[+p[1]-1]; };
+  const CUR = ym(NOW);
+
+  // Default quick actions a new user starts with.
+  const DEFAULT_QUICK = [
+    {id:'food_drink',name:'Coffee',icon:'ti-coffee',amt:420},
+    {id:'snack',name:'Snack',icon:'ti-cookie',amt:250},
+    {id:'takeaway',name:'Takeaway',icon:'ti-tools-kitchen-2',amt:2200},
+    {id:'transport',name:'Taxi',icon:'ti-car',amt:1200}
+  ];
+
+  // Mutable app state — filled by onboarding, sample data, or storage.
+  let wins=[], transfers=[];
+  let goalTarget=25000, goalName='Invest more';   // goalTarget = monthly amount (monthly mode)
+  let goalMode='monthly', goalAmount=1000000;      // target mode: reach goalAmount by the horizon
+  // Monthly contribution needed to reach `amount` in `years` at `rate`% (annual, monthly compounding). Estimate.
+  function calcMonthly(amount, years, rate){ if(!amount||amount<=0||years<=0) return 0;
+    const m=Math.pow(1+rate/100,1/12)-1, n=Math.round(years*12);
+    return m<=0 ? Math.round(amount/n) : Math.round(amount*m/(Math.pow(1+m,n)-1)); }
+  function requiredMonthly(){ return calcMonthly(goalAmount, proj.years, proj.rate); }
+  function monthlyTargetVal(){ return goalMode==='target' ? requiredMonthly() : goalTarget; }
+  let proj={rate:5, years:20};
+  let quick=DEFAULT_QUICK.map(q=>({...q}));
+  let recurring=[];
+  let dob=null;             // ISO date string, optional — enables "by age N" projections
+  let onboarded=false;
+  const SOFT_CAP=10000; // £100 — Wins above this log as unverified until confirmed
+
+  function sampleData(){
+    const dCur=new Date(NOW.getTime()-10*DAY), dPrev=new Date(NOW.getTime()-45*DAY);
+    const prevKey=ym(new Date(NOW.getFullYear(), NOW.getMonth()-1, 15));
+    const w=[]; let tt=Date.now();
+    [[420,'food_drink','Made coffee at home',8],[250,'snack','Skipped the vending machine',4],[2200,'takeaway','Cooked instead of takeaway',2],[1200,'transport','Walked instead of a taxi',1],[8380,'shopping','Chose the cheaper coat',1]]
+      .forEach(([amt,cat,desc,n])=>{for(let i=0;i<n;i++)w.push({id:tt--,net:amt,cat,name:desc,state:'confirmed',credibility:'verified',month:CUR,date:dCur});});
+    [[420,'food_drink','Made coffee at home',6],[250,'snack','Brought a snack from home',3],[2200,'takeaway','Cooked instead of takeaway',2],[4000,'shopping','Skipped an impulse buy',1]]
+      .forEach(([amt,cat,desc,n])=>{for(let i=0;i<n;i++)w.push({id:tt--,net:amt,cat,name:desc,state:'transferred',credibility:'verified',month:prevKey,date:dPrev});});
+    const pt=w.filter(x=>x.month===prevKey).reduce((s,x)=>s+x.net,0);
+    return {wins:w, transfers:[{id:tt--,amount:pt,month:prevKey,date:'28th',count:12}], goalTarget:25000, goalName:'Invest more', proj:{rate:5,years:20}, quick:DEFAULT_QUICK.map(q=>({...q}))};
+  }
+
+  // ---------- persistence (localStorage) ----------
+  const LSKEY='kept_state_v2';
+  function saveState(){
+    if(!onboarded) return;
+    try{ localStorage.setItem(LSKEY, JSON.stringify({
+      onboarded:true,
+      wins:wins.map(w=>({...w, date:(w.date instanceof Date? w.date.toISOString(): w.date)})),
+      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob
+    })); }catch(e){}
+  }
+  function applyState(s){
+    wins=(s.wins||[]).map(w=>({...w, date:new Date(w.date)}));
+    transfers=s.transfers||[];
+    goalTarget=(s.goalTarget!=null)?s.goalTarget:25000;
+    goalName=s.goalName||'Invest more';
+    goalMode=s.goalMode||'monthly';
+    goalAmount=(s.goalAmount!=null)?s.goalAmount:1000000;
+    proj=s.proj||{rate:5,years:20};
+    quick=Array.isArray(s.quick)? s.quick : DEFAULT_QUICK.map(q=>({...q}));
+    recurring=s.recurring||[];
+    rollover=s.rollover||0;
+    currencyCode=s.currencyCode||'GBP';
+    dob=s.dob||null;
+    onboarded=true;
+  }
+  // Create this month's Win for each active recurring saving (once). It's 'recorded' until confirmed.
+  function materializeRecurring(){
+    recurring.forEach(r=>{ if(r.status!=='active') return;
+      if(!wins.some(w=>w.source===r.id && w.periodKey===CUR)){
+        wins.push({id:Date.now()+Math.floor(Math.random()*1e4), net:r.amount, cat:r.cat, name:r.name,
+          state:'recorded', credibility:'recurring', month:CUR, date:new Date(), source:r.id, periodKey:CUR});
+      }
+    });
+  }
+  function loadState(){
+    try{ const raw=localStorage.getItem(LSKEY); return raw? JSON.parse(raw): null; }catch(e){ return null; }
+  }
+  const cur = ()=>document.querySelector('.screen');
+
+  const monthWins = m => wins.filter(w=>w.month===m);
+  const recordedThisMonth = ()=> monthWins(CUR).reduce((s,w)=>s+w.net,0);
+  const allLogged = ()=> wins.reduce((s,w)=>s+w.net,0);
+  const waiting = ()=> wins.filter(w=>w.state==='confirmed').reduce((s,w)=>s+w.net,0);
+  const transferredTotal = ()=> transfers.reduce((s,x)=>s+x.amount,0);
+
+  // Projection toward a FIXED target year. Each Win grows from its own date to the target
+  // date, so figures stay consistent and additive, and older money gets more time to grow.
+  function targetYear(){ return BASE_YEAR + proj.years; }
+  function ageAtTarget(){ if(!dob) return null; const by=new Date(dob).getFullYear(); return isNaN(by)?null:(targetYear()-by); }
+  function targetDate(){ return new Date(targetYear(), NOW.getMonth(), NOW.getDate()); }
+  function yrsBetween(a,b){ return (b.getTime()-a.getTime())/(365.25*DAY); }
+  function grow(net, fromDate, toDate){ return net*Math.pow(1+proj.rate/100, Math.max(0, yrsBetween(fromDate,toDate))); }
+  function totalFV(){ const td=targetDate(); return wins.reduce((s,w)=>s+grow(w.net,w.date,td),0); }
+  function monthFV(){ const td=targetDate(); return wins.filter(w=>w.month===CUR).reduce((s,w)=>s+grow(w.net,w.date,td),0); }
+  function fvNow(net){ return grow(net, NOW, targetDate()); }
+
+  function render(){
+    const rec=recordedThisMonth(), wait=waiting(), tr=transferredTotal();
+    document.getElementById('homeAmount').textContent = P(rec);
+    document.getElementById('homeCount').textContent = monthWins(CUR).length+' Saving Wins · '+monthLabel(CUR);
+    const _age=ageAtTarget();
+    document.getElementById('heroFV').textContent = '≈ '+Pn(monthFV())+(_age!=null?(' by age '+_age):(' by '+targetYear()))+' invested';
+    const gm = monthlyTargetVal();
+    document.getElementById('goalTitle').textContent = goalName+' · '+Pn(gm)+'/mo';
+    document.getElementById('goalSub').textContent = goalMode==='target' ? ('toward '+Pn(goalAmount)+' by '+targetYear()) : '';
+    const pct = Math.min(100, gm>0 ? rec/gm*100 : 0);
+    document.getElementById('goalFill').style.width = pct+'%';
+    document.getElementById('goalNow').textContent = P(rec)+' kept';
+    document.getElementById('goalRight').innerHTML = '<b>'+P(Math.max(0,gm-rec))+'</b> to go';
+    document.getElementById('transferStatusLine').textContent = P(wait)+' ready to move';
+    const tsW=document.getElementById('tsWaiting'), tsT=document.getElementById('tsTransferred');
+    if(tsW) tsW.textContent=P(wait); if(tsT) tsT.textContent=P(tr);
+
+    const fv = totalFV();
+    document.getElementById('teaserFuture').textContent = Pn(fv);
+    document.getElementById('teaserNote').textContent = _age!=null
+      ? ('estimated by age '+_age+' — '+targetYear()+' · if kept and invested')
+      : ('estimated by '+targetYear()+' ('+proj.years+' years) · if kept and invested');
+    const recurAdd = projectRecurring ? annuityFV(recurMonthly(), proj.years) : 0;
+    document.getElementById('futureBig').textContent = Pn(fv + recurAdd);
+    document.getElementById('futureAssume').textContent = 'estimated · '+proj.rate+'% return · by '+(_age!=null?('age '+_age+' ('+targetYear()+')'):targetYear()) + (recurAdd>0?' · incl. subscriptions':'');
+    document.getElementById('yrsOut').textContent = _age!=null ? ('age '+_age+' · '+proj.years+' years') : (proj.years+' years · '+targetYear());
+    document.getElementById('futTransferred').textContent = Pn(tr);
+    document.getElementById('futKept').textContent = Pn(rec);
+    drawCurve();
+    renderActivity();
+    replaceIcons();
+    saveState();
+  }
+
+  const catIcon={food_drink:'ti-coffee',snack:'ti-cookie',takeaway:'ti-tools-kitchen-2',
+    shopping:'ti-shopping-bag',transport:'ti-car',subscription:'ti-repeat',other:'ti-circle'};
+  let openMonth=CUR;
+  let actFilter='win';
+  let projectRecurring=false;   // Future-page toggle: assume recurring savings continue to the horizon
+  function recurMonthly(){ return recurring.filter(r=>r.status==='active').reduce((s,r)=>s+r.amount,0); }
+  function annuityFV(monthly, years){ if(monthly<=0||years<=0) return 0; const m=Math.pow(1+proj.rate/100,1/12)-1; const n=Math.round(years*12); return m<=0? monthly*n : monthly*((Math.pow(1+m,n)-1)/m); }
+  let rollover=0;            // signed pence carried into the next transfer from edits/deletes of transferred Wins
+  let openRow=null;          // currently swiped-open row
+
+  function closeOpenRow(){ if(openRow){ openRow.querySelector('.swipe-content').style.transform='translateX(0)'; openRow._open=false; openRow=null; } }
+
+  function attachSwipe(wrap, w){
+    const content=wrap.querySelector('.swipe-content'); const REV=140;
+    let sx=0, sy=0, base=0, dir=null, t=0;
+    content.addEventListener('pointerdown',e=>{
+      if(openRow && openRow!==wrap) closeOpenRow();
+      sx=e.clientX; sy=e.clientY; base=wrap._open?REV:0; dir=null; t=base;
+      content.classList.add('dragging'); content.setPointerCapture(e.pointerId);
+    });
+    content.addEventListener('pointermove',e=>{
+      if(!content.classList.contains('dragging'))return;
+      const dx=e.clientX-sx, dy=e.clientY-sy;
+      if(dir===null){ if(Math.abs(dx)>6||Math.abs(dy)>6) dir=Math.abs(dx)>Math.abs(dy)?'h':'v'; }
+      if(dir==='h'){ t=Math.max(0,Math.min(REV,base+dx)); content.style.transform='translateX('+t+'px)'; }
+    });
+    function end(){ if(!content.classList.contains('dragging'))return;
+      content.classList.remove('dragging');
+      const open = t>REV/2; content.style.transform='translateX('+(open?REV:0)+'px)';
+      wrap._open=open; openRow = open?wrap:(openRow===wrap?null:openRow);
+    }
+    content.addEventListener('pointerup',end);
+    content.addEventListener('pointercancel',end);
+    content.addEventListener('click',e=>{ if(wrap._open && dir!=='h'){ e.stopPropagation(); closeOpenRow(); } });
+    wrap.querySelector('.sw-edit').addEventListener('click',e=>{ e.stopPropagation(); closeOpenRow(); openEdit(w); });
+    wrap.querySelector('.sw-del').addEventListener('click',e=>{ e.stopPropagation(); doDelete(w); });
+  }
+
+  function confirmWin(w){ w.state='confirmed'; if(w.credibility==='unverified') w.credibility='verified'; render(); toast('Confirmed','Added to your pot','ti-circle-check'); }
+  function winItem(w){
+    const wrap=document.createElement('div'); wrap.className='swipe-wrap'; wrap._open=false;
+    let pillCls, pillTxt, tap='';
+    if(w.state==='transferred'){ pillCls='st-done'; pillTxt='Transferred'; }
+    else if(w.state==='confirmed'){ pillCls='st-wait'; pillTxt='Waiting'; }
+    else { pillCls='st-confirm'; pillTxt='Confirm'; tap='data-confirm="1"'; }
+    const tag = w.credibility==='recurring' ? ' · Recurring' : (w.credibility==='unverified' ? ' · Large' : '');
+    wrap.innerHTML=`<div class="swipe-actions">
+        <button class="sw-edit"><i class="ti ti-pencil"></i>Edit</button>
+        <button class="sw-del"><i class="ti ti-trash"></i>Delete</button>
+      </div>
+      <div class="swipe-content activity-item">
+        <div class="ic"><i class="ti ${catIcon[w.cat]||'ti-circle'}"></i></div>
+        <div class="mid"><div class="nm">${w.name}</div><div class="mt">${(cats.find(c=>c.id===w.cat)?.name||w.cat)+tag}</div></div>
+        <div class="rt"><div class="rv">${P(w.net)}</div>
+        <span class="state-pill ${pillCls}" ${tap}>${pillTxt}</span></div>
+      </div>`;
+    const pill=wrap.querySelector('.state-pill[data-confirm]');
+    if(pill) pill.addEventListener('click',e=>{ e.stopPropagation(); confirmWin(w); });
+    attachSwipe(wrap, w);
+    return wrap;
+  }
+  function transferItem(x){
+    const el=document.createElement('div'); el.className='activity-item';
+    el.innerHTML=`<div class="ic tr"><i class="ti ti-arrow-up-right"></i></div>
+      <div class="mid"><div class="nm">Transferred to savings</div><div class="mt">${x.count} Wins · ${x.date}</div></div>
+      <div class="rt"><div class="rv">${P(x.amount)}</div><span class="state-pill st-done">Transfer</span></div>`;
+    return el;
+  }
+  function renderActivity(){
+    const list = document.getElementById('activityList'); list.innerHTML=''; openRow=null;
+    const months=[...new Set([...wins.map(w=>w.month),...transfers.map(x=>x.month)])].sort().reverse();
+    let shown=0;
+    months.forEach(m=>{
+      const mAll=wins.filter(w=>w.month===m);
+      const mSubs=mAll.filter(w=>w.credibility==='recurring');
+      const mWins=mAll.filter(w=>w.credibility!=='recurring');
+      const mTrans=transfers.filter(x=>x.month===m);
+      let items=[], total=0, countLabel='';
+      if(actFilter==='win'){ mWins.slice().reverse().forEach(w=>items.push({t:'w',o:w})); total=mWins.reduce((s,w)=>s+w.net,0); countLabel=mWins.length+' Win'+(mWins.length!==1?'s':''); }
+      else if(actFilter==='sub'){ mSubs.slice().reverse().forEach(w=>items.push({t:'w',o:w})); total=mSubs.reduce((s,w)=>s+w.net,0); countLabel=mSubs.length+' subscription'+(mSubs.length!==1?'s':''); }
+      else { mTrans.forEach(x=>items.push({t:'x',o:x})); total=mTrans.reduce((s,x)=>s+x.amount,0); countLabel=mTrans.length+' transfer'+(mTrans.length!==1?'s':''); }
+      if(items.length===0) return;
+      shown++;
+      const isOpen=(openMonth===m);
+      const sec=document.createElement('div'); sec.className='month-sec'; sec.dataset.m=m;
+      const head=document.createElement('button'); head.type='button'; head.className='month-head'+(isOpen?' open':'');
+      head.innerHTML=`<div class="mh-l"><i class="ti ti-chevron-right"></i><span>${monthLabel(m)}</span></div>
+        <div class="mh-r"><b>${P(total)}</b><small>${countLabel}</small></div>`;
+      head.addEventListener('click',()=>{ const wasOpen=(openMonth===m); openMonth=wasOpen?null:m; renderActivity();
+        if(!wasOpen){ const el=document.querySelector('.month-sec[data-m="'+m+'"]'); if(el) el.scrollIntoView({block:'start',behavior:'smooth'}); } });
+      sec.appendChild(head);
+      if(isOpen){
+        const body=document.createElement('div'); body.className='month-body';
+        if(actFilter!=='transfer' && items.length){ const h=document.createElement('div'); h.className='swipe-hint';
+          h.innerHTML='<i class="ti ti-chevron-right"></i>Swipe to edit or delete'; body.appendChild(h); }
+        items.forEach(it=> body.appendChild(it.t==='w'?winItem(it.o):transferItem(it.o)));
+        sec.appendChild(body);
+      }
+      list.appendChild(sec);
+    });
+    if(shown===0){ const e=document.createElement('div'); e.className='empty-note';
+      e.textContent = actFilter==='transfer' ? 'No transfers yet. Mark one from your pot.'
+        : actFilter==='sub' ? 'No subscriptions yet. Add one and choose “recurring”.'
+        : 'No Saving Wins yet.'; list.appendChild(e); }
+    replaceIcons(list);
+  }
+
+  // ---------- growth curve ----------
+  function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+  function balanceAt(tYears){ const ev=new Date(NOW.getTime()+tYears*365.25*DAY);
+    const base=wins.reduce((s,w)=>s+grow(w.net,w.date,ev),0);
+    return base + (projectRecurring ? annuityFV(recurMonthly(), tYears) : 0); }
+  function abbr(minor){ const p=minor/100;
+    if(p>=1e6) return symWrap((p/1e6).toFixed(1).replace(/\.0$/,'')+'m','');
+    if(p>=1e3) return symWrap(Math.round(p/1e3)+'k','');
+    return symWrap(''+Math.round(p),''); }
+  function drawCurve(){
+    const cv=document.getElementById('curveCanvas'); if(!cv||!cv.clientWidth)return;
+    const dpr=window.devicePixelRatio||1, w=cv.clientWidth, h=cv.clientHeight;
+    cv.width=w*dpr; cv.height=h*dpr; const c=cv.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,w,h);
+    const MAX=60, padL=6, padR=12, padT=22, padB=20;
+    const gw=w-padL-padR, gh=h-padT-padB, maxV=balanceAt(MAX)||1, hi=proj.years;
+    const X=yr=> padL+(yr/MAX)*gw, Y=v=> padT+gh-(v/maxV)*gh;
+    const acc=cssv('--accent'), amb=cssv('--amber'), mut=cssv('--muted');
+    const pts=[]; for(let i=0;i<=180;i++){ const yr=MAX*i/180; pts.push([X(yr),Y(balanceAt(yr)),yr]); }
+    // area fill up to horizon
+    c.beginPath(); c.moveTo(X(0),padT+gh);
+    pts.filter(p=>p[2]<=hi).forEach(p=>c.lineTo(p[0],p[1])); c.lineTo(X(hi),padT+gh); c.closePath();
+    const g=c.createLinearGradient(0,padT,0,padT+gh); g.addColorStop(0,amb+'55'); g.addColorStop(1,amb+'00'); c.fillStyle=g; c.fill();
+    // solid line to horizon
+    c.beginPath(); pts.filter(p=>p[2]<=hi).forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));
+    c.strokeStyle=acc; c.lineWidth=2.5; c.lineJoin='round'; c.stroke();
+    // dotted continuation beyond horizon
+    c.setLineDash([2,4]); c.beginPath(); let started=false;
+    pts.filter(p=>p[2]>=hi).forEach(p=>{ if(started)c.lineTo(p[0],p[1]); else {c.moveTo(p[0],p[1]);started=true;} });
+    c.strokeStyle=acc; c.lineWidth=1.75; c.stroke(); c.setLineDash([]);
+    // decade markers: year on axis, value above, dot on curve
+    c.textAlign='center'; c.font='600 9px -apple-system,system-ui';
+    const clampX=(s,x)=>{ const tw=c.measureText(s).width; return Math.min(Math.max(x, tw/2+2), w-tw/2-2); };
+    for(let d=10; d<=60; d+=10){ const x=X(d), yv=balanceAt(d), y=Y(yv), lbl=abbr(yv);
+      c.fillStyle=mut; c.fillText(d+'y', clampX(d+'y',x), padT+gh+13);
+      c.fillStyle=(d<=hi?acc:mut); c.fillText(lbl, clampX(lbl,x), Math.max(padT+7, y-8));
+      c.beginPath(); c.arc(x,y,2,0,7); c.fillStyle=(d<=hi?acc:mut); c.fill();
+    }
+    // horizon marker
+    const hx=X(hi), hy=Y(balanceAt(hi));
+    c.setLineDash([3,3]); c.strokeStyle=amb+'AA'; c.lineWidth=1; c.beginPath(); c.moveTo(hx,padT-4); c.lineTo(hx,padT+gh); c.stroke(); c.setLineDash([]);
+    c.beginPath(); c.arc(hx,hy,5,0,7); c.fillStyle=amb; c.fill();
+    c.beginPath(); c.arc(hx,hy,2.2,0,7); c.fillStyle='#fff'; c.fill();
+  }
+
+  // ---------- tabs ----------
+  const views={home:'view-home',activity:'view-activity',future:'view-future'};
+  function show(tab){
+    Object.values(views).forEach(v=>document.getElementById(v).classList.add('hidden'));
+    if(views[tab])document.getElementById(views[tab]).classList.remove('hidden');
+    document.querySelectorAll('.tab[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+    if(tab==='future')setTimeout(drawCurve,30);
+    cur().querySelector('.view:not(.hidden)')?.scrollTo(0,0);
+  }
+  document.querySelectorAll('.tab[data-tab]').forEach(b=>{
+    b.addEventListener('click',()=>{ if(b.dataset.tab==='settings'){openSettings();return;} show(b.dataset.tab);});
+  });
+
+  // ---------- one-tap quick log ----------
+  const qr=document.getElementById('quickRow');
+  function renderQuick(){
+    const sec=document.getElementById('quickSection'); if(sec) sec.style.display = quick.length? '' : 'none';
+    qr.innerHTML='';
+    quick.forEach(q=>{
+      const b=document.createElement('button'); b.className='qa';
+      b.innerHTML=`<div class="ic"><i class="ti ${q.icon}"></i></div><div class="n">${q.name}</div><div class="p">${P(q.amt)}</div>`;
+      b.addEventListener('click',()=>logWin(q.amt,q.id,'Made '+q.name.toLowerCase()+' the cheaper way',true));
+      qr.appendChild(b);
+    });
+    replaceIcons(qr);
+  }
+
+  // toast/preview: what a single amount kept today becomes by the target year
+  function projSub(net){ return '≈ '+Pn(fvNow(net))+' by '+targetYear()+', invested'; }
+
+  let lastWinId=null;
+  function logWin(net,cat,name,quickToast){
+    const big=net>SOFT_CAP;
+    const w={id:Date.now(),net,cat,name, state:big?'recorded':'confirmed', credibility:big?'unverified':'verified', month:CUR,date:new Date()};
+    wins.push(w); lastWinId=w.id;
+    render();
+    const a=document.getElementById('homeAmount'); a.classList.add('pulse'); setTimeout(()=>a.classList.remove('pulse'),450);
+    if(big){ openVerify({type:'big',winId:w.id}); }
+    else if(quickToast){ toast(P(net)+' kept', projSub(net),'ti-check',true); }
+  }
+
+  // ---------- toast + undo ----------
+  const toastEl=document.getElementById('toast'); let toastTimer=null;
+  function toast(main,sub,icon,undoable){
+    document.getElementById('toastText').innerHTML = main + (sub?`<small>${sub}</small>`:'');
+    document.getElementById('toastUndo').style.display = undoable?'block':'none';
+    toastEl.classList.add('show'); clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>toastEl.classList.remove('show'), undoable?3200:1800);
+  }
+  document.getElementById('toastUndo').addEventListener('click',()=>{
+    if(lastWinId){wins=wins.filter(w=>w.id!==lastWinId); lastWinId=null; render();}
+    toastEl.classList.remove('show');
+  });
+
+  // ---------- add sheet ----------
+  const addOv=document.getElementById('addOverlay');
+  const catGrid=document.getElementById('catGrid'); let selCat=null;
+  cats.forEach((c)=>{ const el=document.createElement('button'); el.className='cat';
+    el.innerHTML=`<i class="ti ${c.icon}"></i><span>${c.name}</span>`;
+    el.addEventListener('click',()=>{ const was=el.classList.contains('sel');
+      document.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel'));
+      if(was){ selCat=null; } else { selCat=c; el.classList.add('sel'); } });
+    catGrid.appendChild(el);
+  });
+  function openAdd(){
+    document.getElementById('origInput').value='';
+    document.getElementById('nameInput').value='';
+    selCat=null; document.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel'));
+    if(altOn) altSwitch.click();
+    updateNet(); addOv.classList.add('show');
+    setTimeout(()=>document.getElementById('origInput').focus(),150);
+  }
+  function closeAdd(){ addOv.classList.remove('show'); }
+  document.getElementById('tabAdd').addEventListener('click',openAdd);
+  document.getElementById('addCancel').addEventListener('click',closeAdd);
+  addOv.addEventListener('click',e=>{if(e.target===addOv)closeAdd();});
+
+  const altSwitch=document.getElementById('altSwitch'), altField=document.getElementById('altField'),
+    netPrev=document.getElementById('netPreview'), origLabel=document.getElementById('origLabel');
+  let altOn=false;
+  altSwitch.addEventListener('click',()=>{ altOn=!altOn; altSwitch.classList.toggle('on',altOn);
+    altSwitch.setAttribute('aria-checked',altOn); altField.classList.toggle('hidden',!altOn);
+    netPrev.style.display=altOn?'flex':'none'; origLabel.textContent=altOn?'What it would have cost':'Amount kept'; updateNet();});
+  function parseM(v){ const n=Math.round(parseFloat(v||'0')*100); return isNaN(n)?0:n; }
+  function updateNet(){
+    const o=parseM(document.getElementById('origInput').value);
+    const a=altOn?parseM(document.getElementById('altInput').value):0;
+    const net=Math.max(0,o-a); document.getElementById('netVal').textContent=P(net);
+    const afv=document.getElementById('addFV');
+    if(afv) afv.textContent = net>0 ? ('↗ ≈ '+Pn(fvNow(net))+' by '+targetYear()+' if invested') : '';
+    return net;
+  }
+  document.getElementById('origInput').addEventListener('input',updateNet);
+  document.getElementById('altInput').addEventListener('input',updateNet);
+  document.getElementById('addConfirm').addEventListener('click',()=>{
+    const net=updateNet();
+    if(net<1){toast('Enter an amount first','A Saving Win needs a value','ti-alert-circle');return;}
+    const catId = selCat ? selCat.id : 'other';
+    const typed = (document.getElementById('nameInput').value||'').trim();
+    const name = typed || (selCat ? (altOn?('Cheaper '+selCat.name.toLowerCase()):selCat.name) : 'Saving Win');
+    closeAdd();
+    if(catId==='subscription'){ openRecurChoice({net, name}); }
+    else { logWin(net, catId, name, true); }
+  });
+
+  // ---------- edit sheet + delete (rollover for transferred Wins) ----------
+  const editOv=document.getElementById('editOverlay');
+  let editingId=null;
+  const curEdit=()=>wins.find(w=>w.id===editingId);
+  function openEdit(w){
+    editingId=w.id;
+    document.getElementById('editAmount').value=(w.net/100).toFixed(2);
+    document.getElementById('editName').value=w.name;
+    document.getElementById('editSub').textContent = w.state==='transferred'
+      ? 'Already transferred — a change rolls into your next transfer.'
+      : 'Change the amount or name.';
+    updateEditRoll(); editOv.classList.add('show');
+  }
+  function updateEditRoll(){
+    const w=curEdit(), roll=document.getElementById('editRoll');
+    if(!w || w.state!=='transferred'){ roll.style.display='none'; return; }
+    const d=parseM(document.getElementById('editAmount').value)-w.net;
+    if(d===0){ roll.style.display='none'; return; }
+    roll.style.display='block';
+    roll.innerHTML = d>0 ? `<b>${Psig(d)}</b> will be added to your next transfer.`
+                         : `<b>${Psig(d)}</b> will come off your next transfer.`;
+  }
+  document.getElementById('editAmount').addEventListener('input',updateEditRoll);
+  document.getElementById('editSave').addEventListener('click',()=>{
+    const w=curEdit(); if(!w)return;
+    const nv=parseM(document.getElementById('editAmount').value);
+    if(nv<1){ toast('Enter an amount','A Saving Win needs a value','ti-alert-circle'); return; }
+    const nm=(document.getElementById('editName').value||'').trim()||w.name;
+    let rollMsg=null;
+    if(w.state==='transferred'){ const d=nv-w.net; rollover+=d; if(d!==0) rollMsg=Psig(d)+' rolls into your next transfer'; }
+    w.net=nv; w.name=nm;
+    if(w.source){ const r=recurring.find(x=>x.id===w.source); if(r){ r.amount=nv; r.name=nm; } refreshSettings(); }
+    editOv.classList.remove('show'); render();
+    toast('Win updated', rollMsg, 'ti-check');
+  });
+  document.getElementById('editDelete').addEventListener('click',()=>{ const w=curEdit(); editOv.classList.remove('show'); if(w) doDelete(w); });
+  editOv.addEventListener('click',e=>{ if(e.target===editOv) editOv.classList.remove('show'); });
+
+  function doDelete(w){
+    if(w.source){ deleteRecurring(w.source); toast('Subscription removed','Stopped and cleared everywhere','ti-trash'); return; }
+    if(w.state==='transferred'){ rollover-=w.net; wins=wins.filter(x=>x.id!==w.id); render();
+      toast('Win removed', P(w.net)+' will come off your next transfer','ti-trash');
+    } else { wins=wins.filter(x=>x.id!==w.id); render(); toast('Win removed', null,'ti-trash'); }
+  }
+  // Delete a subscription completely: its definition AND every Win it created, everywhere.
+  function deleteRecurring(recurId){
+    recurring = recurring.filter(r=>r.id!==recurId);
+    wins = wins.filter(w=>w.source!==recurId);
+    refreshSettings(); renderRecurList(); render();
+  }
+
+  // ---------- transfer sheet ----------
+  const trOv=document.getElementById('transferOverlay'), trRange=document.getElementById('transferRange'),
+    fifoNote=document.getElementById('fifoNote');
+  function openTransfer(){
+    const wait=waiting(); if(wait<=0){toast('Nothing waiting to transfer','Log a few Saving Wins first','ti-info-circle');return;}
+    trRange.max=wait; trRange.value=wait;
+    document.getElementById('transferWaitingLbl').textContent='of '+P(wait);
+    const td=document.getElementById('transferDate'); const t=new Date(); t.setMinutes(t.getMinutes()-t.getTimezoneOffset());
+    td.value = t.toISOString().slice(0,10);
+    updateTransfer(); trOv.classList.add('show');
+  }
+  function updateTransfer(){
+    const chosen=parseInt(trRange.value);
+    // whole-Win FIFO: cover oldest wins fully up to chosen
+    const pot=wins.filter(w=>w.state==='confirmed').sort((a,b)=>a.id-b.id);
+    let covered=0; for(const w of pot){ if(covered+w.net<=chosen) covered+=w.net; else break; }
+    const mark=Math.max(0, covered+rollover);
+    document.getElementById('transferAmt').textContent=P(mark);
+    if(covered<chosen){ fifoNote.classList.add('show');
+      fifoNote.innerHTML=`We’ll mark whole Wins up to <b>${P(covered)}</b>, not ${P(chosen)} — Wins move whole, never split. The rest stays in your pot.`;
+    } else fifoNote.classList.remove('show');
+    const rn=document.getElementById('rolloverNote');
+    if(rollover!==0){ rn.style.display='block';
+      rn.innerHTML = rollover>0 ? `Includes <b>${Psig(rollover)}</b> carried over from an edit.`
+                                : `Adjusted by <b>${Psig(rollover)}</b> from an edit or deletion.`;
+    } else rn.style.display='none';
+    return {covered, mark};
+  }
+  trRange.addEventListener('input',updateTransfer);
+  document.getElementById('teaserCard').addEventListener('click',()=>show('future'));
+  document.getElementById('transferStatusLine').closest('.card').addEventListener('click',openTransfer);
+  document.getElementById('transferCancel').addEventListener('click',()=>trOv.classList.remove('show'));
+  trOv.addEventListener('click',e=>{if(e.target===trOv)trOv.classList.remove('show');});
+  document.getElementById('transferConfirm').addEventListener('click',()=>{
+    const chosen=parseInt(trRange.value);
+    const pot=wins.filter(w=>w.state==='confirmed').sort((a,b)=>a.id-b.id);
+    let covered=0, cnt=0; for(const w of pot){ if(covered+w.net<=chosen){w.state='transferred'; covered+=w.net; cnt++;} else break; }
+    const mark=Math.max(0, covered+rollover);
+    if(mark>0 || cnt>0){ const dv=document.getElementById('transferDate').value;
+      const dt=(dv?new Date(dv+'T00:00:00'):new Date()).toLocaleDateString('en-GB',{day:'numeric',month:'long'});
+      transfers.push({id:Date.now(),amount:mark,month:CUR,date:dt,count:cnt}); openMonth=CUR; }
+    rollover=0;
+    trOv.classList.remove('show'); render();
+    toast(P(mark)+' marked as transferred','You moved it — Kept just tracked it','ti-circle-check');
+  });
+
+  // ---------- future controls ----------
+  document.getElementById('rateSeg').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b)return; proj.rate=parseInt(b.dataset.rate);
+    document.querySelectorAll('#rateSeg button').forEach(x=>x.classList.toggle('on',x===b)); render();
+  });
+  const yrs=document.getElementById('yrs');
+  yrs.addEventListener('input',()=>{proj.years=parseInt(yrs.value); render();});
+  document.getElementById('projRecurSwitch').addEventListener('click',function(){ projectRecurring=!projectRecurring;
+    this.classList.toggle('on',projectRecurring); this.setAttribute('aria-checked',projectRecurring); render(); });
+
+  // ---------- activity filter ----------
+  document.getElementById('actSeg').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b)return; actFilter=b.dataset.f;
+    document.querySelectorAll('#actSeg button').forEach(x=>x.classList.toggle('on',x===b)); renderActivity();
+  });
+
+  // ---------- theme ----------
+  document.getElementById('themeToggle').addEventListener('click',()=>{
+    const root=document.documentElement;
+    const dark = root.getAttribute('data-theme')==='dark' ||
+      (!root.getAttribute('data-theme') && matchMedia('(prefers-color-scheme:dark)').matches);
+    root.setAttribute('data-theme', dark?'light':'dark');
+    setTimeout(drawCurve,30);
+  });
+
+  // ---------- onboarding ----------
+  const obEl=document.getElementById('onboarding');
+  let obStep=0; const OB_LAST=4;
+  const OB_PRESETS=[
+    {id:'food_drink',name:'Coffee',icon:'ti-coffee'},
+    {id:'snack',name:'Snack',icon:'ti-cookie'},
+    {id:'takeaway',name:'Takeaway',icon:'ti-tools-kitchen-2'},
+    {id:'transport',name:'Taxi',icon:'ti-car'}
+  ];
+  let obQuickChosen=[];     // {id,name,icon,amt} — none by default
+  let obInlineCat=null;
+  let config={ goalName:'Invest more', monthly:25000, goalMode:'monthly', goalAmount:1000000, rate:5, years:20, currency:'GBP', dob:null, first:null };
+  function obRenderCur(){ const el=document.getElementById('obCur'); el.innerHTML='';
+    CURRENCIES.forEach(c=>{ const b=document.createElement('button'); b.className='cur-chip'+(config.currency===c.code?' sel':'');
+      b.innerHTML=c.sym+'<small>'+c.code+'</small>';
+      b.addEventListener('click',()=>{ config.currency=c.code; applyCurrency(c.code); obRenderCur(); });
+      el.appendChild(b); });
+  }
+
+  function obDots(){ const d=document.getElementById('obDots'); d.innerHTML='';
+    for(let i=0;i<=OB_LAST;i++){ const s=document.createElement('i'); if(i===obStep)s.className='on'; d.appendChild(s);} }
+  function obShow(){
+    obEl.querySelectorAll('.ob-step').forEach(el=>el.classList.toggle('hidden', +el.dataset.step!==obStep));
+    document.getElementById('obBack').style.visibility = obStep===0?'hidden':'visible';
+    document.getElementById('obNext').textContent = obStep===0?'Get started' : obStep===OB_LAST?'Enter Kept' : 'Continue';
+    document.getElementById('obSkip').style.display = obStep===0?'none':'block';
+    if(obStep===2){ obYrsLbl(); obRenderCur(); obGoalNameSync(); obPreview(); }
+    if(obStep===3) obRenderStep3();
+    if(obStep===4) obRenderFirst();
+    obDots(); replaceIcons(obEl);
+  }
+  function startOnboarding(){ obStep=0; obEl.classList.remove('hidden'); obShow(); }
+
+  obEl.querySelectorAll('#obObjectives .ob-choice').forEach(b=>{
+    b.addEventListener('click',()=>{ obEl.querySelectorAll('#obObjectives .ob-choice').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel'); config.goalName=b.dataset.name;
+      const sel=document.getElementById('obGoalSel'); if([...sel.options].some(o=>o.value===b.dataset.name)) sel.value=b.dataset.name;
+      document.getElementById('obOtherWrap').classList.add('hidden'); });
+  });
+  document.getElementById('obRate').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
+    config.rate=+b.dataset.rate; document.querySelectorAll('#obRate button').forEach(x=>x.classList.toggle('on',x===b)); obPreview(); });
+  const obYrs=document.getElementById('obYrs');
+  function obYrsLbl(){ const ty=BASE_YEAR+config.years; const by=config.dob?new Date(config.dob).getFullYear():null;
+    const a=(by&&!isNaN(by))?(ty-by):null;
+    document.getElementById('obYrsOut').textContent = a!=null ? ('age '+a+' · '+config.years+' years') : (config.years+' years · '+ty); }
+  obYrs.addEventListener('input',()=>{ config.years=+obYrs.value; obYrsLbl(); obPreview(); });
+  document.getElementById('obDob').addEventListener('change',()=>{ config.dob=document.getElementById('obDob').value||null; obYrsLbl(); });
+  let obGoalMode='monthly';
+  function obGoalSetMode(mode){ obGoalMode=mode; config.goalMode=mode;
+    document.querySelectorAll('#obMode button').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
+    document.getElementById('obMonthlyField').classList.toggle('hidden',mode!=='monthly');
+    document.getElementById('obTargetField').classList.toggle('hidden',mode!=='target');
+    obPreview(); }
+  function obGoalNameSync(){ document.getElementById('obOtherWrap').classList.toggle('hidden', document.getElementById('obGoalSel').value!=='__other'); }
+  function obPreview(){ const el=document.getElementById('obPreview'); if(!el) return; if(obGoalMode!=='target'){ el.textContent=''; return; }
+    const amt=parseM(document.getElementById('obAmount').value); const pm=calcMonthly(amt, config.years, config.rate);
+    el.textContent = amt>0 ? ('Save ≈ '+Pn(pm)+'/month to reach '+Pn(amt)+' by '+(BASE_YEAR+config.years)+' (estimate)') : ''; }
+  document.getElementById('obMode').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) obGoalSetMode(b.dataset.mode); });
+  document.getElementById('obGoalSel').addEventListener('change',obGoalNameSync);
+  document.getElementById('obAmount').addEventListener('input',obPreview);
+
+  function obRenderStep3(){ obRenderChosen(); obRenderChips(); document.getElementById('obInline').classList.add('hidden'); }
+  function obRenderChosen(){ const el=document.getElementById('obChosen'); el.innerHTML='';
+    if(!obQuickChosen.length){ el.innerHTML='<p class="ob-empty">None yet — add at least one below.</p>'; return; }
+    obQuickChosen.forEach((q,i)=>{ const row=document.createElement('div'); row.className='ob-chosen-row';
+      row.innerHTML=`<div class="qle-ic"><i class="ti ${q.icon}"></i></div><div class="qle-mid"><b>${q.name}</b><small>${P(q.amt)}</small></div><button class="qle-del" aria-label="Remove"><i class="ti ti-trash"></i></button>`;
+      row.querySelector('.qle-del').addEventListener('click',()=>{ obQuickChosen.splice(i,1); obRenderStep3(); });
+      el.appendChild(row); });
+    replaceIcons(el);
+  }
+  function obRenderChips(){ const el=document.getElementById('obChips'); el.innerHTML='';
+    OB_PRESETS.forEach(p=>{ const b=document.createElement('button'); b.className='ob-chip';
+      b.innerHTML=`<i class="ti ${p.icon}"></i>${p.name}`;
+      b.addEventListener('click',()=>openObInline(p)); el.appendChild(b); });
+    const c=document.createElement('button'); c.className='ob-chip custom'; c.innerHTML='<i class="ti ti-plus"></i>Custom';
+    c.addEventListener('click',()=>openObInline(null)); el.appendChild(c);
+    replaceIcons(el);
+  }
+  function openObInline(preset){
+    obInlineCat = preset ? {id:preset.id, icon:preset.icon} : {id:'other', icon:'ti-bolt'};
+    document.getElementById('obInName').value = preset? preset.name : '';
+    document.getElementById('obInAmt').value='';
+    document.getElementById('obInlineLbl').textContent = preset? 'Name' : 'Name your saving';
+    document.getElementById('obInline').classList.remove('hidden');
+    setTimeout(()=>document.getElementById('obInAmt').focus(),120);
+  }
+  document.getElementById('obInAdd').addEventListener('click',()=>{
+    const amt=parseM(document.getElementById('obInAmt').value);
+    if(amt<1){ toast('Enter the amount','How much would you normally spend?','ti-alert-circle'); return; }
+    const name=(document.getElementById('obInName').value||'').trim()||'Saving';
+    obQuickChosen.push({id:obInlineCat.id, name, icon:obInlineCat.icon, amt});
+    obRenderStep3();
+  });
+  document.getElementById('obInCancel').addEventListener('click',()=>document.getElementById('obInline').classList.add('hidden'));
+
+  function obRenderFirst(){ const g=document.getElementById('obFirst'); g.innerHTML='';
+    if(!obQuickChosen.length){ g.innerHTML='<p class="ob-empty">No quick logs yet — you can skip this and add Wins anytime.</p>'; return; }
+    obQuickChosen.forEach(q=>{ const b=document.createElement('button');
+      b.innerHTML=`<div class="qic"><i class="ti ${q.icon}"></i></div><div class="qn">${q.name}</div><div class="qp">${P(q.amt)}</div>`;
+      b.addEventListener('click',()=>obPickFirst(q.amt,q.id,'Made '+q.name.toLowerCase()+' the cheaper way'));
+      g.appendChild(b); });
+    replaceIcons(g);
+  }
+  function obPickFirst(net,cat,name){
+    config.first={net,cat,name}; proj={rate:config.rate,years:config.years};
+    const cel=document.getElementById('obCelebrate'); cel.classList.remove('hidden');
+    cel.innerHTML=`<div class="big">${P(net)} kept</div><div class="sm">↗ ≈ ${Pn(fvNow(net))} by ${BASE_YEAR+config.years} if invested</div>`;
+    document.getElementById('obFirstP').textContent='Nice — that’s your first win. Tap Enter Kept.';
+  }
+  document.getElementById('obNext').addEventListener('click',()=>{
+    if(obStep===2){ const sel=document.getElementById('obGoalSel').value;
+      config.goalName = sel==='__other' ? ((document.getElementById('obGoalOther').value||'').trim()||'My goal') : sel;
+      config.goalMode = obGoalMode;
+      const m=parseM(document.getElementById('obMonthly').value); config.monthly=m>0?m:25000;
+      const a=parseM(document.getElementById('obAmount').value); if(a>0) config.goalAmount=a; }
+    if(obStep<OB_LAST){ obStep++; obShow(); } else finishOnboarding();
+  });
+  document.getElementById('obBack').addEventListener('click',()=>{ if(obStep>0){obStep--; obShow();} });
+  document.getElementById('obSkip').addEventListener('click',finishOnboarding);
+  function finishOnboarding(){
+    let q=obQuickChosen.map(x=>({...x}));
+    wins=[]; transfers=[]; rollover=0;
+    goalName=config.goalName; goalTarget=config.monthly; goalMode=config.goalMode||'monthly'; goalAmount=config.goalAmount||1000000; proj={rate:config.rate,years:config.years}; quick=q; openMonth=CUR; onboarded=true;
+    dob=config.dob||null;
+    applyCurrency(config.currency);
+    if(config.first) wins.push({id:Date.now(),net:config.first.net,cat:config.first.cat,name:config.first.name,state:'confirmed',credibility:'verified',month:CUR,date:new Date()});
+    obEl.classList.add('hidden'); renderQuick(); show('home'); render();
+    if(config.first) setTimeout(()=>toast(P(config.first.net)+' kept', projSub(config.first.net),'ti-check',false),450);
+  }
+
+  // ---------- settings (You tab) ----------
+  const setOv=document.getElementById('settingsOverlay');
+  function refreshSettings(){
+    document.getElementById('setGoalSub').textContent = goalMode==='target'
+      ? (goalName+' · '+Pn(goalAmount)+' by '+targetYear())
+      : (goalName+' · '+Pn(goalTarget)+'/mo');
+    document.getElementById('setQuickSub').textContent = quick.length+' one-tap log'+(quick.length!==1?'s':'');
+    const ra=recurring.filter(r=>r.status==='active').length;
+    document.getElementById('setRecurringSub').textContent = ra? (ra+' active') : 'None yet';
+    document.getElementById('setCurrencySub').textContent = curSym+' · '+currencyCode;
+    document.getElementById('setDobSub').textContent = dob ? ('Set — projections show your age') : 'Not set';
+  }
+  const dobOv=document.getElementById('dobOverlay');
+  document.getElementById('setDob').addEventListener('click',()=>{ document.getElementById('dobInput').value=dob||''; dobOv.classList.add('show'); });
+  document.getElementById('dobSave').addEventListener('click',()=>{ dob=document.getElementById('dobInput').value||null; dobOv.classList.remove('show'); refreshSettings(); render(); saveState(); toast('Saved', dob?'Projections now show your age':'','ti-check'); });
+  document.getElementById('dobRemove').addEventListener('click',()=>{ dob=null; dobOv.classList.remove('show'); refreshSettings(); render(); saveState(); toast('Removed','Projections show the year again','ti-check'); });
+  dobOv.addEventListener('click',e=>{ if(e.target===dobOv) dobOv.classList.remove('show'); });
+  const curOv=document.getElementById('currencyOverlay');
+  function renderCurChips(){ const el=document.getElementById('curChips'); el.innerHTML='';
+    CURRENCIES.forEach(c=>{ const b=document.createElement('button'); b.className='cur-chip'+(currencyCode===c.code?' sel':'');
+      b.innerHTML=c.sym+'<small>'+c.code+'</small>';
+      b.addEventListener('click',()=>{ applyCurrency(c.code); refreshSettings(); renderQuick(); render(); renderCurChips(); saveState(); });
+      el.appendChild(b); });
+  }
+  document.getElementById('setCurrency').addEventListener('click',()=>{ renderCurChips(); curOv.classList.add('show'); });
+  document.getElementById('curClose').addEventListener('click',()=>curOv.classList.remove('show'));
+  curOv.addEventListener('click',e=>{ if(e.target===curOv) curOv.classList.remove('show'); });
+  function openSettings(){ refreshSettings(); setOv.classList.add('show'); }
+  document.getElementById('setClose').addEventListener('click',()=>setOv.classList.remove('show'));
+  setOv.addEventListener('click',e=>{ if(e.target===setOv) setOv.classList.remove('show'); });
+  document.getElementById('setSample').addEventListener('click',()=>{ applyState(sampleData()); saveState(); renderQuick(); show('home'); render(); setOv.classList.remove('show'); toast('Sample data loaded',null,'ti-check'); });
+  document.getElementById('setExport').addEventListener('click',()=>toast('Export','The real app downloads your data as a file','ti-download'));
+  document.getElementById('setReset').addEventListener('click',()=>{ try{localStorage.removeItem(LSKEY);}catch(e){} setOv.classList.remove('show'); location.reload(); });
+
+  // ---------- edit goal ----------
+  const geOv=document.getElementById('goalEditOverlay');
+  const GOAL_NAMES=['Invest more','Emergency fund','Save for a goal','Spend consciously'];
+  let geMode='monthly';
+  function geSetMode(mode){ geMode=mode;
+    document.querySelectorAll('#geMode button').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
+    document.getElementById('geMonthlyField').classList.toggle('hidden',mode!=='monthly');
+    document.getElementById('geTargetField').classList.toggle('hidden',mode!=='target');
+    gePreview(); }
+  function geNameSync(){ const sel=document.getElementById('geNameSel').value;
+    document.getElementById('geOtherWrap').classList.toggle('hidden',sel!=='__other'); }
+  function gePreview(){ const el=document.getElementById('gePreview'); if(geMode!=='target'){ el.textContent=''; return; }
+    const amt=parseM(document.getElementById('geAmount').value);
+    const pm=calcMonthly(amt, proj.years, proj.rate);
+    el.textContent = amt>0 ? ('Save ≈ '+Pn(pm)+'/month to reach '+Pn(amt)+' by '+targetYear()+' (estimate)') : ''; }
+  document.getElementById('geMode').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) geSetMode(b.dataset.mode); });
+  document.getElementById('geNameSel').addEventListener('change',geNameSync);
+  document.getElementById('geAmount').addEventListener('input',gePreview);
+  document.getElementById('setGoal').addEventListener('click',()=>{
+    const known=GOAL_NAMES.includes(goalName);
+    document.getElementById('geNameSel').value = known ? goalName : '__other';
+    document.getElementById('geOther').value = known ? '' : goalName;
+    document.getElementById('geMonthly').value=(goalTarget/100).toFixed(2);
+    document.getElementById('geAmount').value=(goalAmount/100).toFixed(2);
+    geNameSync(); geSetMode(goalMode); geOv.classList.add('show');
+  });
+  document.getElementById('geCancel').addEventListener('click',()=>geOv.classList.remove('show'));
+  geOv.addEventListener('click',e=>{ if(e.target===geOv) geOv.classList.remove('show'); });
+  document.getElementById('geSave').addEventListener('click',()=>{
+    const sel=document.getElementById('geNameSel').value;
+    goalName = sel==='__other' ? ((document.getElementById('geOther').value||'').trim()||'My goal') : sel;
+    goalMode = geMode;
+    if(geMode==='target'){ const a=parseM(document.getElementById('geAmount').value); if(a<1){ toast('Enter a target amount','How much do you want to reach?','ti-alert-circle'); return; } goalAmount=a; }
+    else { const m=parseM(document.getElementById('geMonthly').value); if(m>0) goalTarget=m; }
+    geOv.classList.remove('show'); refreshSettings(); render(); toast('Goal updated',null,'ti-check');
+  });
+
+  // ---------- quick actions manager ----------
+  const qlOv=document.getElementById('quickListOverlay');
+  function afterQuickChange(){ renderQuick(); renderQuickList(); refreshSettings(); saveState(); }
+  function renderQuickList(){
+    const list=document.getElementById('quickList'); list.innerHTML='';
+    if(!quick.length){ list.innerHTML='<p class="empty-note">No quick actions yet. Add one below.</p>'; return; }
+    quick.forEach((q,i)=>{
+      const row=document.createElement('div'); row.className='qle-row';
+      row.innerHTML=`<div class="qle-move">
+          <button class="qle-up" ${i===0?'disabled':''} aria-label="Move up"><i class="ti ti-chevron-up"></i></button>
+          <button class="qle-down" ${i===quick.length-1?'disabled':''} aria-label="Move down"><i class="ti ti-chevron-down"></i></button>
+        </div>
+        <div class="qle-ic"><i class="ti ${q.icon}"></i></div>
+        <div class="qle-mid"><b>${q.name}</b><small>${P(q.amt)}</small></div>
+        <button class="qle-del" aria-label="Delete"><i class="ti ti-trash"></i></button>`;
+      row.querySelector('.qle-up').addEventListener('click',()=>{ if(i>0){ [quick[i-1],quick[i]]=[quick[i],quick[i-1]]; afterQuickChange(); } });
+      row.querySelector('.qle-down').addEventListener('click',()=>{ if(i<quick.length-1){ [quick[i+1],quick[i]]=[quick[i],quick[i+1]]; afterQuickChange(); } });
+      row.querySelector('.qle-del').addEventListener('click',()=>{ quick.splice(i,1); afterQuickChange(); });
+      row.querySelector('.qle-mid').addEventListener('click',()=>openQaEdit(i));
+      list.appendChild(row);
+    });
+    replaceIcons(list);
+  }
+  document.getElementById('setQuick').addEventListener('click',()=>{ renderQuickList(); qlOv.classList.add('show'); });
+  document.getElementById('quickListClose').addEventListener('click',()=>qlOv.classList.remove('show'));
+  qlOv.addEventListener('click',e=>{ if(e.target===qlOv) qlOv.classList.remove('show'); });
+
+  // ---------- quick action editor ----------
+  const qaOv=document.getElementById('qaEditOverlay');
+  let qaEditIdx=null, qaeCat=null;
+  const qaeCatsEl=document.getElementById('qaeCats');
+  cats.forEach(c=>{ const el=document.createElement('button'); el.className='cat'; el.dataset.cid=c.id;
+    el.innerHTML=`<i class="ti ${c.icon}"></i><span>${c.name}</span>`;
+    el.addEventListener('click',()=>{ qaeCat=c; qaeCatsEl.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel')); el.classList.add('sel'); });
+    qaeCatsEl.appendChild(el);
+  });
+  function selectQaCat(id){ qaeCat=cats.find(c=>c.id===id)||cats[0];
+    qaeCatsEl.querySelectorAll('.cat').forEach(x=>x.classList.toggle('sel', x.dataset.cid===qaeCat.id)); }
+  function openQaEdit(idx){
+    qaEditIdx=idx;
+    if(idx==null){ document.getElementById('qaEditTitle').textContent='Add quick action';
+      document.getElementById('qaeName').value=''; document.getElementById('qaeAmt').value='';
+      selectQaCat('food_drink'); document.getElementById('qaeDelete').style.display='none';
+    } else { const q=quick[idx]; document.getElementById('qaEditTitle').textContent='Edit quick action';
+      document.getElementById('qaeName').value=q.name; document.getElementById('qaeAmt').value=(q.amt/100).toFixed(2);
+      selectQaCat(q.id); document.getElementById('qaeDelete').style.display='';
+    }
+    qlOv.classList.remove('show');   // hide the list behind while editing
+    qaOv.classList.add('show'); replaceIcons(qaOv);
+  }
+  function closeQaEdit(){ qaOv.classList.remove('show'); qlOv.classList.add('show'); }
+  document.getElementById('qaAdd').addEventListener('click',()=>openQaEdit(null));
+  document.getElementById('qaeSave').addEventListener('click',()=>{
+    const amt=parseM(document.getElementById('qaeAmt').value);
+    if(amt<1){ toast('Enter an amount','A quick action needs a value','ti-alert-circle'); return; }
+    const name=(document.getElementById('qaeName').value||'').trim()||qaeCat.name;
+    const q={id:qaeCat.id, name, icon:qaeCat.icon, amt};
+    if(qaEditIdx==null) quick.push(q); else quick[qaEditIdx]=q;
+    closeQaEdit(); afterQuickChange(); toast('Quick action saved',null,'ti-check');
+  });
+  document.getElementById('qaeDelete').addEventListener('click',()=>{
+    if(qaEditIdx!=null) quick.splice(qaEditIdx,1);
+    closeQaEdit(); afterQuickChange();
+  });
+  qaOv.addEventListener('click',e=>{ if(e.target===qaOv){ closeQaEdit(); renderQuickList(); } });
+
+  // ---------- recurring savings manager ----------
+  const recurLOv=document.getElementById('recurListOverlay');
+  function afterRecurChange(){ materializeRecurring(); renderRecurList(); refreshSettings(); render(); }
+  function renderRecurList(){
+    const list=document.getElementById('recurList'); list.innerHTML='';
+    const active=recurring.filter(r=>r.status==='active');
+    if(!active.length){ list.innerHTML='<p class="empty-note">No recurring savings yet. Add one below.</p>'; return; }
+    active.forEach(r=>{ const row=document.createElement('div'); row.className='qle-row';
+      row.innerHTML=`<div class="qle-ic"><i class="ti ${r.icon}"></i></div>
+        <div class="qle-mid"><b>${r.name}</b><small>${P(r.amount)} / month</small></div>
+        <button class="qle-del" aria-label="Remove"><i class="ti ti-trash"></i></button>`;
+      row.querySelector('.qle-mid').addEventListener('click',()=>openRecurEdit(r.id));
+      row.querySelector('.qle-del').addEventListener('click',()=>{ deleteRecurring(r.id); });
+      list.appendChild(row);
+    });
+    replaceIcons(list);
+  }
+  document.getElementById('setRecurring').addEventListener('click',()=>{ renderRecurList(); recurLOv.classList.add('show'); });
+  document.getElementById('recurListClose').addEventListener('click',()=>recurLOv.classList.remove('show'));
+  recurLOv.addEventListener('click',e=>{ if(e.target===recurLOv) recurLOv.classList.remove('show'); });
+
+  const recurEOv=document.getElementById('recurEditOverlay');
+  let recurEditId=null, reCat=null;
+  const reCatsEl=document.getElementById('reCats');
+  cats.forEach(c=>{ const el=document.createElement('button'); el.className='cat'; el.dataset.cid=c.id;
+    el.innerHTML=`<i class="ti ${c.icon}"></i><span>${c.name}</span>`;
+    el.addEventListener('click',()=>{ reCat=c; reCatsEl.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel')); el.classList.add('sel'); });
+    reCatsEl.appendChild(el);
+  });
+  function selectReCat(id){ reCat=cats.find(c=>c.id===id)||cats[0]; reCatsEl.querySelectorAll('.cat').forEach(x=>x.classList.toggle('sel', x.dataset.cid===reCat.id)); }
+  function openRecurEdit(id){
+    recurEditId=id;
+    if(id==null){ document.getElementById('recurEditTitle').textContent='Add recurring saving';
+      document.getElementById('reName').value=''; document.getElementById('reAmt').value=''; selectReCat('subscription'); document.getElementById('reDelete').style.display='none';
+    } else { const r=recurring.find(x=>x.id===id); document.getElementById('recurEditTitle').textContent='Edit recurring saving';
+      document.getElementById('reName').value=r.name; document.getElementById('reAmt').value=(r.amount/100).toFixed(2); selectReCat(r.cat); document.getElementById('reDelete').style.display='';
+    }
+    recurLOv.classList.remove('show'); recurEOv.classList.add('show'); replaceIcons(recurEOv);
+  }
+  function closeRecurEdit(){ recurEOv.classList.remove('show'); recurLOv.classList.add('show'); }
+  document.getElementById('recurAdd').addEventListener('click',()=>openRecurEdit(null));
+  document.getElementById('reSave').addEventListener('click',()=>{
+    const amt=parseM(document.getElementById('reAmt').value);
+    if(amt<1){ toast('Enter an amount','A recurring saving needs a value','ti-alert-circle'); return; }
+    const name=(document.getElementById('reName').value||'').trim()||reCat.name;
+    if(recurEditId==null){
+      const newId=Date.now();
+      recurring.push({id:newId, name, amount:amt, cat:reCat.id, icon:reCat.icon, start:new Date().toISOString(), end:null, status:'active'});
+      recurEOv.classList.remove('show'); recurLOv.classList.remove('show'); setOv.classList.remove('show');
+      materializeRecurring(); refreshSettings(); render();
+      const mw=wins.find(w=>w.source===newId && w.periodKey===CUR);
+      if(mw) openVerify({type:'recur', winId:mw.id, recurId:newId});
+    } else {
+      const r=recurring.find(x=>x.id===recurEditId); if(r){ r.name=name; r.amount=amt; r.cat=reCat.id; r.icon=reCat.icon;
+        const mw=wins.find(w=>w.source===r.id && w.periodKey===CUR); if(mw){ mw.net=amt; mw.name=name; mw.cat=reCat.id; } }
+      closeRecurEdit(); afterRecurChange(); toast('Recurring saving saved',null,'ti-check');
+    }
+  });
+  document.getElementById('reDelete').addEventListener('click',()=>{
+    const id=recurEditId; closeRecurEdit(); if(id!=null) deleteRecurring(id);
+  });
+  recurEOv.addEventListener('click',e=>{ if(e.target===recurEOv){ closeRecurEdit(); renderRecurList(); } });
+
+  // ---------- one-off vs recurring choice (Subscription category from Add) ----------
+  const rcOv=document.getElementById('recurChoiceOverlay');
+  let pendingRecur=null;
+  function openRecurChoice(p){ pendingRecur=p; rcOv.classList.add('show'); replaceIcons(rcOv); }
+  document.getElementById('rcOneOff').addEventListener('click',()=>{ const p=pendingRecur; rcOv.classList.remove('show'); if(p) logWin(p.net,'subscription',p.name,true); });
+  document.getElementById('rcRecurring').addEventListener('click',()=>{ const p=pendingRecur; rcOv.classList.remove('show'); if(!p)return;
+    const newId=Date.now();
+    recurring.push({id:newId, name:p.name, amount:p.net, cat:'subscription', icon:'ti-repeat', start:new Date().toISOString(), end:null, status:'active'});
+    materializeRecurring();
+    const mw=wins.find(w=>w.source===newId && w.periodKey===CUR); if(mw) mw.state='confirmed';
+    refreshSettings(); renderQuick(); render();
+    toast('Recurring saving added', p.name+' will be added each month','ti-repeat');
+  });
+  rcOv.addEventListener('click',e=>{ if(e.target===rcOv){ const p=pendingRecur; rcOv.classList.remove('show'); if(p) logWin(p.net,'subscription',p.name,true); } });
+
+  // ---------- verify / confirm popup (big Wins + recurring monthly check) ----------
+  const verifyOv=document.getElementById('verifyOverlay');
+  let verifyCtx=null, verifyQueue=[];
+  function updateVfFv(){ const amt=parseM(document.getElementById('vfAmt').value);
+    document.getElementById('vfFv').textContent = amt>0? ('↗ ≈ '+Pn(fvNow(amt))+' by '+targetYear()+' if invested'):''; }
+  document.getElementById('vfAmt').addEventListener('input',updateVfFv);
+  function openVerify(ctx){
+    verifyCtx=ctx; const w=wins.find(x=>x.id===ctx.winId); if(!w){ nextVerify(); return; }
+    document.getElementById('vfAmt').value=(w.net/100).toFixed(2);
+    if(ctx.type==='big'){
+      document.getElementById('vfTitle').textContent='Confirm large Win';
+      document.getElementById('vfSub').textContent='That’s a large Saving Win. Check the amount is right, then confirm to add it to your pot.';
+      document.getElementById('vfSecondary').textContent='Keep unverified';
+    } else {
+      document.getElementById('vfTitle').textContent='Still saving?';
+      document.getElementById('vfSub').textContent='“'+w.name+'” — '+P(w.net)+' a month. Still active this month? Adjust the amount if it changed.';
+      document.getElementById('vfSecondary').textContent='It ended';
+    }
+    updateVfFv(); verifyOv.classList.add('show'); replaceIcons(verifyOv);
+  }
+  function nextVerify(){ if(verifyQueue.length) openVerify(verifyQueue.shift()); else verifyOv.classList.remove('show'); }
+  function queueRecurringConfirms(){
+    const ob=document.getElementById('onboarding'); if(ob && !ob.classList.contains('hidden')) return;
+    if(verifyOv.classList.contains('show')) return;
+    verifyQueue = wins.filter(w=>w.state==='recorded' && w.credibility==='recurring').map(w=>({type:'recur',winId:w.id,recurId:w.source}));
+    nextVerify();
+  }
+  document.getElementById('vfConfirm').addEventListener('click',()=>{
+    const w=wins.find(x=>x.id===(verifyCtx&&verifyCtx.winId)); if(!w){ nextVerify(); return; }
+    const amt=parseM(document.getElementById('vfAmt').value);
+    if(amt<1){ toast('Enter an amount','It needs a value','ti-alert-circle'); return; }
+    w.net=amt; w.state='confirmed'; if(w.credibility==='unverified') w.credibility='verified';
+    if(w.source){ const r=recurring.find(x=>x.id===w.source); if(r) r.amount=amt; refreshSettings(); }
+    verifyOv.classList.remove('show'); render(); toast('Confirmed','Added to your pot','ti-circle-check'); nextVerify();
+  });
+  document.getElementById('vfSecondary').addEventListener('click',()=>{
+    if(verifyCtx && verifyCtx.type==='recur'){ deleteRecurring(verifyCtx.recurId); toast('Stopped','We won’t add this one again','ti-trash'); }
+    verifyOv.classList.remove('show'); render(); nextVerify();
+  });
+  verifyOv.addEventListener('click',e=>{ if(e.target===verifyOv) verifyOv.classList.remove('show'); });
+
+  // clock
+  document.getElementById('clock').textContent=NOW.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+
+  function boot(){ applyCurrency(currencyCode); materializeRecurring(); renderQuick(); render(); setTimeout(drawCurve,60); setTimeout(queueRecurringConfirms,700); }
+  const saved=loadState();
+  if(saved && saved.onboarded){ applyState(saved); boot(); }
+  else { boot(); startOnboarding(); }
+  window.addEventListener('resize',drawCurve);
+})();
+</script>
+
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+</script>
+</body>
+</html>

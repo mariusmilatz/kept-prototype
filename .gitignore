@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencies and caches
+node_modules/
+__pycache__/
+*.pyc
+
+# Generated/testing output
+graphify-out/
+.coverage
+coverage/
+
+# Disabled Git metadata from the original copied project
+pwa/.git.original-disabled/
