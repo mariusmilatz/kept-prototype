@@ -108,6 +108,8 @@
   .card{background:var(--card);border:1px solid var(--hair);border-radius:18px;padding:16px;margin-top:16px}
   .card-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
   .card-h .t{font-family:var(--font-round);font-weight:600;font-size:15px}
+  .goal-sub{font-size:11.5px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+  .goal-sub:empty{display:none}
   .card-h .a{font-size:12px;color:var(--accent);font-weight:600;cursor:pointer}
 
   .goal .bar{height:9px;border-radius:6px;background:var(--card-2);overflow:hidden;margin:10px 0 8px}
@@ -390,7 +392,7 @@
         </div>
 
         <div class="card goal">
-          <div class="card-h"><div class="t" id="goalTitle">Invest £250 this month</div></div>
+          <div class="card-h"><div><div class="t" id="goalTitle">Invest £250 this month</div><div class="goal-sub" id="goalSub"></div></div></div>
           <div class="bar"><div class="fill" id="goalFill"></div></div>
           <div class="row"><span id="goalNow">£183.40 kept</span><span id="goalRight"><b id="goalLeft">£66.60</b> to go</span></div>
         </div>
@@ -603,10 +605,10 @@
             <div class="field hidden" id="obTargetField"><label>Target amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obAmount" placeholder="0.00"></div>
               <div class="add-fv" id="obPreview"></div>
             </div>
+            <div class="field"><label>Date of birth <span class="opt">optional — shows the age you’ll be</span></label><input class="text-in" type="date" id="obDob"></div>
             <p class="ob-eyebrow" style="margin-top:18px">Growth assumptions</p>
             <div class="seg" id="obRate"><button data-rate="3">3%</button><button data-rate="5" class="on">5%</button><button data-rate="7">7%</button></div>
             <div class="ctrl" style="margin-top:8px"><div class="lab"><span>Plan until</span><b id="obYrsOut">20 years</b></div><input type="range" id="obYrs" min="5" max="60" step="1" value="20"></div>
-            <div class="field"><label>Date of birth <span class="opt">optional — shows the age you’ll be</span></label><input class="text-in" type="date" id="obDob"></div>
           </div>
           <div class="ob-step hidden" data-step="3">
             <p class="ob-eyebrow">Quick logs</p>
@@ -943,7 +945,7 @@
     goalMode=s.goalMode||'monthly';
     goalAmount=(s.goalAmount!=null)?s.goalAmount:1000000;
     proj=s.proj||{rate:5,years:20};
-    quick=(s.quick&&s.quick.length)? s.quick : DEFAULT_QUICK.map(q=>({...q}));
+    quick=Array.isArray(s.quick)? s.quick : DEFAULT_QUICK.map(q=>({...q}));
     recurring=s.recurring||[];
     rollover=s.rollover||0;
     currencyCode=s.currencyCode||'GBP';
@@ -988,15 +990,12 @@
     const _age=ageAtTarget();
     document.getElementById('heroFV').textContent = '≈ '+Pn(monthFV())+(_age!=null?(' by age '+_age):(' by '+targetYear()))+' invested';
     const gm = monthlyTargetVal();
-    document.getElementById('goalTitle').textContent = goalMode==='target'
-      ? (goalName+' · '+Pn(goalAmount)+' by '+targetYear())
-      : (goalName+' · '+Pn(goalTarget)+'/mo');
+    document.getElementById('goalTitle').textContent = goalName+' · '+Pn(gm)+'/mo';
+    document.getElementById('goalSub').textContent = goalMode==='target' ? ('toward '+Pn(goalAmount)+' by '+targetYear()) : '';
     const pct = Math.min(100, gm>0 ? rec/gm*100 : 0);
     document.getElementById('goalFill').style.width = pct+'%';
     document.getElementById('goalNow').textContent = P(rec)+' kept';
-    document.getElementById('goalRight').innerHTML = goalMode==='target'
-      ? ('<b>'+Pn(gm)+'</b>/mo to reach it')
-      : ('<b>'+P(Math.max(0,gm-rec))+'</b> to go');
+    document.getElementById('goalRight').innerHTML = '<b>'+P(Math.max(0,gm-rec))+'</b> to go';
     document.getElementById('transferStatusLine').textContent = P(wait)+' ready to move';
     const tsW=document.getElementById('tsWaiting'), tsT=document.getElementById('tsTransferred');
     if(tsW) tsW.textContent=P(wait); if(tsT) tsT.textContent=P(tr);
