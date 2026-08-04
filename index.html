@@ -387,6 +387,28 @@
   .bank-inline small{font-size:11.5px;color:var(--muted);line-height:1.4;display:block;margin-top:2px}
   .bank-link{background:none;border:none;padding:0;color:var(--accent);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
   .bank-link:disabled{opacity:.45;cursor:default}
+  .pro-mini{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:3px 8px;border-radius:999px;
+    background:var(--amber-soft);color:var(--amber-ink);font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;vertical-align:middle}
+  .pro-mini svg{font-size:11px}
+  .pro-note{font-size:11px;color:var(--amber-ink);font-weight:600;margin-top:6px;display:flex;align-items:center;gap:5px}
+  .pro-lock-card{position:relative;border-style:dashed;opacity:.92}
+  .pro-lock-card .ic{opacity:.72}
+  .pro-lock-card .n{color:var(--ink)}
+  .pro-lock-card .p{color:var(--muted)}
+  .pro-lock-card .pro-mini{margin:8px 0 0}
+  .set-row.locked{cursor:pointer}
+  .upgrade-sheet .up-eyebrow{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--amber-ink);margin:2px 0 10px}
+  .upgrade-sheet .up-title{font-family:var(--font-round);font-size:24px;font-weight:700;letter-spacing:-.03em;margin:0}
+  .upgrade-sheet .up-sub{font-size:13px;color:var(--muted);line-height:1.55;margin:10px 0 0}
+  .upgrade-sheet .up-list{margin:16px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+  .upgrade-sheet .up-list li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45;color:var(--ink)}
+  .upgrade-sheet .up-list li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--amber);margin-top:6px;flex:0 0 auto}
+  .upgrade-card{margin-top:16px;background:var(--paper);border:1px solid var(--hair);border-radius:16px;padding:14px}
+  .upgrade-card b{display:block;font-family:var(--font-round);font-size:15px}
+  .upgrade-card small{display:block;color:var(--muted);font-size:12px;line-height:1.45;margin-top:4px}
+  .upgrade-price{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:10px}
+  .upgrade-price .amt{font-family:var(--font-round);font-size:28px;font-weight:700;letter-spacing:-.03em}
+  .upgrade-price .meta{font-size:12px;color:var(--muted);text-align:right}
   .qle-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--hair)}
   .qle-move{display:flex;flex-direction:column;gap:2px}
   .qle-move button{width:26px;height:22px;border:1px solid var(--hair);background:var(--card);border-radius:7px;cursor:pointer;
@@ -520,8 +542,15 @@
       <div class="view hidden" id="view-future">
         <p class="eyebrow" style="margin-top:8px">The point of it all</p>
         <h2 class="h-screen">Your future</h2>
-        <div class="fut-toggle">
-          <div class="ft-txt"><b>Keep my subscriptions going</b><small>Assume your recurring savings keep going every month to your horizon</small></div>
+        <div class="fut-toggle" id="futureProToggle">
+          <div class="ft-txt">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <b>Keep my subscriptions going</b>
+              <span class="pro-mini" id="futureProBadge"><i class="ti ti-lock"></i>Pro</span>
+            </div>
+            <small id="futureProSub">Assume your recurring savings keep going every month to your horizon</small>
+            <div class="pro-note" id="futureProNote"><i class="ti ti-lock"></i>Unlock with Pro</div>
+          </div>
           <div class="switch" id="projRecurSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
         </div>
         <div class="future-hero">
@@ -767,7 +796,8 @@
           <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
           <button class="set-row" id="setRecurring"><span><b>Recurring savings</b><small id="setRecurringSub">—</small></span><i class="ti ti-repeat"></i></button>
           <button class="set-row" id="setCurrency"><span><b>Currency</b><small id="setCurrencySub">—</small></span><i class="ti ti-coin"></i></button>
-          <button class="set-row" id="setBank"><span><b>Linked bank</b><small id="setBankSub">Manual only — connect a bank to sync your balance</small></span><i class="ti ti-shield-check"></i></button>
+          <button class="set-row locked" id="setBank"><span><b>Linked bank <span class="pro-mini" id="setBankBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setBankSub">Manual only — connect a bank to sync your balance</small></span><i class="ti ti-shield-check"></i></button>
+          <button class="set-row locked" id="setSharedGoals"><span><b>Shared goals <span class="pro-mini"><i class="ti ti-lock"></i>Pro</span></b><small id="setSharedSub">Build toward a goal together · coming soon</small></span><i class="ti ti-target"></i></button>
           <button class="set-row" id="setDob"><span><b>Date of birth</b><small id="setDobSub">—</small></span><i class="ti ti-calendar"></i></button>
           <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
           <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
@@ -822,6 +852,34 @@
           </div>
           <button class="bank-link" id="bankRefreshLink" style="margin-top:12px">Refresh linked-bank status</button>
           <button class="btn ghost" id="bankClose" style="margin-top:16px">Close</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="upgradeOverlay">
+        <div class="sheet upgrade-sheet">
+          <div class="grip"></div>
+          <p class="up-eyebrow" id="upgradeEyebrow">Pro feature</p>
+          <h3 class="up-title" id="upgradeTitle">Unlock Pro</h3>
+          <p class="up-sub" id="upgradeSub">Create an account to use Kept’s connected features.</p>
+          <ul class="up-list">
+            <li>Link your bank and sync balances</li>
+            <li>Set a protected minimum balance</li>
+            <li>Include subscriptions in future projections</li>
+            <li>Use more than 3 quick actions</li>
+            <li>Sync your data across devices</li>
+          </ul>
+          <div class="upgrade-card">
+            <b id="upgradeCardTitle">Kept Pro</b>
+            <small id="upgradeCardSub">Free users keep the calm local experience. Pro unlocks connected tools.</small>
+            <div class="upgrade-price">
+              <div class="amt">€3.99<span style="font-size:14px;font-weight:600;letter-spacing:0;margin-left:3px">/mo</span></div>
+              <div class="meta">Includes a 7-day free trial<br>when you create an account</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost" id="upgradeLater" style="flex:0 0 40%">Keep using free Kept</button>
+            <button class="btn primary" id="upgradeStart" style="flex:1"><i class="ti ti-lock"></i>Start 7-day free trial</button>
+          </div>
         </div>
       </div>
 
@@ -1055,7 +1113,8 @@
     moon:'<path d="M20 14a8 8 0 1 1-10-10 6 6 0 0 0 10 10z"/>',
     wifi:'<path d="M5 12a10 10 0 0 1 14 0M8 15a6 6 0 0 1 8 0"/><path d="M12 18h.01"/>',
     'battery-3':'<rect x="3" y="8" width="16" height="8" rx="2"/><path d="M21 11v2"/><rect x="5" y="10" width="9" height="4" fill="currentColor" stroke="none"/>',
-    'signal-4g':'<path d="M4 18v-2M9 18v-5M14 18v-8M19 18V6" stroke-width="2.2"/>'
+    'signal-4g':'<path d="M4 18v-2M9 18v-5M14 18v-8M19 18V6" stroke-width="2.2"/>',
+    lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'
   };
   const SW='viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.125em;flex:0 0 auto"';
   const icon = n => '<svg '+SW+' aria-hidden="true">'+(ICONS[n]||ICONS.circle)+'</svg>';
@@ -1108,6 +1167,10 @@
   let quick=DEFAULT_QUICK.map(q=>({...q}));
   let recurring=[];
   let dob=null;             // ISO date string, optional — enables "by age N" projections
+  let accountState='guest';
+  let planState='free';
+  let upgradeIntent=null;
+  let upgradeFeature='pro';
   let earnedMilestones=[];
   let msCat='start', msExpanded=false;
   let milestoneDropTimer=null, milestoneDropKey='';
@@ -1120,6 +1183,9 @@
     {id:'money', label:'Money', icon:'ti-coin'},
     {id:'commitment', label:'Commitment', icon:'ti-target'}
   ];
+  const FREE_QUICK_LIMIT=3;
+
+  function hasProAccess(){ return planState==='trial' || planState==='pro'; }
 
   function todayIso(){
     const d=new Date();
@@ -1221,7 +1287,7 @@
     try{ localStorage.setItem(LSKEY, JSON.stringify({
       onboarded:true,
       wins:wins.map(w=>({...w, date:(w.date instanceof Date? w.date.toISOString(): w.date)})),
-      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob, earnedMilestones
+      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob, earnedMilestones, accountState, planState
     })); }catch(e){}
   }
   function applyState(s){
@@ -1238,6 +1304,8 @@
     currencyCode=s.currencyCode||'GBP';
     dob=s.dob||null;
     earnedMilestones=Array.isArray(s.earnedMilestones)? s.earnedMilestones : [];
+    accountState=s.accountState||'guest';
+    planState=s.planState||'free';
     onboarded=true;
   }
   // Create this month's Win for each active recurring saving (once). It's 'recorded' until confirmed.
@@ -1473,9 +1541,38 @@
     sw.setAttribute('aria-checked', bankRuleDraft ? 'true' : 'false');
   }
   function renderBankUi(){
+    const proLocked = !hasProAccess();
     const availableTxt=moneyForCode(bank.availableBalanceMinor, bank.accountCurrency || currencyCode);
     const aboveTxt=moneyForCode(bank.availableAboveFloorMinor, bank.accountCurrency || currencyCode);
     const linked = bank.connected;
+    if(proLocked){
+      document.getElementById('setBankSub').textContent='Sync balances and protect a minimum floor';
+      document.getElementById('transferModeLine').textContent='Manual transfer mode';
+      document.getElementById('transferBankTitle').textContent='Linked bank';
+      document.getElementById('transferBankMeta').textContent='Balance sync and protected floor, available in Pro.';
+      document.getElementById('transferBankPill').textContent='Pro';
+      document.getElementById('transferBankPill').className='bank-pill live';
+      document.getElementById('transferBankGrid').style.display='none';
+      document.getElementById('transferBankNote').textContent='Unlock with Pro to sync balances before you move money.';
+      document.getElementById('transferConnectBank').textContent='Unlock bank features';
+      document.getElementById('transferSyncBank').style.display='none';
+      document.getElementById('transferSyncBank').disabled=true;
+      document.getElementById('bankSummaryTitle').textContent='Linked bank';
+      document.getElementById('bankSummaryMeta').textContent='Sync balances and protect a minimum floor';
+      document.getElementById('bankSummaryPill').textContent='Pro';
+      document.getElementById('bankSummaryPill').className='bank-pill live';
+      document.getElementById('bankSummaryGrid').style.display='none';
+      document.getElementById('bankSummaryNote').textContent='Create an account to unlock bank sync in Pro.';
+      document.getElementById('bankRuleInline').style.display='none';
+      document.getElementById('bankFloorRow').style.display='none';
+      document.getElementById('bankRuleNote').textContent='Bank sync, protected floor, and future transfer suggestions are available in Pro.';
+      document.getElementById('bankConnectBtn').textContent='Start free trial';
+      document.getElementById('bankSyncBtn').style.display='none';
+      document.getElementById('bankSyncBtn').disabled=true;
+      document.getElementById('bankSaveBtn').disabled=true;
+      updateBankRuleSwitch();
+      return;
+    }
     const settingsSub = linked
       ? ((bank.accountName||bank.institutionName)+(bank.accountMask?' · '+bank.accountMask:'')+' · '+bankModeText().replace('Linked bank · ',''))
       : (bank.error ? 'Setup issue — tap to retry' : 'Manual only — connect a bank to sync your balance');
@@ -1523,6 +1620,77 @@
     document.getElementById('bankSyncBtn').disabled = !linked || bank.syncing;
     document.getElementById('bankSaveBtn').disabled = !linked;
     updateBankRuleSwitch();
+  }
+  function openUpgrade(feature, intent){
+    upgradeFeature=feature||'pro';
+    upgradeIntent=intent||null;
+    const eyebrowMap={
+      bank:'Linked bank · Pro feature',
+      subscriptions:'Future projection · Pro feature',
+      quick_actions:'Quick actions · Pro feature',
+      shared_goals:'Shared goals · Pro feature'
+    };
+    const titleMap={
+      bank:'Unlock bank features',
+      subscriptions:'Unlock subscription projections',
+      quick_actions:'Unlock more quick actions',
+      shared_goals:'Unlock shared goals'
+    };
+    const subMap={
+      bank:'Create an account to sync balances, protect a minimum floor, and keep manual transfers available.',
+      subscriptions:'Create an account to include recurring savings in long-term projections.',
+      quick_actions:'Create an account to use more than 3 quick actions and keep your shortcuts synced.',
+      shared_goals:'Create an account to unlock shared goals when this Pro feature lands.'
+    };
+    document.getElementById('upgradeEyebrow').textContent=eyebrowMap[feature] || 'Pro feature';
+    document.getElementById('upgradeTitle').textContent=titleMap[feature] || 'Unlock Pro';
+    document.getElementById('upgradeSub').textContent=subMap[feature] || 'Create an account to use Kept’s connected features.';
+    document.getElementById('upgradeCardTitle').textContent = hasProAccess() ? 'Kept Pro is already active' : 'Kept Pro';
+    document.getElementById('upgradeCardSub').textContent = hasProAccess()
+      ? 'This prototype keeps Pro unlocked locally after you start the trial.'
+      : 'Free users keep the calm local experience. Pro unlocks connected tools.';
+    document.getElementById('upgradeStart').innerHTML = hasProAccess()
+      ? '<i class="ti ti-check"></i>Continue'
+      : '<i class="ti ti-lock"></i>Start 7-day free trial';
+    document.getElementById('upgradeOverlay').classList.add('show');
+    replaceIcons(document.getElementById('upgradeOverlay'));
+  }
+  function closeUpgrade(){ document.getElementById('upgradeOverlay').classList.remove('show'); }
+  function runUpgradeIntent(){
+    const intent=upgradeIntent;
+    upgradeIntent=null;
+    if(intent==='bank-settings'){
+      renderBankUi();
+      document.getElementById('bankFloorInput').value=(bankFloorDraft/100).toFixed(2);
+      document.getElementById('bankOverlay').classList.add('show');
+    }else if(intent==='bank-transfer'){
+      renderBankUi();
+      document.getElementById('bankOverlay').classList.add('show');
+    }else if(intent==='subscriptions'){
+      projectRecurring=true;
+      document.getElementById('projRecurSwitch').classList.add('on');
+      document.getElementById('projRecurSwitch').setAttribute('aria-checked','true');
+      render();
+    }else if(intent==='quick-actions'){
+      openQaEdit(null);
+    }else if(intent==='shared-goals'){
+      toast('Shared goals', 'Coming soon in Pro', 'ti-info-circle');
+    }
+  }
+  function renderPremiumUi(){
+    const pro = hasProAccess();
+    document.getElementById('futureProBadge').style.display = pro ? 'none' : 'inline-flex';
+    document.getElementById('futureProNote').style.display = pro ? 'none' : 'flex';
+    document.getElementById('futureProSub').textContent = pro
+      ? 'Assume your recurring savings keep going every month to your horizon'
+      : 'Include recurring savings in long-term projections';
+    document.getElementById('setBankBadge').style.display = pro ? 'none' : 'inline-flex';
+    document.getElementById('qaAdd').innerHTML = (!pro && quick.length>=FREE_QUICK_LIMIT)
+      ? '<i class="ti ti-lock"></i>Unlock more with Pro'
+      : '<i class="ti ti-plus"></i>Add quick action';
+    document.getElementById('futureProToggle').classList.toggle('locked', !pro);
+    replaceIcons(document.getElementById('futureProToggle'));
+    replaceIcons(document.getElementById('settingsOverlay'));
   }
   function handleBankReturn(){
     if(!location.hash) return;
@@ -1707,6 +1875,7 @@
     renderActivity();
     renderMilestones(milestoneState);
     maybeShowMilestoneDrop(milestoneState.newlyUnlocked||[]);
+    renderPremiumUi();
     renderBankUi();
     replaceIcons();
     saveState();
@@ -1963,14 +2132,21 @@
   // ---------- one-tap quick log ----------
   const qr=document.getElementById('quickRow');
   function renderQuick(){
-    const sec=document.getElementById('quickSection'); if(sec) sec.style.display = quick.length? '' : 'none';
+    const visibleQuicks = hasProAccess() ? quick : quick.slice(0, FREE_QUICK_LIMIT);
+    const sec=document.getElementById('quickSection'); if(sec) sec.style.display = (visibleQuicks.length || !hasProAccess()) ? '' : 'none';
     qr.innerHTML='';
-    quick.forEach(q=>{
+    visibleQuicks.forEach(q=>{
       const b=document.createElement('button'); b.className='qa';
       b.innerHTML=`<div class="ic"><i class="ti ${q.icon}"></i></div><div class="n">${q.name}</div><div class="p">${P(q.amt)}</div>`;
       b.addEventListener('click',()=>logWin(q.amt,q.id,'Made '+q.name.toLowerCase()+' the cheaper way',true,q.id));
       qr.appendChild(b);
     });
+    if(!hasProAccess()){
+      const lock=document.createElement('button'); lock.className='qa pro-lock-card';
+      lock.innerHTML=`<div class="ic"><i class="ti ti-plus"></i></div><div class="n">Add another quick action</div><div class="p">Use more than ${FREE_QUICK_LIMIT} with Pro</div><span class="pro-mini"><i class="ti ti-lock"></i>Pro</span>`;
+      lock.addEventListener('click',()=>openUpgrade('quick_actions','quick-actions'));
+      qr.appendChild(lock);
+    }
     replaceIcons(qr);
   }
 
@@ -2137,7 +2313,10 @@
   trRange.addEventListener('input',updateTransfer);
   document.getElementById('teaserCard').addEventListener('click',()=>show('future'));
   document.getElementById('transferStatusLine').closest('.card').addEventListener('click',openTransfer);
-  document.getElementById('transferConnectBank').addEventListener('click',()=>{ if(bank.connected){ renderBankUi(); bankOv.classList.add('show'); } else startBankConnect(); });
+  document.getElementById('transferConnectBank').addEventListener('click',()=>{
+    if(!hasProAccess()){ openUpgrade('bank','bank-transfer'); return; }
+    if(bank.connected){ renderBankUi(); bankOv.classList.add('show'); } else startBankConnect();
+  });
   document.getElementById('transferSyncBank').addEventListener('click',()=>refreshBankData({ sync:true }));
   document.getElementById('transferCancel').addEventListener('click',()=>trOv.classList.remove('show'));
   trOv.addEventListener('click',e=>{if(e.target===trOv)trOv.classList.remove('show');});
@@ -2161,8 +2340,11 @@
   });
   const yrs=document.getElementById('yrs');
   yrs.addEventListener('input',()=>{proj.years=parseInt(yrs.value); render();});
-  document.getElementById('projRecurSwitch').addEventListener('click',function(){ projectRecurring=!projectRecurring;
-    this.classList.toggle('on',projectRecurring); this.setAttribute('aria-checked',projectRecurring); render(); });
+  document.getElementById('projRecurSwitch').addEventListener('click',function(){
+    if(!hasProAccess()){ openUpgrade('subscriptions','subscriptions'); return; }
+    projectRecurring=!projectRecurring;
+    this.classList.toggle('on',projectRecurring); this.setAttribute('aria-checked',projectRecurring); render();
+  });
 
   // ---------- activity filter ----------
   document.getElementById('actSeg').addEventListener('click',e=>{
@@ -2314,11 +2496,15 @@
     document.getElementById('setGoalSub').textContent = goalMode==='target'
       ? (goalName+' · '+Pn(goalAmount)+' by '+targetYear())
       : (goalName+' · '+Pn(goalTarget)+'/mo');
-    document.getElementById('setQuickSub').textContent = quick.length+' one-tap log'+(quick.length!==1?'s':'');
+    document.getElementById('setQuickSub').textContent = hasProAccess()
+      ? (quick.length+' one-tap log'+(quick.length!==1?'s':''))
+      : (Math.min(quick.length, FREE_QUICK_LIMIT)+' of '+FREE_QUICK_LIMIT+' free slots used');
     const ra=recurring.filter(r=>r.status==='active').length;
     document.getElementById('setRecurringSub').textContent = ra? (ra+' active') : 'None yet';
     document.getElementById('setCurrencySub').textContent = curSym+' · '+currencyCode;
-    document.getElementById('setBankSub').textContent = bank.connected
+    document.getElementById('setBankSub').textContent = !hasProAccess()
+      ? 'Sync balances and protect a minimum floor'
+      : bank.connected
       ? ((bank.accountName||bank.institutionName)+(bank.accountMask?' · '+bank.accountMask:''))
       : (bank.error ? 'Setup issue — tap to retry' : 'Manual only — connect a bank to sync your balance');
     document.getElementById('setDobSub').textContent = dob ? ('Set — projections show your age') : 'Not set';
@@ -2337,7 +2523,11 @@
   }
   document.getElementById('setCurrency').addEventListener('click',()=>{ renderCurChips(); curOv.classList.add('show'); });
   const bankOv=document.getElementById('bankOverlay');
-  document.getElementById('setBank').addEventListener('click',()=>{ renderBankUi(); document.getElementById('bankFloorInput').value=(bankFloorDraft/100).toFixed(2); bankOv.classList.add('show'); });
+  document.getElementById('setBank').addEventListener('click',()=>{
+    if(!hasProAccess()){ openUpgrade('bank','bank-settings'); return; }
+    renderBankUi(); document.getElementById('bankFloorInput').value=(bankFloorDraft/100).toFixed(2); bankOv.classList.add('show');
+  });
+  document.getElementById('setSharedGoals').addEventListener('click',()=>openUpgrade('shared_goals','shared-goals'));
   document.getElementById('bankClose').addEventListener('click',()=>bankOv.classList.remove('show'));
   bankOv.addEventListener('click',e=>{ if(e.target===bankOv) bankOv.classList.remove('show'); });
   document.getElementById('curClose').addEventListener('click',()=>curOv.classList.remove('show'));
@@ -2348,8 +2538,24 @@
   document.getElementById('setSample').addEventListener('click',()=>{ applyState(sampleData()); saveState(); renderQuick(); show('home'); render(); setOv.classList.remove('show'); toast('Sample data loaded',null,'ti-check'); });
   document.getElementById('setExport').addEventListener('click',()=>toast('Export','The real app downloads your data as a file','ti-download'));
   document.getElementById('setReset').addEventListener('click',()=>{ try{localStorage.removeItem(LSKEY);}catch(e){} setOv.classList.remove('show'); location.reload(); });
+  const upgradeOv=document.getElementById('upgradeOverlay');
+  document.getElementById('upgradeLater').addEventListener('click',closeUpgrade);
+  document.getElementById('upgradeStart').addEventListener('click',()=>{
+    if(!hasProAccess()){
+      accountState='account';
+      planState='trial';
+      closeUpgrade();
+      render();
+      toast('Trial started', 'Pro is unlocked for 7 days in this prototype', 'ti-circle-check');
+      runUpgradeIntent();
+      return;
+    }
+    closeUpgrade();
+    runUpgradeIntent();
+  });
+  upgradeOv.addEventListener('click',e=>{ if(e.target===upgradeOv) closeUpgrade(); });
   document.getElementById('bankRuleSwitch').addEventListener('click',()=>{ bankRuleDraft=!bankRuleDraft; updateBankRuleSwitch(); renderBankUi(); render(); });
-  document.getElementById('bankConnectBtn').addEventListener('click',startBankConnect);
+  document.getElementById('bankConnectBtn').addEventListener('click',()=>{ if(!hasProAccess()){ openUpgrade('bank','bank-settings'); return; } startBankConnect(); });
   document.getElementById('bankSyncBtn').addEventListener('click',()=>refreshBankData({ sync:true }));
   document.getElementById('bankRefreshLink').addEventListener('click',()=>refreshBankData({ silent:true }));
   document.getElementById('bankSaveBtn').addEventListener('click',saveBankRule);
@@ -2397,22 +2603,32 @@
   function afterQuickChange(){ renderQuick(); renderQuickList(); refreshSettings(); saveState(); }
   function renderQuickList(){
     const list=document.getElementById('quickList'); list.innerHTML='';
-    if(!quick.length){ list.innerHTML='<p class="empty-note">No quick actions yet. Add one below.</p>'; return; }
-    quick.forEach((q,i)=>{
+    const visibleQuicks = hasProAccess() ? quick : quick.slice(0, FREE_QUICK_LIMIT);
+    if(!visibleQuicks.length){ list.innerHTML='<p class="empty-note">No quick actions yet. Add one below.</p>'; return; }
+    visibleQuicks.forEach((q,i)=>{
       const row=document.createElement('div'); row.className='qle-row';
       row.innerHTML=`<div class="qle-move">
           <button class="qle-up" ${i===0?'disabled':''} aria-label="Move up"><i class="ti ti-chevron-up"></i></button>
-          <button class="qle-down" ${i===quick.length-1?'disabled':''} aria-label="Move down"><i class="ti ti-chevron-down"></i></button>
+          <button class="qle-down" ${i===visibleQuicks.length-1?'disabled':''} aria-label="Move down"><i class="ti ti-chevron-down"></i></button>
         </div>
         <div class="qle-ic"><i class="ti ${q.icon}"></i></div>
         <div class="qle-mid"><b>${q.name}</b><small>${P(q.amt)}</small></div>
         <button class="qle-del" aria-label="Delete"><i class="ti ti-trash"></i></button>`;
       row.querySelector('.qle-up').addEventListener('click',()=>{ if(i>0){ [quick[i-1],quick[i]]=[quick[i],quick[i-1]]; afterQuickChange(); } });
-      row.querySelector('.qle-down').addEventListener('click',()=>{ if(i<quick.length-1){ [quick[i+1],quick[i]]=[quick[i],quick[i+1]]; afterQuickChange(); } });
+      row.querySelector('.qle-down').addEventListener('click',()=>{ if(i<visibleQuicks.length-1){ [quick[i+1],quick[i]]=[quick[i],quick[i+1]]; afterQuickChange(); } });
       row.querySelector('.qle-del').addEventListener('click',()=>{ quick.splice(i,1); afterQuickChange(); });
       row.querySelector('.qle-mid').addEventListener('click',()=>openQaEdit(i));
       list.appendChild(row);
     });
+    if(!hasProAccess()){
+      const note=document.createElement('div');
+      note.className='card';
+      note.style.marginTop='12px';
+      note.style.padding='14px';
+      note.innerHTML=`<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div><b style="font-family:var(--font-round);font-size:15px">Add another quick action</b><small style="display:block;color:var(--muted);margin-top:4px">Use more than ${FREE_QUICK_LIMIT} with Pro.</small></div><span class="pro-mini"><i class="ti ti-lock"></i>Pro</span></div>`;
+      note.addEventListener('click',()=>openUpgrade('quick_actions','quick-actions'));
+      list.appendChild(note);
+    }
     replaceIcons(list);
   }
   document.getElementById('setQuick').addEventListener('click',()=>{ renderQuickList(); qlOv.classList.add('show'); });
@@ -2431,6 +2647,7 @@
   function selectQaCat(id){ qaeCat=cats.find(c=>c.id===id)||cats[0];
     qaeCatsEl.querySelectorAll('.cat').forEach(x=>x.classList.toggle('sel', x.dataset.cid===qaeCat.id)); }
   function openQaEdit(idx){
+    if(idx==null && !hasProAccess() && quick.length>=FREE_QUICK_LIMIT){ openUpgrade('quick_actions','quick-actions'); return; }
     qaEditIdx=idx;
     if(idx==null){ document.getElementById('qaEditTitle').textContent='Add quick action';
       document.getElementById('qaeName').value=''; document.getElementById('qaeAmt').value='';
@@ -2443,7 +2660,10 @@
     qaOv.classList.add('show'); replaceIcons(qaOv);
   }
   function closeQaEdit(){ qaOv.classList.remove('show'); qlOv.classList.add('show'); }
-  document.getElementById('qaAdd').addEventListener('click',()=>openQaEdit(null));
+  document.getElementById('qaAdd').addEventListener('click',()=>{
+    if(!hasProAccess() && quick.length>=FREE_QUICK_LIMIT){ openUpgrade('quick_actions','quick-actions'); return; }
+    openQaEdit(null);
+  });
   document.getElementById('qaeSave').addEventListener('click',()=>{
     const amt=parseM(document.getElementById('qaeAmt').value);
     if(amt<1){ toast('Enter an amount','A quick action needs a value','ti-alert-circle'); return; }
