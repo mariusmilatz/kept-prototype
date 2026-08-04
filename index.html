@@ -1576,6 +1576,8 @@
       document.getElementById('bankSyncBtn').disabled=true;
       document.getElementById('bankSaveBtn').disabled=true;
       updateBankRuleSwitch();
+      replaceIcons(document.getElementById('transferOverlay'));
+      replaceIcons(document.getElementById('settingsOverlay'));
       return;
     }
     const settingsSub = linked
