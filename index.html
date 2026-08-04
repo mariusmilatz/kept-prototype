@@ -795,6 +795,7 @@
           <div class="grip"></div>
           <h3>You</h3>
           <p class="sub">Your data lives on this device.</p>
+          <button class="set-row" id="setProPreview"><span><b>Show Pro preview</b><small id="setProPreviewSub">Tester only — see the locked Pro UI in the app</small></span><div class="switch on" id="setProPreviewSwitch" role="switch" aria-checked="true"><div class="k"></div></div></button>
           <button class="set-row" id="setMilestones"><span><b>Milestones</b><small id="setMilestonesSub">Track your progress</small></span><i class="ti ti-target"></i></button>
           <button class="set-row" id="setGoal"><span><b>Edit goal</b><small id="setGoalSub">—</small></span><i class="ti ti-target"></i></button>
           <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
@@ -802,7 +803,6 @@
           <button class="set-row" id="setCurrency"><span><b>Currency</b><small id="setCurrencySub">—</small></span><i class="ti ti-coin"></i></button>
           <button class="set-row locked" id="setBank"><span><b style="display:flex;align-items:center;gap:8px">Linked bank <span class="pro-mini" id="setBankBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setBankSub">Manual only — connect a bank to sync your balance</small></span><i class="ti ti-shield-check"></i></button>
           <button class="set-row locked" id="setSharedGoals"><span><b style="display:flex;align-items:center;gap:8px">Shared goals <span class="pro-mini" id="setSharedBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setSharedSub">Build toward a goal together · coming soon</small></span><i class="ti ti-target"></i></button>
-          <button class="set-row" id="setProPreview"><span><b>Show Pro preview</b><small id="setProPreviewSub">Tester only — see the locked Pro UI in the app</small></span><div class="switch on" id="setProPreviewSwitch" role="switch" aria-checked="true"><div class="k"></div></div></button>
           <button class="set-row" id="setDob"><span><b>Date of birth</b><small id="setDobSub">—</small></span><i class="ti ti-calendar"></i></button>
           <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
           <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
@@ -1193,6 +1193,7 @@
   const FREE_QUICK_LIMIT=3;
 
   function hasProAccess(){ return planState==='trial' || planState==='pro'; }
+  function hasFeatureAccess(){ return hasProAccess() || !proUiPreview; }
   function showLockedProUi(){ return !hasProAccess() && proUiPreview; }
 
   function todayIso(){
@@ -1689,7 +1690,7 @@
     }
   }
   function renderPremiumUi(){
-    const pro = hasProAccess();
+    const pro = hasFeatureAccess();
     const showLocked = showLockedProUi();
     document.getElementById('futureProBadge').style.display = showLocked ? 'inline-flex' : 'none';
     document.getElementById('futureProSub').innerHTML = (pro || !showLocked)
@@ -2324,7 +2325,7 @@
   document.getElementById('teaserCard').addEventListener('click',()=>show('future'));
   document.getElementById('transferStatusLine').closest('.card').addEventListener('click',openTransfer);
   document.getElementById('transferConnectBank').addEventListener('click',()=>{
-    if(!hasProAccess()){ openUpgrade('bank','bank-transfer'); return; }
+    if(!hasFeatureAccess()){ openUpgrade('bank','bank-transfer'); return; }
     if(bank.connected){ renderBankUi(); bankOv.classList.add('show'); } else startBankConnect();
   });
   document.getElementById('transferSyncBank').addEventListener('click',()=>refreshBankData({ sync:true }));
@@ -2351,7 +2352,7 @@
   const yrs=document.getElementById('yrs');
   yrs.addEventListener('input',()=>{proj.years=parseInt(yrs.value); render();});
   document.getElementById('projRecurSwitch').addEventListener('click',function(){
-    if(!hasProAccess()){ openUpgrade('subscriptions','subscriptions'); return; }
+    if(!hasFeatureAccess()){ openUpgrade('subscriptions','subscriptions'); return; }
     projectRecurring=!projectRecurring;
     this.classList.toggle('on',projectRecurring); this.setAttribute('aria-checked',projectRecurring); render();
   });
@@ -2507,7 +2508,7 @@
     document.getElementById('setGoalSub').textContent = goalMode==='target'
       ? (goalName+' · '+Pn(goalAmount)+' by '+targetYear())
       : (goalName+' · '+Pn(goalTarget)+'/mo');
-    document.getElementById('setQuickSub').textContent = hasProAccess()
+    document.getElementById('setQuickSub').textContent = hasFeatureAccess()
       ? (quick.length+' one-tap log'+(quick.length!==1?'s':''))
       : (Math.min(quick.length, FREE_QUICK_LIMIT)+' of '+FREE_QUICK_LIMIT+' free slots used');
     const ra=recurring.filter(r=>r.status==='active').length;
@@ -2519,8 +2520,8 @@
       ? ((bank.accountName||bank.institutionName)+(bank.accountMask?' · '+bank.accountMask:''))
       : (bank.error ? 'Setup issue — tap to retry' : 'Manual only — connect a bank to sync your balance');
     document.getElementById('setProPreviewSub').textContent = proUiPreview
-      ? 'Tester only — the locked Pro UI is visible'
-      : 'Tester only — the locked Pro UI is hidden';
+      ? 'Tester only — Pro looks locked and upgrade gates are on'
+      : 'Tester only — all Pro features work for testing';
     document.getElementById('setProPreviewSwitch').classList.toggle('on', proUiPreview);
     document.getElementById('setProPreviewSwitch').setAttribute('aria-checked', proUiPreview ? 'true' : 'false');
     document.getElementById('setDobSub').textContent = dob ? ('Set — projections show your age') : 'Not set';
@@ -2543,14 +2544,17 @@
     refreshSettings();
     render();
     saveState();
-    toast(proUiPreview ? 'Pro preview on' : 'Pro preview off', proUiPreview ? 'Locked Pro UI is visible for testing' : 'Locked Pro UI is hidden for testing', 'ti-adjustments-horizontal');
+    toast(proUiPreview ? 'Pro preview on' : 'Pro preview off', proUiPreview ? 'The app now behaves like Pro needs unlocking' : 'All Pro features now work for testing', 'ti-adjustments-horizontal');
   });
   const bankOv=document.getElementById('bankOverlay');
   document.getElementById('setBank').addEventListener('click',()=>{
-    if(!hasProAccess()){ openUpgrade('bank','bank-settings'); return; }
+    if(!hasFeatureAccess()){ openUpgrade('bank','bank-settings'); return; }
     renderBankUi(); document.getElementById('bankFloorInput').value=(bankFloorDraft/100).toFixed(2); bankOv.classList.add('show');
   });
-  document.getElementById('setSharedGoals').addEventListener('click',()=>openUpgrade('shared_goals','shared-goals'));
+  document.getElementById('setSharedGoals').addEventListener('click',()=>{
+    if(!hasFeatureAccess()){ openUpgrade('shared_goals','shared-goals'); return; }
+    toast('Shared goals', 'Coming soon', 'ti-info-circle');
+  });
   document.getElementById('bankClose').addEventListener('click',()=>bankOv.classList.remove('show'));
   bankOv.addEventListener('click',e=>{ if(e.target===bankOv) bankOv.classList.remove('show'); });
   document.getElementById('curClose').addEventListener('click',()=>curOv.classList.remove('show'));
@@ -2564,7 +2568,7 @@
   const upgradeOv=document.getElementById('upgradeOverlay');
   document.getElementById('upgradeLater').addEventListener('click',closeUpgrade);
   document.getElementById('upgradeStart').addEventListener('click',()=>{
-    if(!hasProAccess()){
+    if(!hasFeatureAccess()){
       accountState='account';
       planState='trial';
       closeUpgrade();
@@ -2578,7 +2582,7 @@
   });
   upgradeOv.addEventListener('click',e=>{ if(e.target===upgradeOv) closeUpgrade(); });
   document.getElementById('bankRuleSwitch').addEventListener('click',()=>{ bankRuleDraft=!bankRuleDraft; updateBankRuleSwitch(); renderBankUi(); render(); });
-  document.getElementById('bankConnectBtn').addEventListener('click',()=>{ if(!hasProAccess()){ openUpgrade('bank','bank-settings'); return; } startBankConnect(); });
+  document.getElementById('bankConnectBtn').addEventListener('click',()=>{ if(!hasFeatureAccess()){ openUpgrade('bank','bank-settings'); return; } startBankConnect(); });
   document.getElementById('bankSyncBtn').addEventListener('click',()=>refreshBankData({ sync:true }));
   document.getElementById('bankRefreshLink').addEventListener('click',()=>refreshBankData({ silent:true }));
   document.getElementById('bankSaveBtn').addEventListener('click',saveBankRule);
@@ -2627,7 +2631,7 @@
   function renderQuickList(){
     const list=document.getElementById('quickList'); list.innerHTML='';
     const showLocked = showLockedProUi();
-    const visibleQuicks = hasProAccess() ? quick : quick.slice(0, FREE_QUICK_LIMIT);
+    const visibleQuicks = hasFeatureAccess() ? quick : quick.slice(0, FREE_QUICK_LIMIT);
     if(!visibleQuicks.length){ list.innerHTML='<p class="empty-note">No quick actions yet. Add one below.</p>'; return; }
     visibleQuicks.forEach((q,i)=>{
       const row=document.createElement('div'); row.className='qle-row';
@@ -2671,7 +2675,7 @@
   function selectQaCat(id){ qaeCat=cats.find(c=>c.id===id)||cats[0];
     qaeCatsEl.querySelectorAll('.cat').forEach(x=>x.classList.toggle('sel', x.dataset.cid===qaeCat.id)); }
   function openQaEdit(idx){
-    if(idx==null && !hasProAccess() && quick.length>=FREE_QUICK_LIMIT){ openUpgrade('quick_actions','quick-actions'); return; }
+    if(idx==null && !hasFeatureAccess() && quick.length>=FREE_QUICK_LIMIT){ openUpgrade('quick_actions','quick-actions'); return; }
     qaEditIdx=idx;
     if(idx==null){ document.getElementById('qaEditTitle').textContent='Add quick action';
       document.getElementById('qaeName').value=''; document.getElementById('qaeAmt').value='';
@@ -2685,7 +2689,7 @@
   }
   function closeQaEdit(){ qaOv.classList.remove('show'); qlOv.classList.add('show'); }
   document.getElementById('qaAdd').addEventListener('click',()=>{
-    if(!hasProAccess() && quick.length>=FREE_QUICK_LIMIT){ openUpgrade('quick_actions','quick-actions'); return; }
+    if(!hasFeatureAccess() && quick.length>=FREE_QUICK_LIMIT){ openUpgrade('quick_actions','quick-actions'); return; }
     openQaEdit(null);
   });
   document.getElementById('qaeSave').addEventListener('click',()=>{
