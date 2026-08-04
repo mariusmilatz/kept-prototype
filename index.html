@@ -1201,8 +1201,8 @@
   const FREE_QUICK_LIMIT=3;
 
   function hasProAccess(){ return planState==='trial' || planState==='pro'; }
-  function hasFeatureAccess(){ return hasProAccess() || !proUiPreview; }
-  function showLockedProUi(){ return !hasProAccess() && proUiPreview; }
+  function hasFeatureAccess(){ return !proUiPreview; }
+  function showLockedProUi(){ return !!proUiPreview; }
   function syncProPreviewControls(){
     const isOn = !!proUiPreview;
     const youSwitch=document.getElementById('setProPreviewSwitch');
@@ -1690,11 +1690,11 @@
     document.getElementById('upgradeEyebrow').textContent=eyebrowMap[feature] || 'Pro feature';
     document.getElementById('upgradeTitle').textContent=titleMap[feature] || 'Unlock Pro';
     document.getElementById('upgradeSub').textContent=subMap[feature] || 'Create an account to use Kept’s connected features.';
-    document.getElementById('upgradeCardTitle').textContent = hasProAccess() ? 'Kept Pro is already active' : 'Kept Pro';
-    document.getElementById('upgradeCardSub').textContent = hasProAccess()
-      ? 'This prototype keeps Pro unlocked locally after you start the trial.'
+    document.getElementById('upgradeCardTitle').textContent = hasFeatureAccess() ? 'Kept Pro is unlocked' : 'Kept Pro';
+    document.getElementById('upgradeCardSub').textContent = hasFeatureAccess()
+      ? 'You can switch the tester toggle back on anytime if you want to see the locked experience again.'
       : 'Free users keep the calm local experience. Pro unlocks connected tools.';
-    document.getElementById('upgradeStart').innerHTML = hasProAccess()
+    document.getElementById('upgradeStart').innerHTML = hasFeatureAccess()
       ? '<i class="ti ti-check"></i>Continue'
       : '<i class="ti ti-lock"></i>Start 7-day free trial';
     document.getElementById('upgradeOverlay').classList.add('show');
@@ -2609,7 +2609,10 @@
     if(!hasFeatureAccess()){
       accountState='account';
       planState='trial';
+      proUiPreview=false;
+      syncProPreviewControls();
       closeUpgrade();
+      refreshSettings();
       render();
       toast('Trial started', 'Pro is unlocked for 7 days in this prototype', 'ti-circle-check');
       runUpgradeIntent();
