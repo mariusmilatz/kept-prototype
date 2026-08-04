@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Kept — Core Loop Prototype</title>
 <style>
   :root{
@@ -894,6 +895,7 @@
 (async function(){
   const SUPABASE_PROJECT_URL='https://ykblaaedpqdvzzzdbfdp.supabase.co';
   const BANK_BOOTSTRAP_URL=SUPABASE_PROJECT_URL+'/functions/v1/kept-bank-bootstrap';
+  const BANK_STATE_URL=SUPABASE_PROJECT_URL+'/functions/v1/kept-bank-state';
   let supabase=null;
 
   const CURRENCIES=[
@@ -1070,6 +1072,54 @@
     syncing:false,connecting:false
   });
   let bank=bankDefault(), bankRuleDraft=false, bankFloorDraft=100000;
+  function readCookie(name){
+    const match = document.cookie.match(new RegExp('(?:^|; )'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : null;
+  }
+  function writeCookie(name, value){
+    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=31536000; SameSite=Lax`;
+  }
+  function fallbackDeviceFingerprint(){
+    try{
+      const seed = [
+        location.origin,
+        navigator.userAgent||'',
+        navigator.language||'',
+        screen.width||0,
+        screen.height||0,
+        screen.colorDepth||0
+      ].join('|');
+      let hash = 2166136261;
+      for(let i=0;i<seed.length;i++){
+        hash ^= seed.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      return 'fallback-'+(hash>>>0).toString(16);
+    }catch(e){
+      return 'fallback-static';
+    }
+  }
+  function getBankDeviceId(){
+    const key='kept_bank_device_v1';
+    try{
+      let value=localStorage.getItem(key);
+      if(!value){
+        value=readCookie(key);
+      }
+      if(!value){
+        value=crypto.randomUUID();
+      }
+      try{ localStorage.setItem(key, value); }catch(e){}
+      writeCookie(key, value);
+      return value;
+    }catch(e){
+      const cookieValue = readCookie(key);
+      if(cookieValue) return cookieValue;
+      const value = fallbackDeviceFingerprint();
+      try{ writeCookie(key, value); }catch(err){}
+      return value;
+    }
+  }
   function bankModeText(){
     if(!bank.connected) return 'Manual transfer mode';
     return bankRuleDraft ? 'Linked bank · protected floor rule on' : 'Linked bank · manual transfer still available';
@@ -1084,7 +1134,7 @@
     const bootstrapRes = await fetch(BANK_BOOTSTRAP_URL);
     const bootstrap = await bootstrapRes.json().catch(()=>null);
     if(!bootstrapRes.ok || !bootstrap?.publishable_key) throw new Error((bootstrap&&bootstrap.error) || 'Missing Supabase browser key');
-    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2.57.4');
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
     supabase = createClient(bootstrap.project_url || SUPABASE_PROJECT_URL, bootstrap.publishable_key, {
       auth:{ persistSession:true, autoRefreshToken:true, storageKey:'kept_supabase_auth_v1' }
     });
@@ -1096,8 +1146,25 @@
     let { data:{ session } } = await client.auth.getSession();
     if(!session){
       const { data, error } = await client.auth.signInAnonymously({ options:{ data:{ source:'kept-prototype' } } });
-      if(error) throw error;
-      session = data.session || null;
+      if(error){
+        const guestRes = await fetch(BANK_BOOTSTRAP_URL, {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify({ device_id: getBankDeviceId() })
+        });
+        const guestData = await guestRes.json().catch(()=>null);
+        if(!guestRes.ok || !guestData?.session?.access_token || !guestData?.session?.refresh_token){
+          throw error;
+        }
+        const { data: guestSessionData, error: guestSessionError } = await client.auth.setSession({
+          access_token: guestData.session.access_token,
+          refresh_token: guestData.session.refresh_token
+        });
+        if(guestSessionError) throw guestSessionError;
+        session = guestSessionData.session || null;
+      }else{
+        session = data.session || null;
+      }
     }
     if(!session?.user) throw new Error('Could not start secure bank session');
     bank.authReady=true;
@@ -1109,52 +1176,25 @@
     try{
       bank.syncing=!!sync;
       renderBankUi();
-      const { client } = await ensureBankSession();
-      if(sync){
-        const { error } = await client.functions.invoke('truelayer-sync',{ body:{} });
-        if(error) throw error;
-      }
-      const { data: connectionRows, error: connectionError } = await client
-        .from('bank_connections')
-        .select('*')
-        .eq('user_id', bank.userId)
-        .eq('provider', 'truelayer')
-        .eq('status', 'active')
-        .order('connected_at', { ascending:false })
-        .limit(1);
-      if(connectionError) throw connectionError;
-      const connection = connectionRows?.[0] || null;
-      let account=null, snapshot=null, rule=null;
-      if(connection){
-        const { data: accountRows, error: accountError } = await client
-          .from('bank_accounts')
-          .select('*')
-          .eq('user_id', bank.userId)
-          .eq('bank_connection_id', connection.id)
-          .eq('status', 'active')
-          .order('is_payment_eligible', { ascending:false })
-          .order('updated_at', { ascending:false });
-        if(accountError) throw accountError;
-        account = (accountRows||[]).find(x=>x.is_payment_eligible) || (accountRows||[])[0] || null;
-        const { data: ruleRows, error: ruleError } = await client
-          .from('transfer_rules')
-          .select('*')
-          .eq('user_id', bank.userId)
-          .limit(1);
-        if(ruleError) throw ruleError;
-        rule = ruleRows?.[0] || null;
-        if(account){
-          const { data: snapshotRows, error: snapshotError } = await client
-            .from('balance_snapshots')
-            .select('*')
-            .eq('user_id', bank.userId)
-            .eq('bank_account_id', account.id)
-            .order('created_at', { ascending:false })
-            .limit(1);
-          if(snapshotError) throw snapshotError;
-          snapshot = snapshotRows?.[0] || null;
+      let headers = { 'Content-Type':'application/json' };
+      try{
+        const { session } = await ensureBankSession();
+        if(session?.access_token){
+          headers = { ...headers, Authorization:`Bearer ${session.access_token}` };
         }
-      }
+      }catch(e){}
+      const stateRes = await fetch(BANK_STATE_URL, {
+        method:'POST',
+        headers,
+        body: JSON.stringify({ device_id: getBankDeviceId(), sync })
+      });
+      const stateData = await stateRes.json().catch(()=>null);
+      if(!stateRes.ok || !stateData) throw new Error(stateData?.error || 'Bank refresh failed');
+      const connection = stateData.connection || null;
+      const account = stateData.account || null;
+      const snapshot = stateData.snapshot || null;
+      const rule = stateData.rule || null;
+      bank.userId = stateData.user_id || bank.userId;
 
       bank.connected=!!connection;
       bank.connectionId=connection?.id || null;
@@ -1177,9 +1217,10 @@
       renderBankUi();
       if(sync && !silent) toast('Balance synced', bank.connected ? bankSyncText() : 'Connect a bank to start syncing','ti-check');
     }catch(error){
-      bank.error = error instanceof Error ? error.message : 'Bank refresh failed';
+      const message = error instanceof Error ? error.message : 'Bank refresh failed';
+      bank.error = (silent && !bank.connected) ? '' : message;
       renderBankUi();
-      if(!silent) toast('Bank sync issue', bank.error, 'ti-alert-circle');
+      if(!silent) toast('Bank sync issue', message, 'ti-alert-circle');
     }finally{
       bank.syncing=false;
       renderBankUi();

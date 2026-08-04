@@ -1,6 +1,7 @@
 import re, pathlib, os
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 src = pathlib.Path("kept-prototype.html").read_text()
+src = re.sub(r'^<meta[^>]+charset[^>]*>\s*', '', src, count=1, flags=re.I)
 src = re.sub(r'^<title>.*?</title>\s*', '', src, count=1, flags=re.S)
 
 head = '''<!doctype html>
