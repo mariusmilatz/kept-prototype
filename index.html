@@ -802,6 +802,7 @@
           <button class="set-row" id="setCurrency"><span><b>Currency</b><small id="setCurrencySub">—</small></span><i class="ti ti-coin"></i></button>
           <button class="set-row locked" id="setBank"><span><b style="display:flex;align-items:center;gap:8px">Linked bank <span class="pro-mini" id="setBankBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setBankSub">Manual only — connect a bank to sync your balance</small></span><i class="ti ti-shield-check"></i></button>
           <button class="set-row locked" id="setSharedGoals"><span><b style="display:flex;align-items:center;gap:8px">Shared goals <span class="pro-mini" id="setSharedBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setSharedSub">Build toward a goal together · coming soon</small></span><i class="ti ti-target"></i></button>
+          <button class="set-row" id="setProPreview"><span><b>Show Pro preview</b><small id="setProPreviewSub">Tester only — see the locked Pro UI in the app</small></span><div class="switch on" id="setProPreviewSwitch" role="switch" aria-checked="true"><div class="k"></div></div></button>
           <button class="set-row" id="setDob"><span><b>Date of birth</b><small id="setDobSub">—</small></span><i class="ti ti-calendar"></i></button>
           <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
           <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
@@ -1174,6 +1175,7 @@
   let dob=null;             // ISO date string, optional — enables "by age N" projections
   let accountState='guest';
   let planState='free';
+  let proUiPreview=true;
   let upgradeIntent=null;
   let upgradeFeature='pro';
   let earnedMilestones=[];
@@ -1191,6 +1193,7 @@
   const FREE_QUICK_LIMIT=3;
 
   function hasProAccess(){ return planState==='trial' || planState==='pro'; }
+  function showLockedProUi(){ return !hasProAccess() && proUiPreview; }
 
   function todayIso(){
     const d=new Date();
@@ -1292,7 +1295,7 @@
     try{ localStorage.setItem(LSKEY, JSON.stringify({
       onboarded:true,
       wins:wins.map(w=>({...w, date:(w.date instanceof Date? w.date.toISOString(): w.date)})),
-      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob, earnedMilestones, accountState, planState
+      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob, earnedMilestones, accountState, planState, proUiPreview
     })); }catch(e){}
   }
   function applyState(s){
@@ -1308,6 +1311,7 @@
     rollover=s.rollover||0;
     currencyCode=s.currencyCode||'GBP';
     dob=s.dob||null;
+    proUiPreview=s.proUiPreview!==false;
     earnedMilestones=Array.isArray(s.earnedMilestones)? s.earnedMilestones : [];
     accountState=s.accountState||'guest';
     planState=s.planState||'free';
@@ -1546,7 +1550,7 @@
     sw.setAttribute('aria-checked', bankRuleDraft ? 'true' : 'false');
   }
   function renderBankUi(){
-    const proLocked = !hasProAccess();
+    const proLocked = showLockedProUi();
     const availableTxt=moneyForCode(bank.availableBalanceMinor, bank.accountCurrency || currencyCode);
     const aboveTxt=moneyForCode(bank.availableAboveFloorMinor, bank.accountCurrency || currencyCode);
     const linked = bank.connected;
@@ -1686,22 +1690,29 @@
   }
   function renderPremiumUi(){
     const pro = hasProAccess();
-    document.getElementById('futureProBadge').style.display = pro ? 'none' : 'inline-flex';
-    document.getElementById('futureProSub').innerHTML = pro
+    const showLocked = showLockedProUi();
+    document.getElementById('futureProBadge').style.display = showLocked ? 'inline-flex' : 'none';
+    document.getElementById('futureProSub').innerHTML = (pro || !showLocked)
       ? 'Assume your recurring savings keep going every month to your horizon'
       : 'Include recurring savings in long-term projections <span class="pro-note" id="futureProNote">Unlock with Pro</span>';
-    document.getElementById('setBankBadge').style.display = pro ? 'none' : 'inline-flex';
-    document.getElementById('setSharedBadge').style.display = pro ? 'none' : 'inline-flex';
-    document.getElementById('qaAdd').innerHTML = (!pro && quick.length>=FREE_QUICK_LIMIT)
+    document.getElementById('setBankBadge').style.display = showLocked ? 'inline-flex' : 'none';
+    document.getElementById('setSharedBadge').style.display = showLocked ? 'inline-flex' : 'none';
+    document.getElementById('setBank').classList.toggle('locked', showLocked);
+    document.getElementById('setSharedGoals').classList.toggle('locked', showLocked);
+    document.getElementById('qaAdd').innerHTML = (showLocked && quick.length>=FREE_QUICK_LIMIT)
       ? '<i class="ti ti-lock"></i>Unlock more with Pro'
       : '<i class="ti ti-plus"></i>Add quick action';
     document.getElementById('quickListSub').textContent = pro
       ? 'Your one-tap logs. Reorder, edit, or add your own.'
-      : 'Create up to 3 quick actions for free. Unlock Pro to add more.';
+      : showLocked
+      ? 'Create up to 3 quick actions for free. Unlock Pro to add more.'
+      : 'Create up to 3 quick actions for free.';
     document.getElementById('qaEditProNote').textContent = pro
       ? 'You have unlimited quick actions with Pro.'
-      : 'Create up to 3 quick actions for free. Unlock unlimited quick actions with Pro.';
-    document.getElementById('futureProToggle').classList.toggle('locked', !pro);
+      : showLocked
+      ? 'Create up to 3 quick actions for free. Unlock unlimited quick actions with Pro.'
+      : 'Create up to 3 quick actions for free in this prototype.';
+    document.getElementById('futureProToggle').classList.toggle('locked', showLocked);
     replaceIcons(document.getElementById('futureProToggle'));
     replaceIcons(document.getElementById('settingsOverlay'));
   }
@@ -2492,6 +2503,7 @@
   // ---------- settings (You tab) ----------
   const setOv=document.getElementById('settingsOverlay');
   function refreshSettings(){
+    const showLocked = showLockedProUi();
     document.getElementById('setGoalSub').textContent = goalMode==='target'
       ? (goalName+' · '+Pn(goalAmount)+' by '+targetYear())
       : (goalName+' · '+Pn(goalTarget)+'/mo');
@@ -2501,11 +2513,16 @@
     const ra=recurring.filter(r=>r.status==='active').length;
     document.getElementById('setRecurringSub').textContent = ra? (ra+' active') : 'None yet';
     document.getElementById('setCurrencySub').textContent = curSym+' · '+currencyCode;
-    document.getElementById('setBankSub').textContent = !hasProAccess()
+    document.getElementById('setBankSub').textContent = showLocked
       ? 'Sync balances and protect a minimum floor'
       : bank.connected
       ? ((bank.accountName||bank.institutionName)+(bank.accountMask?' · '+bank.accountMask:''))
       : (bank.error ? 'Setup issue — tap to retry' : 'Manual only — connect a bank to sync your balance');
+    document.getElementById('setProPreviewSub').textContent = proUiPreview
+      ? 'Tester only — the locked Pro UI is visible'
+      : 'Tester only — the locked Pro UI is hidden';
+    document.getElementById('setProPreviewSwitch').classList.toggle('on', proUiPreview);
+    document.getElementById('setProPreviewSwitch').setAttribute('aria-checked', proUiPreview ? 'true' : 'false');
     document.getElementById('setDobSub').textContent = dob ? ('Set — projections show your age') : 'Not set';
   }
   const dobOv=document.getElementById('dobOverlay');
@@ -2521,6 +2538,13 @@
       el.appendChild(b); });
   }
   document.getElementById('setCurrency').addEventListener('click',()=>{ renderCurChips(); curOv.classList.add('show'); });
+  document.getElementById('setProPreview').addEventListener('click',()=>{
+    proUiPreview=!proUiPreview;
+    refreshSettings();
+    render();
+    saveState();
+    toast(proUiPreview ? 'Pro preview on' : 'Pro preview off', proUiPreview ? 'Locked Pro UI is visible for testing' : 'Locked Pro UI is hidden for testing', 'ti-adjustments-horizontal');
+  });
   const bankOv=document.getElementById('bankOverlay');
   document.getElementById('setBank').addEventListener('click',()=>{
     if(!hasProAccess()){ openUpgrade('bank','bank-settings'); return; }
@@ -2602,6 +2626,7 @@
   function afterQuickChange(){ renderQuick(); renderQuickList(); refreshSettings(); saveState(); }
   function renderQuickList(){
     const list=document.getElementById('quickList'); list.innerHTML='';
+    const showLocked = showLockedProUi();
     const visibleQuicks = hasProAccess() ? quick : quick.slice(0, FREE_QUICK_LIMIT);
     if(!visibleQuicks.length){ list.innerHTML='<p class="empty-note">No quick actions yet. Add one below.</p>'; return; }
     visibleQuicks.forEach((q,i)=>{
@@ -2619,7 +2644,7 @@
       row.querySelector('.qle-mid').addEventListener('click',()=>openQaEdit(i));
       list.appendChild(row);
     });
-    if(!hasProAccess()){
+    if(showLocked){
       const note=document.createElement('div');
       note.className='card';
       note.style.marginTop='12px';
