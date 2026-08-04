@@ -390,12 +390,12 @@
   .pro-mini{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:3px 8px;border-radius:999px;
     background:var(--amber-soft);color:var(--amber-ink);font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;vertical-align:middle}
   .pro-mini svg{font-size:11px}
-  .pro-note{font-size:11px;color:var(--amber-ink);font-weight:600;margin-top:6px;display:flex;align-items:center;gap:5px}
+  .pro-note{font-size:11px;color:var(--amber-ink);font-weight:600}
   .pro-lock-card{position:relative;border-style:dashed;opacity:.92}
   .pro-lock-card .ic{opacity:.72}
-  .pro-lock-card .n{color:var(--ink)}
-  .pro-lock-card .p{color:var(--muted)}
-  .pro-lock-card .pro-mini{margin:8px 0 0}
+  .pro-lock-card .n{color:var(--ink);font-family:var(--font-round);font-weight:600}
+  .pro-lock-card .p{display:none}
+  .pro-lock-card .pro-mini{margin:0}
   .set-row.locked{cursor:pointer}
   .upgrade-sheet .up-eyebrow{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--amber-ink);margin:2px 0 10px}
   .upgrade-sheet .up-title{font-family:var(--font-round);font-size:24px;font-weight:700;letter-spacing:-.03em;margin:0}
@@ -544,12 +544,11 @@
         <h2 class="h-screen">Your future</h2>
         <div class="fut-toggle" id="futureProToggle">
           <div class="ft-txt">
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
               <b>Keep my subscriptions going</b>
               <span class="pro-mini" id="futureProBadge"><i class="ti ti-lock"></i>Pro</span>
             </div>
-            <small id="futureProSub">Assume your recurring savings keep going every month to your horizon</small>
-            <div class="pro-note" id="futureProNote"><i class="ti ti-lock"></i>Unlock with Pro</div>
+            <small id="futureProSub">Assume your recurring savings keep going every month to your horizon <span class="pro-note" id="futureProNote">Unlock with Pro</span></small>
           </div>
           <div class="switch" id="projRecurSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
         </div>
@@ -916,7 +915,7 @@
         <div class="sheet">
           <div class="grip"></div>
           <h3>Quick actions</h3>
-          <p class="sub">Your one-tap logs. Reorder, edit, or add your own.</p>
+          <p class="sub" id="quickListSub">Your one-tap logs. Reorder, edit, or add your own.</p>
           <div id="quickList"></div>
           <button class="btn ghost" id="qaAdd" style="margin-top:10px"><i class="ti ti-plus"></i>Add quick action</button>
           <button class="btn primary" id="quickListClose" style="margin-top:10px">Done</button>
@@ -1553,7 +1552,7 @@
       document.getElementById('transferBankPill').textContent='Pro';
       document.getElementById('transferBankPill').className='bank-pill live';
       document.getElementById('transferBankGrid').style.display='none';
-      document.getElementById('transferBankNote').textContent='Unlock with Pro to sync balances before you move money.';
+      document.getElementById('transferBankNote').textContent='Manual stays available even after you link a bank.';
       document.getElementById('transferConnectBank').textContent='Unlock bank features';
       document.getElementById('transferSyncBank').style.display='none';
       document.getElementById('transferSyncBank').disabled=true;
@@ -1680,14 +1679,16 @@
   function renderPremiumUi(){
     const pro = hasProAccess();
     document.getElementById('futureProBadge').style.display = pro ? 'none' : 'inline-flex';
-    document.getElementById('futureProNote').style.display = pro ? 'none' : 'flex';
-    document.getElementById('futureProSub').textContent = pro
+    document.getElementById('futureProSub').innerHTML = pro
       ? 'Assume your recurring savings keep going every month to your horizon'
-      : 'Include recurring savings in long-term projections';
+      : 'Include recurring savings in long-term projections <span class="pro-note" id="futureProNote">Unlock with Pro</span>';
     document.getElementById('setBankBadge').style.display = pro ? 'none' : 'inline-flex';
     document.getElementById('qaAdd').innerHTML = (!pro && quick.length>=FREE_QUICK_LIMIT)
       ? '<i class="ti ti-lock"></i>Unlock more with Pro'
       : '<i class="ti ti-plus"></i>Add quick action';
+    document.getElementById('quickListSub').textContent = pro
+      ? 'Your one-tap logs. Reorder, edit, or add your own.'
+      : 'Create up to 3 quick actions for free. Unlock Pro to add more.';
     document.getElementById('futureProToggle').classList.toggle('locked', !pro);
     replaceIcons(document.getElementById('futureProToggle'));
     replaceIcons(document.getElementById('settingsOverlay'));
@@ -2143,7 +2144,7 @@
     });
     if(!hasProAccess()){
       const lock=document.createElement('button'); lock.className='qa pro-lock-card';
-      lock.innerHTML=`<div class="ic"><i class="ti ti-plus"></i></div><div class="n">Add another quick action</div><div class="p">Use more than ${FREE_QUICK_LIMIT} with Pro</div><span class="pro-mini"><i class="ti ti-lock"></i>Pro</span>`;
+      lock.innerHTML=`<div class="ic"><i class="ti ti-plus"></i></div><div class="n">Quick action</div><span class="pro-mini"><i class="ti ti-lock"></i>Pro</span>`;
       lock.addEventListener('click',()=>openUpgrade('quick_actions','quick-actions'));
       qr.appendChild(lock);
     }
