@@ -253,8 +253,11 @@
   .toast .undo{margin-left:auto;color:var(--amber);font-weight:700;font-size:13px;cursor:pointer;
     background:none;border:none;font-family:var(--font-round);padding:4px 6px}
   .milestone-drop{position:absolute;left:50%;top:14px;transform:translate(-50%,-18px);z-index:75;
-    width:min(332px,calc(100% - 24px));background:var(--card);border:1px solid color-mix(in srgb,var(--accent) 22%,var(--hair));
-    border-radius:18px;padding:14px 15px 13px;box-shadow:0 18px 34px -14px var(--shadow);opacity:0;pointer-events:none;
+    width:min(332px,calc(100% - 24px));background:
+      radial-gradient(120% 90% at 50% 0%, color-mix(in srgb,var(--amber-soft) 70%, transparent), transparent 62%),
+      var(--paper);
+    border:1px solid var(--hair);border-radius:22px 22px 18px 18px;padding:14px 15px 13px;
+    box-shadow:0 18px 34px -14px var(--shadow);opacity:0;pointer-events:none;
     transition:opacity .28s,transform .3s cubic-bezier(.2,.9,.2,1)}
   .milestone-drop.show{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
   .milestone-drop .hd{display:flex;align-items:flex-start;gap:10px}
@@ -912,8 +915,10 @@
   let currencyCode='GBP', curSym='£', curSuffix=false;
   function symWrap(num,sign){ return curSuffix ? (sign+num+' '+curSym) : (sign+curSym+(curSym.length>1?' ':'')+num); }
   const fmtN = (v,dec)=> (Math.abs(v)/100).toLocaleString('en-GB', dec? {minimumFractionDigits:2,maximumFractionDigits:2} : {maximumFractionDigits:0});
+  const fmtM = v => (Math.abs(v)/100).toLocaleString('en-GB', {minimumFractionDigits:0,maximumFractionDigits:2});
   const P    = v => symWrap(fmtN(v,true),  v<0?'-':'');
   const Pn   = v => symWrap(fmtN(v,false), v<0?'-':'');
+  const Pm   = v => symWrap(fmtM(v), v<0?'-':'');
   const Pabs = v => symWrap(fmtN(v,true),  '');
   const Psig = v => (v>0?'+':v<0?'−':'')+Pabs(v);
   function applyCurrency(code){
@@ -1220,6 +1225,7 @@
     return {current:Math.min(cur,target), target, text:`${show(Math.min(cur,target))} / ${show(target)} ${unit}`};
   }
   function milestoneData(){
+    const moneyTxt = amt => Pm(amt);
     const cWins=confirmedWins();
     const cAmount=confirmedAmount();
     const cDays=confirmedDayKeys();
@@ -1254,16 +1260,16 @@
       {id:'daily-noticer',cat:'habit',name:'Daily Noticer',icon:'ti-circle-check',detail:'Reach 25 confirmed wins total.', eval:()=>({done:cWins.length>=25, ...milestoneProgress(cWins.length,25,'confirmed wins')})},
       {id:'monthly-keeper',cat:'habit',name:'Monthly Keeper',icon:'ti-calendar',detail:'Confirm wins in three different months.', eval:()=>({done:cMonths.length>=3, ...milestoneProgress(cMonths.length,3,'months')})},
       {id:'comeback',cat:'habit',name:'Comeback',icon:'ti-arrow-right',detail:'Log a confirmed win after a 14-day gap.', eval:()=>({done:hasComeback, current:hasComeback?1:0,target:1,text:hasComeback?'Comeback done':'Come back after a quiet stretch'})},
-      {id:'kept-10',cat:'money',name:'First £10 Kept',icon:'ti-coin',detail:'Reach £10 in confirmed wins.', eval:()=>({done:cAmount>=1000, ...milestoneProgress(cAmount,1000,'kept',P)})},
-      {id:'kept-50',cat:'money',name:'First £50 Kept',icon:'ti-coin',detail:'Reach £50 in confirmed wins.', eval:()=>({done:cAmount>=5000, ...milestoneProgress(cAmount,5000,'kept',P)})},
-      {id:'kept-100',cat:'money',name:'First £100 Kept',icon:'ti-coin',detail:'Reach £100 in confirmed wins.', eval:()=>({done:cAmount>=10000, ...milestoneProgress(cAmount,10000,'kept',P)})},
-      {id:'kept-250',cat:'money',name:'First £250 Kept',icon:'ti-coin',detail:'Reach £250 in confirmed wins.', eval:()=>({done:cAmount>=25000, ...milestoneProgress(cAmount,25000,'kept',P)})},
-      {id:'kept-500',cat:'money',name:'First £500 Kept',icon:'ti-coin',detail:'Reach £500 in confirmed wins.', eval:()=>({done:cAmount>=50000, ...milestoneProgress(cAmount,50000,'kept',P)})},
-      {id:'kept-1000',cat:'money',name:'First £1,000 Kept',icon:'ti-coin',detail:'Reach £1,000 in confirmed wins.', eval:()=>({done:cAmount>=100000, ...milestoneProgress(cAmount,100000,'kept',P)})},
+      {id:'kept-10',cat:'money',name:'First '+moneyTxt(1000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(1000)+' in confirmed wins.', eval:()=>({done:cAmount>=1000, ...milestoneProgress(cAmount,1000,'kept',Pm)})},
+      {id:'kept-50',cat:'money',name:'First '+moneyTxt(5000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(5000)+' in confirmed wins.', eval:()=>({done:cAmount>=5000, ...milestoneProgress(cAmount,5000,'kept',Pm)})},
+      {id:'kept-100',cat:'money',name:'First '+moneyTxt(10000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(10000)+' in confirmed wins.', eval:()=>({done:cAmount>=10000, ...milestoneProgress(cAmount,10000,'kept',Pm)})},
+      {id:'kept-250',cat:'money',name:'First '+moneyTxt(25000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(25000)+' in confirmed wins.', eval:()=>({done:cAmount>=25000, ...milestoneProgress(cAmount,25000,'kept',Pm)})},
+      {id:'kept-500',cat:'money',name:'First '+moneyTxt(50000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(50000)+' in confirmed wins.', eval:()=>({done:cAmount>=50000, ...milestoneProgress(cAmount,50000,'kept',Pm)})},
+      {id:'kept-1000',cat:'money',name:'First '+moneyTxt(100000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(100000)+' in confirmed wins.', eval:()=>({done:cAmount>=100000, ...milestoneProgress(cAmount,100000,'kept',Pm)})},
       {id:'money-moved',cat:'money',name:'Money Moved',icon:'ti-arrow-up-right',detail:'Complete your first non-zero transfer.', eval:()=>({done:transfers.some(t=>t.amount>0), ...milestoneProgress(transfers.filter(t=>t.amount>0).length,1,'transfers')})},
-      {id:'transferred-100',cat:'money',name:'First £100 Transferred',icon:'ti-arrow-up-right',detail:'Reach £100 transferred.', eval:()=>({done:tAmount>=10000, ...milestoneProgress(tAmount,10000,'transferred',P)})},
-      {id:'transferred-500',cat:'money',name:'First £500 Transferred',icon:'ti-arrow-up-right',detail:'Reach £500 transferred.', eval:()=>({done:tAmount>=50000, ...milestoneProgress(tAmount,50000,'transferred',P)})},
-      {id:'transferred-1000',cat:'money',name:'First £1,000 Transferred',icon:'ti-arrow-up-right',detail:'Reach £1,000 transferred.', eval:()=>({done:tAmount>=100000, ...milestoneProgress(tAmount,100000,'transferred',P)})},
+      {id:'transferred-100',cat:'money',name:'First '+moneyTxt(10000)+' Transferred',icon:'ti-arrow-up-right',detail:'Reach '+moneyTxt(10000)+' transferred.', eval:()=>({done:tAmount>=10000, ...milestoneProgress(tAmount,10000,'transferred',Pm)})},
+      {id:'transferred-500',cat:'money',name:'First '+moneyTxt(50000)+' Transferred',icon:'ti-arrow-up-right',detail:'Reach '+moneyTxt(50000)+' transferred.', eval:()=>({done:tAmount>=50000, ...milestoneProgress(tAmount,50000,'transferred',Pm)})},
+      {id:'transferred-1000',cat:'money',name:'First '+moneyTxt(100000)+' Transferred',icon:'ti-arrow-up-right',detail:'Reach '+moneyTxt(100000)+' transferred.', eval:()=>({done:tAmount>=100000, ...milestoneProgress(tAmount,100000,'transferred',Pm)})},
       {id:'real-saver',cat:'money',name:'Real Saver',icon:'ti-circle-check',detail:'Complete five separate transfers.', eval:()=>({done:transfers.length>=5, ...milestoneProgress(transfers.length,5,'transfers')})},
       {id:'transfer-habit',cat:'money',name:'Transfer Habit',icon:'ti-calendar-clock',detail:'Transfer in three different months.', eval:()=>({done:tMonths.length>=3, ...milestoneProgress(tMonths.length,3,'months')})},
       {id:'goal-underway',cat:'commitment',name:'Goal Underway',icon:'ti-target',detail:'Reach 25% of this month’s goal.', eval:()=>({done:goalRatio>=0.25, current:Math.min(100,Math.round(goalRatio*100)), target:25, text:goalRatio>=0.25?'25% reached':`${Math.min(100,Math.round(goalRatio*100))}% of goal`})},
