@@ -364,6 +364,29 @@
   .set-row small{font-size:12px;color:var(--muted);margin-top:1px}
   .set-row i,.set-row svg{color:var(--muted);font-size:18px;flex:0 0 auto}
   .set-row.danger b{color:#B0554C}
+  .bank-panel{background:var(--card);border:1px solid var(--hair);border-radius:16px;padding:14px 15px;margin-top:14px}
+  .bank-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .bank-head b{font-family:var(--font-round);font-size:15px;font-weight:600;color:var(--ink);display:block}
+  .bank-head small{font-size:12px;color:var(--muted);line-height:1.45;display:block;margin-top:2px}
+  .bank-pill{display:inline-flex;align-items:center;justify-content:center;padding:5px 9px;border-radius:999px;font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent-ink);white-space:nowrap}
+  .bank-pill.manual{background:var(--card-2);color:var(--muted)}
+  .bank-pill.live{background:var(--amber-soft);color:var(--amber-ink)}
+  .bank-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  .bank-stat{background:var(--paper);border:1px solid var(--hair);border-radius:13px;padding:11px 12px}
+  .bank-stat .k{font-size:11px;color:var(--muted)}
+  .bank-stat .v{font-family:var(--font-round);font-size:18px;font-weight:600;color:var(--ink);margin-top:3px;font-variant-numeric:tabular-nums}
+  .bank-note{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:12px}
+  .bank-actions{display:flex;gap:10px;margin-top:14px}
+  .bank-actions .btn{padding:12px 14px;font-size:14px;border-radius:13px}
+  .bank-actions .btn.ghost{color:var(--accent)}
+  .bank-input-row{display:flex;gap:10px;align-items:flex-end;margin-top:14px}
+  .bank-input-row .field{flex:1;margin-top:0}
+  .bank-input-row .btn{width:auto;min-width:112px;padding:12px 16px;border-radius:13px;font-size:14px}
+  .bank-inline{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:12px 14px;margin-top:14px}
+  .bank-inline b{font-family:var(--font-round);font-size:14px;font-weight:600;color:var(--ink);display:block}
+  .bank-inline small{font-size:11.5px;color:var(--muted);line-height:1.4;display:block;margin-top:2px}
+  .bank-link{background:none;border:none;padding:0;color:var(--accent);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+  .bank-link:disabled{opacity:.45;cursor:default}
   .qle-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--hair)}
   .qle-move{display:flex;flex-direction:column;gap:2px}
   .qle-move button{width:26px;height:22px;border:1px solid var(--hair);background:var(--card);border-radius:7px;cursor:pointer;
@@ -474,6 +497,7 @@
             <div style="flex:1">
               <div style="font-size:13.5px;font-weight:600">Next transfer · 28 July</div>
               <div style="font-size:11.5px;color:var(--muted)" id="transferStatusLine">£183.40 ready to move</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px" id="transferModeLine">Manual transfer mode</div>
             </div>
             <i class="ti ti-chevron-right" style="color:var(--muted)" aria-hidden="true"></i>
           </div>
@@ -579,6 +603,30 @@
             <div class="chip">
               <div class="k"><span class="dot done"></span>Transferred</div>
               <div class="v" id="tsTransferred">£0.00</div>
+            </div>
+          </div>
+          <div class="bank-panel" id="transferBankPanel">
+            <div class="bank-head">
+              <div>
+                <b id="transferBankTitle">Manual transfer</b>
+                <small id="transferBankMeta">Connect your bank to sync your balance and keep a protected floor before moving money.</small>
+              </div>
+              <span class="bank-pill manual" id="transferBankPill">Manual</span>
+            </div>
+            <div class="bank-grid" id="transferBankGrid">
+              <div class="bank-stat">
+                <div class="k" id="transferBankStat1Label">Protected floor</div>
+                <div class="v" id="transferBankStat1">€1,000.00</div>
+              </div>
+              <div class="bank-stat">
+                <div class="k" id="transferBankStat2Label">Available above floor</div>
+                <div class="v" id="transferBankStat2">—</div>
+              </div>
+            </div>
+            <div class="bank-note" id="transferBankNote">Manual stays available even after you link a bank.</div>
+            <div class="bank-actions">
+              <button class="btn ghost" id="transferConnectBank" style="flex:1">Connect bank</button>
+              <button class="btn ghost" id="transferSyncBank" style="flex:1">Sync balance</button>
             </div>
           </div>
           <div class="transfer-amt">
@@ -719,11 +767,61 @@
           <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
           <button class="set-row" id="setRecurring"><span><b>Recurring savings</b><small id="setRecurringSub">—</small></span><i class="ti ti-repeat"></i></button>
           <button class="set-row" id="setCurrency"><span><b>Currency</b><small id="setCurrencySub">—</small></span><i class="ti ti-coin"></i></button>
+          <button class="set-row" id="setBank"><span><b>Linked bank</b><small id="setBankSub">Manual only — connect a bank to sync your balance</small></span><i class="ti ti-shield-check"></i></button>
           <button class="set-row" id="setDob"><span><b>Date of birth</b><small id="setDobSub">—</small></span><i class="ti ti-calendar"></i></button>
           <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
           <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
           <button class="set-row danger" id="setReset"><span><b>Reset app</b><small>Erase everything and start over</small></span><i class="ti ti-trash"></i></button>
           <button class="btn ghost" id="setClose" style="margin-top:16px">Close</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="bankOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Linked bank</h3>
+          <p class="sub">Connect a bank in TrueLayer sandbox, sync the latest balance, and keep a protected floor before transfers are suggested.</p>
+          <div class="bank-panel">
+            <div class="bank-head">
+              <div>
+                <b id="bankSummaryTitle">Manual only</b>
+                <small id="bankSummaryMeta">Kept is still manual by default. Link a bank when you want balance-aware transfer suggestions.</small>
+              </div>
+              <span class="bank-pill manual" id="bankSummaryPill">Manual</span>
+            </div>
+            <div class="bank-grid" id="bankSummaryGrid">
+              <div class="bank-stat">
+                <div class="k" id="bankSummaryStat1Label">Last synced balance</div>
+                <div class="v" id="bankSummaryStat1">—</div>
+              </div>
+              <div class="bank-stat">
+                <div class="k" id="bankSummaryStat2Label">Available above floor</div>
+                <div class="v" id="bankSummaryStat2">—</div>
+              </div>
+            </div>
+            <div class="bank-note" id="bankSummaryNote">Once connected, Kept can check whether your bank balance stays above the floor you choose.</div>
+          </div>
+          <div class="bank-inline" id="bankRuleInline">
+            <div>
+              <b>Protected minimum balance</b>
+              <small>Example: keep at least €1,000 in your source account before any transfer is suggested.</small>
+            </div>
+            <div class="switch" id="bankRuleSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
+          </div>
+          <div class="bank-input-row" id="bankFloorRow">
+            <div class="field">
+              <label>Protected floor</label>
+              <div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="bankFloorInput" placeholder="1000"></div>
+            </div>
+            <button class="btn primary" id="bankSaveBtn">Save rule</button>
+          </div>
+          <div class="bank-note" id="bankRuleNote">With the rule off, Kept stays manual even if a bank is linked.</div>
+          <div class="bank-actions">
+            <button class="btn ghost" id="bankConnectBtn" style="flex:1">Connect bank</button>
+            <button class="btn ghost" id="bankSyncBtn" style="flex:1">Sync now</button>
+          </div>
+          <button class="bank-link" id="bankRefreshLink" style="margin-top:12px">Refresh linked-bank status</button>
+          <button class="btn ghost" id="bankClose" style="margin-top:16px">Close</button>
         </div>
       </div>
 
@@ -1155,6 +1253,292 @@
     try{ const raw=localStorage.getItem(LSKEY); return raw? JSON.parse(raw): null; }catch(e){ return null; }
   }
   const cur = ()=>document.querySelector('.screen');
+  const SUPABASE_PROJECT_URL='https://ykblaaedpqdvzzzdbfdp.supabase.co';
+  const BANK_BOOTSTRAP_URL=SUPABASE_PROJECT_URL+'/functions/v1/kept-bank-bootstrap';
+  const BANK_STATE_URL=SUPABASE_PROJECT_URL+'/functions/v1/kept-bank-state';
+  let supabase=null;
+  const moneyForCode = (minor, code) => {
+    if(minor==null || Number.isNaN(Number(minor))) return '—';
+    try{
+      return new Intl.NumberFormat('en-GB',{style:'currency',currency:code||currencyCode,minimumFractionDigits:2,maximumFractionDigits:2}).format(minor/100);
+    }catch(e){
+      return P(minor);
+    }
+  };
+  const bankDefault = ()=>({
+    ready:false,error:'',authReady:false,userId:null,connected:false,
+    connectionId:null,institutionName:'',accountId:null,accountName:'',
+    accountMask:'',accountCurrency:currencyCode,lastSyncedAt:null,
+    availableBalanceMinor:null,currentBalanceMinor:null,protectedFloorMinor:100000,
+    availableAboveFloorMinor:null,automationEnabled:false,transferCadence:'manual',
+    syncing:false,connecting:false
+  });
+  let bank=bankDefault(), bankRuleDraft=false, bankFloorDraft=100000;
+  function readCookie(name){
+    const match = document.cookie.match(new RegExp('(?:^|; )'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : null;
+  }
+  function writeCookie(name, value){
+    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=31536000; SameSite=Lax`;
+  }
+  function fallbackDeviceFingerprint(){
+    try{
+      const seed = [
+        location.origin,
+        navigator.userAgent||'',
+        navigator.language||'',
+        screen.width||0,
+        screen.height||0,
+        screen.colorDepth||0
+      ].join('|');
+      let hash = 2166136261;
+      for(let i=0;i<seed.length;i++){
+        hash ^= seed.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      return 'fallback-'+(hash>>>0).toString(16);
+    }catch(e){
+      return 'fallback-static';
+    }
+  }
+  function getBankDeviceId(){
+    const key='kept_bank_device_v1';
+    try{
+      let value=localStorage.getItem(key);
+      if(!value) value=readCookie(key);
+      if(!value) value=crypto.randomUUID();
+      try{ localStorage.setItem(key, value); }catch(e){}
+      writeCookie(key, value);
+      return value;
+    }catch(e){
+      const cookieValue = readCookie(key);
+      if(cookieValue) return cookieValue;
+      const value = fallbackDeviceFingerprint();
+      try{ writeCookie(key, value); }catch(err){}
+      return value;
+    }
+  }
+  function bankModeText(){
+    if(!bank.connected) return 'Manual transfer mode';
+    return bankRuleDraft ? 'Linked bank · protected floor rule on' : 'Linked bank · manual transfer still available';
+  }
+  function bankSyncText(){
+    if(!bank.lastSyncedAt) return 'Not synced yet';
+    const d=new Date(bank.lastSyncedAt);
+    if(Number.isNaN(d.getTime())) return 'Not synced yet';
+    return 'Last synced '+d.toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  }
+  async function getSupabaseClient(){
+    if(supabase) return supabase;
+    const bootstrapRes = await fetch(BANK_BOOTSTRAP_URL);
+    const bootstrap = await bootstrapRes.json().catch(()=>null);
+    if(!bootstrapRes.ok || !bootstrap?.publishable_key) throw new Error((bootstrap&&bootstrap.error) || 'Missing Supabase browser key');
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    supabase = createClient(bootstrap.project_url || SUPABASE_PROJECT_URL, bootstrap.publishable_key, {
+      auth:{ persistSession:true, autoRefreshToken:true, storageKey:'kept_supabase_auth_v1' }
+    });
+    bank.ready=true;
+    return supabase;
+  }
+  async function ensureBankSession(){
+    const client = await getSupabaseClient();
+    let { data:{ session } } = await client.auth.getSession();
+    if(!session){
+      const { data, error } = await client.auth.signInAnonymously({ options:{ data:{ source:'kept-prototype' } } });
+      if(error){
+        const guestRes = await fetch(BANK_BOOTSTRAP_URL, {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify({ device_id: getBankDeviceId() })
+        });
+        const guestData = await guestRes.json().catch(()=>null);
+        if(!guestRes.ok || !guestData?.session?.access_token || !guestData?.session?.refresh_token){
+          throw error;
+        }
+        const { data: guestSessionData, error: guestSessionError } = await client.auth.setSession({
+          access_token: guestData.session.access_token,
+          refresh_token: guestData.session.refresh_token
+        });
+        if(guestSessionError) throw guestSessionError;
+        session = guestSessionData.session || null;
+      }else{
+        session = data.session || null;
+      }
+    }
+    if(!session?.user) throw new Error('Could not start secure bank session');
+    bank.authReady=true;
+    bank.userId=session.user.id;
+    return { client, session };
+  }
+  async function refreshBankData(opts={}){
+    const { sync=false, silent=false } = opts;
+    try{
+      bank.syncing=!!sync;
+      renderBankUi();
+      let headers = { 'Content-Type':'application/json' };
+      try{
+        const { session } = await ensureBankSession();
+        if(session?.access_token) headers = { ...headers, Authorization:`Bearer ${session.access_token}` };
+      }catch(e){}
+      const stateRes = await fetch(BANK_STATE_URL, {
+        method:'POST',
+        headers,
+        body: JSON.stringify({ device_id: getBankDeviceId(), sync })
+      });
+      const stateData = await stateRes.json().catch(()=>null);
+      if(!stateRes.ok || !stateData) throw new Error(stateData?.error || 'Bank refresh failed');
+      const connection = stateData.connection || null;
+      const account = stateData.account || null;
+      const snapshot = stateData.snapshot || null;
+      const rule = stateData.rule || null;
+      bank.userId = stateData.user_id || bank.userId;
+      bank.connected=!!connection;
+      bank.connectionId=connection?.id || null;
+      bank.institutionName=connection?.institution_name || 'TrueLayer sandbox';
+      bank.accountId=account?.id || rule?.source_bank_account_id || null;
+      bank.accountName=account?.display_name || connection?.institution_name || 'Linked bank account';
+      bank.accountMask=account?.masked_account_identifier || '';
+      bank.accountCurrency=(snapshot?.currency || account?.currency || currencyCode);
+      bank.lastSyncedAt=connection?.last_synced_at || null;
+      bank.availableBalanceMinor=snapshot?.available_balance_minor ?? snapshot?.current_balance_minor ?? null;
+      bank.currentBalanceMinor=snapshot?.current_balance_minor ?? null;
+      bank.protectedFloorMinor=Number(rule?.minimum_balance_minor ?? 100000);
+      bank.transferCadence=rule?.transfer_cadence || 'manual';
+      bank.automationEnabled=!!rule?.automation_enabled;
+      bank.availableAboveFloorMinor=bank.availableBalanceMinor==null ? null : Math.max(0, bank.availableBalanceMinor-bank.protectedFloorMinor);
+      bank.error='';
+      bankRuleDraft=bank.automationEnabled || bank.transferCadence==='protected_floor';
+      bankFloorDraft=bank.protectedFloorMinor;
+      const floorInput=document.getElementById('bankFloorInput'); if(floorInput) floorInput.value=(bankFloorDraft/100).toFixed(2);
+      renderBankUi();
+      if(sync && !silent) toast('Balance synced', bank.connected ? bankSyncText() : 'Connect a bank to start syncing','ti-check');
+    }catch(error){
+      const message = error instanceof Error ? error.message : 'Bank refresh failed';
+      bank.error = (silent && !bank.connected) ? '' : message;
+      renderBankUi();
+      if(!silent) toast('Bank sync issue', message, 'ti-alert-circle');
+    }finally{
+      bank.syncing=false;
+      renderBankUi();
+    }
+  }
+  async function startBankConnect(){
+    try{
+      bank.connecting=true;
+      renderBankUi();
+      const { client } = await ensureBankSession();
+      const redirectTo=(location.href.split('#')[0] || location.href)+'#bank-return=pending';
+      const { data, error } = await client.functions.invoke('truelayer-connect', {
+        body:{ redirect_to: redirectTo }
+      });
+      if(error) throw error;
+      if(!data?.auth_url) throw new Error('Missing bank auth URL');
+      location.href=data.auth_url;
+    }catch(error){
+      bank.connecting=false;
+      bank.error=error instanceof Error ? error.message : 'Could not start bank linking';
+      renderBankUi();
+      toast('Bank linking issue', bank.error, 'ti-alert-circle');
+    }
+  }
+  async function saveBankRule(){
+    try{
+      const floor=parseM(document.getElementById('bankFloorInput').value);
+      if(floor<0){ toast('Enter a floor','Use a positive amount','ti-alert-circle'); return; }
+      const { client } = await ensureBankSession();
+      const payload={
+        user_id:bank.userId,
+        source_bank_account_id:bank.accountId,
+        minimum_balance_minor:floor,
+        transfer_cadence:bankRuleDraft?'protected_floor':'manual',
+        automation_enabled:bankRuleDraft,
+        destination_kind:'none',
+        rules_metadata:{ prototype:true, rule:'protected_floor' },
+        updated_at:new Date().toISOString()
+      };
+      const { error } = await client.from('transfer_rules').upsert(payload,{ onConflict:'user_id' });
+      if(error) throw error;
+      bank.protectedFloorMinor=floor;
+      bankFloorDraft=floor;
+      await refreshBankData({ silent:true });
+      toast('Transfer rule saved', bankRuleDraft ? 'Kept now checks your protected floor before suggesting a transfer' : 'Bank linking stays manual for now','ti-check');
+    }catch(error){
+      toast('Could not save rule', error instanceof Error ? error.message : 'Unknown error', 'ti-alert-circle');
+    }
+  }
+  function updateBankRuleSwitch(){
+    const sw=document.getElementById('bankRuleSwitch');
+    if(!sw) return;
+    sw.classList.toggle('on', !!bankRuleDraft);
+    sw.setAttribute('aria-checked', bankRuleDraft ? 'true' : 'false');
+  }
+  function renderBankUi(){
+    const availableTxt=moneyForCode(bank.availableBalanceMinor, bank.accountCurrency || currencyCode);
+    const aboveTxt=moneyForCode(bank.availableAboveFloorMinor, bank.accountCurrency || currencyCode);
+    const linked = bank.connected;
+    const settingsSub = linked
+      ? ((bank.accountName||bank.institutionName)+(bank.accountMask?' · '+bank.accountMask:'')+' · '+bankModeText().replace('Linked bank · ',''))
+      : (bank.error ? 'Setup issue — tap to retry' : 'Manual only — connect a bank to sync your balance');
+    const transferTitle = linked ? (bank.accountName || 'Linked bank account') : 'Manual transfer';
+    const transferMeta = linked
+      ? ((bank.accountMask?bank.accountMask+' · ':'')+bankSyncText())
+      : 'Connect your bank when you want Kept to sync your balance before a transfer.';
+    const summaryTitle = linked ? (bank.institutionName || 'Bank linked') : 'Manual only';
+    const summaryMeta = linked
+      ? (bankRuleDraft ? 'Protected floor rule is on. Manual transfers stay available any time.' : 'Bank linked. Kept syncs the balance, but transfers still stay manual until you turn the rule on.')
+      : 'Kept is still manual by default. Link a bank when you want balance-aware transfer suggestions.';
+    document.getElementById('setBankSub').textContent=settingsSub;
+    document.getElementById('transferModeLine').textContent=bankModeText();
+    document.getElementById('transferBankTitle').textContent=transferTitle;
+    document.getElementById('transferBankMeta').textContent=transferMeta;
+    document.getElementById('transferBankPill').textContent=linked ? (bankRuleDraft ? 'Protected' : 'Linked') : 'Manual';
+    document.getElementById('transferBankPill').className='bank-pill '+(linked ? 'live' : 'manual');
+    document.getElementById('transferBankGrid').style.display=linked ? 'grid' : 'none';
+    document.getElementById('transferBankStat1Label').textContent='Live balance';
+    document.getElementById('transferBankStat1').textContent=availableTxt;
+    document.getElementById('transferBankStat2').textContent=aboveTxt;
+    document.getElementById('transferBankNote').textContent=linked
+      ? (bankRuleDraft ? 'If the balance sits above your floor, Kept can later suggest that the waiting amount is safe to move.' : 'Manual stays available even after you link a bank.')
+      : 'Manual stays available even after you link a bank.';
+    document.getElementById('transferConnectBank').textContent=linked ? 'Manage bank' : 'Connect bank';
+    document.getElementById('transferSyncBank').textContent=bank.syncing ? 'Syncing…' : 'Sync balance';
+    document.getElementById('transferSyncBank').style.display=linked ? '' : 'none';
+    document.getElementById('transferSyncBank').disabled=!linked || bank.syncing;
+    document.getElementById('bankSummaryTitle').textContent=summaryTitle;
+    document.getElementById('bankSummaryMeta').textContent=summaryMeta;
+    document.getElementById('bankSummaryPill').textContent=linked ? (bankRuleDraft ? 'Protected' : 'Linked') : 'Manual';
+    document.getElementById('bankSummaryPill').className='bank-pill '+(linked ? 'live' : 'manual');
+    document.getElementById('bankSummaryGrid').style.display=linked ? 'grid' : 'none';
+    document.getElementById('bankSummaryStat1').textContent=availableTxt;
+    document.getElementById('bankSummaryStat2').textContent=aboveTxt;
+    document.getElementById('bankSummaryNote').textContent = linked ? bankSyncText() : (bank.error || 'Once connected, Kept can check whether your bank balance stays above the floor you choose.');
+    document.getElementById('bankRuleInline').style.display = linked ? '' : 'none';
+    document.getElementById('bankFloorRow').style.display = linked ? 'flex' : 'none';
+    document.getElementById('bankRuleNote').textContent = linked
+      ? (bankRuleDraft ? 'Rule on: Kept keeps this floor in mind before it later suggests a transfer.' : 'Rule off: Kept still syncs the balance, but stays fully manual.')
+      : 'Link a bank first, then choose a protected floor.';
+    document.getElementById('bankConnectBtn').textContent = linked ? 'Reconnect bank' : 'Connect bank';
+    document.getElementById('bankSyncBtn').textContent = bank.syncing ? 'Syncing…' : 'Sync now';
+    document.getElementById('bankSyncBtn').style.display = linked ? '' : 'none';
+    document.getElementById('bankSyncBtn').disabled = !linked || bank.syncing;
+    document.getElementById('bankSaveBtn').disabled = !linked;
+    updateBankRuleSwitch();
+  }
+  function handleBankReturn(){
+    if(!location.hash) return;
+    const hash = new URLSearchParams(location.hash.replace(/^#/, ''));
+    const state = hash.get('bank-return');
+    if(!state) return;
+    history.replaceState(null, '', location.pathname + location.search);
+    if(state==='success'){
+      toast('Bank linked', 'Balance sync is ready — you can still move money manually whenever you want', 'ti-check');
+      refreshBankData({ silent:true });
+    }else if(state==='failed'){
+      toast('Bank linking issue', hash.get('message') || 'Please try again', 'ti-alert-circle');
+    }else{
+      refreshBankData({ silent:true });
+    }
+  }
 
   const monthWins = m => wins.filter(w=>w.month===m);
   const recordedThisMonth = ()=> monthWins(CUR).reduce((s,w)=>s+w.net,0);
@@ -1302,7 +1686,9 @@
     document.getElementById('goalFill').style.width = pct+'%';
     document.getElementById('goalNow').textContent = P(rec)+' kept';
     document.getElementById('goalRight').innerHTML = '<b>'+P(Math.max(0,gm-rec))+'</b> to go';
-    document.getElementById('transferStatusLine').textContent = P(wait)+' ready to move';
+    document.getElementById('transferStatusLine').textContent = bank.connected && bankRuleDraft
+      ? (P(wait)+' waiting · '+moneyForCode(bank.availableAboveFloorMinor, bank.accountCurrency || currencyCode)+' above floor')
+      : (P(wait)+' ready to move');
     const tsW=document.getElementById('tsWaiting'), tsT=document.getElementById('tsTransferred');
     if(tsW) tsW.textContent=P(wait); if(tsT) tsT.textContent=P(tr);
 
@@ -1321,6 +1707,7 @@
     renderActivity();
     renderMilestones(milestoneState);
     maybeShowMilestoneDrop(milestoneState.newlyUnlocked||[]);
+    renderBankUi();
     replaceIcons();
     saveState();
   }
@@ -1750,6 +2137,8 @@
   trRange.addEventListener('input',updateTransfer);
   document.getElementById('teaserCard').addEventListener('click',()=>show('future'));
   document.getElementById('transferStatusLine').closest('.card').addEventListener('click',openTransfer);
+  document.getElementById('transferConnectBank').addEventListener('click',()=>{ if(bank.connected){ renderBankUi(); bankOv.classList.add('show'); } else startBankConnect(); });
+  document.getElementById('transferSyncBank').addEventListener('click',()=>refreshBankData({ sync:true }));
   document.getElementById('transferCancel').addEventListener('click',()=>trOv.classList.remove('show'));
   trOv.addEventListener('click',e=>{if(e.target===trOv)trOv.classList.remove('show');});
   document.getElementById('transferConfirm').addEventListener('click',()=>{
@@ -1929,6 +2318,9 @@
     const ra=recurring.filter(r=>r.status==='active').length;
     document.getElementById('setRecurringSub').textContent = ra? (ra+' active') : 'None yet';
     document.getElementById('setCurrencySub').textContent = curSym+' · '+currencyCode;
+    document.getElementById('setBankSub').textContent = bank.connected
+      ? ((bank.accountName||bank.institutionName)+(bank.accountMask?' · '+bank.accountMask:''))
+      : (bank.error ? 'Setup issue — tap to retry' : 'Manual only — connect a bank to sync your balance');
     document.getElementById('setDobSub').textContent = dob ? ('Set — projections show your age') : 'Not set';
   }
   const dobOv=document.getElementById('dobOverlay');
@@ -1944,6 +2336,10 @@
       el.appendChild(b); });
   }
   document.getElementById('setCurrency').addEventListener('click',()=>{ renderCurChips(); curOv.classList.add('show'); });
+  const bankOv=document.getElementById('bankOverlay');
+  document.getElementById('setBank').addEventListener('click',()=>{ renderBankUi(); document.getElementById('bankFloorInput').value=(bankFloorDraft/100).toFixed(2); bankOv.classList.add('show'); });
+  document.getElementById('bankClose').addEventListener('click',()=>bankOv.classList.remove('show'));
+  bankOv.addEventListener('click',e=>{ if(e.target===bankOv) bankOv.classList.remove('show'); });
   document.getElementById('curClose').addEventListener('click',()=>curOv.classList.remove('show'));
   curOv.addEventListener('click',e=>{ if(e.target===curOv) curOv.classList.remove('show'); });
   function openSettings(){ refreshSettings(); setOv.classList.add('show'); }
@@ -1952,6 +2348,12 @@
   document.getElementById('setSample').addEventListener('click',()=>{ applyState(sampleData()); saveState(); renderQuick(); show('home'); render(); setOv.classList.remove('show'); toast('Sample data loaded',null,'ti-check'); });
   document.getElementById('setExport').addEventListener('click',()=>toast('Export','The real app downloads your data as a file','ti-download'));
   document.getElementById('setReset').addEventListener('click',()=>{ try{localStorage.removeItem(LSKEY);}catch(e){} setOv.classList.remove('show'); location.reload(); });
+  document.getElementById('bankRuleSwitch').addEventListener('click',()=>{ bankRuleDraft=!bankRuleDraft; updateBankRuleSwitch(); renderBankUi(); render(); });
+  document.getElementById('bankConnectBtn').addEventListener('click',startBankConnect);
+  document.getElementById('bankSyncBtn').addEventListener('click',()=>refreshBankData({ sync:true }));
+  document.getElementById('bankRefreshLink').addEventListener('click',()=>refreshBankData({ silent:true }));
+  document.getElementById('bankSaveBtn').addEventListener('click',saveBankRule);
+  document.getElementById('bankFloorInput').addEventListener('input',()=>{ const v=parseM(document.getElementById('bankFloorInput').value); bankFloorDraft=v; });
 
   // ---------- edit goal ----------
   const geOv=document.getElementById('goalEditOverlay');
@@ -2178,7 +2580,7 @@
   // clock
   document.getElementById('clock').textContent=NOW.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 
-  function boot(){ applyCurrency(currencyCode); materializeRecurring(); renderQuick(); render(); setTimeout(drawCurve,60); setTimeout(queueRecurringConfirms,700); }
+  function boot(){ applyCurrency(currencyCode); materializeRecurring(); renderQuick(); render(); handleBankReturn(); refreshBankData({ silent:true }); setTimeout(drawCurve,60); setTimeout(queueRecurringConfirms,700); }
   const saved=loadState();
   if(saved && saved.onboarded){ applyState(saved); boot(); }
   else { boot(); startOnboarding(); }
