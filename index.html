@@ -387,15 +387,17 @@
   .bank-inline small{font-size:11.5px;color:var(--muted);line-height:1.4;display:block;margin-top:2px}
   .bank-link{background:none;border:none;padding:0;color:var(--accent);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
   .bank-link:disabled{opacity:.45;cursor:default}
-  .pro-mini{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:3px 8px;border-radius:999px;
-    background:var(--amber-soft);color:var(--amber-ink);font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;vertical-align:middle}
-  .pro-mini svg{font-size:11px}
+  .pro-mini{display:inline-flex;align-items:center;gap:6px;margin-left:8px;padding:7px 14px;border-radius:999px;
+    background:var(--amber-soft);color:var(--amber-ink);font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;vertical-align:middle;line-height:1}
+  .pro-mini svg{font-size:13px}
   .pro-note{font-size:11px;color:var(--amber-ink);font-weight:600}
   .pro-lock-card{position:relative;border-style:dashed;opacity:.92}
   .pro-lock-card .ic{opacity:.72}
   .pro-lock-card .n{color:var(--ink);font-family:var(--font-round);font-weight:600}
   .pro-lock-card .p{display:none}
   .pro-lock-card .pro-mini{margin:0}
+  .quick-home-add{width:72px;height:72px;border-radius:22px;border:1px solid var(--hair);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--accent);box-shadow:0 4px 12px -10px var(--shadow)}
+  .quick-home-add svg{font-size:28px}
   .set-row.locked{cursor:pointer}
   .upgrade-sheet .up-eyebrow{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--amber-ink);margin:2px 0 10px}
   .upgrade-sheet .up-title{font-family:var(--font-round);font-size:24px;font-weight:700;letter-spacing:-.03em;margin:0}
@@ -489,8 +491,10 @@
         </div>
 
         <div style="margin-top:18px" id="quickSection">
-          <p class="eyebrow">Log in one tap</p>
-          <div class="quick-row" id="quickRow"></div>
+          <p class="eyebrow">Quick Action</p>
+          <div style="margin-top:10px">
+            <button class="quick-home-add" id="quickHomeAdd" aria-label="Add quick action"><i class="ti ti-plus"></i></button>
+          </div>
         </div>
 
         <div class="card future-teaser" role="button" tabindex="0" id="teaserCard">
@@ -795,8 +799,8 @@
           <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
           <button class="set-row" id="setRecurring"><span><b>Recurring savings</b><small id="setRecurringSub">—</small></span><i class="ti ti-repeat"></i></button>
           <button class="set-row" id="setCurrency"><span><b>Currency</b><small id="setCurrencySub">—</small></span><i class="ti ti-coin"></i></button>
-          <button class="set-row locked" id="setBank"><span><b>Linked bank <span class="pro-mini" id="setBankBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setBankSub">Manual only — connect a bank to sync your balance</small></span><i class="ti ti-shield-check"></i></button>
-          <button class="set-row locked" id="setSharedGoals"><span><b>Shared goals <span class="pro-mini"><i class="ti ti-lock"></i>Pro</span></b><small id="setSharedSub">Build toward a goal together · coming soon</small></span><i class="ti ti-target"></i></button>
+          <button class="set-row locked" id="setBank"><span><b style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">Linked bank <span class="pro-mini" id="setBankBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setBankSub">Manual only — connect a bank to sync your balance</small></span><i class="ti ti-shield-check"></i></button>
+          <button class="set-row locked" id="setSharedGoals"><span><b style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">Shared goals <span class="pro-mini" id="setSharedBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setSharedSub">Build toward a goal together · coming soon</small></span><i class="ti ti-target"></i></button>
           <button class="set-row" id="setDob"><span><b>Date of birth</b><small id="setDobSub">—</small></span><i class="ti ti-calendar"></i></button>
           <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
           <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
@@ -932,6 +936,7 @@
           <div class="field"><label>Amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="qaeAmt" placeholder="0.00"></div></div>
           <p class="eyebrow" style="margin:16px 0 8px">Category</p>
           <div class="cat-grid" id="qaeCats"></div>
+          <p class="sub" id="qaEditProNote" style="margin-top:16px">Create up to 3 quick actions for free. Unlock unlimited quick actions with Pro.</p>
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost danger" id="qaeDelete" style="flex:0 0 34%"><i class="ti ti-trash"></i>Delete</button>
             <button class="btn primary" id="qaeSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
@@ -1683,12 +1688,16 @@
       ? 'Assume your recurring savings keep going every month to your horizon'
       : 'Include recurring savings in long-term projections <span class="pro-note" id="futureProNote">Unlock with Pro</span>';
     document.getElementById('setBankBadge').style.display = pro ? 'none' : 'inline-flex';
+    document.getElementById('setSharedBadge').style.display = pro ? 'none' : 'inline-flex';
     document.getElementById('qaAdd').innerHTML = (!pro && quick.length>=FREE_QUICK_LIMIT)
       ? '<i class="ti ti-lock"></i>Unlock more with Pro'
       : '<i class="ti ti-plus"></i>Add quick action';
     document.getElementById('quickListSub').textContent = pro
       ? 'Your one-tap logs. Reorder, edit, or add your own.'
       : 'Create up to 3 quick actions for free. Unlock Pro to add more.';
+    document.getElementById('qaEditProNote').textContent = pro
+      ? 'You have unlimited quick actions with Pro.'
+      : 'Create up to 3 quick actions for free. Unlock unlimited quick actions with Pro.';
     document.getElementById('futureProToggle').classList.toggle('locked', !pro);
     replaceIcons(document.getElementById('futureProToggle'));
     replaceIcons(document.getElementById('settingsOverlay'));
@@ -2131,24 +2140,9 @@
   msOv.addEventListener('click',e=>{ if(e.target===msOv) closeMilestones(); });
 
   // ---------- one-tap quick log ----------
-  const qr=document.getElementById('quickRow');
   function renderQuick(){
-    const visibleQuicks = hasProAccess() ? quick : quick.slice(0, FREE_QUICK_LIMIT);
-    const sec=document.getElementById('quickSection'); if(sec) sec.style.display = (visibleQuicks.length || !hasProAccess()) ? '' : 'none';
-    qr.innerHTML='';
-    visibleQuicks.forEach(q=>{
-      const b=document.createElement('button'); b.className='qa';
-      b.innerHTML=`<div class="ic"><i class="ti ${q.icon}"></i></div><div class="n">${q.name}</div><div class="p">${P(q.amt)}</div>`;
-      b.addEventListener('click',()=>logWin(q.amt,q.id,'Made '+q.name.toLowerCase()+' the cheaper way',true,q.id));
-      qr.appendChild(b);
-    });
-    if(!hasProAccess()){
-      const lock=document.createElement('button'); lock.className='qa pro-lock-card';
-      lock.innerHTML=`<div class="ic"><i class="ti ti-plus"></i></div><div class="n">Quick action</div><span class="pro-mini"><i class="ti ti-lock"></i>Pro</span>`;
-      lock.addEventListener('click',()=>openUpgrade('quick_actions','quick-actions'));
-      qr.appendChild(lock);
-    }
-    replaceIcons(qr);
+    const sec=document.getElementById('quickSection'); if(sec) sec.style.display = '';
+    replaceIcons(document.getElementById('quickSection'));
   }
 
   // toast/preview: what a single amount kept today becomes by the target year
@@ -2198,6 +2192,7 @@
   }
   function closeAdd(){ addOv.classList.remove('show'); }
   document.getElementById('tabAdd').addEventListener('click',openAdd);
+  document.getElementById('quickHomeAdd').addEventListener('click',()=>openQaEdit(null));
   document.getElementById('addCancel').addEventListener('click',closeAdd);
   addOv.addEventListener('click',e=>{if(e.target===addOv)closeAdd();});
 
