@@ -727,6 +727,14 @@
             <div class="ob-logo">Kept</div>
             <h2 class="ob-h">Turn the money you don’t spend into your future.</h2>
             <p class="ob-p">Log the little things you skip. Watch them add up — and grow.</p>
+            <button class="set-row" id="obProPreview" style="margin-top:18px">
+              <span>
+                <b>Show Pro preview</b>
+                <small id="obProPreviewSub">Tester only — turn on the locked Pro experience</small>
+              </span>
+              <div class="switch on" id="obProPreviewSwitch" role="switch" aria-checked="true"><div class="k"></div></div>
+            </button>
+            <p class="ob-p" id="obProPreviewNote" style="font-size:12px;margin-top:10px">You can change this later anytime in You.</p>
           </div>
           <div class="ob-step hidden" data-step="1">
             <p class="ob-eyebrow">A quick setup</p>
@@ -1195,6 +1203,31 @@
   function hasProAccess(){ return planState==='trial' || planState==='pro'; }
   function hasFeatureAccess(){ return hasProAccess() || !proUiPreview; }
   function showLockedProUi(){ return !hasProAccess() && proUiPreview; }
+  function syncProPreviewControls(){
+    const isOn = !!proUiPreview;
+    const youSwitch=document.getElementById('setProPreviewSwitch');
+    const youSub=document.getElementById('setProPreviewSub');
+    const obSwitch=document.getElementById('obProPreviewSwitch');
+    const obSub=document.getElementById('obProPreviewSub');
+    const obNote=document.getElementById('obProPreviewNote');
+    if(youSwitch){
+      youSwitch.classList.toggle('on', isOn);
+      youSwitch.setAttribute('aria-checked', isOn ? 'true' : 'false');
+    }
+    if(youSub) youSub.textContent = isOn
+      ? 'Tester only — Pro looks locked and upgrade gates are on'
+      : 'Tester only — all Pro features work for testing';
+    if(obSwitch){
+      obSwitch.classList.toggle('on', isOn);
+      obSwitch.setAttribute('aria-checked', isOn ? 'true' : 'false');
+    }
+    if(obSub) obSub.textContent = isOn
+      ? 'Tester only — turn on the locked Pro experience'
+      : 'Tester only — all Pro features work during onboarding';
+    if(obNote) obNote.textContent = isOn
+      ? 'You can change this later anytime in You.'
+      : 'You can turn the locked Pro preview back on later in You.';
+  }
 
   function todayIso(){
     const d=new Date();
@@ -2398,6 +2431,7 @@
     document.getElementById('obBack').style.visibility = obStep===0?'hidden':'visible';
     document.getElementById('obNext').textContent = obStep===0?'Get started' : obStep===OB_LAST?'Enter Kept' : 'Continue';
     document.getElementById('obSkip').style.display = obStep===0?'none':'block';
+    syncProPreviewControls();
     if(obStep===2){ obYrsLbl(); obRenderCur(); obGoalNameSync(); obPreview(); setInlineDateValue('obDob', config.dob||todayIso(), null, todayIso()); }
     if(obStep===3) obRenderStep3();
     if(obStep===4) obRenderFirst();
@@ -2519,11 +2553,7 @@
       : bank.connected
       ? ((bank.accountName||bank.institutionName)+(bank.accountMask?' · '+bank.accountMask:''))
       : (bank.error ? 'Setup issue — tap to retry' : 'Manual only — connect a bank to sync your balance');
-    document.getElementById('setProPreviewSub').textContent = proUiPreview
-      ? 'Tester only — Pro looks locked and upgrade gates are on'
-      : 'Tester only — all Pro features work for testing';
-    document.getElementById('setProPreviewSwitch').classList.toggle('on', proUiPreview);
-    document.getElementById('setProPreviewSwitch').setAttribute('aria-checked', proUiPreview ? 'true' : 'false');
+    syncProPreviewControls();
     document.getElementById('setDobSub').textContent = dob ? ('Set — projections show your age') : 'Not set';
   }
   const dobOv=document.getElementById('dobOverlay');
@@ -2541,7 +2571,15 @@
   document.getElementById('setCurrency').addEventListener('click',()=>{ renderCurChips(); curOv.classList.add('show'); });
   document.getElementById('setProPreview').addEventListener('click',()=>{
     proUiPreview=!proUiPreview;
+    syncProPreviewControls();
     refreshSettings();
+    render();
+    saveState();
+    toast(proUiPreview ? 'Pro preview on' : 'Pro preview off', proUiPreview ? 'The app now behaves like Pro needs unlocking' : 'All Pro features now work for testing', 'ti-adjustments-horizontal');
+  });
+  document.getElementById('obProPreview').addEventListener('click',()=>{
+    proUiPreview=!proUiPreview;
+    syncProPreviewControls();
     render();
     saveState();
     toast(proUiPreview ? 'Pro preview on' : 'Pro preview off', proUiPreview ? 'The app now behaves like Pro needs unlocking' : 'All Pro features now work for testing', 'ti-adjustments-horizontal');
