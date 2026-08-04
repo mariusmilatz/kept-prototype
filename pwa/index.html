@@ -554,7 +554,7 @@
               </div>
               <span class="bank-pill manual" id="transferBankPill">Manual</span>
             </div>
-            <div class="bank-grid">
+            <div class="bank-grid" id="transferBankGrid">
               <div class="bank-stat">
                 <div class="k" id="transferBankStat1Label">Protected floor</div>
                 <div class="v" id="transferBankStat1">€1,000.00</div>
@@ -721,7 +721,7 @@
               </div>
               <span class="bank-pill manual" id="bankSummaryPill">Manual</span>
             </div>
-            <div class="bank-grid">
+            <div class="bank-grid" id="bankSummaryGrid">
               <div class="bank-stat">
                 <div class="k" id="bankSummaryStat1Label">Last synced balance</div>
                 <div class="v" id="bankSummaryStat1">—</div>
@@ -733,14 +733,14 @@
             </div>
             <div class="bank-note" id="bankSummaryNote">Once connected, Kept can check whether your bank balance stays above the floor you choose.</div>
           </div>
-          <div class="bank-inline">
+          <div class="bank-inline" id="bankRuleInline">
             <div>
               <b>Protected minimum balance</b>
               <small>Example: keep at least €1,000 in your source account before any transfer is suggested.</small>
             </div>
             <div class="switch" id="bankRuleSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
           </div>
-          <div class="bank-input-row">
+          <div class="bank-input-row" id="bankFloorRow">
             <div class="field">
               <label>Protected floor</label>
               <div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="bankFloorInput" placeholder="1000"></div>
@@ -1258,13 +1258,17 @@
     const availableTxt=moneyForCode(bank.availableBalanceMinor, bank.accountCurrency || currencyCode);
     const aboveTxt=moneyForCode(bank.availableAboveFloorMinor, bank.accountCurrency || currencyCode);
     const linked = bank.connected;
+    const transferBankGrid=document.getElementById('transferBankGrid');
+    const bankSummaryGrid=document.getElementById('bankSummaryGrid');
+    const bankRuleInline=document.getElementById('bankRuleInline');
+    const bankFloorRow=document.getElementById('bankFloorRow');
     const settingsSub = linked
       ? ((bank.accountName||bank.institutionName)+(bank.accountMask?' · '+bank.accountMask:'')+' · '+bankModeText().replace('Linked bank · ',''))
       : (bank.error ? 'Setup issue — tap to retry' : 'Manual only — connect a bank to sync your balance');
     const transferTitle = linked ? (bank.accountName || 'Linked bank account') : 'Manual transfer';
     const transferMeta = linked
       ? ((bank.accountMask?bank.accountMask+' · ':'')+bankSyncText())
-      : 'Connect your bank to sync your balance and keep a protected floor before moving money.';
+      : 'Connect your bank when you want Kept to sync your balance before a transfer.';
     const summaryTitle = linked ? (bank.institutionName || 'Bank linked') : 'Manual only';
     const summaryMeta = linked
       ? (bankRuleDraft ? 'Protected floor rule is on. Manual transfers stay available any time.' : 'Bank linked. Kept syncs the balance, but transfers still stay manual until you turn the rule on.')
@@ -1275,28 +1279,34 @@
     document.getElementById('transferBankMeta').textContent=transferMeta;
     document.getElementById('transferBankPill').textContent=linked ? (bankRuleDraft ? 'Protected' : 'Linked') : 'Manual';
     document.getElementById('transferBankPill').className='bank-pill '+(linked ? 'live' : 'manual');
-    document.getElementById('transferBankStat1Label').textContent=linked ? 'Live balance' : 'Protected floor';
-    document.getElementById('transferBankStat1').textContent=linked ? availableTxt : floorTxt;
-    document.getElementById('transferBankStat2').textContent=linked ? aboveTxt : '—';
+    transferBankGrid.style.display=linked ? 'grid' : 'none';
+    document.getElementById('transferBankStat1Label').textContent='Live balance';
+    document.getElementById('transferBankStat1').textContent=availableTxt;
+    document.getElementById('transferBankStat2').textContent=aboveTxt;
     document.getElementById('transferBankNote').textContent=linked
       ? (bankRuleDraft ? 'If the balance sits above your floor, Kept can later suggest that the waiting amount is safe to move.' : 'Manual stays available even after you link a bank.')
       : 'Manual stays available even after you link a bank.';
     document.getElementById('transferConnectBank').textContent=linked ? 'Manage bank' : 'Connect bank';
     document.getElementById('transferSyncBank').textContent=bank.syncing ? 'Syncing…' : 'Sync balance';
+    document.getElementById('transferSyncBank').style.display=linked ? '' : 'none';
     document.getElementById('transferSyncBank').disabled=!linked || bank.syncing;
 
     document.getElementById('bankSummaryTitle').textContent=summaryTitle;
     document.getElementById('bankSummaryMeta').textContent=summaryMeta;
     document.getElementById('bankSummaryPill').textContent=linked ? (bankRuleDraft ? 'Protected' : 'Linked') : 'Manual';
     document.getElementById('bankSummaryPill').className='bank-pill '+(linked ? 'live' : 'manual');
+    bankSummaryGrid.style.display=linked ? 'grid' : 'none';
     document.getElementById('bankSummaryStat1').textContent=availableTxt;
     document.getElementById('bankSummaryStat2').textContent=aboveTxt;
     document.getElementById('bankSummaryNote').textContent = linked ? bankSyncText() : (bank.error || 'Once connected, Kept can check whether your bank balance stays above the floor you choose.');
+    bankRuleInline.style.display = linked ? '' : 'none';
+    bankFloorRow.style.display = linked ? 'flex' : 'none';
     document.getElementById('bankRuleNote').textContent = linked
       ? (bankRuleDraft ? 'Rule on: Kept keeps this floor in mind before it later suggests a transfer.' : 'Rule off: Kept still syncs the balance, but stays fully manual.')
-      : 'Link a bank first, then save the protected floor you want to keep.';
+      : 'Link a bank first, then choose a protected floor.';
     document.getElementById('bankConnectBtn').textContent = linked ? 'Reconnect bank' : 'Connect bank';
     document.getElementById('bankSyncBtn').textContent = bank.syncing ? 'Syncing…' : 'Sync now';
+    document.getElementById('bankSyncBtn').style.display = linked ? '' : 'none';
     document.getElementById('bankSyncBtn').disabled = !linked || bank.syncing;
     document.getElementById('bankSaveBtn').disabled = !linked;
     updateBankRuleSwitch();
