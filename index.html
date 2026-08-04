@@ -253,15 +253,11 @@
     font-family:var(--font-ui);font-size:15px;color:var(--ink);outline:none}
   .text-in::placeholder{color:var(--muted)}
   .text-in:focus{border-color:var(--accent)}
-  .date-btn{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;cursor:pointer}
-  .date-btn .ph{color:var(--muted)}
-  .date-btn i,.date-btn svg{color:var(--muted);font-size:18px;flex:0 0 auto}
   .date-grid{display:grid;grid-template-columns:1.15fr 1fr .9fr;gap:10px;margin-top:6px}
   .date-grid select.text-in{appearance:none;-webkit-appearance:none;padding-right:34px;
     background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
     background-position:calc(100% - 18px) calc(50% - 3px),calc(100% - 13px) calc(50% - 3px);
     background-size:5px 5px,5px 5px;background-repeat:no-repeat}
-  .date-actions{display:flex;gap:10px;margin-top:14px}
   .money-in:focus-within{border-color:var(--accent)}
   .curve-legend{display:flex;gap:16px;margin-top:12px;font-size:11.5px;color:var(--muted)}
   .curve-legend span{display:inline-flex;align-items:center;gap:6px}
@@ -541,7 +537,7 @@
           </div>
           <div class="fifo-note" id="fifoNote"></div>
           <div class="fifo-note" id="rolloverNote" style="display:none"></div>
-          <div class="field" style="margin-top:14px"><label>Date moved</label><button class="text-in date-btn" type="button" id="transferDate"><span class="ph">Choose a date</span><i class="ti ti-calendar"></i></button></div>
+          <div class="field" style="margin-top:14px"><label>Date moved</label><div class="date-grid" id="transferDate"></div></div>
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost" id="transferCancel" style="flex:0 0 40%">Not now</button>
             <button class="btn amber" id="transferConfirm" style="flex:1"><i class="ti ti-check"></i>Mark transferred</button>
@@ -614,7 +610,7 @@
             <div class="field hidden" id="obTargetField"><label>Target amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obAmount" placeholder="0.00"></div>
               <div class="add-fv" id="obPreview"></div>
             </div>
-            <div class="field"><label>Date of birth <span class="opt">optional — shows the age you’ll be</span></label><button class="text-in date-btn" type="button" id="obDob"><span class="ph">Optional</span><i class="ti ti-calendar"></i></button></div>
+            <div class="field"><label>Date of birth <span class="opt">optional — shows the age you’ll be</span></label><div class="date-grid" id="obDob"></div></div>
             <p class="ob-eyebrow" style="margin-top:18px">Growth assumptions</p>
             <div class="seg" id="obRate"><button data-rate="3">3%</button><button data-rate="5" class="on">5%</button><button data-rate="7">7%</button></div>
             <div class="ctrl" style="margin-top:8px"><div class="lab"><span>Plan until</span><b id="obYrsOut">20 years</b></div><input type="range" id="obYrs" min="5" max="60" step="1" value="20"></div>
@@ -772,37 +768,10 @@
           <div class="grip"></div>
           <h3>Date of birth</h3>
           <p class="sub">Optional. Add it and your projections show the age you’ll be — e.g. “by age 60” — instead of just a year. It stays on your device.</p>
-          <div class="field"><label>Date of birth</label><button class="text-in date-btn" type="button" id="dobInput"><span class="ph">Choose a date</span><i class="ti ti-calendar"></i></button></div>
+          <div class="field"><label>Date of birth</label><div class="date-grid" id="dobInput"></div></div>
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost" id="dobRemove" style="flex:0 0 40%">Remove</button>
             <button class="btn primary" id="dobSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- DATE PICKER -->
-      <div class="overlay" id="datePickerOverlay">
-        <div class="sheet">
-          <div class="grip"></div>
-          <h3 id="dpTitle">Choose a date</h3>
-          <p class="sub" id="dpSub">Pick the day, month, and year directly.</p>
-          <div class="date-grid">
-            <div class="field" style="margin-top:0">
-              <label>Month</label>
-              <select class="text-in" id="dpMonth"></select>
-            </div>
-            <div class="field" style="margin-top:0">
-              <label>Day</label>
-              <select class="text-in" id="dpDay"></select>
-            </div>
-            <div class="field" style="margin-top:0">
-              <label>Year</label>
-              <select class="text-in" id="dpYear"></select>
-            </div>
-          </div>
-          <div class="date-actions">
-            <button class="btn ghost" id="dpToday" style="flex:0 0 40%">Today</button>
-            <button class="btn primary" id="dpSave" style="flex:1"><i class="ti ti-check"></i>Use date</button>
           </div>
         </div>
       </div>
@@ -969,53 +938,35 @@
     return String(year).padStart(4,'0')+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0');
   }
   function daysInMonth(year,month){ return new Date(year, month, 0).getDate(); }
-  function formatDateButton(iso){
-    if(!ISO_RE.test(iso||'')) return '';
-    return new Date(iso+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  }
-  function setDateButton(id, iso, placeholder='Choose a date'){
-    const btn=document.getElementById(id); if(!btn) return;
-    btn.dataset.value = ISO_RE.test(iso||'') ? iso : '';
-    const txt=formatDateButton(btn.dataset.value);
-    btn.innerHTML = `<span class="${txt?'':'ph'}">${txt||placeholder}</span><i class="ti ti-calendar"></i>`;
-    replaceIcons(btn);
-  }
-
-  const dpOv=document.getElementById('datePickerOverlay');
-  const dpTitle=document.getElementById('dpTitle');
-  const dpSub=document.getElementById('dpSub');
-  const dpMonth=document.getElementById('dpMonth');
-  const dpDay=document.getElementById('dpDay');
-  const dpYear=document.getElementById('dpYear');
-  let dpCfg=null;
-
-  function fillDateYears(minYear,maxYear){
-    dpYear.innerHTML='';
+  function fillDateYears(select, minYear, maxYear){
+    select.innerHTML='';
     for(let year=maxYear; year>=minYear; year--){
       const o=document.createElement('option');
       o.value=String(year); o.textContent=String(year);
-      dpYear.appendChild(o);
+      select.appendChild(o);
     }
   }
-  function fillDateMonths(){
-    dpMonth.innerHTML='';
+  function fillDateMonths(select){
+    select.innerHTML='';
     MNAMES.forEach((name, index)=>{
       const o=document.createElement('option');
       o.value=String(index+1); o.textContent=name;
-      dpMonth.appendChild(o);
+      select.appendChild(o);
     });
   }
-  function syncDateDays(){
-    const year=+dpYear.value, month=+dpMonth.value;
-    const max=daysInMonth(year, month);
-    const keep=Math.min(+dpDay.value||1, max);
-    dpDay.innerHTML='';
-    for(let day=1; day<=max; day++){
+  function syncInlineDateDays(prefix){
+    const month=document.getElementById(prefix+'Month');
+    const day=document.getElementById(prefix+'Day');
+    const year=document.getElementById(prefix+'Year');
+    const max=daysInMonth(+year.value, +month.value);
+    const keep=Math.min(+day.value||1, max);
+    day.innerHTML='';
+    for(let n=1; n<=max; n++){
       const o=document.createElement('option');
-      o.value=String(day); o.textContent=String(day);
-      dpDay.appendChild(o);
+      o.value=String(n); o.textContent=String(n);
+      day.appendChild(o);
     }
-    dpDay.value=String(keep);
+    day.value=String(keep);
   }
   function clampDateIso(iso, minIso, maxIso){
     let out = ISO_RE.test(iso||'') ? iso : todayIso();
@@ -1023,39 +974,36 @@
     if(maxIso && out>maxIso) out=maxIso;
     return out;
   }
-  function setDatePickerValue(iso){
-    const p=dateParts(clampDateIso(iso, dpCfg?.minIso, dpCfg?.maxIso)) || dateParts(todayIso());
-    dpYear.value=String(p.year);
-    dpMonth.value=String(p.month);
-    syncDateDays();
-    dpDay.value=String(p.day);
+  function setInlineDateValue(prefix, iso, minIso, maxIso){
+    const p=dateParts(clampDateIso(iso, minIso, maxIso)) || dateParts(todayIso());
+    document.getElementById(prefix+'Year').value=String(p.year);
+    document.getElementById(prefix+'Month').value=String(p.month);
+    syncInlineDateDays(prefix);
+    document.getElementById(prefix+'Day').value=String(p.day);
   }
-  function currentPickerIso(){
-    return isoFromParts(+dpYear.value, +dpMonth.value, +dpDay.value);
+  function getInlineDateValue(prefix, minIso, maxIso){
+    const iso=isoFromParts(+document.getElementById(prefix+'Year').value, +document.getElementById(prefix+'Month').value, +document.getElementById(prefix+'Day').value);
+    return clampDateIso(iso, minIso, maxIso);
   }
-  function openDatePicker(cfg){
-    dpCfg=cfg;
-    dpTitle.textContent=cfg.title||'Choose a date';
-    dpSub.textContent=cfg.sub||'Pick the day, month, and year directly.';
-    document.getElementById('dpToday').style.display = cfg.showToday===false ? 'none' : 'flex';
-    fillDateMonths();
-    fillDateYears(cfg.minYear||1900, cfg.maxYear||BASE_YEAR);
-    setDatePickerValue(cfg.value || cfg.maxIso || todayIso());
-    dpOv.classList.add('show');
+  function mountInlineDate(prefix, mountId, opts={}){
+    const host=document.getElementById(mountId); if(!host) return;
+    host.innerHTML = `
+      <select class="text-in" id="${prefix}Month"></select>
+      <select class="text-in" id="${prefix}Day"></select>
+      <select class="text-in" id="${prefix}Year"></select>
+    `;
+    const month=document.getElementById(prefix+'Month');
+    const year=document.getElementById(prefix+'Year');
+    fillDateMonths(month);
+    fillDateYears(year, opts.minYear||1900, opts.maxYear||BASE_YEAR);
+    month.addEventListener('change',()=>{ syncInlineDateDays(prefix); opts.onChange?.(getInlineDateValue(prefix, opts.minIso, opts.maxIso)); });
+    year.addEventListener('change',()=>{ syncInlineDateDays(prefix); opts.onChange?.(getInlineDateValue(prefix, opts.minIso, opts.maxIso)); });
+    document.getElementById(prefix+'Day').addEventListener('change',()=>opts.onChange?.(getInlineDateValue(prefix, opts.minIso, opts.maxIso)));
+    setInlineDateValue(prefix, opts.value || opts.maxIso || todayIso(), opts.minIso, opts.maxIso);
   }
-  dpMonth.addEventListener('change',syncDateDays);
-  dpYear.addEventListener('change',syncDateDays);
-  document.getElementById('dpToday').addEventListener('click',()=>{
-    if(!dpCfg) return;
-    setDatePickerValue(dpCfg.maxIso || todayIso());
-  });
-  document.getElementById('dpSave').addEventListener('click',()=>{
-    if(!dpCfg) return;
-    const iso=clampDateIso(currentPickerIso(), dpCfg.minIso, dpCfg.maxIso);
-    dpCfg.onSave?.(iso);
-    dpOv.classList.remove('show');
-  });
-  dpOv.addEventListener('click',e=>{ if(e.target===dpOv) dpOv.classList.remove('show'); });
+  mountInlineDate('transfer','transferDate',{ minYear:BASE_YEAR-10, maxYear:BASE_YEAR, maxIso:todayIso() });
+  mountInlineDate('obDob','obDob',{ minYear:1900, maxYear:BASE_YEAR, maxIso:todayIso(), onChange:iso=>{ config.dob=iso; obYrsLbl(); } });
+  mountInlineDate('dobInput','dobInput',{ minYear:1900, maxYear:BASE_YEAR, maxIso:todayIso() });
 
   function sampleData(){
     const dCur=new Date(NOW.getTime()-10*DAY), dPrev=new Date(NOW.getTime()-45*DAY);
@@ -1477,7 +1425,7 @@
     const wait=waiting(); if(wait<=0){toast('Nothing waiting to transfer','Log a few Saving Wins first','ti-info-circle');return;}
     trRange.max=wait; trRange.value=wait;
     document.getElementById('transferWaitingLbl').textContent='of '+P(wait);
-    setDateButton('transferDate', todayIso());
+    setInlineDateValue('transfer', todayIso(), null, todayIso());
     updateTransfer(); trOv.classList.add('show');
   }
   function updateTransfer(){
@@ -1500,15 +1448,6 @@
   trRange.addEventListener('input',updateTransfer);
   document.getElementById('teaserCard').addEventListener('click',()=>show('future'));
   document.getElementById('transferStatusLine').closest('.card').addEventListener('click',openTransfer);
-  document.getElementById('transferDate').addEventListener('click',()=>openDatePicker({
-    title:'Transfer date',
-    sub:'Choose the date you actually moved the money.',
-    value:document.getElementById('transferDate').dataset.value || todayIso(),
-    minYear:BASE_YEAR-10,
-    maxYear:BASE_YEAR,
-    maxIso:todayIso(),
-    onSave:iso=>setDateButton('transferDate', iso)
-  }));
   document.getElementById('transferCancel').addEventListener('click',()=>trOv.classList.remove('show'));
   trOv.addEventListener('click',e=>{if(e.target===trOv)trOv.classList.remove('show');});
   document.getElementById('transferConfirm').addEventListener('click',()=>{
@@ -1516,7 +1455,7 @@
     const pot=wins.filter(w=>w.state==='confirmed').sort((a,b)=>a.id-b.id);
     let covered=0, cnt=0; for(const w of pot){ if(covered+w.net<=chosen){w.state='transferred'; covered+=w.net; cnt++;} else break; }
     const mark=Math.max(0, covered+rollover);
-    if(mark>0 || cnt>0){ const dv=document.getElementById('transferDate').dataset.value;
+    if(mark>0 || cnt>0){ const dv=getInlineDateValue('transfer', null, todayIso());
       const dt=(dv?new Date(dv+'T00:00:00'):new Date()).toLocaleDateString('en-GB',{day:'numeric',month:'long'});
       transfers.push({id:Date.now(),amount:mark,month:CUR,date:dt,count:cnt}); openMonth=CUR; }
     rollover=0;
@@ -1575,7 +1514,7 @@
     document.getElementById('obBack').style.visibility = obStep===0?'hidden':'visible';
     document.getElementById('obNext').textContent = obStep===0?'Get started' : obStep===OB_LAST?'Enter Kept' : 'Continue';
     document.getElementById('obSkip').style.display = obStep===0?'none':'block';
-    if(obStep===2){ obYrsLbl(); obRenderCur(); obGoalNameSync(); obPreview(); setDateButton('obDob', config.dob, 'Optional'); }
+    if(obStep===2){ obYrsLbl(); obRenderCur(); obGoalNameSync(); obPreview(); setInlineDateValue('obDob', config.dob||todayIso(), null, todayIso()); }
     if(obStep===3) obRenderStep3();
     if(obStep===4) obRenderFirst();
     obDots(); replaceIcons(obEl);
@@ -1595,15 +1534,6 @@
     const a=(by&&!isNaN(by))?(ty-by):null;
     document.getElementById('obYrsOut').textContent = a!=null ? ('age '+a+' · '+config.years+' years') : (config.years+' years · '+ty); }
   obYrs.addEventListener('input',()=>{ config.years=+obYrs.value; obYrsLbl(); obPreview(); });
-  document.getElementById('obDob').addEventListener('click',()=>openDatePicker({
-    title:'Your date of birth',
-    sub:'Optional. Kept uses it to show your age at the target year.',
-    value:config.dob || todayIso(),
-    minYear:1900,
-    maxYear:BASE_YEAR,
-    maxIso:todayIso(),
-    onSave:iso=>{ config.dob=iso; setDateButton('obDob', iso, 'Optional'); obYrsLbl(); }
-  }));
   let obGoalMode='monthly';
   function obGoalSetMode(mode){ obGoalMode=mode; config.goalMode=mode;
     document.querySelectorAll('#obMode button').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
@@ -1698,20 +1628,10 @@
     document.getElementById('setRecurringSub').textContent = ra? (ra+' active') : 'None yet';
     document.getElementById('setCurrencySub').textContent = curSym+' · '+currencyCode;
     document.getElementById('setDobSub').textContent = dob ? ('Set — projections show your age') : 'Not set';
-    setDateButton('dobInput', dob, 'Choose a date');
   }
   const dobOv=document.getElementById('dobOverlay');
-  document.getElementById('setDob').addEventListener('click',()=>{ setDateButton('dobInput', dob, 'Choose a date'); dobOv.classList.add('show'); });
-  document.getElementById('dobInput').addEventListener('click',()=>openDatePicker({
-    title:'Your date of birth',
-    sub:'Optional. Kept uses it to show your age at the target year.',
-    value:document.getElementById('dobInput').dataset.value || dob || todayIso(),
-    minYear:1900,
-    maxYear:BASE_YEAR,
-    maxIso:todayIso(),
-    onSave:iso=>setDateButton('dobInput', iso, 'Choose a date')
-  }));
-  document.getElementById('dobSave').addEventListener('click',()=>{ dob=document.getElementById('dobInput').dataset.value||null; dobOv.classList.remove('show'); refreshSettings(); render(); saveState(); toast('Saved', dob?'Projections now show your age':'','ti-check'); });
+  document.getElementById('setDob').addEventListener('click',()=>{ setInlineDateValue('dobInput', dob||todayIso(), null, todayIso()); dobOv.classList.add('show'); });
+  document.getElementById('dobSave').addEventListener('click',()=>{ dob=getInlineDateValue('dobInput', null, todayIso())||null; dobOv.classList.remove('show'); refreshSettings(); render(); saveState(); toast('Saved', dob?'Projections now show your age':'','ti-check'); });
   document.getElementById('dobRemove').addEventListener('click',()=>{ dob=null; dobOv.classList.remove('show'); refreshSettings(); render(); saveState(); toast('Removed','Projections show the year again','ti-check'); });
   dobOv.addEventListener('click',e=>{ if(e.target===dobOv) dobOv.classList.remove('show'); });
   const curOv=document.getElementById('currencyOverlay');
