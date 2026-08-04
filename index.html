@@ -387,9 +387,9 @@
   .bank-inline small{font-size:11.5px;color:var(--muted);line-height:1.4;display:block;margin-top:2px}
   .bank-link{background:none;border:none;padding:0;color:var(--accent);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
   .bank-link:disabled{opacity:.45;cursor:default}
-  .pro-mini{display:inline-flex;align-items:center;gap:6px;margin-left:8px;padding:7px 14px;border-radius:999px;
-    background:var(--amber-soft);color:var(--amber-ink);font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;vertical-align:middle;line-height:1}
-  .pro-mini svg{font-size:13px}
+  .pro-mini{display:inline-flex;align-items:center;justify-content:center;gap:5px;margin-left:8px;padding:5px 11px;border-radius:999px;
+    background:var(--amber-soft);color:var(--amber-ink);font-size:8.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;vertical-align:middle;line-height:1;white-space:nowrap;flex:0 0 auto}
+  .pro-mini svg{font-size:10px;display:block}
   .pro-note{font-size:11px;color:var(--amber-ink);font-weight:600}
   .pro-lock-card{position:relative;border-style:dashed;opacity:.92}
   .pro-lock-card .ic{opacity:.72}
@@ -799,8 +799,8 @@
           <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
           <button class="set-row" id="setRecurring"><span><b>Recurring savings</b><small id="setRecurringSub">—</small></span><i class="ti ti-repeat"></i></button>
           <button class="set-row" id="setCurrency"><span><b>Currency</b><small id="setCurrencySub">—</small></span><i class="ti ti-coin"></i></button>
-          <button class="set-row locked" id="setBank"><span><b style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">Linked bank <span class="pro-mini" id="setBankBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setBankSub">Manual only — connect a bank to sync your balance</small></span><i class="ti ti-shield-check"></i></button>
-          <button class="set-row locked" id="setSharedGoals"><span><b style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">Shared goals <span class="pro-mini" id="setSharedBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setSharedSub">Build toward a goal together · coming soon</small></span><i class="ti ti-target"></i></button>
+          <button class="set-row locked" id="setBank"><span><b style="display:flex;align-items:center;gap:8px">Linked bank <span class="pro-mini" id="setBankBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setBankSub">Manual only — connect a bank to sync your balance</small></span><i class="ti ti-shield-check"></i></button>
+          <button class="set-row locked" id="setSharedGoals"><span><b style="display:flex;align-items:center;gap:8px">Shared goals <span class="pro-mini" id="setSharedBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setSharedSub">Build toward a goal together · coming soon</small></span><i class="ti ti-target"></i></button>
           <button class="set-row" id="setDob"><span><b>Date of birth</b><small id="setDobSub">—</small></span><i class="ti ti-calendar"></i></button>
           <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
           <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
@@ -1554,8 +1554,8 @@
       document.getElementById('transferModeLine').textContent='Manual transfer mode';
       document.getElementById('transferBankTitle').textContent='Linked bank';
       document.getElementById('transferBankMeta').textContent='Balance sync and protected floor, available in Pro.';
-      document.getElementById('transferBankPill').textContent='Pro';
-      document.getElementById('transferBankPill').className='bank-pill live';
+      document.getElementById('transferBankPill').innerHTML='<i class="ti ti-lock"></i>Pro';
+      document.getElementById('transferBankPill').className='pro-mini';
       document.getElementById('transferBankGrid').style.display='none';
       document.getElementById('transferBankNote').textContent='Manual stays available even after you link a bank.';
       document.getElementById('transferConnectBank').textContent='Unlock bank features';
@@ -1563,8 +1563,8 @@
       document.getElementById('transferSyncBank').disabled=true;
       document.getElementById('bankSummaryTitle').textContent='Linked bank';
       document.getElementById('bankSummaryMeta').textContent='Sync balances and protect a minimum floor';
-      document.getElementById('bankSummaryPill').textContent='Pro';
-      document.getElementById('bankSummaryPill').className='bank-pill live';
+      document.getElementById('bankSummaryPill').innerHTML='<i class="ti ti-lock"></i>Pro';
+      document.getElementById('bankSummaryPill').className='pro-mini';
       document.getElementById('bankSummaryGrid').style.display='none';
       document.getElementById('bankSummaryNote').textContent='Create an account to unlock bank sync in Pro.';
       document.getElementById('bankRuleInline').style.display='none';
