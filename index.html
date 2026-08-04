@@ -134,6 +134,11 @@
     margin:6px 0 2px;font-variant-numeric:tabular-nums;transition:opacity .3s}
   .future-teaser .note{font-size:11.5px;color:var(--muted)}
   .spark{position:absolute;right:12px;bottom:10px;width:96px;height:44px;opacity:.9}
+  .milestone-teaser{cursor:pointer}
+  .milestone-teaser .cap{font-size:12px;color:var(--accent);font-weight:600;display:flex;gap:6px;align-items:center}
+  .milestone-teaser .big{font-family:var(--font-round);font-weight:700;font-size:28px;letter-spacing:-.02em;margin:6px 0 2px}
+  .milestone-teaser .note{font-size:11.5px;color:var(--muted)}
+  .milestone-teaser .mini{margin-top:10px;font-size:12px;color:var(--ink);font-weight:600}
 
   .btn{width:100%;border:none;border-radius:16px;padding:16px;font-family:var(--font-round);
     font-weight:600;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
@@ -356,6 +361,28 @@
   .qle-mid b{font-family:var(--font-round);font-weight:600;font-size:14.5px;display:block}
   .qle-mid small{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
   .qle-del{border:none;background:none;color:#B0554C;cursor:pointer;font-size:18px;padding:6px;flex:0 0 auto}
+  .ms-summary{display:flex;gap:10px;margin:4px 0 14px}
+  .ms-chip{flex:1;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:12px 13px}
+  .ms-chip .k{font-size:11px;color:var(--muted);letter-spacing:.02em}
+  .ms-chip .v{font-family:var(--font-round);font-weight:700;font-size:22px;margin-top:4px}
+  .ms-sub{font-size:12px;color:var(--muted);margin:-4px 0 14px}
+  .ms-list{display:flex;flex-direction:column;gap:10px}
+  .ms-item{background:var(--card);border:1px solid var(--hair);border-radius:16px;padding:14px}
+  .ms-item.top{border-color:var(--accent)}
+  .ms-item.unlocked{background:color-mix(in srgb,var(--accent-soft) 48%,var(--card));border-color:color-mix(in srgb,var(--accent) 24%,var(--hair))}
+  .ms-top{display:flex;align-items:flex-start;gap:12px}
+  .ms-ic{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
+  .ms-item.unlocked .ms-ic{background:var(--amber-soft);color:var(--amber-ink)}
+  .ms-copy{flex:1;min-width:0}
+  .ms-copy b{display:block;font-family:var(--font-round);font-size:15px}
+  .ms-copy small{display:block;font-size:12px;color:var(--muted);line-height:1.45;margin-top:3px}
+  .ms-tag{flex:0 0 auto;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:5px 8px;border-radius:999px;background:var(--card-2);color:var(--muted)}
+  .ms-tag.on{background:var(--amber-soft);color:var(--amber-ink)}
+  .ms-bar{height:7px;border-radius:999px;background:var(--card-2);overflow:hidden;margin-top:11px}
+  .ms-bar > i{display:block;height:100%;border-radius:999px;background:var(--accent);width:0}
+  .ms-meta{display:flex;justify-content:space-between;gap:12px;font-size:11.5px;color:var(--muted);margin-top:7px}
+  .ms-meta b{color:var(--ink);font-weight:600}
+  .ms-toggle{margin-top:14px}
   @media (display-mode:standalone),(max-width:480px){
     .onboarding{border-radius:0;padding-top:calc(env(safe-area-inset-top) + 20px);padding-bottom:calc(env(safe-area-inset-bottom) + 14px)}
     .stage{padding:0;min-height:100dvh;display:block;gap:0}
@@ -412,6 +439,13 @@
           <div class="big" id="teaserFuture">£75,900</div>
           <div class="note" id="teaserNote">estimated in 20 years · if kept and invested</div>
           <div class="tap-hint"><i class="ti ti-arrow-right"></i>See your future</div>
+        </div>
+
+        <div class="card milestone-teaser" role="button" tabindex="0" id="milestoneCard">
+          <div class="cap"><i class="ti ti-target"></i>Milestones</div>
+          <div class="big" id="msTeaserCount">0 unlocked</div>
+          <div class="note" id="msTeaserNote">Track quiet progress across starts, habits, money, and commitment.</div>
+          <div class="mini" id="msTeaserNext">No milestones yet</div>
         </div>
 
         <div class="card" style="padding:14px 16px">
@@ -651,6 +685,7 @@
           <div class="grip"></div>
           <h3>You</h3>
           <p class="sub">Your data lives on this device.</p>
+          <button class="set-row" id="setMilestones"><span><b>Milestones</b><small id="setMilestonesSub">Track your progress</small></span><i class="ti ti-target"></i></button>
           <button class="set-row" id="setGoal"><span><b>Edit goal</b><small id="setGoalSub">—</small></span><i class="ti ti-target"></i></button>
           <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
           <button class="set-row" id="setRecurring"><span><b>Recurring savings</b><small id="setRecurringSub">—</small></span><i class="ti ti-repeat"></i></button>
@@ -802,6 +837,30 @@
         </div>
       </div>
 
+      <!-- MILESTONES -->
+      <div class="overlay" id="milestonesOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Milestones</h3>
+          <p class="sub">Real progress only. Calm markers for starts, habits, money, and commitment.</p>
+          <div class="ms-summary">
+            <div class="ms-chip"><div class="k">Unlocked</div><div class="v" id="msUnlockedCount">0</div></div>
+            <div class="ms-chip"><div class="k">Still ahead</div><div class="v" id="msLockedCount">0</div></div>
+          </div>
+          <div class="seg" id="msSeg">
+            <button data-cat="start" class="on">Start</button>
+            <button data-cat="habit">Habit</button>
+            <button data-cat="money">Money</button>
+            <button data-cat="commitment">Commitment</button>
+          </div>
+          <p class="ms-sub" id="msCatSub">See the next few milestones without getting buried in all of them.</p>
+          <div class="ms-list" id="msNextList"></div>
+          <button class="btn ghost ms-toggle" id="msToggleAll">Show all</button>
+          <div class="ms-list" id="msAllList" style="display:none"></div>
+          <button class="btn primary" id="msClose" style="margin-top:16px">Close</button>
+        </div>
+      </div>
+
       <!-- TAB BAR -->
       <nav class="tabbar">
         <button class="tab active" data-tab="home"><i class="ti ti-home"></i><span>Home</span></button>
@@ -920,9 +979,17 @@
   let quick=DEFAULT_QUICK.map(q=>({...q}));
   let recurring=[];
   let dob=null;             // ISO date string, optional — enables "by age N" projections
+  let earnedMilestones=[];
+  let msCat='start', msExpanded=false;
   let onboarded=false;
   const SOFT_CAP=10000; // £100 — Wins above this log as unverified until confirmed
   const ISO_RE=/^\d{4}-\d{2}-\d{2}$/;
+  const MILESTONE_CATS=[
+    {id:'start', label:'Start', icon:'ti-bolt'},
+    {id:'habit', label:'Habit', icon:'ti-repeat'},
+    {id:'money', label:'Money', icon:'ti-coin'},
+    {id:'commitment', label:'Commitment', icon:'ti-target'}
+  ];
 
   function todayIso(){
     const d=new Date();
@@ -1024,7 +1091,7 @@
     try{ localStorage.setItem(LSKEY, JSON.stringify({
       onboarded:true,
       wins:wins.map(w=>({...w, date:(w.date instanceof Date? w.date.toISOString(): w.date)})),
-      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob
+      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob, earnedMilestones
     })); }catch(e){}
   }
   function applyState(s){
@@ -1040,6 +1107,7 @@
     rollover=s.rollover||0;
     currencyCode=s.currencyCode||'GBP';
     dob=s.dob||null;
+    earnedMilestones=Array.isArray(s.earnedMilestones)? s.earnedMilestones : [];
     onboarded=true;
   }
   // Create this month's Win for each active recurring saving (once). It's 'recorded' until confirmed.
@@ -1072,9 +1140,123 @@
   function totalFV(){ const td=targetDate(); return wins.reduce((s,w)=>s+grow(w.net,w.date,td),0); }
   function monthFV(){ const td=targetDate(); return wins.filter(w=>w.month===CUR).reduce((s,w)=>s+grow(w.net,w.date,td),0); }
   function fvNow(net){ return grow(net, NOW, targetDate()); }
+  const dayKey = d => [d.getFullYear(), String(d.getMonth()+1).padStart(2,'0'), String(d.getDate()).padStart(2,'0')].join('-');
+  const confirmedWins = ()=> wins.filter(w=>w.state==='confirmed' || w.state==='transferred');
+  const confirmedAmount = ()=> confirmedWins().reduce((s,w)=>s+w.net,0);
+  const confirmedDayKeys = ()=> [...new Set(confirmedWins().map(w=>dayKey(w.date)))].sort();
+  const confirmedMonthKeys = ()=> [...new Set(confirmedWins().map(w=>w.month || ym(w.date)))].sort();
+  const transferMonthKeys = ()=> [...new Set(transfers.map(t=>t.month))].sort();
+  const quickUseCounts = ()=>{
+    const out={};
+    wins.forEach(w=>{ if(w.quickId) out[w.quickId]=(out[w.quickId]||0)+1; });
+    return out;
+  };
+  function maxConsecutiveDays(keys){
+    if(!keys.length) return 0;
+    let best=1, run=1;
+    for(let i=1;i<keys.length;i++){
+      const a=new Date(keys[i-1]+'T12:00:00'), b=new Date(keys[i]+'T12:00:00');
+      const diff=Math.round((b-a)/DAY);
+      if(diff===1){ run++; best=Math.max(best,run); }
+      else if(diff>1) run=1;
+    }
+    return best;
+  }
+  function weekBucket(date){ return Math.floor((date.getDate()-1)/7)+1; }
+  function weeksInMonthKey(monthKey){
+    const [year, month]=monthKey.split('-').map(Number);
+    return Math.ceil(new Date(year, month, 0).getDate()/7);
+  }
+  function monthWeekCoverage(list){
+    const out={};
+    list.forEach(w=>{
+      const key=w.month || ym(w.date);
+      if(!out[key]) out[key]=new Set();
+      out[key].add(weekBucket(w.date));
+    });
+    return out;
+  }
+  function recurringConfirmedMonths(){
+    const out={};
+    confirmedWins().filter(w=>w.source).forEach(w=>{
+      if(!out[w.source]) out[w.source]=new Set();
+      out[w.source].add(w.month || ym(w.date));
+    });
+    return out;
+  }
+  function milestoneProgress(cur,target,unit,fmt){
+    const show = fmt || (v=>String(v));
+    return {current:Math.min(cur,target), target, text:`${show(Math.min(cur,target))} / ${show(target)} ${unit}`};
+  }
+  function milestoneData(){
+    const cWins=confirmedWins();
+    const cAmount=confirmedAmount();
+    const cDays=confirmedDayKeys();
+    const cMonths=confirmedMonthKeys();
+    const cStreak=maxConsecutiveDays(cDays);
+    const qCounts=quickUseCounts();
+    const bestQuickUse=Math.max(0,...Object.values(qCounts));
+    const cWeekMap=monthWeekCoverage(cWins);
+    const maxMonthWeekCoverage=Math.max(0,...Object.keys(cWeekMap).map(k=>cWeekMap[k].size));
+    const fullMonthCoverage = Object.keys(cWeekMap).some(k=>cWeekMap[k].size>=weeksInMonthKey(k));
+    const hasComeback = cDays.some((key, idx)=> idx>0 && Math.round((new Date(key+'T12:00:00')-new Date(cDays[idx-1]+'T12:00:00'))/DAY)>=15);
+    const tAmount=transfers.reduce((s,t)=>s+t.amount,0);
+    const tMonths=transferMonthKeys();
+    const recurMonths=recurringConfirmedMonths();
+    const recurBest=Math.max(0,...Object.values(recurMonths).map(s=>s.size));
+    const currentGoal = monthlyTargetVal();
+    const goalRatio = currentGoal>0 ? recordedThisMonth()/currentGoal : 0;
+    const transferredWinsCount = wins.filter(w=>w.state==='transferred').length;
+    const consistencyPays = Object.keys(cWeekMap).some(k=>cWeekMap[k].size>=4 && transfers.some(t=>t.month===k));
+    const defs = [
+      {id:'first-win',cat:'start',name:'First Win',icon:'ti-bolt',detail:'Log your first Saving Win.', eval:()=>({done:wins.length>=1, ...milestoneProgress(wins.length,1,'wins')})},
+      {id:'first-confirmed-win',cat:'start',name:'First Confirmed Win',icon:'ti-circle-check',detail:'Confirm your first real saving.', eval:()=>({done:cWins.length>=1, ...milestoneProgress(cWins.length,1,'confirmed wins')})},
+      {id:'first-transfer',cat:'start',name:'First Transfer',icon:'ti-arrow-up-right',detail:'Complete your first transfer.', eval:()=>({done:transfers.some(t=>t.amount>0), ...milestoneProgress(transfers.filter(t=>t.amount>0).length,1,'transfers')})},
+      {id:'first-quick-save',cat:'start',name:'First Quick Save',icon:'ti-bolt',detail:'Use a quick action to log a win.', eval:()=>({done:bestQuickUse>=1, ...milestoneProgress(bestQuickUse,1,'quick saves')})},
+      {id:'first-goal',cat:'start',name:'First Goal',icon:'ti-target',detail:'Set a goal in onboarding or settings.', eval:()=>({done:!!goalName && (goalTarget>0 || goalAmount>0), current:goalName?1:0,target:1,text:goalName?'Goal is set':'Set a goal'})},
+      {id:'first-recurring-save',cat:'start',name:'First Recurring Save',icon:'ti-repeat',detail:'Confirm your first recurring saving.', eval:()=>({done:Object.keys(recurMonths).length>=1, ...milestoneProgress(Object.keys(recurMonths).length,1,'recurring saves')})},
+      {id:'back-tomorrow',cat:'habit',name:'Back Tomorrow',icon:'ti-repeat',detail:'Confirm wins on two separate days.', eval:()=>({done:cDays.length>=2, ...milestoneProgress(cDays.length,2,'days')})},
+      {id:'three-day-rhythm',cat:'habit',name:'Three-Day Rhythm',icon:'ti-repeat',detail:'Confirm wins on three days in a row.', eval:()=>({done:cStreak>=3, ...milestoneProgress(cStreak,3,'days in a row')})},
+      {id:'week-of-intent',cat:'habit',name:'Week of Intent',icon:'ti-repeat',detail:'Confirm wins on seven consecutive days.', eval:()=>({done:cStreak>=7, ...milestoneProgress(cStreak,7,'days in a row')})},
+      {id:'steady-hand',cat:'habit',name:'Steady Hand',icon:'ti-target',detail:'Keep at least one confirmed win in each week of one calendar month.', eval:()=>({done:fullMonthCoverage, ...milestoneProgress(maxMonthWeekCoverage,4,'weeks covered')})},
+      {id:'habit-builder',cat:'habit',name:'Habit Builder',icon:'ti-bolt',detail:'Use the same quick action ten times.', eval:()=>({done:bestQuickUse>=10, ...milestoneProgress(bestQuickUse,10,'uses')})},
+      {id:'daily-noticer',cat:'habit',name:'Daily Noticer',icon:'ti-circle-check',detail:'Reach 25 confirmed wins total.', eval:()=>({done:cWins.length>=25, ...milestoneProgress(cWins.length,25,'confirmed wins')})},
+      {id:'monthly-keeper',cat:'habit',name:'Monthly Keeper',icon:'ti-calendar',detail:'Confirm wins in three different months.', eval:()=>({done:cMonths.length>=3, ...milestoneProgress(cMonths.length,3,'months')})},
+      {id:'comeback',cat:'habit',name:'Comeback',icon:'ti-arrow-right',detail:'Log a confirmed win after a 14-day gap.', eval:()=>({done:hasComeback, current:hasComeback?1:0,target:1,text:hasComeback?'Comeback done':'Come back after a quiet stretch'})},
+      {id:'kept-10',cat:'money',name:'First £10 Kept',icon:'ti-coin',detail:'Reach £10 in confirmed wins.', eval:()=>({done:cAmount>=1000, ...milestoneProgress(cAmount,1000,'kept',Pn)})},
+      {id:'kept-50',cat:'money',name:'First £50 Kept',icon:'ti-coin',detail:'Reach £50 in confirmed wins.', eval:()=>({done:cAmount>=5000, ...milestoneProgress(cAmount,5000,'kept',Pn)})},
+      {id:'kept-100',cat:'money',name:'First £100 Kept',icon:'ti-coin',detail:'Reach £100 in confirmed wins.', eval:()=>({done:cAmount>=10000, ...milestoneProgress(cAmount,10000,'kept',Pn)})},
+      {id:'kept-250',cat:'money',name:'First £250 Kept',icon:'ti-coin',detail:'Reach £250 in confirmed wins.', eval:()=>({done:cAmount>=25000, ...milestoneProgress(cAmount,25000,'kept',Pn)})},
+      {id:'kept-500',cat:'money',name:'First £500 Kept',icon:'ti-coin',detail:'Reach £500 in confirmed wins.', eval:()=>({done:cAmount>=50000, ...milestoneProgress(cAmount,50000,'kept',Pn)})},
+      {id:'kept-1000',cat:'money',name:'First £1,000 Kept',icon:'ti-coin',detail:'Reach £1,000 in confirmed wins.', eval:()=>({done:cAmount>=100000, ...milestoneProgress(cAmount,100000,'kept',Pn)})},
+      {id:'money-moved',cat:'money',name:'Money Moved',icon:'ti-arrow-up-right',detail:'Complete your first non-zero transfer.', eval:()=>({done:transfers.some(t=>t.amount>0), ...milestoneProgress(transfers.filter(t=>t.amount>0).length,1,'transfers')})},
+      {id:'transferred-100',cat:'money',name:'First £100 Transferred',icon:'ti-arrow-up-right',detail:'Reach £100 transferred.', eval:()=>({done:tAmount>=10000, ...milestoneProgress(tAmount,10000,'transferred',Pn)})},
+      {id:'transferred-500',cat:'money',name:'First £500 Transferred',icon:'ti-arrow-up-right',detail:'Reach £500 transferred.', eval:()=>({done:tAmount>=50000, ...milestoneProgress(tAmount,50000,'transferred',Pn)})},
+      {id:'transferred-1000',cat:'money',name:'First £1,000 Transferred',icon:'ti-arrow-up-right',detail:'Reach £1,000 transferred.', eval:()=>({done:tAmount>=100000, ...milestoneProgress(tAmount,100000,'transferred',Pn)})},
+      {id:'real-saver',cat:'money',name:'Real Saver',icon:'ti-circle-check',detail:'Complete five separate transfers.', eval:()=>({done:transfers.length>=5, ...milestoneProgress(transfers.length,5,'transfers')})},
+      {id:'transfer-habit',cat:'money',name:'Transfer Habit',icon:'ti-calendar-clock',detail:'Transfer in three different months.', eval:()=>({done:tMonths.length>=3, ...milestoneProgress(tMonths.length,3,'months')})},
+      {id:'goal-underway',cat:'commitment',name:'Goal Underway',icon:'ti-target',detail:'Reach 25% of this month’s goal.', eval:()=>({done:goalRatio>=0.25, current:Math.min(100,Math.round(goalRatio*100)), target:25, text:goalRatio>=0.25?'25% reached':`${Math.min(100,Math.round(goalRatio*100))}% of goal`})},
+      {id:'halfway-there',cat:'commitment',name:'Halfway There',icon:'ti-target',detail:'Reach 50% of this month’s goal.', eval:()=>({done:goalRatio>=0.5, current:Math.min(100,Math.round(goalRatio*100)), target:50, text:goalRatio>=0.5?'50% reached':`${Math.min(100,Math.round(goalRatio*100))}% of goal`})},
+      {id:'on-track',cat:'commitment',name:'On Track',icon:'ti-target',detail:'Reach 100% of this month’s goal.', eval:()=>({done:goalRatio>=1, current:Math.min(100,Math.round(goalRatio*100)), target:100, text:goalRatio>=1?'Goal reached':`${Math.min(100,Math.round(goalRatio*100))}% of goal`})},
+      {id:'still-kept',cat:'commitment',name:'Still Kept',icon:'ti-repeat',detail:'Confirm the same recurring saving for two months.', eval:()=>({done:recurBest>=2, ...milestoneProgress(recurBest,2,'months')})},
+      {id:'subscription-slayer',cat:'commitment',name:'Subscription Slayer',icon:'ti-repeat',detail:'Confirm the same recurring saving for three months.', eval:()=>({done:recurBest>=3, ...milestoneProgress(recurBest,3,'months')})},
+      {id:'long-haul',cat:'commitment',name:'Long Haul',icon:'ti-repeat',detail:'Keep one recurring saving going for six months.', eval:()=>({done:recurBest>=6, ...milestoneProgress(recurBest,6,'months')})},
+      {id:'clean-follow-through',cat:'commitment',name:'Clean Follow-Through',icon:'ti-circle-check',detail:'Have five confirmed wins later become transferred.', eval:()=>({done:transferredWinsCount>=5, ...milestoneProgress(transferredWinsCount,5,'wins transferred')})},
+      {id:'consistency-pays',cat:'commitment',name:'Consistency Pays',icon:'ti-target',detail:'Keep a four-week rhythm and make a transfer in that month.', eval:()=>({done:consistencyPays, current:consistencyPays?1:0,target:1,text:consistencyPays?'Consistency earned':'Needs 4 active weeks + a transfer'})}
+    ];
+    const data = defs.map(def=>{
+      const res=def.eval();
+      const unlocked = res.done || earnedMilestones.includes(def.id);
+      return {...def, unlocked, current:res.current, target:res.target, progressText:res.text || def.detail};
+    });
+    const newly = data.filter(m=>m.unlocked && !earnedMilestones.includes(m.id)).map(m=>m.id);
+    if(newly.length) earnedMilestones = earnedMilestones.concat(newly);
+    return data;
+  }
 
   function render(){
     const rec=recordedThisMonth(), wait=waiting(), tr=transferredTotal();
+    const milestoneState = milestoneData();
     document.getElementById('homeAmount').textContent = P(rec);
     document.getElementById('homeCount').textContent = monthWins(CUR).length+' Saving Wins · '+monthLabel(CUR);
     const _age=ageAtTarget();
@@ -1103,6 +1285,7 @@
     document.getElementById('futKept').textContent = Pn(rec);
     drawCurve();
     renderActivity();
+    renderMilestones(milestoneState);
     replaceIcons();
     saveState();
   }
@@ -1214,6 +1397,58 @@
     replaceIcons(list);
   }
 
+  function renderMilestones(data){
+    const unlocked = data.filter(m=>m.unlocked);
+    const locked = data.filter(m=>!m.unlocked);
+    document.getElementById('msUnlockedCount').textContent = String(unlocked.length);
+    document.getElementById('msLockedCount').textContent = String(locked.length);
+    document.getElementById('msTeaserCount').textContent = unlocked.length+' unlocked';
+    document.getElementById('setMilestonesSub').textContent = unlocked.length+' of '+data.length+' earned';
+    const nextOverall = locked[0];
+    document.getElementById('msTeaserNote').textContent = nextOverall ? nextOverall.name+' is next.' : 'You have earned every milestone so far.';
+    document.getElementById('msTeaserNext').textContent = nextOverall ? nextOverall.progressText : 'Everything here is unlocked.';
+
+    document.querySelectorAll('#msSeg button').forEach(b=>b.classList.toggle('on', b.dataset.cat===msCat));
+    const catInfo = MILESTONE_CATS.find(c=>c.id===msCat) || MILESTONE_CATS[0];
+    const inCat = data.filter(m=>m.cat===msCat);
+    const lockedCat = inCat.filter(m=>!m.unlocked);
+    const unlockedCat = inCat.filter(m=>m.unlocked);
+    document.getElementById('msCatSub').textContent = unlockedCat.length+' of '+inCat.length+' earned in '+catInfo.label+'.';
+
+    const nextList=document.getElementById('msNextList');
+    nextList.innerHTML='';
+    (lockedCat.slice(0,3).length ? lockedCat.slice(0,3) : unlockedCat.slice(0,3)).forEach((m,idx)=>nextList.appendChild(milestoneItem(m, idx===0 && !m.unlocked)));
+    if(!nextList.children.length){
+      const empty=document.createElement('div'); empty.className='empty-note'; empty.textContent='No milestones here yet.'; nextList.appendChild(empty);
+    }
+
+    const toggle=document.getElementById('msToggleAll');
+    toggle.style.display = inCat.length>3 ? '' : 'none';
+    toggle.innerHTML = msExpanded ? 'Show less' : ('Show all '+inCat.length+' '+catInfo.label.toLowerCase()+' milestones');
+    const all=document.getElementById('msAllList');
+    all.style.display = msExpanded ? '' : 'none';
+    all.innerHTML='';
+    if(msExpanded){
+      [...lockedCat.slice(3), ...unlockedCat].forEach(m=>all.appendChild(milestoneItem(m,false)));
+      if(!all.children.length){ const done=document.createElement('div'); done.className='empty-note'; done.textContent='Nothing else in this category.'; all.appendChild(done); }
+    }
+    replaceIcons(nextList); replaceIcons(all);
+  }
+
+  function milestoneItem(m, top){
+    const el=document.createElement('div');
+    const pct = m.target ? Math.max(0, Math.min(100, Math.round((m.current||0)/m.target*100))) : (m.unlocked?100:0);
+    el.className='ms-item'+(m.unlocked?' unlocked':'')+(top?' top':'');
+    el.innerHTML=`<div class="ms-top">
+      <div class="ms-ic"><i class="ti ${m.icon}"></i></div>
+      <div class="ms-copy"><b>${m.name}</b><small>${m.detail}</small></div>
+      <div class="ms-tag ${m.unlocked?'on':''}">${m.unlocked?'Unlocked':'Next'}</div>
+    </div>
+    <div class="ms-bar"><i style="width:${pct}%"></i></div>
+    <div class="ms-meta"><span>${m.progressText}</span><b>${m.unlocked?'Earned':'In progress'}</b></div>`;
+    return el;
+  }
+
   // ---------- growth curve ----------
   function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
   function balanceAt(tYears){ const ev=new Date(NOW.getTime()+tYears*365.25*DAY);
@@ -1271,6 +1506,20 @@
     b.addEventListener('click',()=>{ if(b.dataset.tab==='settings'){openSettings();return;} show(b.dataset.tab);});
   });
 
+  // ---------- milestones ----------
+  const msOv=document.getElementById('milestonesOverlay');
+  function openMilestones(){ msOv.classList.add('show'); }
+  function closeMilestones(){ msOv.classList.remove('show'); }
+  document.getElementById('milestoneCard').addEventListener('click',openMilestones);
+  document.getElementById('setMilestones').addEventListener('click',()=>{ setOv.classList.remove('show'); openMilestones(); });
+  document.getElementById('msClose').addEventListener('click',closeMilestones);
+  document.getElementById('msToggleAll').addEventListener('click',()=>{ msExpanded=!msExpanded; render(); });
+  document.getElementById('msSeg').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    msCat=b.dataset.cat; msExpanded=false; render();
+  });
+  msOv.addEventListener('click',e=>{ if(e.target===msOv) closeMilestones(); });
+
   // ---------- one-tap quick log ----------
   const qr=document.getElementById('quickRow');
   function renderQuick(){
@@ -1279,7 +1528,7 @@
     quick.forEach(q=>{
       const b=document.createElement('button'); b.className='qa';
       b.innerHTML=`<div class="ic"><i class="ti ${q.icon}"></i></div><div class="n">${q.name}</div><div class="p">${P(q.amt)}</div>`;
-      b.addEventListener('click',()=>logWin(q.amt,q.id,'Made '+q.name.toLowerCase()+' the cheaper way',true));
+      b.addEventListener('click',()=>logWin(q.amt,q.id,'Made '+q.name.toLowerCase()+' the cheaper way',true,q.id));
       qr.appendChild(b);
     });
     replaceIcons(qr);
@@ -1289,9 +1538,9 @@
   function projSub(net){ return '≈ '+Pn(fvNow(net))+' by '+targetYear()+', invested'; }
 
   let lastWinId=null;
-  function logWin(net,cat,name,quickToast){
+  function logWin(net,cat,name,quickToast,quickId){
     const big=net>SOFT_CAP;
-    const w={id:Date.now(),net,cat,name, state:big?'recorded':'confirmed', credibility:big?'unverified':'verified', month:CUR,date:new Date()};
+    const w={id:Date.now(),net,cat,name, state:big?'recorded':'confirmed', credibility:big?'unverified':'verified', month:CUR,date:new Date(), quickId:quickId||null};
     wins.push(w); lastWinId=w.id;
     render();
     const a=document.getElementById('homeAmount'); a.classList.add('pulse'); setTimeout(()=>a.classList.remove('pulse'),450);
@@ -1586,12 +1835,12 @@
     if(!obQuickChosen.length){ g.innerHTML='<p class="ob-empty">No quick logs yet — you can skip this and add Wins anytime.</p>'; return; }
     obQuickChosen.forEach(q=>{ const b=document.createElement('button');
       b.innerHTML=`<div class="qic"><i class="ti ${q.icon}"></i></div><div class="qn">${q.name}</div><div class="qp">${P(q.amt)}</div>`;
-      b.addEventListener('click',()=>obPickFirst(q.amt,q.id,'Made '+q.name.toLowerCase()+' the cheaper way'));
+      b.addEventListener('click',()=>obPickFirst(q.amt,q.id,'Made '+q.name.toLowerCase()+' the cheaper way',q.id));
       g.appendChild(b); });
     replaceIcons(g);
   }
-  function obPickFirst(net,cat,name){
-    config.first={net,cat,name}; proj={rate:config.rate,years:config.years};
+  function obPickFirst(net,cat,name,quickId){
+    config.first={net,cat,name,quickId}; proj={rate:config.rate,years:config.years};
     const cel=document.getElementById('obCelebrate'); cel.classList.remove('hidden');
     cel.innerHTML=`<div class="big">${P(net)} kept</div><div class="sm">↗ ≈ ${Pn(fvNow(net))} by ${BASE_YEAR+config.years} if invested</div>`;
     document.getElementById('obFirstP').textContent='Nice — that’s your first win. Tap Enter Kept.';
@@ -1612,7 +1861,7 @@
     goalName=config.goalName; goalTarget=config.monthly; goalMode=config.goalMode||'monthly'; goalAmount=config.goalAmount||1000000; proj={rate:config.rate,years:config.years}; quick=q; openMonth=CUR; onboarded=true;
     dob=config.dob||null;
     applyCurrency(config.currency);
-    if(config.first) wins.push({id:Date.now(),net:config.first.net,cat:config.first.cat,name:config.first.name,state:'confirmed',credibility:'verified',month:CUR,date:new Date()});
+    if(config.first) wins.push({id:Date.now(),net:config.first.net,cat:config.first.cat,name:config.first.name,state:'confirmed',credibility:'verified',month:CUR,date:new Date(),quickId:config.first.quickId||null});
     obEl.classList.add('hidden'); renderQuick(); show('home'); render();
     if(config.first) setTimeout(()=>toast(P(config.first.net)+' kept', projSub(config.first.net),'ti-check',false),450);
   }
