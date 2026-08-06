@@ -582,21 +582,6 @@
           <div class="b"><div class="k">Kept this month</div><div class="v" id="futKept">£183</div></div>
         </div>
 
-        <div class="card market-card">
-          <div class="market-top">
-            <div>
-              <b>Market watch</b>
-              <small>Tap between 1, 5, and 10 years to see how your chosen funds have grown over time.</small>
-            </div>
-            <div class="market-seg" id="marketSeg">
-              <button data-years="1">1Y</button>
-              <button data-years="5" class="on">5Y</button>
-              <button data-years="10">10Y</button>
-            </div>
-          </div>
-          <div class="market-list" id="marketList"></div>
-        </div>
-
         <div class="card" style="margin-top:18px">
           <p class="eyebrow" style="margin-bottom:10px">Assumptions</p>
           <div class="seg" id="rateSeg">
@@ -609,6 +594,21 @@
             <input type="range" id="yrs" min="5" max="60" step="1" value="20">
             <div class="curve-legend"><span><i class="dash solid"></i>To your horizon</span><span><i class="dash dot"></i>Beyond, up to 60y</span></div>
           </div>
+        </div>
+
+        <div class="card market-card">
+          <div class="market-top">
+            <div>
+              <b>Market watch</b>
+              <small>Average yearly return over longer periods. It helps show a steadier “per year” picture, not just one big total jump.</small>
+            </div>
+            <div class="market-seg" id="marketSeg">
+              <button data-years="1">1Y</button>
+              <button data-years="5" class="on">5Y</button>
+              <button data-years="10">10Y</button>
+            </div>
+          </div>
+          <div class="market-list" id="marketList"></div>
         </div>
 
         <div class="disclaimer">
@@ -770,7 +770,7 @@
             <p class="ob-eyebrow">A quick setup</p>
             <h2 class="ob-h">What brings you here?</h2>
             <div class="ob-choices" id="obObjectives">
-              <button class="ob-choice" data-name="Quiet Build"><i class="ti ti-sparkles"></i><span>Quiet build</span></button>
+              <button class="ob-choice" data-name="No goal yet"><i class="ti ti-sparkles"></i><span><b style="display:block;font-size:15px">No goal yet</b><small style="display:block;color:var(--muted);font-weight:500;margin-top:3px">Just want to save money without a goal</small></span></button>
               <button class="ob-choice" data-name="Invest more"><i class="ti ti-chart-line"></i><span>Invest more</span></button>
               <button class="ob-choice" data-name="Emergency fund"><i class="ti ti-shield-check"></i><span>Build an emergency fund</span></button>
               <button class="ob-choice" data-name="Save for a goal"><i class="ti ti-target"></i><span>Save for a goal</span></button>
@@ -778,20 +778,22 @@
             </div>
           </div>
           <div class="ob-step hidden" data-step="2">
-            <p class="ob-eyebrow">Your goal</p>
-            <h2 class="ob-h">What are you working toward?</h2>
+            <p class="ob-eyebrow" id="obGoalEyebrow">Your goal</p>
+            <h2 class="ob-h" id="obGoalHeading">What are you working toward?</h2>
             <p class="ob-eyebrow" style="margin-bottom:8px">Currency</p>
             <div class="cur-chips" id="obCur" style="margin-bottom:16px"></div>
+            <div id="obGoalSection">
             <div class="field"><label>Goal</label>
               <select class="text-in" id="obGoalSel">
-                <option>Quiet Build</option><option>Invest more</option><option>Emergency fund</option><option>Save for a goal</option><option>Spend consciously</option><option value="__other">Other…</option>
+                <option>No goal yet</option><option>Invest more</option><option>Emergency fund</option><option>Save for a goal</option><option>Spend consciously</option><option value="__other">Other…</option>
               </select>
             </div>
             <div class="field hidden" id="obOtherWrap"><label>Goal name</label><input class="text-in" id="obGoalOther" type="text" placeholder="e.g. House deposit"></div>
-            <div class="seg" id="obMode"><button data-mode="open" class="on">Quiet build</button><button data-mode="monthly">Monthly amount</button><button data-mode="target">Target amount</button></div>
+            <div class="seg" id="obMode"><button data-mode="open" class="on">No goal</button><button data-mode="monthly">Monthly amount</button><button data-mode="target">Target amount</button></div>
             <div class="field hidden" id="obMonthlyField"><label>Amount per month</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obMonthly" value="250"></div></div>
             <div class="field hidden" id="obTargetField"><label>Target amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obAmount" placeholder="0.00"></div>
               <div class="add-fv" id="obPreview"></div>
+            </div>
             </div>
             <div class="field"><label>Date of birth <span class="opt">optional — shows the age you’ll be</span></label><div class="date-grid" id="obDob"></div></div>
             <p class="ob-eyebrow" style="margin-top:18px">Growth assumptions</p>
@@ -936,7 +938,7 @@
           <p class="sub">Choose what you’re working toward, and how you’ll track it.</p>
           <div class="field"><label>Goal</label>
             <select class="text-in" id="geNameSel">
-              <option>Quiet Build</option>
+              <option>No goal yet</option>
               <option>Invest more</option>
               <option>Emergency fund</option>
               <option>Save for a goal</option>
@@ -945,7 +947,7 @@
             </select>
           </div>
           <div class="field hidden" id="geOtherWrap"><label>Goal name</label><input class="text-in" id="geOther" type="text" placeholder="e.g. House deposit"></div>
-          <div class="seg" id="geMode"><button data-mode="open" class="on">Quiet build</button><button data-mode="monthly">Monthly amount</button><button data-mode="target">Target amount</button></div>
+          <div class="seg" id="geMode"><button data-mode="open" class="on">No goal</button><button data-mode="monthly">Monthly amount</button><button data-mode="target">Target amount</button></div>
           <div class="field hidden" id="geMonthlyField"><label>Amount per month</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="geMonthly"></div></div>
           <div class="field hidden" id="geTargetField"><label>Target amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="geAmount"></div>
             <div class="add-fv" id="gePreview"></div>
@@ -973,10 +975,11 @@
         <div class="sheet">
           <div class="grip"></div>
           <h3>Market watch</h3>
-          <p class="sub">Pick up to three funds or indexes to keep on your Future page. These are prototype example returns, not live prices.</p>
-          <div class="field"><label>First spot</label><select class="text-in" id="marketSel0"></select></div>
-          <div class="field"><label>Second spot</label><select class="text-in" id="marketSel1"></select></div>
-          <div class="field"><label>Third spot</label><select class="text-in" id="marketSel2"></select></div>
+          <p class="sub">Search by fund name or ticker. These are prototype example annualized returns, not live market data yet.</p>
+          <div class="field"><label>First spot</label><input class="text-in" id="marketSel0" list="marketOptions" placeholder="Search name or ticker"></div>
+          <div class="field"><label>Second spot</label><input class="text-in" id="marketSel1" list="marketOptions" placeholder="Search name or ticker"></div>
+          <div class="field"><label>Third spot</label><input class="text-in" id="marketSel2" list="marketOptions" placeholder="Search name or ticker"></div>
+          <datalist id="marketOptions"></datalist>
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost" id="marketClose" style="flex:0 0 40%">Close</button>
             <button class="btn primary" id="marketSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
@@ -1214,7 +1217,7 @@
 
   // Mutable app state — filled by onboarding, sample data, or storage.
   let wins=[], transfers=[];
-  let goalTarget=25000, goalName='Quiet Build';   // goalTarget = monthly amount (monthly mode)
+  let goalTarget=25000, goalName='No goal yet';   // goalTarget = monthly amount (monthly mode)
   let goalMode='open', goalAmount=1000000;      // target mode: reach goalAmount by the horizon
   // Monthly still needed to reach `amount` by `years` at `rate`%, AFTER what you've already saved
   // (which grows to the target too). Dynamic: save more → this drops; fall behind → it rises. Estimate.
@@ -1227,16 +1230,35 @@
   function monthlyTargetVal(){ return goalMode==='target' ? requiredMonthly() : goalMode==='monthly' ? goalTarget : 0; }
   function goalConfigured(){ return !!goalName && (goalMode==='open' || goalTarget>0 || goalAmount>0); }
   function marketById(id){ return MARKET_OPTIONS.find(x=>x.id===id) || MARKET_OPTIONS[0]; }
+  function marketQueryText(item){ return `${item.name} · ${item.ticker} · ${item.meta}`; }
+  function marketFromQuery(value){
+    const q=(value||'').trim().toLowerCase();
+    if(!q) return null;
+    return MARKET_OPTIONS.find(item =>
+      item.id===q ||
+      item.ticker.toLowerCase()===q ||
+      item.name.toLowerCase()===q ||
+      marketQueryText(item).toLowerCase()===q ||
+      item.name.toLowerCase().includes(q) ||
+      item.ticker.toLowerCase().includes(q)
+    ) || null;
+  }
   let proj={rate:5, years:20};
   let quick=DEFAULT_QUICK.map(q=>({...q}));
   let recurring=[];
   const MARKET_OPTIONS=[
-    {id:'msci-world', name:'MSCI World', meta:'Global equities', growth:{1:14.2,5:67.8,10:158.4}},
-    {id:'sp500', name:'S&P 500', meta:'US large caps', growth:{1:18.6,5:92.1,10:201.3}},
-    {id:'nasdaq100', name:'Nasdaq 100', meta:'US growth-heavy', growth:{1:22.8,5:118.9,10:289.7}},
-    {id:'ftse-all-world', name:'FTSE All-World', meta:'Global broad market', growth:{1:12.9,5:63.4,10:147.2}},
-    {id:'stoxx-600', name:'STOXX Europe 600', meta:'European equities', growth:{1:9.4,5:38.7,10:74.1}},
-    {id:'global-bond', name:'Global Aggregate Bond', meta:'Global bonds', growth:{1:3.1,5:8.6,10:21.9}}
+    {id:'msci-world', ticker:'URTH', name:'MSCI World', meta:'Global equities', growth:{1:13.2,5:10.7,10:8.9}},
+    {id:'sp500', ticker:'VOO', name:'S&P 500', meta:'US large caps', growth:{1:15.6,5:13.1,10:11.2}},
+    {id:'nasdaq100', ticker:'QQQ', name:'Nasdaq 100', meta:'US growth-heavy', growth:{1:18.4,5:17.0,10:16.0}},
+    {id:'ftse-all-world', ticker:'VWRL', name:'FTSE All-World', meta:'Global broad market', growth:{1:11.9,5:9.6,10:8.1}},
+    {id:'stoxx-600', ticker:'MEUD', name:'STOXX Europe 600', meta:'European equities', growth:{1:8.3,5:6.6,10:5.3}},
+    {id:'global-bond', ticker:'AGGG', name:'Global Aggregate Bond', meta:'Global bonds', growth:{1:2.8,5:1.8,10:1.6}},
+    {id:'msci-em', ticker:'EIMI', name:'MSCI Emerging Markets', meta:'Emerging market equities', growth:{1:9.7,5:5.2,10:4.4}},
+    {id:'world-small-cap', ticker:'IUSN', name:'MSCI World Small Cap', meta:'Global small caps', growth:{1:10.8,5:8.5,10:7.1}},
+    {id:'developed-europe', ticker:'VEUR', name:'FTSE Developed Europe', meta:'European developed markets', growth:{1:7.4,5:5.9,10:4.9}},
+    {id:'all-country-world', ticker:'ACWI', name:'MSCI ACWI', meta:'All-country world equities', growth:{1:12.7,5:10.1,10:8.4}},
+    {id:'us-dividend', ticker:'VIG', name:'US Dividend Growth', meta:'US dividend equities', growth:{1:11.4,5:10.3,10:9.2}},
+    {id:'technology', ticker:'XLK', name:'US Technology', meta:'US technology sector', growth:{1:20.1,5:18.2,10:17.1}}
   ];
   let marketWindow=5;
   let marketWatch=['msci-world','sp500','ftse-all-world'];
@@ -1379,7 +1401,7 @@
     [[420,'food_drink','Made coffee at home',6],[250,'snack','Brought a snack from home',3],[2200,'takeaway','Cooked instead of takeaway',2],[4000,'shopping','Skipped an impulse buy',1]]
       .forEach(([amt,cat,desc,n])=>{for(let i=0;i<n;i++)w.push({id:tt--,net:amt,cat,name:desc,state:'transferred',credibility:'verified',month:prevKey,date:dPrev});});
     const pt=w.filter(x=>x.month===prevKey).reduce((s,x)=>s+x.net,0);
-    return {wins:w, transfers:[{id:tt--,amount:pt,month:prevKey,date:'28th',count:12}], goalTarget:25000, goalName:'Invest more', goalMode:'monthly', proj:{rate:5,years:20}, quick:DEFAULT_QUICK.map(q=>({...q}))};
+    return {wins:w, transfers:[{id:tt--,amount:pt,month:prevKey,date:'28th',count:12}], goalTarget:25000, goalName:'Invest more', goalMode:'monthly', proj:{rate:5,years:20}, quick:DEFAULT_QUICK.map(q=>({...q})), marketWindow:5, marketWatch:['msci-world','sp500','ftse-all-world']};
   }
 
   // ---------- persistence (localStorage) ----------
@@ -1820,22 +1842,26 @@
       const val=item.growth[marketWindow] ?? 0;
       const row=document.createElement('div');
       row.className='market-row';
-      row.innerHTML=`<div><div class="name">${item.name}</div><div class="meta">${item.meta}</div></div><div class="chg ${val>=0?'pos':'neg'}">${val>=0?'+':''}${val.toFixed(1)}%</div>`;
+      row.innerHTML=`<div><div class="name">${item.name}</div><div class="meta">${item.ticker} · ${item.meta} · avg / year over ${marketWindow} ${marketWindow===1?'year':'years'}</div></div><div class="chg ${val>=0?'pos':'neg'}">${val>=0?'+':''}${val.toFixed(1)}%</div>`;
       list.appendChild(row);
     });
     document.querySelectorAll('#marketSeg button').forEach(btn=>btn.classList.toggle('on', +btn.dataset.years===marketWindow));
   }
   function renderMarketEditor(){
+    const data=document.getElementById('marketOptions');
+    if(data){
+      data.innerHTML='';
+      MARKET_OPTIONS.forEach(opt=>{
+        const o=document.createElement('option');
+        o.value=marketQueryText(opt);
+        data.appendChild(o);
+      });
+    }
     for(let idx=0; idx<3; idx++){
       const sel=document.getElementById('marketSel'+idx);
       if(!sel) continue;
-      sel.innerHTML='';
-      MARKET_OPTIONS.forEach(opt=>{
-        const o=document.createElement('option');
-        o.value=opt.id; o.textContent=opt.name+' · '+opt.meta;
-        sel.appendChild(o);
-      });
-      sel.value=marketWatch[idx] || MARKET_OPTIONS[idx]?.id || MARKET_OPTIONS[0].id;
+      const current=marketById(marketWatch[idx] || MARKET_OPTIONS[idx]?.id || MARKET_OPTIONS[0].id);
+      sel.value=marketQueryText(current);
     }
   }
   function handleBankReturn(){
@@ -1994,12 +2020,12 @@
     const _age=ageAtTarget();
     document.getElementById('heroFV').textContent = '≈ '+Pn(monthFV())+(_age!=null?(' by age '+_age):(' by '+targetYear()))+' invested';
     const gm = monthlyTargetVal();
-    document.getElementById('goalTitle').textContent = goalMode==='open' ? 'Quiet Build' : goalName+' · '+Pn(gm)+'/mo';
+    document.getElementById('goalTitle').textContent = goalMode==='open' ? 'No goal yet' : goalName+' · '+Pn(gm)+'/mo';
     document.getElementById('goalSub').textContent = goalMode==='target'
       ? ('toward '+Pn(goalAmount)+' by '+targetYear())
       : goalMode==='monthly'
       ? 'A steady monthly rhythm toward your future'
-      : 'No monthly target — just keep building when it feels right';
+      : 'No monthly target — just keep saving when it feels right';
     const pct = Math.min(100, gm>0 ? rec/gm*100 : goalMode==='open' ? Math.min(100, rec/Math.max(1, monthWins(CUR).length*1000)*100) : 0);
     document.getElementById('goalFill').style.width = pct+'%';
     document.getElementById('goalNow').textContent = P(rec)+' kept';
@@ -2522,7 +2548,18 @@
   ];
   let obQuickChosen=[];     // {id,name,icon,amt} — none by default
   let obInlineCat=null;
-  let config={ goalName:'Quiet Build', monthly:25000, goalMode:'open', goalAmount:1000000, rate:5, years:20, currency:'GBP', dob:null, first:null };
+  let config={ goalName:'No goal yet', monthly:25000, goalMode:'open', goalAmount:1000000, rate:5, years:20, currency:'GBP', dob:null, first:null };
+  function isNoGoalChoice(name){ return name==='No goal yet'; }
+  function obSyncObjective(){
+    obEl.querySelectorAll('#obObjectives .ob-choice').forEach(btn=>btn.classList.toggle('sel', btn.dataset.name===config.goalName));
+  }
+  function obRefreshGoalCopy(){
+    const noGoal=isNoGoalChoice(config.goalName) || obGoalMode==='open';
+    const sec=document.getElementById('obGoalSection');
+    document.getElementById('obGoalEyebrow').textContent = noGoal ? 'Your setup' : 'Your goal';
+    document.getElementById('obGoalHeading').textContent = noGoal ? 'Set your basics, then start saving.' : 'What are you working toward?';
+    if(sec) sec.classList.toggle('hidden', noGoal);
+  }
   function obRenderCur(){ const el=document.getElementById('obCur'); el.innerHTML='';
     CURRENCIES.forEach(c=>{ const b=document.createElement('button'); b.className='cur-chip'+(config.currency===c.code?' sel':'');
       b.innerHTML=c.sym+'<small>'+c.code+'</small>';
@@ -2538,7 +2575,8 @@
     document.getElementById('obNext').textContent = obStep===0?'Get started' : obStep===OB_LAST?'Enter Kept' : 'Continue';
     document.getElementById('obSkip').style.display = obStep===0?'none':'block';
     syncProPreviewControls();
-    if(obStep===2){ obYrsLbl(); obRenderCur(); obGoalNameSync(); obPreview(); setInlineDateValue('obDob', config.dob||todayIso(), null, todayIso()); }
+    if(obStep===1) obSyncObjective();
+    if(obStep===2){ obYrsLbl(); obRenderCur(); obGoalNameSync(); obRefreshGoalCopy(); obPreview(); setInlineDateValue('obDob', config.dob||todayIso(), null, todayIso()); }
     if(obStep===3) obRenderStep3();
     if(obStep===4) obRenderFirst();
     obDots(); replaceIcons(obEl);
@@ -2548,7 +2586,8 @@
   obEl.querySelectorAll('#obObjectives .ob-choice').forEach(b=>{
     b.addEventListener('click',()=>{ obEl.querySelectorAll('#obObjectives .ob-choice').forEach(x=>x.classList.remove('sel'));
       b.classList.add('sel'); config.goalName=b.dataset.name;
-      if(b.dataset.name==='Quiet Build') obGoalSetMode('open');
+      if(isNoGoalChoice(b.dataset.name)) obGoalSetMode('open');
+      else if(obGoalMode==='open') obGoalSetMode('monthly');
       const sel=document.getElementById('obGoalSel'); if([...sel.options].some(o=>o.value===b.dataset.name)) sel.value=b.dataset.name;
       document.getElementById('obOtherWrap').classList.add('hidden'); });
   });
@@ -2564,12 +2603,16 @@
     document.querySelectorAll('#obMode button').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
     document.getElementById('obMonthlyField').classList.toggle('hidden',mode!=='monthly');
     document.getElementById('obTargetField').classList.toggle('hidden',mode!=='target');
-    if(mode==='open' && document.getElementById('obGoalSel').value!=='__other') document.getElementById('obGoalSel').value='Quiet Build';
+    if(mode==='open' && document.getElementById('obGoalSel').value!=='__other'){ document.getElementById('obGoalSel').value='No goal yet'; config.goalName='No goal yet'; }
+    obRefreshGoalCopy();
     obPreview(); }
   function obGoalNameSync(){
     const sel=document.getElementById('obGoalSel').value;
     document.getElementById('obOtherWrap').classList.toggle('hidden', sel!=='__other');
-    if(sel==='Quiet Build') obGoalSetMode('open');
+    if(sel==='No goal yet') obGoalSetMode('open');
+    else if(sel!=='__other' && obGoalMode==='open') obGoalSetMode('monthly');
+    if(sel!=='__other') config.goalName=sel;
+    obRefreshGoalCopy();
   }
   function obPreview(){ const el=document.getElementById('obPreview'); if(!el) return; if(obGoalMode!=='target'){ el.textContent=''; return; }
     const amt=parseM(document.getElementById('obAmount').value); const pm=calcMonthly(amt, config.years, config.rate);
@@ -2655,7 +2698,7 @@
       ? (goalName+' · '+Pn(goalAmount)+' by '+targetYear())
       : goalMode==='monthly'
       ? (goalName+' · '+Pn(goalTarget)+'/mo')
-      : 'Quiet Build · no monthly target';
+      : 'No goal yet · no monthly target';
     document.getElementById('setQuickSub').textContent = hasFeatureAccess()
       ? (quick.length+' one-tap log'+(quick.length!==1?'s':''))
       : (Math.min(quick.length, FREE_QUICK_LIMIT)+' of '+FREE_QUICK_LIMIT+' free slots used');
@@ -2718,7 +2761,12 @@
   });
   document.getElementById('marketClose').addEventListener('click',()=>marketOv.classList.remove('show'));
   document.getElementById('marketSave').addEventListener('click',()=>{
-    marketWatch=[0,1,2].map(idx=>document.getElementById('marketSel'+idx).value);
+    const next=[0,1,2].map(idx=>{
+      const raw=document.getElementById('marketSel'+idx).value;
+      const found=marketFromQuery(raw);
+      return found ? found.id : marketWatch[idx];
+    });
+    marketWatch=next;
     marketOv.classList.remove('show');
     refreshSettings();
     renderMarketWatch();
@@ -2764,17 +2812,18 @@
 
   // ---------- edit goal ----------
   const geOv=document.getElementById('goalEditOverlay');
-  const GOAL_NAMES=['Quiet Build','Invest more','Emergency fund','Save for a goal','Spend consciously'];
+  const GOAL_NAMES=['No goal yet','Invest more','Emergency fund','Save for a goal','Spend consciously'];
   let geMode='open';
   function geSetMode(mode){ geMode=mode;
     document.querySelectorAll('#geMode button').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
     document.getElementById('geMonthlyField').classList.toggle('hidden',mode!=='monthly');
     document.getElementById('geTargetField').classList.toggle('hidden',mode!=='target');
-    if(mode==='open' && document.getElementById('geNameSel').value!=='__other') document.getElementById('geNameSel').value='Quiet Build';
+    if(mode==='open' && document.getElementById('geNameSel').value!=='__other') document.getElementById('geNameSel').value='No goal yet';
     gePreview(); }
   function geNameSync(){ const sel=document.getElementById('geNameSel').value;
     document.getElementById('geOtherWrap').classList.toggle('hidden',sel!=='__other');
-    if(sel==='Quiet Build') geSetMode('open'); }
+    if(sel==='No goal yet') geSetMode('open');
+    else if(sel!=='__other' && geMode==='open') geSetMode('monthly'); }
   function gePreview(){ const el=document.getElementById('gePreview'); if(geMode!=='target'){ el.textContent=''; return; }
     const amt=parseM(document.getElementById('geAmount').value);
     const pm=calcMonthly(amt, proj.years, proj.rate);
