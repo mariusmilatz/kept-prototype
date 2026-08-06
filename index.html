@@ -421,11 +421,15 @@
   .market-seg button.on{background:var(--card);color:var(--ink);box-shadow:0 2px 10px -8px var(--shadow)}
   .market-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
   .market-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--paper);border:1px solid var(--hair);border-radius:14px;padding:12px 13px}
+  .market-row.selected{border-color:var(--accent);background:var(--accent-soft)}
   .market-row .name{font-family:var(--font-round);font-size:14px;font-weight:600;color:var(--ink)}
   .market-row .meta{font-size:11.5px;color:var(--muted);margin-top:3px}
   .market-row .chg{font-family:var(--font-round);font-size:20px;font-weight:700;letter-spacing:-.03em}
   .market-row .chg.pos{color:var(--accent)}
   .market-row .chg.neg{color:#B0554C}
+  .return-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--paper);border:1px solid var(--hair);border-radius:14px;padding:12px 14px}
+  .return-toggle b{font-family:var(--font-round);font-size:14px;font-weight:600;color:var(--ink);display:block}
+  .return-toggle small{font-size:11.5px;color:var(--muted);line-height:1.4;display:block;margin-top:2px}
   .qle-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--hair)}
   .qle-move{display:flex;flex-direction:column;gap:2px}
   .qle-move button{width:26px;height:22px;border:1px solid var(--hair);background:var(--card);border-radius:7px;cursor:pointer;
@@ -584,6 +588,13 @@
 
         <div class="card" style="margin-top:18px">
           <p class="eyebrow" style="margin-bottom:10px">Assumptions</p>
+          <div class="return-toggle" id="returnModeRow">
+            <div>
+              <b id="returnModeTitle">Use basic percentages</b>
+              <small id="returnModeSub">Switch this off to use the selected market watch return instead.</small>
+            </div>
+            <div class="switch on" id="returnModeSwitch" role="switch" aria-checked="true"><div class="k"></div></div>
+          </div>
           <div class="seg" id="rateSeg">
             <button data-rate="3">3%</button>
             <button data-rate="5" class="on">5%</button>
@@ -1226,7 +1237,8 @@
     if(gap<=0) return 0;                                   // already on track — nothing more needed
     const m=Math.pow(1+rate/100,1/12)-1, n=Math.round(years*12);
     return m<=0 ? Math.round(gap/n) : Math.round(gap*m/(Math.pow(1+m,n)-1)); }
-  function requiredMonthly(){ return calcMonthly(goalAmount, proj.years, proj.rate); }
+  function effectiveReturn(){ return useBasicPercentages ? proj.rate : (marketById(selectedMarketId).growth[marketWindow] ?? proj.rate); }
+  function requiredMonthly(){ return calcMonthly(goalAmount, proj.years, effectiveReturn()); }
   function monthlyTargetVal(){ return goalMode==='target' ? requiredMonthly() : goalMode==='monthly' ? goalTarget : 0; }
   function goalConfigured(){ return !!goalName && (goalMode==='open' || goalTarget>0 || goalAmount>0); }
   function marketById(id){ return MARKET_OPTIONS.find(x=>x.id===id) || MARKET_OPTIONS[0]; }
@@ -1262,6 +1274,8 @@
   ];
   let marketWindow=5;
   let marketWatch=['msci-world','sp500','ftse-all-world'];
+  let selectedMarketId='msci-world';
+  let useBasicPercentages=true;
   let dob=null;             // ISO date string, optional — enables "by age N" projections
   let accountState='guest';
   let planState='free';
@@ -1411,7 +1425,7 @@
     try{ localStorage.setItem(LSKEY, JSON.stringify({
       onboarded:true,
       wins:wins.map(w=>({...w, date:(w.date instanceof Date? w.date.toISOString(): w.date)})),
-      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob, earnedMilestones, accountState, planState, proUiPreview, marketWindow, marketWatch
+      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob, earnedMilestones, accountState, planState, proUiPreview, marketWindow, marketWatch, selectedMarketId, useBasicPercentages
     })); }catch(e){}
   }
   function applyState(s){
@@ -1429,6 +1443,8 @@
     dob=s.dob||null;
     marketWindow=[1,5,10].includes(s.marketWindow)?s.marketWindow:5;
     marketWatch=Array.isArray(s.marketWatch)&&s.marketWatch.length===3 ? s.marketWatch : ['msci-world','sp500','ftse-all-world'];
+    selectedMarketId=s.selectedMarketId || marketWatch[0] || 'msci-world';
+    useBasicPercentages=s.useBasicPercentages!==false;
     proUiPreview=s.proUiPreview!==false;
     earnedMilestones=Array.isArray(s.earnedMilestones)? s.earnedMilestones : [];
     accountState=s.accountState||'guest';
@@ -1841,11 +1857,29 @@
       const item=marketById(id);
       const val=item.growth[marketWindow] ?? 0;
       const row=document.createElement('div');
-      row.className='market-row';
+      row.className='market-row'+(selectedMarketId===id?' selected':'');
       row.innerHTML=`<div><div class="name">${item.name}</div><div class="meta">${item.ticker} · ${item.meta} · avg / year over ${marketWindow} ${marketWindow===1?'year':'years'}</div></div><div class="chg ${val>=0?'pos':'neg'}">${val>=0?'+':''}${val.toFixed(1)}%</div>`;
+      row.addEventListener('click',()=>{
+        selectedMarketId=id;
+        useBasicPercentages=false;
+        render();
+      });
       list.appendChild(row);
     });
     document.querySelectorAll('#marketSeg button').forEach(btn=>btn.classList.toggle('on', +btn.dataset.years===marketWindow));
+    const title=document.getElementById('returnModeTitle');
+    const sub=document.getElementById('returnModeSub');
+    const sw=document.getElementById('returnModeSwitch');
+    const rateSeg=document.getElementById('rateSeg');
+    if(title) title.textContent = useBasicPercentages ? 'Use basic percentages' : ('Use '+marketById(selectedMarketId).name);
+    if(sub) sub.textContent = useBasicPercentages
+      ? 'Switch this off to use the selected market watch return instead.'
+      : ('Using '+marketById(selectedMarketId).growth[marketWindow].toFixed(1)+'% avg / year from your selected market watch over '+marketWindow+' '+(marketWindow===1?'year':'years')+'.');
+    if(sw){
+      sw.classList.toggle('on', useBasicPercentages);
+      sw.setAttribute('aria-checked', useBasicPercentages ? 'true' : 'false');
+    }
+    if(rateSeg) rateSeg.style.display = useBasicPercentages ? '' : 'none';
   }
   function renderMarketEditor(){
     const data=document.getElementById('marketOptions');
@@ -1892,7 +1926,7 @@
   function ageAtTarget(){ if(!dob) return null; const by=new Date(dob).getFullYear(); return isNaN(by)?null:(targetYear()-by); }
   function targetDate(){ return new Date(targetYear(), NOW.getMonth(), NOW.getDate()); }
   function yrsBetween(a,b){ return (b.getTime()-a.getTime())/(365.25*DAY); }
-  function grow(net, fromDate, toDate){ return net*Math.pow(1+proj.rate/100, Math.max(0, yrsBetween(fromDate,toDate))); }
+  function grow(net, fromDate, toDate){ return net*Math.pow(1+effectiveReturn()/100, Math.max(0, yrsBetween(fromDate,toDate))); }
   function totalFV(){ const td=targetDate(); return wins.reduce((s,w)=>s+grow(w.net,w.date,td),0); }
   function monthFV(){ const td=targetDate(); return wins.filter(w=>w.month===CUR).reduce((s,w)=>s+grow(w.net,w.date,td),0); }
   function fvNow(net){ return grow(net, NOW, targetDate()); }
@@ -2043,9 +2077,10 @@
     document.getElementById('teaserNote').textContent = _age!=null
       ? ('estimated by age '+_age+' — '+targetYear()+' · if kept and invested')
       : ('estimated by '+targetYear()+' ('+proj.years+' years) · if kept and invested');
+    const rt=effectiveReturn();
     const recurAdd = projectRecurring ? annuityFV(recurMonthly(), proj.years) : 0;
     document.getElementById('futureBig').textContent = Pn(fv + recurAdd);
-    document.getElementById('futureAssume').textContent = 'estimated · '+proj.rate+'% return · by '+(_age!=null?('age '+_age+' ('+targetYear()+')'):targetYear()) + (recurAdd>0?' · incl. subscriptions':'');
+    document.getElementById('futureAssume').textContent = 'estimated · '+rt.toFixed(1)+'% return · by '+(_age!=null?('age '+_age+' ('+targetYear()+')'):targetYear()) + (recurAdd>0?' · incl. subscriptions':'') + (useBasicPercentages?'':' · from selected market');
     document.getElementById('yrsOut').textContent = _age!=null ? ('age '+_age+' · '+proj.years+' years') : (proj.years+' years · '+targetYear());
     document.getElementById('futTransferred').textContent = Pn(tr);
     document.getElementById('futKept').textContent = Pn(rec);
@@ -2066,7 +2101,7 @@
   let actFilter='win';
   let projectRecurring=false;   // Future-page toggle: assume recurring savings continue to the horizon
   function recurMonthly(){ return recurring.filter(r=>r.status==='active').reduce((s,r)=>s+r.amount,0); }
-  function annuityFV(monthly, years){ if(monthly<=0||years<=0) return 0; const m=Math.pow(1+proj.rate/100,1/12)-1; const n=Math.round(years*12); return m<=0? monthly*n : monthly*((Math.pow(1+m,n)-1)/m); }
+  function annuityFV(monthly, years){ if(monthly<=0||years<=0) return 0; const m=Math.pow(1+effectiveReturn()/100,1/12)-1; const n=Math.round(years*12); return m<=0? monthly*n : monthly*((Math.pow(1+m,n)-1)/m); }
   let rollover=0;            // signed pence carried into the next transfer from edits/deletes of transferred Wins
   let openRow=null;          // currently swiped-open row
 
@@ -2510,6 +2545,12 @@
   });
 
   // ---------- future controls ----------
+  document.getElementById('returnModeSwitch').addEventListener('click',function(){
+    useBasicPercentages=!useBasicPercentages;
+    this.classList.toggle('on', useBasicPercentages);
+    this.setAttribute('aria-checked', useBasicPercentages ? 'true' : 'false');
+    render();
+  });
   document.getElementById('rateSeg').addEventListener('click',e=>{
     const b=e.target.closest('button'); if(!b)return; proj.rate=parseInt(b.dataset.rate);
     document.querySelectorAll('#rateSeg button').forEach(x=>x.classList.toggle('on',x===b)); render();
@@ -2730,7 +2771,9 @@
   document.getElementById('marketSeg').addEventListener('click',e=>{
     const b=e.target.closest('button'); if(!b) return;
     marketWindow=+b.dataset.years;
+    if(!marketWatch.includes(selectedMarketId)) selectedMarketId=marketWatch[0] || 'msci-world';
     renderMarketWatch();
+    render();
     saveState();
   });
   document.getElementById('setCurrency').addEventListener('click',()=>{ renderCurChips(); curOv.classList.add('show'); });
@@ -2767,9 +2810,10 @@
       return found ? found.id : marketWatch[idx];
     });
     marketWatch=next;
+    if(!marketWatch.includes(selectedMarketId)) selectedMarketId=marketWatch[0] || 'msci-world';
     marketOv.classList.remove('show');
     refreshSettings();
-    renderMarketWatch();
+    render();
     saveState();
     toast('Market watch updated','Your Future page now shows your chosen three funds','ti-check');
   });
@@ -2826,7 +2870,7 @@
     else if(sel!=='__other' && geMode==='open') geSetMode('monthly'); }
   function gePreview(){ const el=document.getElementById('gePreview'); if(geMode!=='target'){ el.textContent=''; return; }
     const amt=parseM(document.getElementById('geAmount').value);
-    const pm=calcMonthly(amt, proj.years, proj.rate);
+    const pm=calcMonthly(amt, proj.years, effectiveReturn());
     el.textContent = amt>0 ? ('Save ≈ '+Pn(pm)+'/month to reach '+Pn(amt)+' by '+targetYear()+' (estimate)') : ''; }
   document.getElementById('geMode').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) geSetMode(b.dataset.mode); });
   document.getElementById('geNameSel').addEventListener('change',geNameSync);
