@@ -412,6 +412,20 @@
   .upgrade-price{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:10px}
   .upgrade-price .amt{font-family:var(--font-round);font-size:28px;font-weight:700;letter-spacing:-.03em}
   .upgrade-price .meta{font-size:12px;color:var(--muted);text-align:right}
+  .market-card{margin-top:18px}
+  .market-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .market-top b{font-family:var(--font-round);font-size:16px}
+  .market-top small{display:block;font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
+  .market-seg{display:inline-flex;gap:6px;background:var(--paper);border:1px solid var(--hair);border-radius:999px;padding:4px}
+  .market-seg button{border:none;background:transparent;border-radius:999px;padding:7px 11px;font:600 12px var(--font-ui);color:var(--muted);cursor:pointer}
+  .market-seg button.on{background:var(--card);color:var(--ink);box-shadow:0 2px 10px -8px var(--shadow)}
+  .market-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+  .market-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--paper);border:1px solid var(--hair);border-radius:14px;padding:12px 13px}
+  .market-row .name{font-family:var(--font-round);font-size:14px;font-weight:600;color:var(--ink)}
+  .market-row .meta{font-size:11.5px;color:var(--muted);margin-top:3px}
+  .market-row .chg{font-family:var(--font-round);font-size:20px;font-weight:700;letter-spacing:-.03em}
+  .market-row .chg.pos{color:var(--accent)}
+  .market-row .chg.neg{color:#B0554C}
   .qle-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--hair)}
   .qle-move{display:flex;flex-direction:column;gap:2px}
   .qle-move button{width:26px;height:22px;border:1px solid var(--hair);background:var(--card);border-radius:7px;cursor:pointer;
@@ -568,6 +582,21 @@
           <div class="b"><div class="k">Kept this month</div><div class="v" id="futKept">£183</div></div>
         </div>
 
+        <div class="card market-card">
+          <div class="market-top">
+            <div>
+              <b>Market watch</b>
+              <small>Tap between 1, 5, and 10 years to see how your chosen funds have grown over time.</small>
+            </div>
+            <div class="market-seg" id="marketSeg">
+              <button data-years="1">1Y</button>
+              <button data-years="5" class="on">5Y</button>
+              <button data-years="10">10Y</button>
+            </div>
+          </div>
+          <div class="market-list" id="marketList"></div>
+        </div>
+
         <div class="card" style="margin-top:18px">
           <p class="eyebrow" style="margin-bottom:10px">Assumptions</p>
           <div class="seg" id="rateSeg">
@@ -661,6 +690,7 @@
               <button class="btn ghost" id="transferConnectBank" style="flex:1">Connect bank</button>
               <button class="btn ghost" id="transferSyncBank" style="flex:1">Sync balance</button>
             </div>
+            <button class="btn ghost" id="transferInstant" style="margin-top:12px"><i class="ti ti-bolt"></i>Transfer instantly today</button>
           </div>
           <div class="transfer-amt">
             <div class="k">Marking as transferred</div>
@@ -740,6 +770,7 @@
             <p class="ob-eyebrow">A quick setup</p>
             <h2 class="ob-h">What brings you here?</h2>
             <div class="ob-choices" id="obObjectives">
+              <button class="ob-choice" data-name="Quiet Build"><i class="ti ti-sparkles"></i><span>Quiet build</span></button>
               <button class="ob-choice" data-name="Invest more"><i class="ti ti-chart-line"></i><span>Invest more</span></button>
               <button class="ob-choice" data-name="Emergency fund"><i class="ti ti-shield-check"></i><span>Build an emergency fund</span></button>
               <button class="ob-choice" data-name="Save for a goal"><i class="ti ti-target"></i><span>Save for a goal</span></button>
@@ -753,12 +784,12 @@
             <div class="cur-chips" id="obCur" style="margin-bottom:16px"></div>
             <div class="field"><label>Goal</label>
               <select class="text-in" id="obGoalSel">
-                <option>Invest more</option><option>Emergency fund</option><option>Save for a goal</option><option>Spend consciously</option><option value="__other">Other…</option>
+                <option>Quiet Build</option><option>Invest more</option><option>Emergency fund</option><option>Save for a goal</option><option>Spend consciously</option><option value="__other">Other…</option>
               </select>
             </div>
             <div class="field hidden" id="obOtherWrap"><label>Goal name</label><input class="text-in" id="obGoalOther" type="text" placeholder="e.g. House deposit"></div>
-            <div class="seg" id="obMode"><button data-mode="monthly" class="on">Monthly amount</button><button data-mode="target">Target amount</button></div>
-            <div class="field" id="obMonthlyField"><label>Amount per month</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obMonthly" value="250"></div></div>
+            <div class="seg" id="obMode"><button data-mode="open" class="on">Quiet build</button><button data-mode="monthly">Monthly amount</button><button data-mode="target">Target amount</button></div>
+            <div class="field hidden" id="obMonthlyField"><label>Amount per month</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obMonthly" value="250"></div></div>
             <div class="field hidden" id="obTargetField"><label>Target amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="obAmount" placeholder="0.00"></div>
               <div class="add-fv" id="obPreview"></div>
             </div>
@@ -808,6 +839,7 @@
           <button class="set-row" id="setGoal"><span><b>Edit goal</b><small id="setGoalSub">—</small></span><i class="ti ti-target"></i></button>
           <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
           <button class="set-row" id="setRecurring"><span><b>Recurring savings</b><small id="setRecurringSub">—</small></span><i class="ti ti-repeat"></i></button>
+          <button class="set-row" id="setMarket"><span><b>Market watch</b><small id="setMarketSub">Choose the 3 funds shown on Future</small></span><i class="ti ti-chart-line"></i></button>
           <button class="set-row" id="setCurrency"><span><b>Currency</b><small id="setCurrencySub">—</small></span><i class="ti ti-coin"></i></button>
           <button class="set-row locked" id="setBank"><span><b style="display:flex;align-items:center;gap:8px">Linked bank <span class="pro-mini" id="setBankBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setBankSub">Manual only — connect a bank to sync your balance</small></span><i class="ti ti-shield-check"></i></button>
           <button class="set-row locked" id="setSharedGoals"><span><b style="display:flex;align-items:center;gap:8px">Shared goals <span class="pro-mini" id="setSharedBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setSharedSub">Build toward a goal together · coming soon</small></span><i class="ti ti-target"></i></button>
@@ -904,6 +936,7 @@
           <p class="sub">Choose what you’re working toward, and how you’ll track it.</p>
           <div class="field"><label>Goal</label>
             <select class="text-in" id="geNameSel">
+              <option>Quiet Build</option>
               <option>Invest more</option>
               <option>Emergency fund</option>
               <option>Save for a goal</option>
@@ -912,8 +945,8 @@
             </select>
           </div>
           <div class="field hidden" id="geOtherWrap"><label>Goal name</label><input class="text-in" id="geOther" type="text" placeholder="e.g. House deposit"></div>
-          <div class="seg" id="geMode"><button data-mode="monthly" class="on">Monthly amount</button><button data-mode="target">Target amount</button></div>
-          <div class="field" id="geMonthlyField"><label>Amount per month</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="geMonthly"></div></div>
+          <div class="seg" id="geMode"><button data-mode="open" class="on">Quiet build</button><button data-mode="monthly">Monthly amount</button><button data-mode="target">Target amount</button></div>
+          <div class="field hidden" id="geMonthlyField"><label>Amount per month</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="geMonthly"></div></div>
           <div class="field hidden" id="geTargetField"><label>Target amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="geAmount"></div>
             <div class="add-fv" id="gePreview"></div>
           </div>
@@ -933,6 +966,21 @@
           <div id="quickList"></div>
           <button class="btn ghost" id="qaAdd" style="margin-top:10px"><i class="ti ti-plus"></i>Add quick action</button>
           <button class="btn primary" id="quickListClose" style="margin-top:10px">Done</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="marketOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Market watch</h3>
+          <p class="sub">Pick up to three funds or indexes to keep on your Future page. These are prototype example returns, not live prices.</p>
+          <div class="field"><label>First spot</label><select class="text-in" id="marketSel0"></select></div>
+          <div class="field"><label>Second spot</label><select class="text-in" id="marketSel1"></select></div>
+          <div class="field"><label>Third spot</label><select class="text-in" id="marketSel2"></select></div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn ghost" id="marketClose" style="flex:0 0 40%">Close</button>
+            <button class="btn primary" id="marketSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
+          </div>
         </div>
       </div>
 
@@ -1166,8 +1214,8 @@
 
   // Mutable app state — filled by onboarding, sample data, or storage.
   let wins=[], transfers=[];
-  let goalTarget=25000, goalName='Invest more';   // goalTarget = monthly amount (monthly mode)
-  let goalMode='monthly', goalAmount=1000000;      // target mode: reach goalAmount by the horizon
+  let goalTarget=25000, goalName='Quiet Build';   // goalTarget = monthly amount (monthly mode)
+  let goalMode='open', goalAmount=1000000;      // target mode: reach goalAmount by the horizon
   // Monthly still needed to reach `amount` by `years` at `rate`%, AFTER what you've already saved
   // (which grows to the target too). Dynamic: save more → this drops; fall behind → it rises. Estimate.
   function calcMonthly(amount, years, rate){ if(!amount||amount<=0||years<=0) return 0;
@@ -1176,10 +1224,22 @@
     const m=Math.pow(1+rate/100,1/12)-1, n=Math.round(years*12);
     return m<=0 ? Math.round(gap/n) : Math.round(gap*m/(Math.pow(1+m,n)-1)); }
   function requiredMonthly(){ return calcMonthly(goalAmount, proj.years, proj.rate); }
-  function monthlyTargetVal(){ return goalMode==='target' ? requiredMonthly() : goalTarget; }
+  function monthlyTargetVal(){ return goalMode==='target' ? requiredMonthly() : goalMode==='monthly' ? goalTarget : 0; }
+  function goalConfigured(){ return !!goalName && (goalMode==='open' || goalTarget>0 || goalAmount>0); }
+  function marketById(id){ return MARKET_OPTIONS.find(x=>x.id===id) || MARKET_OPTIONS[0]; }
   let proj={rate:5, years:20};
   let quick=DEFAULT_QUICK.map(q=>({...q}));
   let recurring=[];
+  const MARKET_OPTIONS=[
+    {id:'msci-world', name:'MSCI World', meta:'Global equities', growth:{1:14.2,5:67.8,10:158.4}},
+    {id:'sp500', name:'S&P 500', meta:'US large caps', growth:{1:18.6,5:92.1,10:201.3}},
+    {id:'nasdaq100', name:'Nasdaq 100', meta:'US growth-heavy', growth:{1:22.8,5:118.9,10:289.7}},
+    {id:'ftse-all-world', name:'FTSE All-World', meta:'Global broad market', growth:{1:12.9,5:63.4,10:147.2}},
+    {id:'stoxx-600', name:'STOXX Europe 600', meta:'European equities', growth:{1:9.4,5:38.7,10:74.1}},
+    {id:'global-bond', name:'Global Aggregate Bond', meta:'Global bonds', growth:{1:3.1,5:8.6,10:21.9}}
+  ];
+  let marketWindow=5;
+  let marketWatch=['msci-world','sp500','ftse-all-world'];
   let dob=null;             // ISO date string, optional — enables "by age N" projections
   let accountState='guest';
   let planState='free';
@@ -1319,7 +1379,7 @@
     [[420,'food_drink','Made coffee at home',6],[250,'snack','Brought a snack from home',3],[2200,'takeaway','Cooked instead of takeaway',2],[4000,'shopping','Skipped an impulse buy',1]]
       .forEach(([amt,cat,desc,n])=>{for(let i=0;i<n;i++)w.push({id:tt--,net:amt,cat,name:desc,state:'transferred',credibility:'verified',month:prevKey,date:dPrev});});
     const pt=w.filter(x=>x.month===prevKey).reduce((s,x)=>s+x.net,0);
-    return {wins:w, transfers:[{id:tt--,amount:pt,month:prevKey,date:'28th',count:12}], goalTarget:25000, goalName:'Invest more', proj:{rate:5,years:20}, quick:DEFAULT_QUICK.map(q=>({...q}))};
+    return {wins:w, transfers:[{id:tt--,amount:pt,month:prevKey,date:'28th',count:12}], goalTarget:25000, goalName:'Invest more', goalMode:'monthly', proj:{rate:5,years:20}, quick:DEFAULT_QUICK.map(q=>({...q}))};
   }
 
   // ---------- persistence (localStorage) ----------
@@ -1329,7 +1389,7 @@
     try{ localStorage.setItem(LSKEY, JSON.stringify({
       onboarded:true,
       wins:wins.map(w=>({...w, date:(w.date instanceof Date? w.date.toISOString(): w.date)})),
-      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob, earnedMilestones, accountState, planState, proUiPreview
+      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob, earnedMilestones, accountState, planState, proUiPreview, marketWindow, marketWatch
     })); }catch(e){}
   }
   function applyState(s){
@@ -1345,6 +1405,8 @@
     rollover=s.rollover||0;
     currencyCode=s.currencyCode||'GBP';
     dob=s.dob||null;
+    marketWindow=[1,5,10].includes(s.marketWindow)?s.marketWindow:5;
+    marketWatch=Array.isArray(s.marketWatch)&&s.marketWatch.length===3 ? s.marketWatch : ['msci-world','sp500','ftse-all-world'];
     proUiPreview=s.proUiPreview!==false;
     earnedMilestones=Array.isArray(s.earnedMilestones)? s.earnedMilestones : [];
     accountState=s.accountState||'guest';
@@ -1750,6 +1812,32 @@
     replaceIcons(document.getElementById('futureProToggle'));
     replaceIcons(document.getElementById('settingsOverlay'));
   }
+  function renderMarketWatch(){
+    const list=document.getElementById('marketList'); if(!list) return;
+    list.innerHTML='';
+    marketWatch.slice(0,3).forEach(id=>{
+      const item=marketById(id);
+      const val=item.growth[marketWindow] ?? 0;
+      const row=document.createElement('div');
+      row.className='market-row';
+      row.innerHTML=`<div><div class="name">${item.name}</div><div class="meta">${item.meta}</div></div><div class="chg ${val>=0?'pos':'neg'}">${val>=0?'+':''}${val.toFixed(1)}%</div>`;
+      list.appendChild(row);
+    });
+    document.querySelectorAll('#marketSeg button').forEach(btn=>btn.classList.toggle('on', +btn.dataset.years===marketWindow));
+  }
+  function renderMarketEditor(){
+    for(let idx=0; idx<3; idx++){
+      const sel=document.getElementById('marketSel'+idx);
+      if(!sel) continue;
+      sel.innerHTML='';
+      MARKET_OPTIONS.forEach(opt=>{
+        const o=document.createElement('option');
+        o.value=opt.id; o.textContent=opt.name+' · '+opt.meta;
+        sel.appendChild(o);
+      });
+      sel.value=marketWatch[idx] || MARKET_OPTIONS[idx]?.id || MARKET_OPTIONS[0].id;
+    }
+  }
   function handleBankReturn(){
     if(!location.hash) return;
     const hash = new URLSearchParams(location.hash.replace(/^#/, ''));
@@ -1856,7 +1944,7 @@
       {id:'first-confirmed-win',cat:'start',name:'First Confirmed Win',icon:'ti-circle-check',detail:'Confirm your first real saving.', eval:()=>({done:cWins.length>=1, ...milestoneProgress(cWins.length,1,'confirmed wins')})},
       {id:'first-transfer',cat:'start',name:'First Transfer',icon:'ti-arrow-up-right',detail:'Complete your first transfer.', eval:()=>({done:transfers.some(t=>t.amount>0), ...milestoneProgress(transfers.filter(t=>t.amount>0).length,1,'transfers')})},
       {id:'first-quick-save',cat:'start',name:'First Quick Save',icon:'ti-bolt',detail:'Use a quick action to log a win.', eval:()=>({done:bestQuickUse>=1, ...milestoneProgress(bestQuickUse,1,'quick saves')})},
-      {id:'first-goal',cat:'start',name:'First Goal',icon:'ti-target',detail:'Set a goal in onboarding or settings.', eval:()=>({done:!!goalName && (goalTarget>0 || goalAmount>0), current:goalName?1:0,target:1,text:goalName?'Goal is set':'Set a goal'})},
+      {id:'first-goal',cat:'start',name:'First Goal',icon:'ti-target',detail:'Set a goal in onboarding or settings.', eval:()=>({done:goalConfigured(), current:goalConfigured()?1:0,target:1,text:goalConfigured()?'Goal is set':'Set a goal'})},
       {id:'first-recurring-save',cat:'start',name:'First Recurring Save',icon:'ti-repeat',detail:'Confirm your first recurring saving.', eval:()=>({done:Object.keys(recurMonths).length>=1, ...milestoneProgress(Object.keys(recurMonths).length,1,'recurring saves')})},
       {id:'back-tomorrow',cat:'habit',name:'Back Tomorrow',icon:'ti-repeat',detail:'Confirm wins on two separate days.', eval:()=>({done:cDays.length>=2, ...milestoneProgress(cDays.length,2,'days')})},
       {id:'three-day-rhythm',cat:'habit',name:'Three-Day Rhythm',icon:'ti-repeat',detail:'Confirm wins on three days in a row.', eval:()=>({done:cStreak>=3, ...milestoneProgress(cStreak,3,'days in a row')})},
@@ -1906,12 +1994,18 @@
     const _age=ageAtTarget();
     document.getElementById('heroFV').textContent = '≈ '+Pn(monthFV())+(_age!=null?(' by age '+_age):(' by '+targetYear()))+' invested';
     const gm = monthlyTargetVal();
-    document.getElementById('goalTitle').textContent = goalName+' · '+Pn(gm)+'/mo';
-    document.getElementById('goalSub').textContent = goalMode==='target' ? ('toward '+Pn(goalAmount)+' by '+targetYear()) : '';
-    const pct = Math.min(100, gm>0 ? rec/gm*100 : 0);
+    document.getElementById('goalTitle').textContent = goalMode==='open' ? 'Quiet Build' : goalName+' · '+Pn(gm)+'/mo';
+    document.getElementById('goalSub').textContent = goalMode==='target'
+      ? ('toward '+Pn(goalAmount)+' by '+targetYear())
+      : goalMode==='monthly'
+      ? 'A steady monthly rhythm toward your future'
+      : 'No monthly target — just keep building when it feels right';
+    const pct = Math.min(100, gm>0 ? rec/gm*100 : goalMode==='open' ? Math.min(100, rec/Math.max(1, monthWins(CUR).length*1000)*100) : 0);
     document.getElementById('goalFill').style.width = pct+'%';
     document.getElementById('goalNow').textContent = P(rec)+' kept';
-    document.getElementById('goalRight').innerHTML = '<b>'+P(Math.max(0,gm-rec))+'</b> to go';
+    document.getElementById('goalRight').innerHTML = goalMode==='open'
+      ? '<b>'+monthWins(CUR).length+'</b> wins this month'
+      : '<b>'+P(Math.max(0,gm-rec))+'</b> to go';
     document.getElementById('transferStatusLine').textContent = bank.connected && bankRuleDraft
       ? (P(wait)+' waiting · '+moneyForCode(bank.availableAboveFloorMinor, bank.accountCurrency || currencyCode)+' above floor')
       : (P(wait)+' ready to move');
@@ -1929,6 +2023,7 @@
     document.getElementById('yrsOut').textContent = _age!=null ? ('age '+_age+' · '+proj.years+' years') : (proj.years+' years · '+targetYear());
     document.getElementById('futTransferred').textContent = Pn(tr);
     document.getElementById('futKept').textContent = Pn(rec);
+    renderMarketWatch();
     drawCurve();
     renderActivity();
     renderMilestones(milestoneState);
@@ -2355,6 +2450,20 @@
     return {covered, mark};
   }
   trRange.addEventListener('input',updateTransfer);
+  function commitTransfer(chosenMinor, isoDate, toastLabel){
+    const pot=wins.filter(w=>w.state==='confirmed').sort((a,b)=>a.id-b.id);
+    let covered=0, cnt=0;
+    for(const w of pot){ if(covered+w.net<=chosenMinor){w.state='transferred'; covered+=w.net; cnt++;} else break; }
+    const mark=Math.max(0, covered+rollover);
+    if(mark>0 || cnt>0){
+      const dt=(isoDate?new Date(isoDate+'T00:00:00'):new Date()).toLocaleDateString('en-GB',{day:'numeric',month:'long'});
+      transfers.push({id:Date.now(),amount:mark,month:CUR,date:dt,count:cnt}); openMonth=CUR;
+    }
+    rollover=0;
+    trOv.classList.remove('show');
+    render();
+    toast(toastLabel || (P(mark)+' marked as transferred'),'You moved it — Kept just tracked it','ti-circle-check');
+  }
   document.getElementById('teaserCard').addEventListener('click',()=>show('future'));
   document.getElementById('transferStatusLine').closest('.card').addEventListener('click',openTransfer);
   document.getElementById('transferConnectBank').addEventListener('click',()=>{
@@ -2362,19 +2471,16 @@
     if(bank.connected){ renderBankUi(); bankOv.classList.add('show'); } else startBankConnect();
   });
   document.getElementById('transferSyncBank').addEventListener('click',()=>refreshBankData({ sync:true }));
+  document.getElementById('transferInstant').addEventListener('click',()=>{
+    const wait=waiting();
+    if(wait<=0){ toast('Nothing waiting to transfer','You are already up to date for this month','ti-info-circle'); return; }
+    trRange.value=String(wait);
+    commitTransfer(wait, todayIso(), P(wait)+' transferred instantly');
+  });
   document.getElementById('transferCancel').addEventListener('click',()=>trOv.classList.remove('show'));
   trOv.addEventListener('click',e=>{if(e.target===trOv)trOv.classList.remove('show');});
   document.getElementById('transferConfirm').addEventListener('click',()=>{
-    const chosen=parseInt(trRange.value);
-    const pot=wins.filter(w=>w.state==='confirmed').sort((a,b)=>a.id-b.id);
-    let covered=0, cnt=0; for(const w of pot){ if(covered+w.net<=chosen){w.state='transferred'; covered+=w.net; cnt++;} else break; }
-    const mark=Math.max(0, covered+rollover);
-    if(mark>0 || cnt>0){ const dv=getInlineDateValue('transfer', null, todayIso());
-      const dt=(dv?new Date(dv+'T00:00:00'):new Date()).toLocaleDateString('en-GB',{day:'numeric',month:'long'});
-      transfers.push({id:Date.now(),amount:mark,month:CUR,date:dt,count:cnt}); openMonth=CUR; }
-    rollover=0;
-    trOv.classList.remove('show'); render();
-    toast(P(mark)+' marked as transferred','You moved it — Kept just tracked it','ti-circle-check');
+    commitTransfer(parseInt(trRange.value), getInlineDateValue('transfer', null, todayIso()), null);
   });
 
   // ---------- future controls ----------
@@ -2416,7 +2522,7 @@
   ];
   let obQuickChosen=[];     // {id,name,icon,amt} — none by default
   let obInlineCat=null;
-  let config={ goalName:'Invest more', monthly:25000, goalMode:'monthly', goalAmount:1000000, rate:5, years:20, currency:'GBP', dob:null, first:null };
+  let config={ goalName:'Quiet Build', monthly:25000, goalMode:'open', goalAmount:1000000, rate:5, years:20, currency:'GBP', dob:null, first:null };
   function obRenderCur(){ const el=document.getElementById('obCur'); el.innerHTML='';
     CURRENCIES.forEach(c=>{ const b=document.createElement('button'); b.className='cur-chip'+(config.currency===c.code?' sel':'');
       b.innerHTML=c.sym+'<small>'+c.code+'</small>';
@@ -2442,6 +2548,7 @@
   obEl.querySelectorAll('#obObjectives .ob-choice').forEach(b=>{
     b.addEventListener('click',()=>{ obEl.querySelectorAll('#obObjectives .ob-choice').forEach(x=>x.classList.remove('sel'));
       b.classList.add('sel'); config.goalName=b.dataset.name;
+      if(b.dataset.name==='Quiet Build') obGoalSetMode('open');
       const sel=document.getElementById('obGoalSel'); if([...sel.options].some(o=>o.value===b.dataset.name)) sel.value=b.dataset.name;
       document.getElementById('obOtherWrap').classList.add('hidden'); });
   });
@@ -2452,13 +2559,18 @@
     const a=(by&&!isNaN(by))?(ty-by):null;
     document.getElementById('obYrsOut').textContent = a!=null ? ('age '+a+' · '+config.years+' years') : (config.years+' years · '+ty); }
   obYrs.addEventListener('input',()=>{ config.years=+obYrs.value; obYrsLbl(); obPreview(); });
-  let obGoalMode='monthly';
+  let obGoalMode='open';
   function obGoalSetMode(mode){ obGoalMode=mode; config.goalMode=mode;
     document.querySelectorAll('#obMode button').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
     document.getElementById('obMonthlyField').classList.toggle('hidden',mode!=='monthly');
     document.getElementById('obTargetField').classList.toggle('hidden',mode!=='target');
+    if(mode==='open' && document.getElementById('obGoalSel').value!=='__other') document.getElementById('obGoalSel').value='Quiet Build';
     obPreview(); }
-  function obGoalNameSync(){ document.getElementById('obOtherWrap').classList.toggle('hidden', document.getElementById('obGoalSel').value!=='__other'); }
+  function obGoalNameSync(){
+    const sel=document.getElementById('obGoalSel').value;
+    document.getElementById('obOtherWrap').classList.toggle('hidden', sel!=='__other');
+    if(sel==='Quiet Build') obGoalSetMode('open');
+  }
   function obPreview(){ const el=document.getElementById('obPreview'); if(!el) return; if(obGoalMode!=='target'){ el.textContent=''; return; }
     const amt=parseM(document.getElementById('obAmount').value); const pm=calcMonthly(amt, config.years, config.rate);
     el.textContent = amt>0 ? ('Save ≈ '+Pn(pm)+'/month to reach '+Pn(amt)+' by '+(BASE_YEAR+config.years)+' (estimate)') : ''; }
@@ -2527,7 +2639,7 @@
   function finishOnboarding(){
     let q=obQuickChosen.map(x=>({...x}));
     wins=[]; transfers=[]; rollover=0;
-    goalName=config.goalName; goalTarget=config.monthly; goalMode=config.goalMode||'monthly'; goalAmount=config.goalAmount||1000000; proj={rate:config.rate,years:config.years}; quick=q; openMonth=CUR; onboarded=true;
+    goalName=config.goalName; goalTarget=config.monthly; goalMode=config.goalMode||'open'; goalAmount=config.goalAmount||1000000; proj={rate:config.rate,years:config.years}; quick=q; openMonth=CUR; onboarded=true;
     dob=config.dob||null;
     applyCurrency(config.currency);
     if(config.first) wins.push({id:Date.now(),net:config.first.net,cat:config.first.cat,name:config.first.name,state:'confirmed',credibility:'verified',month:CUR,date:new Date(),quickId:config.first.quickId||null});
@@ -2541,12 +2653,15 @@
     const showLocked = showLockedProUi();
     document.getElementById('setGoalSub').textContent = goalMode==='target'
       ? (goalName+' · '+Pn(goalAmount)+' by '+targetYear())
-      : (goalName+' · '+Pn(goalTarget)+'/mo');
+      : goalMode==='monthly'
+      ? (goalName+' · '+Pn(goalTarget)+'/mo')
+      : 'Quiet Build · no monthly target';
     document.getElementById('setQuickSub').textContent = hasFeatureAccess()
       ? (quick.length+' one-tap log'+(quick.length!==1?'s':''))
       : (Math.min(quick.length, FREE_QUICK_LIMIT)+' of '+FREE_QUICK_LIMIT+' free slots used');
     const ra=recurring.filter(r=>r.status==='active').length;
     document.getElementById('setRecurringSub').textContent = ra? (ra+' active') : 'None yet';
+    document.getElementById('setMarketSub').textContent = marketWatch.map(id=>marketById(id).name).join(' · ');
     document.getElementById('setCurrencySub').textContent = curSym+' · '+currencyCode;
     document.getElementById('setBankSub').textContent = showLocked
       ? 'Sync balances and protect a minimum floor'
@@ -2561,6 +2676,7 @@
   document.getElementById('dobSave').addEventListener('click',()=>{ dob=getInlineDateValue('dobInput', null, todayIso())||null; dobOv.classList.remove('show'); refreshSettings(); render(); saveState(); toast('Saved', dob?'Projections now show your age':'','ti-check'); });
   document.getElementById('dobRemove').addEventListener('click',()=>{ dob=null; dobOv.classList.remove('show'); refreshSettings(); render(); saveState(); toast('Removed','Projections show the year again','ti-check'); });
   dobOv.addEventListener('click',e=>{ if(e.target===dobOv) dobOv.classList.remove('show'); });
+  const marketOv=document.getElementById('marketOverlay');
   const curOv=document.getElementById('currencyOverlay');
   function renderCurChips(){ const el=document.getElementById('curChips'); el.innerHTML='';
     CURRENCIES.forEach(c=>{ const b=document.createElement('button'); b.className='cur-chip'+(currencyCode===c.code?' sel':'');
@@ -2568,7 +2684,14 @@
       b.addEventListener('click',()=>{ applyCurrency(c.code); refreshSettings(); renderQuick(); render(); renderCurChips(); saveState(); });
       el.appendChild(b); });
   }
+  document.getElementById('marketSeg').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    marketWindow=+b.dataset.years;
+    renderMarketWatch();
+    saveState();
+  });
   document.getElementById('setCurrency').addEventListener('click',()=>{ renderCurChips(); curOv.classList.add('show'); });
+  document.getElementById('setMarket').addEventListener('click',()=>{ renderMarketEditor(); marketOv.classList.add('show'); });
   document.getElementById('setProPreview').addEventListener('click',()=>{
     proUiPreview=!proUiPreview;
     syncProPreviewControls();
@@ -2593,6 +2716,16 @@
     if(!hasFeatureAccess()){ openUpgrade('shared_goals','shared-goals'); return; }
     toast('Shared goals', 'Coming soon', 'ti-info-circle');
   });
+  document.getElementById('marketClose').addEventListener('click',()=>marketOv.classList.remove('show'));
+  document.getElementById('marketSave').addEventListener('click',()=>{
+    marketWatch=[0,1,2].map(idx=>document.getElementById('marketSel'+idx).value);
+    marketOv.classList.remove('show');
+    refreshSettings();
+    renderMarketWatch();
+    saveState();
+    toast('Market watch updated','Your Future page now shows your chosen three funds','ti-check');
+  });
+  marketOv.addEventListener('click',e=>{ if(e.target===marketOv) marketOv.classList.remove('show'); });
   document.getElementById('bankClose').addEventListener('click',()=>bankOv.classList.remove('show'));
   bankOv.addEventListener('click',e=>{ if(e.target===bankOv) bankOv.classList.remove('show'); });
   document.getElementById('curClose').addEventListener('click',()=>curOv.classList.remove('show'));
@@ -2631,15 +2764,17 @@
 
   // ---------- edit goal ----------
   const geOv=document.getElementById('goalEditOverlay');
-  const GOAL_NAMES=['Invest more','Emergency fund','Save for a goal','Spend consciously'];
-  let geMode='monthly';
+  const GOAL_NAMES=['Quiet Build','Invest more','Emergency fund','Save for a goal','Spend consciously'];
+  let geMode='open';
   function geSetMode(mode){ geMode=mode;
     document.querySelectorAll('#geMode button').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
     document.getElementById('geMonthlyField').classList.toggle('hidden',mode!=='monthly');
     document.getElementById('geTargetField').classList.toggle('hidden',mode!=='target');
+    if(mode==='open' && document.getElementById('geNameSel').value!=='__other') document.getElementById('geNameSel').value='Quiet Build';
     gePreview(); }
   function geNameSync(){ const sel=document.getElementById('geNameSel').value;
-    document.getElementById('geOtherWrap').classList.toggle('hidden',sel!=='__other'); }
+    document.getElementById('geOtherWrap').classList.toggle('hidden',sel!=='__other');
+    if(sel==='Quiet Build') geSetMode('open'); }
   function gePreview(){ const el=document.getElementById('gePreview'); if(geMode!=='target'){ el.textContent=''; return; }
     const amt=parseM(document.getElementById('geAmount').value);
     const pm=calcMonthly(amt, proj.years, proj.rate);
@@ -2662,7 +2797,7 @@
     goalName = sel==='__other' ? ((document.getElementById('geOther').value||'').trim()||'My goal') : sel;
     goalMode = geMode;
     if(geMode==='target'){ const a=parseM(document.getElementById('geAmount').value); if(a<1){ toast('Enter a target amount','How much do you want to reach?','ti-alert-circle'); return; } goalAmount=a; }
-    else { const m=parseM(document.getElementById('geMonthly').value); if(m>0) goalTarget=m; }
+    else if(geMode==='monthly'){ const m=parseM(document.getElementById('geMonthly').value); if(m>0) goalTarget=m; }
     geOv.classList.remove('show'); refreshSettings(); render(); toast('Goal updated',null,'ti-check');
   });
 
