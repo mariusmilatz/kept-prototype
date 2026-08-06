@@ -588,12 +588,12 @@
 
         <div class="card" style="margin-top:18px">
           <p class="eyebrow" style="margin-bottom:10px">Assumptions</p>
-          <div class="return-toggle" id="returnModeRow">
+          <div class="return-toggle" id="returnModeRow" style="display:none">
             <div>
               <b id="returnModeTitle">Use basic percentages</b>
               <small id="returnModeSub">Switch this off to use the selected market watch return instead.</small>
             </div>
-            <div class="switch on" id="returnModeSwitch" role="switch" aria-checked="true"><div class="k"></div></div>
+            <div class="switch" id="returnModeSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
           </div>
           <div class="seg" id="rateSeg">
             <button data-rate="3">3%</button>
@@ -1237,7 +1237,7 @@
     if(gap<=0) return 0;                                   // already on track — nothing more needed
     const m=Math.pow(1+rate/100,1/12)-1, n=Math.round(years*12);
     return m<=0 ? Math.round(gap/n) : Math.round(gap*m/(Math.pow(1+m,n)-1)); }
-  function effectiveReturn(){ return useBasicPercentages ? proj.rate : (marketById(selectedMarketId).growth[marketWindow] ?? proj.rate); }
+  function effectiveReturn(){ return (useBasicPercentages || !selectedMarketId) ? proj.rate : (marketById(selectedMarketId).growth[marketWindow] ?? proj.rate); }
   function requiredMonthly(){ return calcMonthly(goalAmount, proj.years, effectiveReturn()); }
   function monthlyTargetVal(){ return goalMode==='target' ? requiredMonthly() : goalMode==='monthly' ? goalTarget : 0; }
   function goalConfigured(){ return !!goalName && (goalMode==='open' || goalTarget>0 || goalAmount>0); }
@@ -1274,7 +1274,7 @@
   ];
   let marketWindow=5;
   let marketWatch=['msci-world','sp500','ftse-all-world'];
-  let selectedMarketId='msci-world';
+  let selectedMarketId=null;
   let useBasicPercentages=true;
   let dob=null;             // ISO date string, optional — enables "by age N" projections
   let accountState='guest';
@@ -1443,7 +1443,7 @@
     dob=s.dob||null;
     marketWindow=[1,5,10].includes(s.marketWindow)?s.marketWindow:5;
     marketWatch=Array.isArray(s.marketWatch)&&s.marketWatch.length===3 ? s.marketWatch : ['msci-world','sp500','ftse-all-world'];
-    selectedMarketId=s.selectedMarketId || marketWatch[0] || 'msci-world';
+    selectedMarketId=s.selectedMarketId || null;
     useBasicPercentages=s.useBasicPercentages!==false;
     proUiPreview=s.proUiPreview!==false;
     earnedMilestones=Array.isArray(s.earnedMilestones)? s.earnedMilestones : [];
@@ -1857,7 +1857,7 @@
       const item=marketById(id);
       const val=item.growth[marketWindow] ?? 0;
       const row=document.createElement('div');
-      row.className='market-row'+(selectedMarketId===id?' selected':'');
+      row.className='market-row'+(!useBasicPercentages && selectedMarketId===id?' selected':'');
       row.innerHTML=`<div><div class="name">${item.name}</div><div class="meta">${item.ticker} · ${item.meta} · avg / year over ${marketWindow} ${marketWindow===1?'year':'years'}</div></div><div class="chg ${val>=0?'pos':'neg'}">${val>=0?'+':''}${val.toFixed(1)}%</div>`;
       row.addEventListener('click',()=>{
         selectedMarketId=id;
@@ -1871,15 +1871,17 @@
     const sub=document.getElementById('returnModeSub');
     const sw=document.getElementById('returnModeSwitch');
     const rateSeg=document.getElementById('rateSeg');
-    if(title) title.textContent = useBasicPercentages ? 'Use basic percentages' : ('Use '+marketById(selectedMarketId).name);
-    if(sub) sub.textContent = useBasicPercentages
-      ? 'Switch this off to use the selected market watch return instead.'
-      : ('Using '+marketById(selectedMarketId).growth[marketWindow].toFixed(1)+'% avg / year from your selected market watch over '+marketWindow+' '+(marketWindow===1?'year':'years')+'.');
+    const rowWrap=document.getElementById('returnModeRow');
+    if(title) title.textContent = 'Use basic %';
+    if(sub) sub.textContent = selectedMarketId
+      ? ('Using '+marketById(selectedMarketId).growth[marketWindow].toFixed(1)+'% avg / year from '+marketById(selectedMarketId).name+'.')
+      : 'Switch back to the basic percentage presets.';
     if(sw){
-      sw.classList.toggle('on', useBasicPercentages);
-      sw.setAttribute('aria-checked', useBasicPercentages ? 'true' : 'false');
+      sw.classList.remove('on');
+      sw.setAttribute('aria-checked', 'false');
     }
-    if(rateSeg) rateSeg.style.display = useBasicPercentages ? '' : 'none';
+    if(rowWrap) rowWrap.style.display = (!useBasicPercentages && selectedMarketId) ? 'flex' : 'none';
+    if(rateSeg) rateSeg.style.display = (!useBasicPercentages && selectedMarketId) ? 'none' : '';
   }
   function renderMarketEditor(){
     const data=document.getElementById('marketOptions');
@@ -2546,13 +2548,16 @@
 
   // ---------- future controls ----------
   document.getElementById('returnModeSwitch').addEventListener('click',function(){
-    useBasicPercentages=!useBasicPercentages;
-    this.classList.toggle('on', useBasicPercentages);
-    this.setAttribute('aria-checked', useBasicPercentages ? 'true' : 'false');
+    useBasicPercentages=true;
+    selectedMarketId=null;
+    this.classList.remove('on');
+    this.setAttribute('aria-checked', 'false');
     render();
   });
   document.getElementById('rateSeg').addEventListener('click',e=>{
     const b=e.target.closest('button'); if(!b)return; proj.rate=parseInt(b.dataset.rate);
+    useBasicPercentages=true;
+    selectedMarketId=null;
     document.querySelectorAll('#rateSeg button').forEach(x=>x.classList.toggle('on',x===b)); render();
   });
   const yrs=document.getElementById('yrs');
@@ -2771,7 +2776,6 @@
   document.getElementById('marketSeg').addEventListener('click',e=>{
     const b=e.target.closest('button'); if(!b) return;
     marketWindow=+b.dataset.years;
-    if(!marketWatch.includes(selectedMarketId)) selectedMarketId=marketWatch[0] || 'msci-world';
     renderMarketWatch();
     render();
     saveState();
@@ -2810,7 +2814,7 @@
       return found ? found.id : marketWatch[idx];
     });
     marketWatch=next;
-    if(!marketWatch.includes(selectedMarketId)) selectedMarketId=marketWatch[0] || 'msci-world';
+    if(selectedMarketId && !marketWatch.includes(selectedMarketId)){ selectedMarketId=null; useBasicPercentages=true; }
     marketOv.classList.remove('show');
     refreshSettings();
     render();
