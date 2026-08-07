@@ -787,6 +787,7 @@
             <div class="home-brand">Kept</div>
             <div class="home-greeting">Your month, quietly building.</div>
           </div>
+          <button class="home-icon-btn" id="homeMilestoneButton" aria-label="Open milestones"><i class="ti ti-target"></i></button>
         </div>
 
         <div class="home-balance-card" id="homeBalanceCard">
@@ -2673,6 +2674,7 @@
   function openMilestones(){ msOv.classList.add('show'); }
   function closeMilestones(){ msOv.classList.remove('show'); }
   document.getElementById('milestoneCard').addEventListener('click',openMilestones);
+  document.getElementById('homeMilestoneButton').addEventListener('click',openMilestones);
   document.getElementById('setMilestones').addEventListener('click',()=>{ setOv.classList.remove('show'); openMilestones(); });
   document.getElementById('msClose').addEventListener('click',closeMilestones);
   document.getElementById('msToggleAll').addEventListener('click',()=>{ msExpanded=!msExpanded; render(); });
