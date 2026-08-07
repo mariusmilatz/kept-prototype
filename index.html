@@ -441,28 +441,45 @@
   .qle-mid b{font-family:var(--font-round);font-weight:600;font-size:14.5px;display:block}
   .qle-mid small{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
   .qle-del{border:none;background:none;color:#B0554C;cursor:pointer;font-size:18px;padding:6px;flex:0 0 auto}
-  .ms-summary{display:flex;gap:10px;margin:4px 0 14px}
-  .ms-chip{flex:1;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:12px 13px}
-  .ms-chip .k{font-size:11px;color:var(--muted);letter-spacing:.02em}
-  .ms-chip .v{font-family:var(--font-round);font-weight:700;font-size:22px;margin-top:4px}
-  .ms-sub{font-size:12px;color:var(--muted);margin:-4px 0 14px}
-  .ms-list{display:flex;flex-direction:column;gap:10px}
-  .ms-item{background:var(--card);border:1px solid var(--hair);border-radius:16px;padding:14px}
-  .ms-item.top{border-color:var(--accent)}
+  #milestonesOverlay{background:var(--paper);backdrop-filter:none;-webkit-backdrop-filter:none;align-items:stretch}
+  #milestonesOverlay .sheet{max-height:none;height:100%;border-radius:0;padding:18px 20px 104px;background:radial-gradient(95% 45% at 100% 0%,var(--warm-glow),transparent 68%),radial-gradient(100% 50% at 0% 100%,var(--violet-glow),transparent 72%),var(--paper);transform:translateX(16px);box-shadow:none}
+  #milestonesOverlay.show .sheet{transform:translateX(0)}
+  .ms-page-head{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:10px;margin:1px 0 17px}
+  .ms-page-head h3{font-size:27px!important;text-align:center;margin:0!important}
+  .ms-page-head .sub{grid-column:1/-1;text-align:center;margin:-3px 0 0!important}
+  .ms-head-btn{width:42px;height:42px;border:0;border-radius:50%;background:var(--surface-solid);color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px var(--hair);cursor:pointer;font-size:18px}
+  .ms-summary{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 14px;padding:18px 20px;background:var(--surface-elevated);border:1px solid var(--hair);border-radius:24px;box-shadow:0 18px 42px -34px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.55)}
+  .ms-summary-copy .v{font-family:var(--font-round);font-weight:650;font-size:38px;line-height:1;letter-spacing:-.055em;color:var(--accent)}
+  .ms-summary-copy .v span{display:block;font-size:17px;letter-spacing:-.02em;margin-top:4px}
+  .ms-summary-copy .k{font-size:12px;color:var(--muted);margin-top:10px}
+  .ms-progress-ring{--ms-progress:0deg;width:94px;height:94px;border-radius:50%;background:conic-gradient(var(--accent) var(--ms-progress),var(--accent-soft) 0);padding:10px;flex:0 0 auto}
+  .ms-progress-ring>div{width:100%;height:100%;border-radius:50%;background:var(--surface-solid);display:flex;align-items:center;justify-content:center;font-family:var(--font-round);font-size:22px;font-weight:650;color:var(--accent)}
+  #milestonesOverlay .seg{overflow-x:auto;justify-content:flex-start;scrollbar-width:none;margin-bottom:18px;padding:4px;border-radius:18px}
+  #milestonesOverlay .seg::-webkit-scrollbar{display:none}
+  #milestonesOverlay .seg button{flex:0 0 auto;white-space:nowrap;padding:9px 13px}
+  .ms-section-title{font-family:var(--font-round);font-size:18px;font-weight:650;letter-spacing:-.025em;margin:0 0 10px;color:var(--accent)}
+  .ms-sub{display:none}
+  .ms-list{display:flex;flex-direction:column;gap:9px}
+  .ms-item{background:var(--card);border:1px solid var(--hair);border-radius:20px;padding:13px 14px;box-shadow:0 12px 30px -28px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.45)}
+  .ms-item.top{padding:16px;border-color:color-mix(in srgb,var(--accent) 25%,var(--hair));border-radius:23px}
   .ms-item.unlocked{background:color-mix(in srgb,var(--accent-soft) 48%,var(--card));border-color:color-mix(in srgb,var(--accent) 24%,var(--hair))}
   .ms-top{display:flex;align-items:flex-start;gap:12px}
-  .ms-ic{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
+  .ms-ic{width:42px;height:42px;border-radius:14px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 auto}
+  .ms-item.top .ms-ic{width:48px;height:48px;border-radius:16px;font-size:22px}
   .ms-item.unlocked .ms-ic{background:var(--amber-soft);color:var(--amber-ink)}
   .ms-copy{flex:1;min-width:0}
   .ms-copy b{display:block;font-family:var(--font-round);font-size:15px}
   .ms-copy small{display:block;font-size:12px;color:var(--muted);line-height:1.45;margin-top:3px}
-  .ms-tag{flex:0 0 auto;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:5px 8px;border-radius:999px;background:var(--card-2);color:var(--muted)}
+  .ms-tag{flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:5px 8px;border-radius:999px;background:var(--card-2);color:var(--muted)}
   .ms-tag.on{background:var(--amber-soft);color:var(--amber-ink)}
   .ms-bar{height:7px;border-radius:999px;background:var(--card-2);overflow:hidden;margin-top:11px}
   .ms-bar > i{display:block;height:100%;border-radius:999px;background:var(--accent);width:0}
   .ms-meta{display:flex;justify-content:space-between;gap:12px;font-size:11.5px;color:var(--muted);margin-top:7px}
   .ms-meta b{color:var(--ink);font-weight:600}
-  .ms-toggle{margin-top:14px}
+  .ms-toggle{margin-top:14px;justify-content:space-between;padding:14px 16px}
+  .ms-toggle i,.ms-toggle svg{transition:transform .2s}
+  .ms-toggle.open i,.ms-toggle.open svg{transform:rotate(180deg)}
+  .ms-history{margin-top:9px}
   @media (display-mode:standalone),(max-width:480px){
     .onboarding{border-radius:0;padding-top:calc(env(safe-area-inset-top) + 20px);padding-bottom:calc(env(safe-area-inset-bottom) + 14px)}
     .stage{padding:0;min-height:100dvh;display:block;gap:0}
@@ -1424,24 +1441,28 @@
       <!-- MILESTONES -->
       <div class="overlay" id="milestonesOverlay">
         <div class="sheet">
-          <div class="grip"></div>
-          <h3>Milestones</h3>
-          <p class="sub">Real progress only. Calm markers for starts, habits, money, and commitment.</p>
+          <div class="ms-page-head">
+            <button class="ms-head-btn" id="msClose" aria-label="Back"><i class="ti ti-chevron-left"></i></button>
+            <h3>Milestones</h3>
+            <span></span>
+            <p class="sub">Small wins, quietly adding up.</p>
+          </div>
           <div class="ms-summary">
-            <div class="ms-chip"><div class="k">Unlocked</div><div class="v" id="msUnlockedCount">0</div></div>
-            <div class="ms-chip"><div class="k">Still ahead</div><div class="v" id="msLockedCount">0</div></div>
+            <div class="ms-summary-copy"><div class="v"><b id="msUnlockedCount">0</b><span>unlocked</span></div><div class="k">Your progress</div></div>
+            <div class="ms-progress-ring" id="msProgressRing"><div id="msProgressPercent">0%</div></div>
           </div>
           <div class="seg" id="msSeg">
-            <button data-cat="start" class="on">Start</button>
-            <button data-cat="habit">Habit</button>
+            <button data-cat="all" class="on">All</button>
+            <button data-cat="start">Getting started</button>
+            <button data-cat="habit">Habits</button>
             <button data-cat="money">Money</button>
             <button data-cat="commitment">Commitment</button>
           </div>
+          <div class="ms-section-title">Up next</div>
           <p class="ms-sub" id="msCatSub">See the next few milestones without getting buried in all of them.</p>
           <div class="ms-list" id="msNextList"></div>
-          <button class="btn ghost ms-toggle" id="msToggleAll">Show all</button>
-          <div class="ms-list" id="msAllList" style="display:none"></div>
-          <button class="btn primary" id="msClose" style="margin-top:16px">Close</button>
+          <button class="btn ghost ms-toggle" id="msToggleAll"><span>Unlocked</span><i class="ti ti-chevron-down"></i></button>
+          <div class="ms-list ms-history" id="msAllList" style="display:none"></div>
         </div>
       </div>
 
@@ -1606,7 +1627,7 @@
   let upgradeIntent=null;
   let upgradeFeature='pro';
   let earnedMilestones=[];
-  let msCat='start', msExpanded=false;
+  let msCat='all', msExpanded=false;
   let milestoneDropTimer=null, milestoneDropKey='';
   let onboarded=false;
   const SOFT_CAP=10000; // £100 — Wins above this log as unverified until confirmed
@@ -2301,7 +2322,8 @@
   }
   function milestoneProgress(cur,target,unit,fmt){
     const show = fmt || (v=>String(v));
-    return {current:Math.min(cur,target), target, text:`${show(Math.min(cur,target))} / ${show(target)} ${unit}`};
+    const current=Math.min(cur,target);
+    return {current, target, text:`${fmt===Pm?P(current):show(current)} / ${show(target)} ${unit}`};
   }
   function milestoneData(){
     const moneyTxt = amt => Pm(amt);
@@ -2538,7 +2560,9 @@
     const unlocked = data.filter(m=>m.unlocked);
     const locked = data.filter(m=>!m.unlocked);
     document.getElementById('msUnlockedCount').textContent = String(unlocked.length);
-    document.getElementById('msLockedCount').textContent = String(locked.length);
+    const overallPct=data.length ? Math.round(unlocked.length/data.length*100) : 0;
+    document.getElementById('msProgressPercent').textContent = overallPct+'%';
+    document.getElementById('msProgressRing').style.setProperty('--ms-progress',(overallPct*3.6)+'deg');
     document.getElementById('msTeaserCount').textContent = unlocked.length+' unlocked';
     document.getElementById('setMilestonesSub').textContent = unlocked.length+' of '+data.length+' earned';
     const nextOverall = locked[0];
@@ -2546,30 +2570,30 @@
     document.getElementById('msTeaserNext').textContent = nextOverall ? nextOverall.progressText : 'Everything here is unlocked.';
 
     document.querySelectorAll('#msSeg button').forEach(b=>b.classList.toggle('on', b.dataset.cat===msCat));
-    const catInfo = MILESTONE_CATS.find(c=>c.id===msCat) || MILESTONE_CATS[0];
-    const inCat = data.filter(m=>m.cat===msCat);
+    const catInfo = msCat==='all' ? {id:'all',label:'All'} : (MILESTONE_CATS.find(c=>c.id===msCat) || MILESTONE_CATS[0]);
+    const inCat = msCat==='all' ? data : data.filter(m=>m.cat===msCat);
     const lockedCat = inCat.filter(m=>!m.unlocked);
     const unlockedCat = inCat.filter(m=>m.unlocked);
-    document.getElementById('msCatSub').textContent = unlockedCat.length+' of '+inCat.length+' earned in '+catInfo.label+'.';
+    document.getElementById('msCatSub').textContent = unlockedCat.length+' of '+inCat.length+' earned'+(msCat==='all'?'.':' in '+catInfo.label+'.');
 
     const nextList=document.getElementById('msNextList');
     nextList.innerHTML='';
-    (lockedCat.slice(0,3).length ? lockedCat.slice(0,3) : unlockedCat.slice(0,3)).forEach((m,idx)=>nextList.appendChild(milestoneItem(m, idx===0 && !m.unlocked)));
+    lockedCat.slice(0,3).forEach((m,idx)=>nextList.appendChild(milestoneItem(m, idx===0)));
     if(!nextList.children.length){
-      const empty=document.createElement('div'); empty.className='empty-note'; empty.textContent='No milestones here yet.'; nextList.appendChild(empty);
+      const empty=document.createElement('div'); empty.className='empty-note'; empty.textContent='Everything in this category is unlocked.'; nextList.appendChild(empty);
     }
 
     const toggle=document.getElementById('msToggleAll');
-    toggle.style.display = inCat.length>3 ? '' : 'none';
-    toggle.innerHTML = msExpanded ? 'Show less' : ('Show all '+inCat.length+' '+catInfo.label.toLowerCase()+' milestones');
+    toggle.style.display = unlockedCat.length ? '' : 'none';
+    toggle.classList.toggle('open',msExpanded);
+    toggle.innerHTML = `<span>Unlocked · ${unlockedCat.length}</span><i class="ti ti-chevron-down"></i>`;
     const all=document.getElementById('msAllList');
     all.style.display = msExpanded ? '' : 'none';
     all.innerHTML='';
     if(msExpanded){
-      [...lockedCat.slice(3), ...unlockedCat].forEach(m=>all.appendChild(milestoneItem(m,false)));
-      if(!all.children.length){ const done=document.createElement('div'); done.className='empty-note'; done.textContent='Nothing else in this category.'; all.appendChild(done); }
+      unlockedCat.slice().reverse().forEach(m=>all.appendChild(milestoneItem(m,false)));
     }
-    replaceIcons(nextList); replaceIcons(all);
+    replaceIcons(nextList); replaceIcons(toggle); replaceIcons(all);
   }
 
   function milestoneItem(m, top){
