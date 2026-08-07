@@ -638,6 +638,71 @@
   .milestone-drop{background:var(--paper);border-radius:30px 30px 45px 45px}
   .ms-item.unlocked{background:#E4F7F0;border-color:#C5EADF}
   .ms-item.unlocked .ms-ic{background:#EEE9FF;color:#5E4CC8}
+  .home-topbar,.future-topbar,.settings-topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:4px 0 14px}
+  .home-brand{font-size:25px;font-weight:720;letter-spacing:-.055em;color:var(--accent)}
+  .home-greeting{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .home-icon-btn{width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.76);color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:inset 0 0 0 1px var(--hair)}
+  .home-icon-btn svg{font-size:19px}
+  .home-balance-card{display:grid;grid-template-columns:1fr 118px;align-items:center;gap:8px;padding:20px 18px 16px;border-radius:26px;background:radial-gradient(90% 130% at 100% 0%,rgba(255,226,190,.58),transparent 58%),radial-gradient(100% 110% at 0% 100%,rgba(221,213,255,.72),transparent 62%),rgba(255,255,255,.84);box-shadow:0 18px 44px -32px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.94)}
+  .home-balance-copy .lbl{font-size:12px;color:var(--muted);margin:0 0 5px}
+  .home-balance-copy .amount{font-size:43px;line-height:1;font-weight:560;letter-spacing:-.055em;font-variant-numeric:tabular-nums}
+  .home-balance-copy .sub{font-size:11px;color:var(--muted);margin:7px 0 0}
+  .home-balance-copy .hero-fv{margin-top:10px;font-size:10.5px;padding:5px 8px}
+  .home-progress{--goal-progress:0deg;width:108px;height:108px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(from 205deg,var(--accent) var(--goal-progress),rgba(6,39,26,.08) 0 312deg,transparent 312deg);transform:rotate(25deg);position:relative}
+  .home-progress::after{content:"";position:absolute;inset:11px;border-radius:50%;background:color-mix(in srgb,var(--card) 92%,transparent)}
+  .home-progress-inner{position:relative;z-index:1;text-align:center;transform:rotate(-25deg);display:flex;flex-direction:column}
+  .home-progress-inner b{font-size:19px;letter-spacing:-.04em}
+  .home-progress-inner span{font-size:9.5px;color:var(--muted);margin-top:1px}
+  .home-goal-row{grid-column:1/-1;border-top:1px solid rgba(17,23,19,.07);margin-top:10px;padding-top:13px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .home-goal-row > div:first-child{min-width:0;flex:1}
+  .home-goal-row b{font-size:12.5px;display:block}
+  .home-goal-row small{display:block;font-size:10.5px;color:var(--muted);line-height:1.35;margin-top:2px}
+  .home-goal-right{text-align:right;flex:0 0 auto;font-size:10.5px;color:var(--muted)}
+  .home-goal-right span{display:block}.home-goal-right b{display:inline;font-size:10.5px;color:var(--ink)}
+  .goal-bar-hidden{display:none}
+  .home-primary-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
+  .home-action{border:0;border-radius:20px;padding:13px 12px;background:rgba(255,255,255,.78);display:flex;align-items:center;gap:10px;text-align:left;color:var(--ink);cursor:pointer;box-shadow:inset 0 0 0 1px var(--hair)}
+  .home-action:active{transform:scale(.98)}
+  .home-action-icon{width:36px;height:36px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:#EEE9FF;color:#6956D9;flex:0 0 auto}
+  .move-money .home-action-icon{background:#DFF5EE;color:#087457}
+  .home-action b{display:block;font-size:12.5px;letter-spacing:-.01em}.home-action small{display:block;font-size:9.5px;color:var(--muted);margin-top:2px;white-space:nowrap}
+  .home-section{margin-top:17px}
+  .section-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;padding:0 2px}
+  .section-heading b{font-size:13px;letter-spacing:-.015em}.section-heading button{border:0;background:none;color:var(--accent-ink);font:650 10.5px var(--font-ui);cursor:pointer;padding:4px}
+  .home-quick-scroll{display:flex;gap:8px;overflow-x:auto;padding:1px 1px 4px}.home-quick-scroll::-webkit-scrollbar{display:none}
+  .home-quick-list{display:flex;gap:8px}
+  .home-quick{width:76px;min-width:76px;height:76px;border:0;border-radius:18px;background:rgba(255,255,255,.76);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--ink);cursor:pointer;box-shadow:inset 0 0 0 1px var(--hair)}
+  .home-quick .ic{width:28px;height:28px;border-radius:10px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:15px}
+  .home-quick b{font-size:9.5px;max-width:64px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.home-quick small{font-size:9px;color:var(--muted);margin-top:-4px}
+  .quick-home-add{width:76px;min-width:76px;height:76px;border-radius:18px;display:flex;flex-direction:column;gap:6px;box-shadow:inset 0 0 0 1px var(--hair)}
+  .quick-home-add svg{font-size:20px}.quick-home-add span{font-size:9.5px;font-weight:650}
+  .home-transfer-card{display:flex;align-items:center;gap:11px;padding:13px 14px;border-radius:20px;cursor:pointer}
+  .home-row-icon{width:36px;height:36px;border-radius:13px;background:#EEE9FF;color:#6956D9;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .home-row-copy{flex:1;min-width:0}.home-row-copy b{display:block;font-size:12.5px}.home-row-copy small,.home-row-copy span{display:block;font-size:10.5px;color:var(--muted);margin-top:2px}
+  .home-transfer-card > svg{color:var(--muted)}
+  .home-future-meta{display:none}
+  .milestone-teaser{border-radius:20px;padding:12px 14px}.milestone-teaser .big{font-size:16px}.milestone-teaser .note{font-size:10.5px}
+  .future-topbar .h-screen,.settings-topbar .h-screen{margin:2px 0 0}.future-topbar .eyebrow,.settings-topbar .eyebrow{margin:0}
+  .future-projection-card{padding:18px 14px 12px;border-radius:26px;background:radial-gradient(90% 95% at 100% 0%,rgba(255,226,190,.62),transparent 57%),radial-gradient(100% 90% at 0% 100%,rgba(221,213,255,.7),transparent 62%),rgba(255,255,255,.82);box-shadow:inset 0 0 0 1px rgba(255,255,255,.94)}
+  .future-projection-card .future-hero{text-align:left;padding:0 4px 2px}.future-projection-card .future-hero .big{font-size:45px}.future-projection-card .curve-wrap{height:145px;margin:3px 0 4px}
+  .future-assumption-toggle{width:100%;border:0;border-radius:18px;padding:10px 11px;background:rgba(255,255,255,.78);display:flex;align-items:center;gap:10px;text-align:left;color:var(--ink);cursor:pointer;box-shadow:inset 0 0 0 1px var(--hair)}
+  .future-assumption-toggle > span:nth-child(2){flex:1}.future-assumption-toggle b{display:block;font-size:12.5px}.future-assumption-toggle small{display:block;font-size:10px;color:var(--muted);margin-top:2px}.future-assumption-toggle > svg{color:var(--muted);transition:transform .2s}.future-assumption-toggle.open > svg{transform:rotate(180deg)}
+  .future-assumption-panel{display:none;padding:13px 3px 2px}.future-assumption-panel.open{display:block}.future-assumption-panel .seg{margin-bottom:12px}
+  .future-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:11px 0}
+  .future-metrics > div{padding:12px 10px;border-radius:18px;background:rgba(255,255,255,.76);box-shadow:inset 0 0 0 1px var(--hair)}
+  .future-metrics span,.future-metrics small{display:block;font-size:9.5px;color:var(--muted)}.future-metrics b{display:block;font-size:17px;margin:5px 0 2px;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+  .market-card{margin-top:13px}.market-row{padding:11px 12px}.market-row .name{font-size:12.5px}.market-row .meta{font-size:9.5px}.market-row .chg{font-size:16px}
+  .settings-view{padding-top:8px}
+  .settings-profile{display:flex;align-items:center;gap:12px;padding:14px;border-radius:22px;background:rgba(255,255,255,.78);box-shadow:inset 0 0 0 1px var(--hair)}
+  .settings-avatar{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#EAE4FF,#CDEFE3);font-size:22px;font-weight:650;color:var(--accent)}
+  .settings-profile > div:nth-child(2){flex:1}.settings-profile b{display:block;font-size:15px}.settings-profile small{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+  .settings-local-pill{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-ink);background:var(--accent-soft);padding:5px 8px;border-radius:999px}
+  .settings-pro-row{margin-top:10px!important;border-radius:20px!important}
+  .settings-section-title{font-size:12px;font-weight:700;margin:17px 3px 8px;color:var(--ink)}
+  .settings-group{border-radius:22px;overflow:hidden;background:rgba(255,255,255,.78);box-shadow:inset 0 0 0 1px var(--hair)}
+  .settings-group .set-row{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;padding:13px 14px;position:relative}
+  .settings-group .set-row:not(:last-child)::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:1px;background:var(--hair)}
+  .settings-group .set-row b{font-size:12.5px}.settings-group .set-row small{font-size:10.5px}.settings-group .set-row > svg{font-size:17px}
   @media (display-mode:standalone),(max-width:480px){
     html,body{height:100%;overflow:hidden}
     body{background:var(--paper)}
@@ -651,6 +716,8 @@
         radial-gradient(105% 45% at 0% 100%,rgba(225,218,255,.45),transparent 66%),
         var(--paper)}
     .view{padding-top:calc(env(safe-area-inset-top) + 16px);padding-left:18px;padding-right:18px;padding-bottom:calc(104px + env(safe-area-inset-bottom))}
+    .market-top{flex-direction:column;align-items:stretch}
+    .market-seg{align-self:flex-start}
     .tabbar{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));height:68px;border-radius:23px;padding:7px}
     .overlay{border-radius:0}
     .sheet,.milestone-drop{border-radius:30px 30px 0 0}
@@ -676,31 +743,64 @@
 
       <!-- HOME -->
       <div class="view" id="view-home">
-        <div class="hero">
-          <p class="lbl">Kept this month</p>
-          <div class="amount" id="homeAmount">£183.40</div>
-          <p class="sub" id="homeCount">16 Saving Wins · July</p>
-          <p class="hero-fv"><i class="ti ti-arrow-up-right"></i><span id="heroFV">≈ £498 in 20 years invested</span></p>
+        <div class="home-topbar">
+          <div>
+            <div class="home-brand">Kept</div>
+            <div class="home-greeting">Your month, quietly building.</div>
+          </div>
+          <button class="home-icon-btn" id="homeMilestoneButton" aria-label="Open milestones"><i class="ti ti-target"></i></button>
         </div>
 
-        <div class="card goal">
-          <div class="card-h"><div><div class="t" id="goalTitle">Invest £250 this month</div><div class="goal-sub" id="goalSub"></div></div></div>
-          <div class="bar"><div class="fill" id="goalFill"></div></div>
-          <div class="row"><span id="goalNow">£183.40 kept</span><span id="goalRight"><b id="goalLeft">£66.60</b> to go</span></div>
-        </div>
-
-        <div style="margin-top:18px" id="quickSection">
-          <p class="eyebrow">Quick Action</p>
-          <div style="margin-top:10px">
-            <button class="quick-home-add" id="quickHomeAdd" aria-label="Add quick action"><i class="ti ti-plus"></i></button>
+        <div class="home-balance-card" id="homeBalanceCard">
+          <div class="home-balance-copy">
+            <p class="lbl">Kept this month</p>
+            <div class="amount" id="homeAmount">£183.40</div>
+            <p class="sub" id="homeCount">16 Saving Wins · July</p>
+            <p class="hero-fv"><i class="ti ti-arrow-up-right"></i><span id="heroFV">≈ £498 in 20 years invested</span></p>
+          </div>
+          <div class="home-progress" id="homeProgress" aria-label="Monthly goal progress">
+            <div class="home-progress-inner"><b id="homeProgressPct">0%</b><span id="homeProgressLabel">of plan</span></div>
+          </div>
+          <div class="home-goal-row">
+            <div><b id="goalTitle">Invest £250 this month</b><small id="goalSub"></small></div>
+            <div class="home-goal-right"><span id="goalNow">£183.40 kept</span><span id="goalRight"><b id="goalLeft">£66.60</b> to go</span></div>
+            <div class="goal-bar-hidden"><div id="goalFill"></div></div>
           </div>
         </div>
 
-        <div class="card future-teaser" role="button" tabindex="0" id="teaserCard">
+        <div class="home-primary-actions">
+          <button class="home-action add-win" id="homeAddWin">
+            <span class="home-action-icon"><i class="ti ti-plus"></i></span>
+            <span><b>Add a win</b><small>Log money you kept</small></span>
+          </button>
+          <button class="home-action move-money" id="homeMoveMoney">
+            <span class="home-action-icon"><i class="ti ti-arrow-up-right"></i></span>
+            <span><b>Move money</b><small>Transfer or review</small></span>
+          </button>
+        </div>
+
+        <div class="home-section" id="quickSection">
+          <div class="section-heading"><b>Quick actions</b><button id="quickManage" type="button">Manage</button></div>
+          <div class="home-quick-scroll">
+            <div class="home-quick-list" id="quickActionList"></div>
+            <button class="quick-home-add" id="quickHomeAdd" aria-label="Add quick action"><i class="ti ti-plus"></i><span>Add action</span></button>
+          </div>
+        </div>
+
+        <div class="card home-transfer-card">
+          <div class="home-row-icon"><i class="ti ti-calendar-clock"></i></div>
+          <div class="home-row-copy">
+            <b>Next transfer · 28 July</b>
+            <small id="transferStatusLine">£183.40 ready to move</small>
+            <span id="transferModeLine">Manual transfer mode</span>
+          </div>
+          <i class="ti ti-chevron-right" aria-hidden="true"></i>
+        </div>
+
+        <div class="home-future-meta" role="button" tabindex="0" id="teaserCard">
           <div class="cap"><i class="ti ti-arrow-up-right"></i>Could become</div>
           <div class="big" id="teaserFuture">£75,900</div>
           <div class="note" id="teaserNote">estimated in 20 years · if kept and invested</div>
-          <div class="tap-hint"><i class="ti ti-arrow-right"></i>See your future</div>
         </div>
 
         <div class="card milestone-teaser" role="button" tabindex="0" id="milestoneCard">
@@ -714,18 +814,6 @@
             <i class="ti ti-chevron-right" style="color:var(--muted)" aria-hidden="true"></i>
           </div>
           <div class="mini" id="msTeaserNext">No milestones yet</div>
-        </div>
-
-        <div class="card" style="padding:14px 16px">
-          <div style="display:flex;align-items:center;gap:12px">
-            <div style="width:38px;height:38px;border-radius:11px;background:var(--amber-soft);color:var(--amber-ink);display:flex;align-items:center;justify-content:center;font-size:18px"><i class="ti ti-calendar-clock"></i></div>
-            <div style="flex:1">
-              <div style="font-size:13.5px;font-weight:600">Next transfer · 28 July</div>
-              <div style="font-size:11.5px;color:var(--muted)" id="transferStatusLine">£183.40 ready to move</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:2px" id="transferModeLine">Manual transfer mode</div>
-            </div>
-            <i class="ti ti-chevron-right" style="color:var(--muted)" aria-hidden="true"></i>
-          </div>
         </div>
       </div>
 
@@ -743,48 +831,51 @@
 
       <!-- FUTURE -->
       <div class="view hidden" id="view-future">
-        <p class="eyebrow" style="margin-top:8px">The point of it all</p>
-        <h2 class="h-screen">Your future</h2>
+        <div class="future-topbar">
+          <div><p class="eyebrow">The point of it all</p><h2 class="h-screen">Future</h2></div>
+          <button class="home-icon-btn" id="futureInfo" aria-label="Projection information"><i class="ti ti-info-circle"></i></button>
+        </div>
+
+        <div class="future-projection-card">
+          <div class="future-hero">
+            <div class="cap">Could become</div>
+            <div class="big" id="futureBig">£75,900</div>
+            <div class="as" id="futureAssume">estimated · 5% return · 20 years</div>
+          </div>
+          <div class="curve-wrap"><canvas id="curveCanvas" aria-label="Projected growth curve"></canvas></div>
+          <button class="future-assumption-toggle" id="assumptionToggle" type="button">
+            <span class="home-row-icon"><i class="ti ti-adjustments"></i></span>
+            <span><b>View assumptions</b><small>Growth rate and time horizon</small></span>
+            <i class="ti ti-chevron-down" id="assumptionChevron"></i>
+          </button>
+          <div class="future-assumption-panel" id="assumptionPanel">
+            <div class="return-toggle" id="returnModeRow" style="display:none">
+              <div><b id="returnModeTitle">Use basic percentages</b><small id="returnModeSub">Switch this off to use the selected market watch return instead.</small></div>
+              <div class="switch" id="returnModeSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
+            </div>
+            <div class="seg" id="rateSeg">
+              <button data-rate="3">3%</button><button data-rate="5" class="on">5%</button><button data-rate="7">7%</button>
+            </div>
+            <div class="ctrl">
+              <div class="lab"><span>Time horizon</span><b id="yrsOut">20 years</b></div>
+              <input type="range" id="yrs" min="5" max="60" step="1" value="20">
+              <div class="curve-legend"><span><i class="dash solid"></i>To your horizon</span><span><i class="dash dot"></i>Beyond, up to 60y</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="future-metrics">
+          <div><span>Invested</span><b id="futTransferred">£0</b><small>so far</small></div>
+          <div><span>This month</span><b id="futKept">£183</b><small>kept</small></div>
+          <div><span>Est. rate</span><b id="futureRateMetric">5.0%</b><small>per year</small></div>
+        </div>
+
         <div class="fut-toggle" id="futureProToggle">
           <div class="ft-txt">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-              <b>Keep my subscriptions going</b>
-              <span class="pro-mini" id="futureProBadge"><i class="ti ti-lock"></i>Pro</span>
-            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><b>Keep subscriptions going</b><span class="pro-mini" id="futureProBadge"><i class="ti ti-lock"></i>Pro</span></div>
             <small id="futureProSub">Assume your recurring savings keep going every month to your horizon <span class="pro-note" id="futureProNote">Unlock with Pro</span></small>
           </div>
           <div class="switch" id="projRecurSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
-        </div>
-        <div class="future-hero">
-          <div class="cap">Could become</div>
-          <div class="big" id="futureBig">£75,900</div>
-          <div class="as" id="futureAssume">estimated · 5% return · 20 years</div>
-        </div>
-        <div class="curve-wrap"><canvas id="curveCanvas" aria-label="Projected growth curve"></canvas></div>
-        <div class="two-up">
-          <div class="b"><div class="k">Invested so far</div><div class="v" id="futTransferred">£0</div></div>
-          <div class="b"><div class="k">Kept this month</div><div class="v" id="futKept">£183</div></div>
-        </div>
-
-        <div class="card" style="margin-top:18px">
-          <p class="eyebrow" style="margin-bottom:10px">Assumptions</p>
-          <div class="return-toggle" id="returnModeRow" style="display:none">
-            <div>
-              <b id="returnModeTitle">Use basic percentages</b>
-              <small id="returnModeSub">Switch this off to use the selected market watch return instead.</small>
-            </div>
-            <div class="switch" id="returnModeSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
-          </div>
-          <div class="seg" id="rateSeg">
-            <button data-rate="3">3%</button>
-            <button data-rate="5" class="on">5%</button>
-            <button data-rate="7">7%</button>
-          </div>
-          <div class="ctrl">
-            <div class="lab"><span>Time horizon</span><b id="yrsOut">20 years</b></div>
-            <input type="range" id="yrs" min="5" max="60" step="1" value="20">
-            <div class="curve-legend"><span><i class="dash solid"></i>To your horizon</span><span><i class="dash dot"></i>Beyond, up to 60y</span></div>
-          </div>
         </div>
 
         <div class="card market-card">
@@ -1022,26 +1113,39 @@
       </div>
 
       <!-- SETTINGS -->
-      <div class="overlay" id="settingsOverlay">
-        <div class="sheet">
-          <div class="grip"></div>
-          <h3>You</h3>
-          <p class="sub">Your data lives on this device.</p>
-          <button class="set-row" id="setProPreview"><span><b>Show Pro preview</b><small id="setProPreviewSub">Tester only — see the locked Pro UI in the app</small></span><div class="switch on" id="setProPreviewSwitch" role="switch" aria-checked="true"><div class="k"></div></div></button>
-          <button class="set-row" id="setMilestones"><span><b>Milestones</b><small id="setMilestonesSub">Track your progress</small></span><i class="ti ti-target"></i></button>
+      <div class="view settings-view hidden" id="settingsOverlay">
+        <div class="settings-topbar"><div><p class="eyebrow">Your Kept</p><h2 class="h-screen">You</h2></div><button class="home-icon-btn" id="settingsTheme" aria-label="Toggle theme"><i class="ti ti-moon"></i></button></div>
+        <div class="settings-profile">
+          <div class="settings-avatar">K</div>
+          <div><b>Your Kept</b><small>Private on this device</small></div>
+          <span class="settings-local-pill">Local</span>
+        </div>
+        <button class="set-row settings-pro-row" id="setProPreview"><span><b>Show Pro preview</b><small id="setProPreviewSub">Tester only — see the locked Pro UI in the app</small></span><div class="switch on" id="setProPreviewSwitch" role="switch" aria-checked="true"><div class="k"></div></div></button>
+
+        <p class="settings-section-title">Your plan</p>
+        <div class="settings-group">
           <button class="set-row" id="setGoal"><span><b>Edit goal</b><small id="setGoalSub">—</small></span><i class="ti ti-target"></i></button>
+          <button class="set-row" id="setMilestones"><span><b>Milestones</b><small id="setMilestonesSub">Track your progress</small></span><i class="ti ti-target"></i></button>
           <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
           <button class="set-row" id="setRecurring"><span><b>Recurring savings</b><small id="setRecurringSub">—</small></span><i class="ti ti-repeat"></i></button>
           <button class="set-row" id="setMarket"><span><b>Market watch</b><small id="setMarketSub">Choose the 3 funds shown on Future</small></span><i class="ti ti-chart-line"></i></button>
-          <button class="set-row" id="setCurrency"><span><b>Currency</b><small id="setCurrencySub">—</small></span><i class="ti ti-coin"></i></button>
+        </div>
+
+        <p class="settings-section-title">Connections</p>
+        <div class="settings-group">
           <button class="set-row locked" id="setBank"><span><b style="display:flex;align-items:center;gap:8px">Linked bank <span class="pro-mini" id="setBankBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setBankSub">Manual only — connect a bank to sync your balance</small></span><i class="ti ti-shield-check"></i></button>
           <button class="set-row locked" id="setSharedGoals"><span><b style="display:flex;align-items:center;gap:8px">Shared goals <span class="pro-mini" id="setSharedBadge"><i class="ti ti-lock"></i>Pro</span></b><small id="setSharedSub">Build toward a goal together · coming soon</small></span><i class="ti ti-target"></i></button>
+        </div>
+
+        <p class="settings-section-title">Preferences</p>
+        <div class="settings-group">
+          <button class="set-row" id="setCurrency"><span><b>Currency</b><small id="setCurrencySub">—</small></span><i class="ti ti-coin"></i></button>
           <button class="set-row" id="setDob"><span><b>Date of birth</b><small id="setDobSub">—</small></span><i class="ti ti-calendar"></i></button>
           <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
           <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
           <button class="set-row danger" id="setReset"><span><b>Reset app</b><small>Erase everything and start over</small></span><i class="ti ti-trash"></i></button>
-          <button class="btn ghost" id="setClose" style="margin-top:16px">Close</button>
         </div>
+        <button class="btn ghost hidden" id="setClose">Close</button>
       </div>
 
       <div class="overlay" id="bankOverlay">
@@ -2244,6 +2348,9 @@
       : 'No monthly target — just keep saving when it feels right';
     const pct = Math.min(100, gm>0 ? rec/gm*100 : goalMode==='open' ? Math.min(100, rec/Math.max(1, monthWins(CUR).length*1000)*100) : 0);
     document.getElementById('goalFill').style.width = pct+'%';
+    document.getElementById('homeProgress').style.setProperty('--goal-progress',(pct/100*306)+'deg');
+    document.getElementById('homeProgressPct').textContent=Math.round(pct)+'%';
+    document.getElementById('homeProgressLabel').textContent=goalMode==='open'?'this month':'of plan';
     document.getElementById('goalNow').textContent = P(rec)+' kept';
     document.getElementById('goalRight').innerHTML = goalMode==='open'
       ? '<b>'+monthWins(CUR).length+'</b> wins this month'
@@ -2266,6 +2373,7 @@
     document.getElementById('yrsOut').textContent = _age!=null ? ('age '+_age+' · '+proj.years+' years') : (proj.years+' years · '+targetYear());
     document.getElementById('futTransferred').textContent = Pn(tr);
     document.getElementById('futKept').textContent = Pn(rec);
+    document.getElementById('futureRateMetric').textContent = rt.toFixed(1)+'%';
     renderMarketWatch();
     drawCurve();
     renderActivity();
@@ -2499,23 +2607,32 @@
   }
 
   // ---------- tabs ----------
-  const views={home:'view-home',activity:'view-activity',future:'view-future'};
+  const views={home:'view-home',activity:'view-activity',future:'view-future',settings:'settingsOverlay'};
   function show(tab){
     Object.values(views).forEach(v=>document.getElementById(v).classList.add('hidden'));
     if(views[tab])document.getElementById(views[tab]).classList.remove('hidden');
     document.querySelectorAll('.tab[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
     if(tab==='future')setTimeout(drawCurve,30);
+    if(tab==='settings')refreshSettings();
     cur().querySelector('.view:not(.hidden)')?.scrollTo(0,0);
   }
   document.querySelectorAll('.tab[data-tab]').forEach(b=>{
-    b.addEventListener('click',()=>{ if(b.dataset.tab==='settings'){openSettings();return;} show(b.dataset.tab);});
+    b.addEventListener('click',()=>show(b.dataset.tab));
   });
+  const assumptionPanel=document.getElementById('assumptionPanel');
+  document.getElementById('assumptionToggle').addEventListener('click',function(){
+    const open=assumptionPanel.classList.toggle('open');
+    this.classList.toggle('open',open);
+    if(open)setTimeout(drawCurve,30);
+  });
+  document.getElementById('futureInfo').addEventListener('click',()=>toast('Future estimate','Built from what you have kept, your time horizon, and the return assumption you choose.','ti-info-circle'));
 
   // ---------- milestones ----------
   const msOv=document.getElementById('milestonesOverlay');
   function openMilestones(){ msOv.classList.add('show'); }
   function closeMilestones(){ msOv.classList.remove('show'); }
   document.getElementById('milestoneCard').addEventListener('click',openMilestones);
+  document.getElementById('homeMilestoneButton').addEventListener('click',openMilestones);
   document.getElementById('setMilestones').addEventListener('click',()=>{ setOv.classList.remove('show'); openMilestones(); });
   document.getElementById('msClose').addEventListener('click',closeMilestones);
   document.getElementById('msToggleAll').addEventListener('click',()=>{ msExpanded=!msExpanded; render(); });
@@ -2528,6 +2645,18 @@
   // ---------- one-tap quick log ----------
   function renderQuick(){
     const sec=document.getElementById('quickSection'); if(sec) sec.style.display = '';
+    const list=document.getElementById('quickActionList');
+    if(list){
+      list.innerHTML='';
+      const visibleQuicks=hasFeatureAccess() ? quick : quick.slice(0,FREE_QUICK_LIMIT);
+      visibleQuicks.forEach(q=>{
+        const b=document.createElement('button');
+        b.className='home-quick';
+        b.innerHTML=`<span class="ic"><i class="ti ${q.icon}"></i></span><b>${q.name}</b><small>${P(q.amt)}</small>`;
+        b.addEventListener('click',()=>logWin(q.amt,q.id,q.name,true,q.id));
+        list.appendChild(b);
+      });
+    }
     replaceIcons(document.getElementById('quickSection'));
   }
 
@@ -2578,6 +2707,7 @@
   }
   function closeAdd(){ addOv.classList.remove('show'); }
   document.getElementById('tabAdd').addEventListener('click',openAdd);
+  document.getElementById('homeAddWin').addEventListener('click',openAdd);
   document.getElementById('quickHomeAdd').addEventListener('click',()=>openQaEdit(null));
   document.getElementById('addCancel').addEventListener('click',closeAdd);
   addOv.addEventListener('click',e=>{if(e.target===addOv)closeAdd();});
@@ -2675,6 +2805,7 @@
     setInlineDateValue('transfer', todayIso(), null, todayIso());
     updateTransfer(); trOv.classList.add('show');
   }
+  document.getElementById('homeMoveMoney').addEventListener('click',openTransfer);
   function updateTransfer(){
     const chosen=parseInt(trRange.value);
     // whole-Win FIFO: cover oldest wins fully up to chosen
@@ -2755,13 +2886,15 @@
   });
 
   // ---------- theme ----------
-  document.getElementById('themeToggle').addEventListener('click',()=>{
+  function toggleTheme(){
     const root=document.documentElement;
     const dark = root.getAttribute('data-theme')==='dark' ||
       (!root.getAttribute('data-theme') && matchMedia('(prefers-color-scheme:dark)').matches);
     root.setAttribute('data-theme', dark?'light':'dark');
     setTimeout(drawCurve,30);
-  });
+  }
+  document.getElementById('themeToggle').addEventListener('click',toggleTheme);
+  document.getElementById('settingsTheme').addEventListener('click',toggleTheme);
 
   // ---------- onboarding ----------
   const obEl=document.getElementById('onboarding');
@@ -3006,9 +3139,8 @@
   bankOv.addEventListener('click',e=>{ if(e.target===bankOv) bankOv.classList.remove('show'); });
   document.getElementById('curClose').addEventListener('click',()=>curOv.classList.remove('show'));
   curOv.addEventListener('click',e=>{ if(e.target===curOv) curOv.classList.remove('show'); });
-  function openSettings(){ refreshSettings(); setOv.classList.add('show'); }
-  document.getElementById('setClose').addEventListener('click',()=>setOv.classList.remove('show'));
-  setOv.addEventListener('click',e=>{ if(e.target===setOv) setOv.classList.remove('show'); });
+  function openSettings(){ refreshSettings(); show('settings'); }
+  document.getElementById('setClose').addEventListener('click',()=>show('home'));
   document.getElementById('setSample').addEventListener('click',()=>{ applyState(sampleData()); saveState(); renderQuick(); show('home'); render(); setOv.classList.remove('show'); toast('Sample data loaded',null,'ti-check'); });
   document.getElementById('setExport').addEventListener('click',()=>toast('Export','The real app downloads your data as a file','ti-download'));
   document.getElementById('setReset').addEventListener('click',()=>{ try{localStorage.removeItem(LSKEY);}catch(e){} setOv.classList.remove('show'); location.reload(); });
@@ -3113,6 +3245,7 @@
     replaceIcons(list);
   }
   document.getElementById('setQuick').addEventListener('click',()=>{ renderQuickList(); qlOv.classList.add('show'); });
+  document.getElementById('quickManage').addEventListener('click',()=>{ renderQuickList(); qlOv.classList.add('show'); });
   document.getElementById('quickListClose').addEventListener('click',()=>qlOv.classList.remove('show'));
   qlOv.addEventListener('click',e=>{ if(e.target===qlOv) qlOv.classList.remove('show'); });
 
