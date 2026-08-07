@@ -642,6 +642,7 @@
   .home-brand{font-size:25px;font-weight:720;letter-spacing:-.055em;color:var(--accent)}
   .home-greeting{font-size:11.5px;color:var(--muted);margin-top:2px}
   .home-icon-btn{width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.76);color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:inset 0 0 0 1px var(--hair)}
+  .home-icon-btn:focus{outline:none}.home-icon-btn:focus-visible{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--accent) 36%,transparent)}
   .home-icon-btn svg{font-size:19px}
   .home-balance-card{display:grid;grid-template-columns:1fr 118px;align-items:center;gap:8px;padding:20px 18px 16px;border-radius:26px;background:radial-gradient(90% 130% at 100% 0%,rgba(255,226,190,.58),transparent 58%),radial-gradient(100% 110% at 0% 100%,rgba(221,213,255,.72),transparent 62%),rgba(255,255,255,.84);box-shadow:0 18px 44px -32px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.94)}
   .home-balance-copy .lbl{font-size:12px;color:var(--muted);margin:0 0 5px}
@@ -703,6 +704,47 @@
   .settings-group .set-row{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;padding:13px 14px;position:relative}
   .settings-group .set-row:not(:last-child)::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:1px;background:var(--hair)}
   .settings-group .set-row b{font-size:12.5px}.settings-group .set-row small{font-size:10.5px}.settings-group .set-row > svg{font-size:17px}
+  :root{
+    --surface-solid:#FFFFFF;--surface-elevated:rgba(255,255,255,.84);--surface-soft:#F0EEF5;
+    --screen-solid:#F5F3FA;--warm-glow:rgba(255,226,190,.58);--violet-glow:rgba(221,213,255,.72)
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#08100C;--card:#151D19;--card-2:#202A24;--ink:#F5F8F6;--muted:#A7B0AA;--hair:rgba(255,255,255,.12);
+      --accent:#C8F5E4;--accent-soft:#17392E;--accent-ink:#A7E7D1;--amber-soft:#2A2445;--amber-ink:#CDC4FF;
+      --surface-solid:#151D19;--surface-elevated:#151D19;--surface-soft:#202A24;--screen-solid:#08100C;
+      --warm-glow:rgba(121,104,232,.08);--violet-glow:rgba(65,159,128,.1)
+    }
+  }
+  :root[data-theme="light"]{
+    --surface-solid:#FFFFFF;--surface-elevated:rgba(255,255,255,.84);--surface-soft:#F0EEF5;
+    --screen-solid:#F5F3FA;--warm-glow:rgba(255,226,190,.58);--violet-glow:rgba(221,213,255,.72)
+  }
+  :root[data-theme="dark"]{
+    --paper:#08100C;--card:#151D19;--card-2:#202A24;--ink:#F5F8F6;--muted:#A7B0AA;--hair:rgba(255,255,255,.12);
+    --accent:#C8F5E4;--accent-soft:#17392E;--accent-ink:#A7E7D1;--amber-soft:#2A2445;--amber-ink:#CDC4FF;
+    --surface-solid:#151D19;--surface-elevated:#151D19;--surface-soft:#202A24;--screen-solid:#08100C;
+    --warm-glow:rgba(121,104,232,.08);--violet-glow:rgba(65,159,128,.1)
+  }
+  .screen{background:radial-gradient(95% 48% at 100% 0%,var(--warm-glow),transparent 62%),radial-gradient(105% 52% at 0% 100%,var(--violet-glow),transparent 66%),var(--screen-solid)}
+  .home-balance-card,.future-projection-card{background:radial-gradient(90% 130% at 100% 0%,var(--warm-glow),transparent 58%),radial-gradient(100% 110% at 0% 100%,var(--violet-glow),transparent 62%),var(--surface-elevated);box-shadow:0 18px 44px -32px var(--shadow),inset 0 0 0 1px var(--hair)}
+  .home-icon-btn,.home-action,.home-quick,.quick-home-add,.future-assumption-toggle,.future-metrics>div,.settings-profile,.settings-group{background:var(--surface-solid);border-color:var(--hair);box-shadow:inset 0 0 0 1px var(--hair)}
+  .card,.bank-panel,.bank-inline,.fut-toggle,.ms-item,.ms-chip,.month-sec,.set-row{border-color:var(--hair)}
+  .swipe-content{background:var(--surface-solid);opacity:1;z-index:2}
+  .home-progress.open-ended{background:conic-gradient(from 205deg,var(--accent-soft) 0 306deg,transparent 306deg)}
+  .home-progress.open-ended .home-progress-inner b{font-size:16px}
+  .home-action{min-height:62px}
+  .quick-home-add{width:62px;min-width:62px;height:62px;border-radius:18px}
+  :root[data-theme="dark"] body{background:#08100C}
+  :root[data-theme="dark"] .tabbar{background:#151D19;border-color:var(--hair);box-shadow:0 18px 44px -24px rgba(0,0,0,.55)}
+  :root[data-theme="dark"] .seg{background:#202A24}
+  :root[data-theme="dark"] .market-card,:root[data-theme="dark"] .market-row{background:#151D19;border-color:var(--hair)}
+  :root[data-theme="dark"] .market-row.selected{background:#17392E;border-color:#397A65}
+  :root[data-theme="dark"] .sheet{background:#0D1611;box-shadow:0 -18px 50px -25px rgba(0,0,0,.75)}
+  :root[data-theme="dark"] .text-in,:root[data-theme="dark"] .field .money-in,:root[data-theme="dark"] .cat{background:#18221C;border-color:var(--hair)}
+  :root[data-theme="dark"] .home-progress::after{background:#151D19}
+  :root[data-theme="dark"] .home-goal-row{border-top-color:var(--hair)}
+  :root[data-theme="dark"] .settings-local-pill{color:#A7E7D1;background:#17392E}
   @media (display-mode:standalone),(max-width:480px){
     html,body{height:100%;overflow:hidden}
     body{background:var(--paper)}
@@ -711,10 +753,7 @@
     .phone{width:100%;max-width:none;height:100dvh;max-height:none;border-radius:0;padding:0;box-shadow:none}
     .screen{inset:0;border-radius:0}
     .notch,.statusbar{display:none}
-    .screen{background:
-        radial-gradient(95% 42% at 100% 0%,rgba(255,231,195,.38),transparent 62%),
-        radial-gradient(105% 45% at 0% 100%,rgba(225,218,255,.45),transparent 66%),
-        var(--paper)}
+    .screen{background:radial-gradient(95% 42% at 100% 0%,var(--warm-glow),transparent 62%),radial-gradient(105% 45% at 0% 100%,var(--violet-glow),transparent 66%),var(--screen-solid)}
     .view{padding-top:calc(env(safe-area-inset-top) + 16px);padding-left:18px;padding-right:18px;padding-bottom:calc(104px + env(safe-area-inset-bottom))}
     .market-top{flex-direction:column;align-items:stretch}
     .market-seg{align-self:flex-start}
@@ -748,7 +787,6 @@
             <div class="home-brand">Kept</div>
             <div class="home-greeting">Your month, quietly building.</div>
           </div>
-          <button class="home-icon-btn" id="homeMilestoneButton" aria-label="Open milestones"><i class="ti ti-target"></i></button>
         </div>
 
         <div class="home-balance-card" id="homeBalanceCard">
@@ -803,7 +841,7 @@
           <div class="note" id="teaserNote">estimated in 20 years · if kept and invested</div>
         </div>
 
-        <div class="card milestone-teaser" role="button" tabindex="0" id="milestoneCard">
+        <div class="card milestone-teaser hidden" role="button" tabindex="0" id="milestoneCard">
           <div class="row">
             <div style="width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:18px"><i class="ti ti-target"></i></div>
             <div class="copy">
@@ -2348,9 +2386,12 @@
       : 'No monthly target — just keep saving when it feels right';
     const pct = Math.min(100, gm>0 ? rec/gm*100 : goalMode==='open' ? Math.min(100, rec/Math.max(1, monthWins(CUR).length*1000)*100) : 0);
     document.getElementById('goalFill').style.width = pct+'%';
-    document.getElementById('homeProgress').style.setProperty('--goal-progress',(pct/100*306)+'deg');
-    document.getElementById('homeProgressPct').textContent=Math.round(pct)+'%';
-    document.getElementById('homeProgressLabel').textContent=goalMode==='open'?'this month':'of plan';
+    const progressEl=document.getElementById('homeProgress');
+    const openEnded=goalMode==='open';
+    progressEl.classList.toggle('open-ended',openEnded);
+    progressEl.style.setProperty('--goal-progress',(openEnded?0:pct/100*306)+'deg');
+    document.getElementById('homeProgressPct').textContent=openEnded?'Open':Math.round(pct)+'%';
+    document.getElementById('homeProgressLabel').textContent=openEnded?'no target':'of plan';
     document.getElementById('goalNow').textContent = P(rec)+' kept';
     document.getElementById('goalRight').innerHTML = goalMode==='open'
       ? '<b>'+monthWins(CUR).length+'</b> wins this month'
@@ -2632,7 +2673,6 @@
   function openMilestones(){ msOv.classList.add('show'); }
   function closeMilestones(){ msOv.classList.remove('show'); }
   document.getElementById('milestoneCard').addEventListener('click',openMilestones);
-  document.getElementById('homeMilestoneButton').addEventListener('click',openMilestones);
   document.getElementById('setMilestones').addEventListener('click',()=>{ setOv.classList.remove('show'); openMilestones(); });
   document.getElementById('msClose').addEventListener('click',closeMilestones);
   document.getElementById('msToggleAll').addEventListener('click',()=>{ msExpanded=!msExpanded; render(); });
