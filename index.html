@@ -1516,13 +1516,8 @@
   const monthLabel = k => { const p=k.split('-'); return MNAMES[+p[1]-1]; };
   const CUR = ym(NOW);
 
-  // Default quick actions a new user starts with.
-  const DEFAULT_QUICK = [
-    {id:'food_drink',name:'Coffee',icon:'ti-coffee',amt:420},
-    {id:'snack',name:'Snack',icon:'ti-cookie',amt:250},
-    {id:'takeaway',name:'Takeaway',icon:'ti-tools-kitchen-2',amt:2200},
-    {id:'transport',name:'Taxi',icon:'ti-car',amt:1200}
-  ];
+  // Quick saves start empty so people build their own shortcuts.
+  const DEFAULT_QUICK = [];
 
   // Mutable app state — filled by onboarding, sample data, or storage.
   let wins=[], transfers=[];
