@@ -3265,20 +3265,33 @@
   // ---------- quick save editor ----------
   const qaOv=document.getElementById('qaEditOverlay');
   let qaEditIdx=null, qaeCat=null;
+  function syncQaCatSelection(){
+    qaeCatsEl.querySelectorAll('.cat').forEach(x=>x.classList.toggle('sel', !!qaeCat && x.dataset.cid===qaeCat.id));
+  }
+  function clearQaCatSelection(){
+    qaeCat=null;
+    syncQaCatSelection();
+  }
   const qaeCatsEl=document.getElementById('qaeCats');
   cats.forEach(c=>{ const el=document.createElement('button'); el.className='cat'; el.dataset.cid=c.id;
     el.innerHTML=`<i class="ti ${c.icon}"></i><span>${c.name}</span>`;
-    el.addEventListener('click',()=>{ qaeCat=c; qaeCatsEl.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel')); el.classList.add('sel'); });
+    el.addEventListener('click',()=>{
+      qaeCat=c;
+      syncQaCatSelection();
+      document.getElementById('qaeName').value=c.name;
+    });
     qaeCatsEl.appendChild(el);
   });
-  function selectQaCat(id){ qaeCat=cats.find(c=>c.id===id)||cats[0];
-    qaeCatsEl.querySelectorAll('.cat').forEach(x=>x.classList.toggle('sel', x.dataset.cid===qaeCat.id)); }
+  function selectQaCat(id){
+    qaeCat=cats.find(c=>c.id===id)||null;
+    syncQaCatSelection();
+  }
   function openQaEdit(idx){
     if(idx==null && !hasFeatureAccess() && quick.length>=FREE_QUICK_LIMIT){ openUpgrade('quick_actions','quick-actions'); return; }
     qaEditIdx=idx;
     if(idx==null){ document.getElementById('qaEditTitle').textContent='Add quick save';
       document.getElementById('qaeName').value=''; document.getElementById('qaeAmt').value='';
-      selectQaCat('food_drink'); document.getElementById('qaeDelete').style.display='none';
+      clearQaCatSelection(); document.getElementById('qaeDelete').style.display='none';
     } else { const q=quick[idx]; document.getElementById('qaEditTitle').textContent='Edit quick save';
       document.getElementById('qaeName').value=q.name; document.getElementById('qaeAmt').value=(q.amt/100).toFixed(2);
       selectQaCat(q.id); document.getElementById('qaeDelete').style.display='';
@@ -3286,6 +3299,10 @@
     qlOv.classList.remove('show');   // hide the list behind while editing
     qaOv.classList.add('show'); replaceIcons(qaOv);
   }
+  document.getElementById('qaeName').addEventListener('input',()=>{
+    const name=(document.getElementById('qaeName').value||'').trim();
+    if(qaeCat && name!==qaeCat.name) clearQaCatSelection();
+  });
   function closeQaEdit(){ qaOv.classList.remove('show'); qlOv.classList.add('show'); }
   document.getElementById('qaAdd').addEventListener('click',()=>{
     if(!hasFeatureAccess() && quick.length>=FREE_QUICK_LIMIT){ openUpgrade('quick_actions','quick-actions'); return; }
@@ -3294,8 +3311,9 @@
   document.getElementById('qaeSave').addEventListener('click',()=>{
     const amt=parseM(document.getElementById('qaeAmt').value);
     if(amt<1){ toast('Enter an amount','A quick save needs a value','ti-alert-circle'); return; }
-    const name=(document.getElementById('qaeName').value||'').trim()||qaeCat.name;
-    const q={id:qaeCat.id, name, icon:qaeCat.icon, amt};
+    const name=(document.getElementById('qaeName').value||'').trim()||(qaeCat ? qaeCat.name : 'Quick save');
+    const baseCat=qaeCat || cats.find(c=>c.name===name) || cats[0];
+    const q={id:baseCat.id, name, icon:baseCat.icon, amt};
     if(qaEditIdx==null) quick.push(q); else quick[qaEditIdx]=q;
     closeQaEdit(); afterQuickChange(); toast('Quick save saved',null,'ti-check');
   });
