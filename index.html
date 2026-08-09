@@ -206,6 +206,7 @@
 
   .overlay{position:absolute;inset:0;z-index:60;background:color-mix(in srgb,var(--ink) 34%,transparent);
     display:flex;align-items:flex-end;border-radius:36px;opacity:0;pointer-events:none;transition:opacity .28s}
+  #upgradeOverlay{z-index:72}
   .overlay.show{opacity:1;pointer-events:auto}
   .sheet{width:100%;background:var(--paper);border-radius:28px 28px 36px 36px;padding:8px 20px 26px;
     transform:translateY(18px);transition:transform .3s cubic-bezier(.2,.9,.2,1);max-height:92%;overflow-y:auto}
@@ -2080,6 +2081,10 @@
   function openUpgrade(feature, intent){
     upgradeFeature=feature||'pro';
     upgradeIntent=intent||null;
+    const quickListOverlay=document.getElementById('quickListOverlay');
+    const quickEditOverlay=document.getElementById('qaEditOverlay');
+    if(quickListOverlay) quickListOverlay.classList.remove('show');
+    if(quickEditOverlay) quickEditOverlay.classList.remove('show');
     const eyebrowMap={
       bank:'Linked bank · Pro feature',
       subscriptions:'Future projection · Pro feature',
