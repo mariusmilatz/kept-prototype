@@ -828,7 +828,6 @@
           </div>
           <div class="home-goal-row">
             <div><b id="goalTitle">Invest £250 this month</b><small id="goalSub"></small></div>
-            <div class="home-goal-right"><span id="goalNow">£183.40 kept</span><span id="goalRight"><b id="goalLeft">£66.60</b> to go</span></div>
             <div class="goal-bar-hidden"><div id="goalFill"></div></div>
           </div>
         </div>
@@ -2413,10 +2412,6 @@
     document.getElementById('homeProgressPct').textContent=openEnded?'Open':Math.round(pct)+'%';
     document.getElementById('homeProgressLabel').textContent=openEnded?'no target':'of plan';
     document.getElementById('homeProgressGoal').textContent = openEnded ? 'No monthly goal' : 'Goal '+Pn(gm);
-    document.getElementById('goalNow').textContent = P(rec)+' kept';
-    document.getElementById('goalRight').innerHTML = goalMode==='open'
-      ? '<b>'+monthWins(CUR).length+'</b> wins this month'
-      : '<b>'+P(Math.max(0,gm-rec))+'</b> to go';
     const transferCard=document.getElementById('transferCard');
     transferCard.style.display = bank.connected && bank.automationEnabled ? '' : 'none';
     document.getElementById('transferCardTitle').textContent = bank.connected && bank.automationEnabled ? 'Scheduled transfer' : 'Move money';
@@ -2677,16 +2672,40 @@
     const dpr=window.devicePixelRatio||1, w=cv.clientWidth, h=cv.clientHeight;
     cv.width=w*dpr; cv.height=h*dpr;
     const c=cv.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,w,h);
-    const maxYears=Math.max(1, proj.years), padL=2, padR=2, padT=8, padB=6;
+    const maxYears=Math.max(1, proj.years), padL=8, padR=8, padT=20, padB=18;
     const gw=w-padL-padR, gh=h-padT-padB;
-    const points=[]; for(let i=0;i<=72;i++){ const yr=maxYears*i/72; points.push([padL+(yr/maxYears)*gw, padT+gh-((balanceAt(yr)/(balanceAt(maxYears)||1))*gh)]); }
-    const acc=cssv('--accent'), amb=cssv('--amber');
+    const peak=Math.max(balanceAt(maxYears)||1,1);
+    const points=[]; for(let i=0;i<=72;i++){ const yr=maxYears*i/72; points.push([padL+(yr/maxYears)*gw, padT+gh-((balanceAt(yr)/peak)*gh)]); }
+    const acc=cssv('--accent'), amb=cssv('--amber'), mut=cssv('--muted');
+    function homeCurveTicks(years){
+      const ratios = years<=10 ? [0.2,0.4,0.5,0.8,1] : years<=20 ? [0.1,0.25,0.5,0.75,1] : [0.125,0.25,0.5,0.75,1];
+      const seen=new Set();
+      return ratios.map(r=>Math.max(1, Math.round(years*r))).filter(v=>{
+        if(seen.has(v)) return false;
+        seen.add(v);
+        return true;
+      });
+    }
     c.beginPath(); c.moveTo(points[0][0], padT+gh);
     points.forEach(p=>c.lineTo(p[0],p[1])); c.lineTo(points[points.length-1][0], padT+gh); c.closePath();
     const fill=c.createLinearGradient(0,padT,0,padT+gh); fill.addColorStop(0, amb+'3d'); fill.addColorStop(1, amb+'00');
     c.fillStyle=fill; c.fill();
     c.beginPath(); points.forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));
     c.strokeStyle=acc; c.lineWidth=2.5; c.lineJoin='round'; c.lineCap='round'; c.stroke();
+    c.textAlign='center';
+    c.font='600 9px -apple-system,system-ui';
+    homeCurveTicks(maxYears).forEach(year=>{
+      const x=padL+(year/maxYears)*gw;
+      const value=balanceAt(year);
+      const y=padT+gh-((value/peak)*gh);
+      const valLabel=abbr(value);
+      c.fillStyle=mut;
+      c.fillText(year+'y', x, h-3);
+      c.fillStyle=acc;
+      c.fillText(valLabel, x, Math.max(9, y-8));
+      c.beginPath(); c.arc(x, y, 3.5, 0, Math.PI*2); c.fillStyle=amb; c.fill();
+      c.beginPath(); c.arc(x, y, 1.7, 0, Math.PI*2); c.fillStyle='#fff'; c.fill();
+    });
     const last=points[points.length-1];
     c.beginPath(); c.arc(last[0], last[1], 4.5, 0, Math.PI*2); c.fillStyle=amb; c.fill();
     c.beginPath(); c.arc(last[0], last[1], 2, 0, Math.PI*2); c.fillStyle='#fff'; c.fill();
