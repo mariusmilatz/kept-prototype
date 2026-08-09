@@ -694,8 +694,8 @@
   .home-quick{width:76px;min-width:76px;height:76px;border:0;border-radius:18px;background:rgba(255,255,255,.76);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--ink);cursor:pointer;box-shadow:inset 0 0 0 1px var(--hair)}
   .home-quick .ic{width:28px;height:28px;border-radius:10px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:15px}
   .home-quick b{font-size:9.5px;max-width:64px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.home-quick small{font-size:9px;color:var(--muted);margin-top:-4px}
-  .quick-home-add{width:76px;min-width:76px;height:76px;border-radius:18px;display:flex;flex-direction:column;gap:6px;box-shadow:inset 0 0 0 1px var(--hair)}
-  .quick-home-add svg{font-size:20px}.quick-home-add span{font-size:9.5px;font-weight:650}
+  .quick-home-add{width:76px;min-width:76px;height:76px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 6px;text-align:center;box-shadow:inset 0 0 0 1px var(--hair)}
+  .quick-home-add svg{font-size:20px;stroke-width:1.7}.quick-home-add span{font-size:9.5px;font-weight:650;line-height:1.15;max-width:62px}
   .home-transfer-card{display:flex;align-items:center;gap:11px;padding:13px 14px;border-radius:20px;cursor:pointer}
   .home-row-icon{width:36px;height:36px;border-radius:13px;background:#EEE9FF;color:#6956D9;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
   .home-row-copy{flex:1;min-width:0}.home-row-copy b{display:block;font-size:12.5px}.home-row-copy small,.home-row-copy span{display:block;font-size:10.5px;color:var(--muted);margin-top:2px}
@@ -3229,8 +3229,16 @@
   function renderQuickList(){
     const list=document.getElementById('quickList'); list.innerHTML='';
     const showLocked = showLockedProUi();
+    const lockedAtLimit = showLocked && quick.length>=FREE_QUICK_LIMIT;
     const visibleQuicks = hasFeatureAccess() ? quick : quick.slice(0, FREE_QUICK_LIMIT);
-    if(!visibleQuicks.length){ list.innerHTML='<p class="empty-note">No quick saves yet. Add one below.</p>'; return; }
+    if(!visibleQuicks.length){
+      list.innerHTML='<p class="empty-note">No quick saves yet. Add one below.</p>';
+      const qaAddBtn=document.getElementById('qaAdd');
+      if(qaAddBtn) qaAddBtn.innerHTML='<i class="ti ti-plus"></i>Add quick save';
+      replaceIcons(list);
+      replaceIcons(qaAddBtn);
+      return;
+    }
     visibleQuicks.forEach((q,i)=>{
       const row=document.createElement('div'); row.className='qle-row';
       row.innerHTML=`<div class="qle-move">
@@ -3246,7 +3254,7 @@
       row.querySelector('.qle-mid').addEventListener('click',()=>openQaEdit(i));
       list.appendChild(row);
     });
-    if(showLocked){
+    if(lockedAtLimit){
       const note=document.createElement('div');
       note.className='card';
       note.style.marginTop='12px';
@@ -3255,7 +3263,12 @@
       note.addEventListener('click',()=>openUpgrade('quick_actions','quick-actions'));
       list.appendChild(note);
     }
+    const qaAddBtn=document.getElementById('qaAdd');
+    if(qaAddBtn) qaAddBtn.innerHTML = lockedAtLimit
+      ? '<i class="ti ti-lock"></i>Unlock more with Pro'
+      : '<i class="ti ti-plus"></i>Add quick save';
     replaceIcons(list);
+    replaceIcons(qaAddBtn);
   }
   document.getElementById('setQuick').addEventListener('click',()=>{ renderQuickList(); qlOv.classList.add('show'); });
   document.getElementById('quickManage').addEventListener('click',()=>{ renderQuickList(); qlOv.classList.add('show'); });
