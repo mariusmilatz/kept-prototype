@@ -2751,8 +2751,10 @@
   function renderQuick(){
     const sec=document.getElementById('quickSection'); if(sec) sec.style.display = '';
     const list=document.getElementById('quickActionList');
+    const addBtn=document.getElementById('quickHomeAdd');
     if(list){
       list.innerHTML='';
+      const lockedAtLimit=!hasFeatureAccess() && quick.length>=FREE_QUICK_LIMIT;
       const visibleQuicks=hasFeatureAccess() ? quick : quick.slice(0,FREE_QUICK_LIMIT);
       visibleQuicks.forEach(q=>{
         const b=document.createElement('button');
@@ -2761,6 +2763,12 @@
         b.addEventListener('click',()=>logWin(q.amt,q.id,q.name,true,q.id));
         list.appendChild(b);
       });
+      if(addBtn){
+        addBtn.setAttribute('aria-label', lockedAtLimit ? 'Unlock more quick saves' : 'Add quick save');
+        addBtn.innerHTML = lockedAtLimit
+          ? '<i class="ti ti-lock"></i><span>Unlock more saves</span>'
+          : '<i class="ti ti-plus"></i><span>Add save</span>';
+      }
     }
     replaceIcons(document.getElementById('quickSection'));
   }
@@ -2802,13 +2810,22 @@
       if(was){ selCat=null; } else { selCat=c; el.classList.add('sel'); } });
     catGrid.appendChild(el);
   });
+  function focusAddAmountField(){
+    const input=document.getElementById('origInput');
+    if(!input) return;
+    input.focus({ preventScroll:true });
+    input.click();
+    input.setSelectionRange?.(input.value.length, input.value.length);
+  }
   function openAdd(){
     document.getElementById('origInput').value='';
     document.getElementById('nameInput').value='';
     selCat=null; document.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel'));
     if(altOn) altSwitch.click();
     updateNet(); addOv.classList.add('show');
-    setTimeout(()=>document.getElementById('origInput').focus(),150);
+    requestAnimationFrame(()=>focusAddAmountField());
+    setTimeout(focusAddAmountField,120);
+    setTimeout(focusAddAmountField,240);
   }
   function closeAdd(){ addOv.classList.remove('show'); }
   document.getElementById('tabAdd').addEventListener('click',openAdd);
