@@ -2672,11 +2672,15 @@
     const dpr=window.devicePixelRatio||1, w=cv.clientWidth, h=cv.clientHeight;
     cv.width=w*dpr; cv.height=h*dpr;
     const c=cv.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,w,h);
-    const maxYears=Math.max(1, proj.years), padL=8, padR=8, padT=20, padB=18;
+    const maxYears=Math.max(1, proj.years), padL=8, padR=18, padT=20, padB=18;
     const gw=w-padL-padR, gh=h-padT-padB;
     const peak=Math.max(balanceAt(maxYears)||1,1);
     const points=[]; for(let i=0;i<=72;i++){ const yr=maxYears*i/72; points.push([padL+(yr/maxYears)*gw, padT+gh-((balanceAt(yr)/peak)*gh)]); }
     const acc=cssv('--accent'), amb=cssv('--amber'), mut=cssv('--muted');
+    const clampX=(label,x)=>{
+      const tw=c.measureText(label).width;
+      return Math.min(Math.max(x, tw/2+4), w-tw/2-4);
+    };
     function homeCurveTicks(years){
       const ratios = years<=10 ? [0.2,0.4,0.5,0.8,1] : years<=20 ? [0.1,0.25,0.5,0.75,1] : [0.125,0.25,0.5,0.75,1];
       const seen=new Set();
@@ -2700,9 +2704,9 @@
       const y=padT+gh-((value/peak)*gh);
       const valLabel=abbr(value);
       c.fillStyle=mut;
-      c.fillText(year+'y', x, h-3);
+      c.fillText(year+'y', clampX(year+'y', x), h-3);
       c.fillStyle=acc;
-      c.fillText(valLabel, x, Math.max(9, y-8));
+      c.fillText(valLabel, clampX(valLabel, x), Math.max(9, y-8));
       c.beginPath(); c.arc(x, y, 3.5, 0, Math.PI*2); c.fillStyle=amb; c.fill();
       c.beginPath(); c.arc(x, y, 1.7, 0, Math.PI*2); c.fillStyle='#fff'; c.fill();
     });
