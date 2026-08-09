@@ -785,7 +785,7 @@
 <div class="stage">
   <div class="stage-head">
     <h1>Kept — core loop prototype</h1>
-    <p>Tap a quick action, watch the total and the future value move together, then mark a transfer. Everything reacts live — this is the reward loop, not a static mockup.</p>
+    <p>Tap a quick save, watch the total and the future value move together, then mark a transfer. Everything reacts live — this is the reward loop, not a static mockup.</p>
     <button class="theme-btn" id="themeToggle" aria-label="Toggle light and dark theme"><i class="ti ti-moon"></i><span>Toggle theme</span></button>
   </div>
 
@@ -836,10 +836,10 @@
         </div>
 
         <div class="home-section" id="quickSection">
-          <div class="section-heading"><b>Quick actions</b><button id="quickManage" type="button">Manage</button></div>
+          <div class="section-heading"><b>Quick saves</b><button id="quickManage" type="button">Manage</button></div>
           <div class="home-quick-scroll">
             <div class="home-quick-list" id="quickActionList"></div>
-            <button class="quick-home-add" id="quickHomeAdd" aria-label="Add quick action"><i class="ti ti-plus"></i><span>Add action</span></button>
+            <button class="quick-home-add" id="quickHomeAdd" aria-label="Add quick save"><i class="ti ti-plus"></i><span>Add save</span></button>
           </div>
         </div>
 
@@ -1182,7 +1182,7 @@
         <div class="settings-group">
           <button class="set-row" id="setGoal"><span><b>Edit goal</b><small id="setGoalSub">—</small></span><i class="ti ti-target"></i></button>
           <button class="set-row" id="setMilestones"><span><b>Milestones</b><small id="setMilestonesSub">Track your progress</small></span><i class="ti ti-target"></i></button>
-          <button class="set-row" id="setQuick"><span><b>Quick actions</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
+          <button class="set-row" id="setQuick"><span><b>Quick saves</b><small id="setQuickSub">—</small></span><i class="ti ti-bolt"></i></button>
           <button class="set-row" id="setRecurring"><span><b>Recurring savings</b><small id="setRecurringSub">—</small></span><i class="ti ti-repeat"></i></button>
           <button class="set-row" id="setMarket"><span><b>Market watch</b><small id="setMarketSub">Choose the 3 funds shown on Future</small></span><i class="ti ti-chart-line"></i></button>
         </div>
@@ -1263,7 +1263,7 @@
             <li>Link your bank and sync balances</li>
             <li>Set a protected minimum balance</li>
             <li>Include subscriptions in future projections</li>
-            <li>Use more than 3 quick actions</li>
+            <li>Use more than 3 quick saves</li>
             <li>Sync your data across devices</li>
           </ul>
           <div class="upgrade-card">
@@ -1314,10 +1314,10 @@
       <div class="overlay" id="quickListOverlay">
         <div class="sheet">
           <div class="grip"></div>
-          <h3>Quick actions</h3>
+          <h3>Quick saves</h3>
           <p class="sub" id="quickListSub">Your one-tap logs. Reorder, edit, or add your own.</p>
           <div id="quickList"></div>
-          <button class="btn ghost" id="qaAdd" style="margin-top:10px"><i class="ti ti-plus"></i>Add quick action</button>
+          <button class="btn ghost" id="qaAdd" style="margin-top:10px"><i class="ti ti-plus"></i>Add quick save</button>
           <button class="btn primary" id="quickListClose" style="margin-top:10px">Done</button>
         </div>
       </div>
@@ -1342,13 +1342,13 @@
       <div class="overlay" id="qaEditOverlay">
         <div class="sheet">
           <div class="grip"></div>
-          <h3 id="qaEditTitle">Add quick action</h3>
+          <h3 id="qaEditTitle">Add quick save</h3>
           <p class="sub">Name it, set the amount, pick a category.</p>
           <div class="field"><label>Name</label><input class="text-in" id="qaeName" type="text" placeholder="e.g. Coffee"></div>
           <div class="field"><label>Amount</label><div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="qaeAmt" placeholder="0.00"></div></div>
           <p class="eyebrow" style="margin:16px 0 8px">Category</p>
           <div class="cat-grid" id="qaeCats"></div>
-          <p class="sub" id="qaEditProNote" style="margin-top:16px">Create up to 3 quick actions for free. Unlock unlimited quick actions with Pro.</p>
+          <p class="sub" id="qaEditProNote" style="margin-top:16px">Create up to 3 quick saves for free. Unlock unlimited quick saves with Pro.</p>
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost danger" id="qaeDelete" style="flex:0 0 34%"><i class="ti ti-trash"></i>Delete</button>
             <button class="btn primary" id="qaeSave" style="flex:1"><i class="ti ti-check"></i>Save</button>
@@ -1442,7 +1442,7 @@
       <div class="overlay" id="milestonesOverlay">
         <div class="sheet">
           <div class="ms-page-head">
-            <button class="ms-head-btn" id="msClose" aria-label="Back"><i class="ti ti-chevron-left"></i></button>
+            <button class="ms-head-btn" id="msClose" aria-label="Close milestones"><span aria-hidden="true">&times;</span></button>
             <h3>Milestones</h3>
             <span></span>
             <p class="sub">Small wins, quietly adding up.</p>
@@ -2116,19 +2116,19 @@
     const eyebrowMap={
       bank:'Linked bank · Pro feature',
       subscriptions:'Future projection · Pro feature',
-      quick_actions:'Quick actions · Pro feature',
+      quick_actions:'Quick saves · Pro feature',
       shared_goals:'Shared goals · Pro feature'
     };
     const titleMap={
       bank:'Unlock bank features',
       subscriptions:'Unlock subscription projections',
-      quick_actions:'Unlock more quick actions',
+      quick_actions:'Unlock more quick saves',
       shared_goals:'Unlock shared goals'
     };
     const subMap={
       bank:'Create an account to sync balances, protect a minimum floor, and keep manual transfers available.',
       subscriptions:'Create an account to include recurring savings in long-term projections.',
-      quick_actions:'Create an account to use more than 3 quick actions and keep your shortcuts synced.',
+      quick_actions:'Create an account to use more than 3 quick saves and keep your shortcuts synced.',
       shared_goals:'Create an account to unlock shared goals when this Pro feature lands.'
     };
     document.getElementById('upgradeEyebrow').textContent=eyebrowMap[feature] || 'Pro feature';
@@ -2179,17 +2179,17 @@
     document.getElementById('setSharedGoals').classList.toggle('locked', showLocked);
     document.getElementById('qaAdd').innerHTML = (showLocked && quick.length>=FREE_QUICK_LIMIT)
       ? '<i class="ti ti-lock"></i>Unlock more with Pro'
-      : '<i class="ti ti-plus"></i>Add quick action';
+      : '<i class="ti ti-plus"></i>Add quick save';
     document.getElementById('quickListSub').textContent = pro
-      ? 'Your one-tap logs. Reorder, edit, or add your own.'
+      ? 'Your one-tap saves. Reorder, edit, or add your own.'
       : showLocked
-      ? 'Create up to 3 quick actions for free. Unlock Pro to add more.'
-      : 'Create up to 3 quick actions for free.';
+      ? 'Create up to 3 quick saves for free. Unlock Pro to add more.'
+      : 'Create up to 3 quick saves for free.';
     document.getElementById('qaEditProNote').textContent = pro
-      ? 'You have unlimited quick actions with Pro.'
+      ? 'You have unlimited quick saves with Pro.'
       : showLocked
-      ? 'Create up to 3 quick actions for free. Unlock unlimited quick actions with Pro.'
-      : 'Create up to 3 quick actions for free in this prototype.';
+      ? 'Create up to 3 quick saves for free. Unlock unlimited quick saves with Pro.'
+      : 'Create up to 3 quick saves for free in this prototype.';
     document.getElementById('futureProToggle').classList.toggle('locked', showLocked);
     replaceIcons(document.getElementById('futureProToggle'));
     replaceIcons(document.getElementById('settingsOverlay'));
@@ -2325,6 +2325,20 @@
     const current=Math.min(cur,target);
     return {current, target, text:`${fmt===Pm?P(current):show(current)} / ${show(target)} ${unit}`};
   }
+  function milestoneRank(item){
+    return item.dropRank ?? item.target ?? item.current ?? 0;
+  }
+  function compressMilestoneUnlocks(newly){
+    const picked = new Map();
+    newly.forEach((item, index)=>{
+      const key = item.dropTrack || item.id;
+      const prev = picked.get(key);
+      if(!prev || milestoneRank(item) >= milestoneRank(prev.item)){
+        picked.set(key, {item, index});
+      }
+    });
+    return [...picked.values()].sort((a,b)=>a.index-b.index).map(entry=>entry.item);
+  }
   function milestoneData(){
     const moneyTxt = amt => Pm(amt);
     const cWins=confirmedWins();
@@ -2350,35 +2364,35 @@
       {id:'first-win',cat:'start',name:'First Win',icon:'ti-bolt',detail:'Log your first Saving Win.', eval:()=>({done:wins.length>=1, ...milestoneProgress(wins.length,1,'wins')})},
       {id:'first-confirmed-win',cat:'start',name:'First Confirmed Win',icon:'ti-circle-check',detail:'Confirm your first real saving.', eval:()=>({done:cWins.length>=1, ...milestoneProgress(cWins.length,1,'confirmed wins')})},
       {id:'first-transfer',cat:'start',name:'First Transfer',icon:'ti-arrow-up-right',detail:'Complete your first transfer.', eval:()=>({done:transfers.some(t=>t.amount>0), ...milestoneProgress(transfers.filter(t=>t.amount>0).length,1,'transfers')})},
-      {id:'first-quick-save',cat:'start',name:'First Quick Save',icon:'ti-bolt',detail:'Use a quick action to log a win.', eval:()=>({done:bestQuickUse>=1, ...milestoneProgress(bestQuickUse,1,'quick saves')})},
+      {id:'first-quick-save',cat:'start',name:'First Quick Save',icon:'ti-bolt',detail:'Use a quick save to log a win.', eval:()=>({done:bestQuickUse>=1, ...milestoneProgress(bestQuickUse,1,'quick saves')})},
       {id:'first-goal',cat:'start',name:'First Goal',icon:'ti-target',detail:'Set a goal in onboarding or settings.', eval:()=>({done:goalConfigured(), current:goalConfigured()?1:0,target:1,text:goalConfigured()?'Goal is set':'Set a goal'})},
       {id:'first-recurring-save',cat:'start',name:'First Recurring Save',icon:'ti-repeat',detail:'Confirm your first recurring saving.', eval:()=>({done:Object.keys(recurMonths).length>=1, ...milestoneProgress(Object.keys(recurMonths).length,1,'recurring saves')})},
-      {id:'back-tomorrow',cat:'habit',name:'Back Tomorrow',icon:'ti-repeat',detail:'Confirm wins on two separate days.', eval:()=>({done:cDays.length>=2, ...milestoneProgress(cDays.length,2,'days')})},
-      {id:'three-day-rhythm',cat:'habit',name:'Three-Day Rhythm',icon:'ti-repeat',detail:'Confirm wins on three days in a row.', eval:()=>({done:cStreak>=3, ...milestoneProgress(cStreak,3,'days in a row')})},
-      {id:'week-of-intent',cat:'habit',name:'Week of Intent',icon:'ti-repeat',detail:'Confirm wins on seven consecutive days.', eval:()=>({done:cStreak>=7, ...milestoneProgress(cStreak,7,'days in a row')})},
+      {id:'back-tomorrow',cat:'habit',name:'Back Tomorrow',icon:'ti-repeat',detail:'Confirm wins on two separate days.', dropTrack:'confirmed-streak', dropRank:2, eval:()=>({done:cDays.length>=2, ...milestoneProgress(cDays.length,2,'days')})},
+      {id:'three-day-rhythm',cat:'habit',name:'Three-Day Rhythm',icon:'ti-repeat',detail:'Confirm wins on three days in a row.', dropTrack:'confirmed-streak', dropRank:3, eval:()=>({done:cStreak>=3, ...milestoneProgress(cStreak,3,'days in a row')})},
+      {id:'week-of-intent',cat:'habit',name:'Week of Intent',icon:'ti-repeat',detail:'Confirm wins on seven consecutive days.', dropTrack:'confirmed-streak', dropRank:7, eval:()=>({done:cStreak>=7, ...milestoneProgress(cStreak,7,'days in a row')})},
       {id:'steady-hand',cat:'habit',name:'Steady Hand',icon:'ti-target',detail:'Keep at least one confirmed win in each week of one calendar month.', eval:()=>({done:fullMonthCoverage, ...milestoneProgress(maxMonthWeekCoverage,4,'weeks covered')})},
-      {id:'habit-builder',cat:'habit',name:'Habit Builder',icon:'ti-bolt',detail:'Use the same quick action ten times.', eval:()=>({done:bestQuickUse>=10, ...milestoneProgress(bestQuickUse,10,'uses')})},
+      {id:'habit-builder',cat:'habit',name:'Habit Builder',icon:'ti-bolt',detail:'Use the same quick save ten times.', eval:()=>({done:bestQuickUse>=10, ...milestoneProgress(bestQuickUse,10,'uses')})},
       {id:'daily-noticer',cat:'habit',name:'Daily Noticer',icon:'ti-circle-check',detail:'Reach 25 confirmed wins total.', eval:()=>({done:cWins.length>=25, ...milestoneProgress(cWins.length,25,'confirmed wins')})},
       {id:'monthly-keeper',cat:'habit',name:'Monthly Keeper',icon:'ti-calendar',detail:'Confirm wins in three different months.', eval:()=>({done:cMonths.length>=3, ...milestoneProgress(cMonths.length,3,'months')})},
       {id:'comeback',cat:'habit',name:'Comeback',icon:'ti-arrow-right',detail:'Log a confirmed win after a 14-day gap.', eval:()=>({done:hasComeback, current:hasComeback?1:0,target:1,text:hasComeback?'Comeback done':'Come back after a quiet stretch'})},
-      {id:'kept-10',cat:'money',name:'First '+moneyTxt(1000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(1000)+' in confirmed wins.', eval:()=>({done:cAmount>=1000, ...milestoneProgress(cAmount,1000,'kept',Pm)})},
-      {id:'kept-50',cat:'money',name:'First '+moneyTxt(5000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(5000)+' in confirmed wins.', eval:()=>({done:cAmount>=5000, ...milestoneProgress(cAmount,5000,'kept',Pm)})},
-      {id:'kept-100',cat:'money',name:'First '+moneyTxt(10000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(10000)+' in confirmed wins.', eval:()=>({done:cAmount>=10000, ...milestoneProgress(cAmount,10000,'kept',Pm)})},
-      {id:'kept-250',cat:'money',name:'First '+moneyTxt(25000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(25000)+' in confirmed wins.', eval:()=>({done:cAmount>=25000, ...milestoneProgress(cAmount,25000,'kept',Pm)})},
-      {id:'kept-500',cat:'money',name:'First '+moneyTxt(50000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(50000)+' in confirmed wins.', eval:()=>({done:cAmount>=50000, ...milestoneProgress(cAmount,50000,'kept',Pm)})},
-      {id:'kept-1000',cat:'money',name:'First '+moneyTxt(100000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(100000)+' in confirmed wins.', eval:()=>({done:cAmount>=100000, ...milestoneProgress(cAmount,100000,'kept',Pm)})},
+      {id:'kept-10',cat:'money',name:'First '+moneyTxt(1000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(1000)+' in confirmed wins.', dropTrack:'confirmed-money', dropRank:1000, eval:()=>({done:cAmount>=1000, ...milestoneProgress(cAmount,1000,'kept',Pm)})},
+      {id:'kept-50',cat:'money',name:'First '+moneyTxt(5000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(5000)+' in confirmed wins.', dropTrack:'confirmed-money', dropRank:5000, eval:()=>({done:cAmount>=5000, ...milestoneProgress(cAmount,5000,'kept',Pm)})},
+      {id:'kept-100',cat:'money',name:'First '+moneyTxt(10000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(10000)+' in confirmed wins.', dropTrack:'confirmed-money', dropRank:10000, eval:()=>({done:cAmount>=10000, ...milestoneProgress(cAmount,10000,'kept',Pm)})},
+      {id:'kept-250',cat:'money',name:'First '+moneyTxt(25000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(25000)+' in confirmed wins.', dropTrack:'confirmed-money', dropRank:25000, eval:()=>({done:cAmount>=25000, ...milestoneProgress(cAmount,25000,'kept',Pm)})},
+      {id:'kept-500',cat:'money',name:'First '+moneyTxt(50000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(50000)+' in confirmed wins.', dropTrack:'confirmed-money', dropRank:50000, eval:()=>({done:cAmount>=50000, ...milestoneProgress(cAmount,50000,'kept',Pm)})},
+      {id:'kept-1000',cat:'money',name:'First '+moneyTxt(100000)+' Kept',icon:'ti-coin',detail:'Reach '+moneyTxt(100000)+' in confirmed wins.', dropTrack:'confirmed-money', dropRank:100000, eval:()=>({done:cAmount>=100000, ...milestoneProgress(cAmount,100000,'kept',Pm)})},
       {id:'money-moved',cat:'money',name:'Money Moved',icon:'ti-arrow-up-right',detail:'Complete your first non-zero transfer.', eval:()=>({done:transfers.some(t=>t.amount>0), ...milestoneProgress(transfers.filter(t=>t.amount>0).length,1,'transfers')})},
-      {id:'transferred-100',cat:'money',name:'First '+moneyTxt(10000)+' Transferred',icon:'ti-arrow-up-right',detail:'Reach '+moneyTxt(10000)+' transferred.', eval:()=>({done:tAmount>=10000, ...milestoneProgress(tAmount,10000,'transferred',Pm)})},
-      {id:'transferred-500',cat:'money',name:'First '+moneyTxt(50000)+' Transferred',icon:'ti-arrow-up-right',detail:'Reach '+moneyTxt(50000)+' transferred.', eval:()=>({done:tAmount>=50000, ...milestoneProgress(tAmount,50000,'transferred',Pm)})},
-      {id:'transferred-1000',cat:'money',name:'First '+moneyTxt(100000)+' Transferred',icon:'ti-arrow-up-right',detail:'Reach '+moneyTxt(100000)+' transferred.', eval:()=>({done:tAmount>=100000, ...milestoneProgress(tAmount,100000,'transferred',Pm)})},
+      {id:'transferred-100',cat:'money',name:'First '+moneyTxt(10000)+' Transferred',icon:'ti-arrow-up-right',detail:'Reach '+moneyTxt(10000)+' transferred.', dropTrack:'transferred-money', dropRank:10000, eval:()=>({done:tAmount>=10000, ...milestoneProgress(tAmount,10000,'transferred',Pm)})},
+      {id:'transferred-500',cat:'money',name:'First '+moneyTxt(50000)+' Transferred',icon:'ti-arrow-up-right',detail:'Reach '+moneyTxt(50000)+' transferred.', dropTrack:'transferred-money', dropRank:50000, eval:()=>({done:tAmount>=50000, ...milestoneProgress(tAmount,50000,'transferred',Pm)})},
+      {id:'transferred-1000',cat:'money',name:'First '+moneyTxt(100000)+' Transferred',icon:'ti-arrow-up-right',detail:'Reach '+moneyTxt(100000)+' transferred.', dropTrack:'transferred-money', dropRank:100000, eval:()=>({done:tAmount>=100000, ...milestoneProgress(tAmount,100000,'transferred',Pm)})},
       {id:'real-saver',cat:'money',name:'Real Saver',icon:'ti-circle-check',detail:'Complete five separate transfers.', eval:()=>({done:transfers.length>=5, ...milestoneProgress(transfers.length,5,'transfers')})},
       {id:'transfer-habit',cat:'money',name:'Transfer Habit',icon:'ti-calendar-clock',detail:'Transfer in three different months.', eval:()=>({done:tMonths.length>=3, ...milestoneProgress(tMonths.length,3,'months')})},
-      {id:'goal-underway',cat:'commitment',name:'Goal Underway',icon:'ti-target',detail:'Reach 25% of this month’s goal.', eval:()=>({done:goalRatio>=0.25, current:Math.min(100,Math.round(goalRatio*100)), target:25, text:goalRatio>=0.25?'25% reached':`${Math.min(100,Math.round(goalRatio*100))}% of goal`})},
-      {id:'halfway-there',cat:'commitment',name:'Halfway There',icon:'ti-target',detail:'Reach 50% of this month’s goal.', eval:()=>({done:goalRatio>=0.5, current:Math.min(100,Math.round(goalRatio*100)), target:50, text:goalRatio>=0.5?'50% reached':`${Math.min(100,Math.round(goalRatio*100))}% of goal`})},
-      {id:'on-track',cat:'commitment',name:'On Track',icon:'ti-target',detail:'Reach 100% of this month’s goal.', eval:()=>({done:goalRatio>=1, current:Math.min(100,Math.round(goalRatio*100)), target:100, text:goalRatio>=1?'Goal reached':`${Math.min(100,Math.round(goalRatio*100))}% of goal`})},
-      {id:'still-kept',cat:'commitment',name:'Still Kept',icon:'ti-repeat',detail:'Confirm the same recurring saving for two months.', eval:()=>({done:recurBest>=2, ...milestoneProgress(recurBest,2,'months')})},
-      {id:'subscription-slayer',cat:'commitment',name:'Subscription Slayer',icon:'ti-repeat',detail:'Confirm the same recurring saving for three months.', eval:()=>({done:recurBest>=3, ...milestoneProgress(recurBest,3,'months')})},
-      {id:'long-haul',cat:'commitment',name:'Long Haul',icon:'ti-repeat',detail:'Keep one recurring saving going for six months.', eval:()=>({done:recurBest>=6, ...milestoneProgress(recurBest,6,'months')})},
+      {id:'goal-underway',cat:'commitment',name:'Goal Underway',icon:'ti-target',detail:'Reach 25% of this month’s goal.', dropTrack:'goal-ratio', dropRank:25, eval:()=>({done:goalRatio>=0.25, current:Math.min(100,Math.round(goalRatio*100)), target:25, text:goalRatio>=0.25?'25% reached':`${Math.min(100,Math.round(goalRatio*100))}% of goal`})},
+      {id:'halfway-there',cat:'commitment',name:'Halfway There',icon:'ti-target',detail:'Reach 50% of this month’s goal.', dropTrack:'goal-ratio', dropRank:50, eval:()=>({done:goalRatio>=0.5, current:Math.min(100,Math.round(goalRatio*100)), target:50, text:goalRatio>=0.5?'50% reached':`${Math.min(100,Math.round(goalRatio*100))}% of goal`})},
+      {id:'on-track',cat:'commitment',name:'On Track',icon:'ti-target',detail:'Reach 100% of this month’s goal.', dropTrack:'goal-ratio', dropRank:100, eval:()=>({done:goalRatio>=1, current:Math.min(100,Math.round(goalRatio*100)), target:100, text:goalRatio>=1?'Goal reached':`${Math.min(100,Math.round(goalRatio*100))}% of goal`})},
+      {id:'still-kept',cat:'commitment',name:'Still Kept',icon:'ti-repeat',detail:'Confirm the same recurring saving for two months.', dropTrack:'recurring-months', dropRank:2, eval:()=>({done:recurBest>=2, ...milestoneProgress(recurBest,2,'months')})},
+      {id:'subscription-slayer',cat:'commitment',name:'Subscription Slayer',icon:'ti-repeat',detail:'Confirm the same recurring saving for three months.', dropTrack:'recurring-months', dropRank:3, eval:()=>({done:recurBest>=3, ...milestoneProgress(recurBest,3,'months')})},
+      {id:'long-haul',cat:'commitment',name:'Long Haul',icon:'ti-repeat',detail:'Keep one recurring saving going for six months.', dropTrack:'recurring-months', dropRank:6, eval:()=>({done:recurBest>=6, ...milestoneProgress(recurBest,6,'months')})},
       {id:'clean-follow-through',cat:'commitment',name:'Clean Follow-Through',icon:'ti-circle-check',detail:'Have five confirmed wins later become transferred.', eval:()=>({done:transferredWinsCount>=5, ...milestoneProgress(transferredWinsCount,5,'wins transferred')})},
       {id:'consistency-pays',cat:'commitment',name:'Consistency Pays',icon:'ti-target',detail:'Keep a four-week rhythm and make a transfer in that month.', eval:()=>({done:consistencyPays, current:consistencyPays?1:0,target:1,text:consistencyPays?'Consistency earned':'Needs 4 active weeks + a transfer'})}
     ];
@@ -2610,18 +2624,19 @@
     return el;
   }
   function maybeShowMilestoneDrop(newly){
-    if(!newly.length) return;
-    const key=newly.map(m=>m.id).sort().join('|');
+    const displayMilestones = compressMilestoneUnlocks(newly);
+    if(!displayMilestones.length) return;
+    const key=displayMilestones.map(m=>m.id).sort().join('|');
     if(key===milestoneDropKey) return;
     milestoneDropKey=key;
     const drop=document.getElementById('milestoneDrop');
     const title=document.getElementById('milestoneDropTitle');
     const sub=document.getElementById('milestoneDropSub');
     const list=document.getElementById('milestoneDropList');
-    title.textContent = newly.length===1 ? 'Milestone unlocked' : newly.length+' milestones unlocked';
-    sub.textContent = newly.length===1 ? 'A new marker just clicked into place.' : 'A few things moved at once.';
+    title.textContent = displayMilestones.length===1 ? 'Milestone unlocked' : displayMilestones.length+' milestones unlocked';
+    sub.textContent = displayMilestones.length===1 ? 'A new marker just clicked into place.' : 'A few things moved at once.';
     list.innerHTML='';
-    newly.forEach(m=>{ const li=document.createElement('li'); li.textContent=m.name; list.appendChild(li); });
+    displayMilestones.forEach(m=>{ const li=document.createElement('li'); li.textContent=m.name; list.appendChild(li); });
     drop.classList.add('show');
     replaceIcons(drop);
     clearTimeout(milestoneDropTimer);
@@ -3125,7 +3140,7 @@
       ? (goalName+' · '+Pn(goalTarget)+'/mo')
       : 'No goal yet · no monthly target';
     document.getElementById('setQuickSub').textContent = hasFeatureAccess()
-      ? (quick.length+' one-tap log'+(quick.length!==1?'s':''))
+      ? (quick.length+' quick save'+(quick.length!==1?'s':''))
       : (Math.min(quick.length, FREE_QUICK_LIMIT)+' of '+FREE_QUICK_LIMIT+' free slots used');
     const ra=recurring.filter(r=>r.status==='active').length;
     document.getElementById('setRecurringSub').textContent = ra? (ra+' active') : 'None yet';
@@ -3276,14 +3291,14 @@
     geOv.classList.remove('show'); refreshSettings(); render(); toast('Goal updated',null,'ti-check');
   });
 
-  // ---------- quick actions manager ----------
+  // ---------- quick saves manager ----------
   const qlOv=document.getElementById('quickListOverlay');
   function afterQuickChange(){ renderQuick(); renderQuickList(); refreshSettings(); saveState(); }
   function renderQuickList(){
     const list=document.getElementById('quickList'); list.innerHTML='';
     const showLocked = showLockedProUi();
     const visibleQuicks = hasFeatureAccess() ? quick : quick.slice(0, FREE_QUICK_LIMIT);
-    if(!visibleQuicks.length){ list.innerHTML='<p class="empty-note">No quick actions yet. Add one below.</p>'; return; }
+    if(!visibleQuicks.length){ list.innerHTML='<p class="empty-note">No quick saves yet. Add one below.</p>'; return; }
     visibleQuicks.forEach((q,i)=>{
       const row=document.createElement('div'); row.className='qle-row';
       row.innerHTML=`<div class="qle-move">
@@ -3304,7 +3319,7 @@
       note.className='card';
       note.style.marginTop='12px';
       note.style.padding='14px';
-      note.innerHTML=`<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div><b style="font-family:var(--font-round);font-size:15px">Add another quick action</b><small style="display:block;color:var(--muted);margin-top:4px">Use more than ${FREE_QUICK_LIMIT} with Pro.</small></div><span class="pro-mini"><i class="ti ti-lock"></i>Pro</span></div>`;
+      note.innerHTML=`<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div><b style="font-family:var(--font-round);font-size:15px">Add another quick save</b><small style="display:block;color:var(--muted);margin-top:4px">Use more than ${FREE_QUICK_LIMIT} with Pro.</small></div><span class="pro-mini"><i class="ti ti-lock"></i>Pro</span></div>`;
       note.addEventListener('click',()=>openUpgrade('quick_actions','quick-actions'));
       list.appendChild(note);
     }
@@ -3315,7 +3330,7 @@
   document.getElementById('quickListClose').addEventListener('click',()=>qlOv.classList.remove('show'));
   qlOv.addEventListener('click',e=>{ if(e.target===qlOv) qlOv.classList.remove('show'); });
 
-  // ---------- quick action editor ----------
+  // ---------- quick save editor ----------
   const qaOv=document.getElementById('qaEditOverlay');
   let qaEditIdx=null, qaeCat=null;
   const qaeCatsEl=document.getElementById('qaeCats');
@@ -3329,10 +3344,10 @@
   function openQaEdit(idx){
     if(idx==null && !hasFeatureAccess() && quick.length>=FREE_QUICK_LIMIT){ openUpgrade('quick_actions','quick-actions'); return; }
     qaEditIdx=idx;
-    if(idx==null){ document.getElementById('qaEditTitle').textContent='Add quick action';
+    if(idx==null){ document.getElementById('qaEditTitle').textContent='Add quick save';
       document.getElementById('qaeName').value=''; document.getElementById('qaeAmt').value='';
       selectQaCat('food_drink'); document.getElementById('qaeDelete').style.display='none';
-    } else { const q=quick[idx]; document.getElementById('qaEditTitle').textContent='Edit quick action';
+    } else { const q=quick[idx]; document.getElementById('qaEditTitle').textContent='Edit quick save';
       document.getElementById('qaeName').value=q.name; document.getElementById('qaeAmt').value=(q.amt/100).toFixed(2);
       selectQaCat(q.id); document.getElementById('qaeDelete').style.display='';
     }
@@ -3346,11 +3361,11 @@
   });
   document.getElementById('qaeSave').addEventListener('click',()=>{
     const amt=parseM(document.getElementById('qaeAmt').value);
-    if(amt<1){ toast('Enter an amount','A quick action needs a value','ti-alert-circle'); return; }
+    if(amt<1){ toast('Enter an amount','A quick save needs a value','ti-alert-circle'); return; }
     const name=(document.getElementById('qaeName').value||'').trim()||qaeCat.name;
     const q={id:qaeCat.id, name, icon:qaeCat.icon, amt};
     if(qaEditIdx==null) quick.push(q); else quick[qaEditIdx]=q;
-    closeQaEdit(); afterQuickChange(); toast('Quick action saved',null,'ti-check');
+    closeQaEdit(); afterQuickChange(); toast('Quick save saved',null,'ti-check');
   });
   document.getElementById('qaeDelete').addEventListener('click',()=>{
     if(qaEditIdx!=null) quick.splice(qaEditIdx,1);
