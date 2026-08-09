@@ -162,11 +162,11 @@
     align-items:center;gap:3px;font-family:var(--font-ui);font-size:10.5px;font-weight:600;padding:2px 10px}
   .tab i,.tab svg{font-size:22px}
   .tab.active{color:var(--accent)}
-  .tab.add{margin-top:-26px}
-  .tab.add .plus{width:54px;height:54px;border-radius:50%;background:var(--accent);color:#fff;
+  .tab.add{margin-top:-30px;gap:6px}
+  .tab.add .plus{width:62px;height:62px;border-radius:50%;background:var(--accent);color:#fff;
     display:flex;align-items:center;justify-content:center;font-size:26px;
     box-shadow:0 8px 18px -4px color-mix(in srgb,var(--accent) 60%,transparent)}
-  .tab.add span{color:var(--muted)}
+  .tab.add > span:last-child{color:var(--muted);display:block}
 
   .activity-item{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--hair)}
   .activity-item .ic{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent-ink);
@@ -585,9 +585,9 @@
   .tab:focus-visible{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--accent) 28%,transparent)}
   .tab i,.tab svg{font-size:20px;stroke-width:1.7}
   .tab.active{background:var(--accent);color:#fff}
-  .tab.add{margin-top:0}
-  .tab.add .plus{width:100%;height:100%;min-height:52px;border-radius:17px;background:var(--accent);font-size:24px;box-shadow:none}
-  .tab.add span{display:none}
+  .tab.add{margin-top:-2px;gap:5px}
+  .tab.add .plus{width:100%;height:100%;min-height:58px;border-radius:19px;background:var(--accent);font-size:24px;box-shadow:none}
+  .tab.add > span:last-child{display:block}
   :root[data-theme="dark"] .tab.active,:root[data-theme="dark"] .tab.add .plus{color:#082018}
   .states{gap:8px}
   .chip,.two-up .b,.bank-stat{background:rgba(255,255,255,.67);border-color:rgba(255,255,255,.9);box-shadow:inset 0 0 0 1px var(--hair);border-radius:17px}
@@ -1424,7 +1424,7 @@
       <nav class="tabbar">
         <button class="tab active" data-tab="home"><i class="ti ti-home"></i><span>Home</span></button>
         <button class="tab" data-tab="activity"><i class="ti ti-list-details"></i><span>Activity</span></button>
-        <button class="tab add" id="tabAdd"><span class="plus"><i class="ti ti-plus"></i></span><span>Add</span></button>
+        <button class="tab add" id="tabAdd"><span class="plus"><i class="ti ti-plus"></i></span><span>Save</span></button>
         <button class="tab" data-tab="future"><i class="ti ti-chart-line"></i><span>Future</span></button>
         <button class="tab" data-tab="settings"><i class="ti ti-adjustments"></i><span>You</span></button>
       </nav>
