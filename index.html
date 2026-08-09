@@ -2814,7 +2814,6 @@
     const input=document.getElementById('origInput');
     if(!input) return;
     input.focus({ preventScroll:true });
-    input.click();
     input.setSelectionRange?.(input.value.length, input.value.length);
   }
   function openAdd(){
@@ -2823,6 +2822,7 @@
     selCat=null; document.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel'));
     if(altOn) altSwitch.click();
     updateNet(); addOv.classList.add('show');
+    focusAddAmountField();
     requestAnimationFrame(()=>focusAddAmountField());
     setTimeout(focusAddAmountField,120);
     setTimeout(focusAddAmountField,240);
