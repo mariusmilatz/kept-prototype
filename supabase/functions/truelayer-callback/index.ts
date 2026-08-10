@@ -1,6 +1,6 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const htmlHeaders = { "Content-Type": "text/html; charset=utf-8" };
+const htmlHeaders = { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" };
 
 function getEnv(name: string): string {
   const value = Deno.env.get(name);
@@ -64,13 +64,31 @@ function finishPage(title: string, message: string, redirectTo?: string | null, 
   const safeMessage = escapeHtml(message);
   const safeRedirect = redirectTo ? buildReturnUrl(redirectTo, params) : null;
   const safeLink = safeRedirect ? escapeHtml(safeRedirect) : "";
+  const meta = safeRedirect
+    ? `<meta http-equiv="refresh" content="0;url=${safeLink}">`
+    : "";
   const script = safeRedirect
-    ? `<script>setTimeout(function(){ window.location.replace(${JSON.stringify(safeRedirect)}); }, 900);</script>`
+    ? `<script>window.location.replace(${JSON.stringify(safeRedirect)});</script>`
     : "";
   const action = safeRedirect
     ? `<p><a href=\"${safeLink}\">Return to Kept</a></p>`
     : `<p>You can close this window and return to Kept.</p>`;
-  return `<!doctype html><html><body style=\"font-family:-apple-system,system-ui,sans-serif;padding:32px;background:#f3f1ea;color:#1c2024\"><h1>${safeTitle}</h1><p>${safeMessage}</p>${action}${script}</body></html>`;
+  return `<!doctype html><html><head>${meta}</head><body style=\"font-family:-apple-system,system-ui,sans-serif;padding:32px;background:#f3f1ea;color:#1c2024\"><h1>${safeTitle}</h1><p>${safeMessage}</p>${action}${script}</body></html>`;
+}
+
+function redirectOrPage(
+  title: string,
+  message: string,
+  redirectTo?: string | null,
+  params: Record<string, string> = {},
+  status = 303,
+) {
+  if (redirectTo) {
+    const location = buildReturnUrl(redirectTo, params);
+    return Response.redirect(location, status);
+  }
+
+  return new Response(finishPage(title, message, redirectTo, params), { status, headers: htmlHeaders });
 }
 
 async function exchangeCode(code: string) {
@@ -154,17 +172,14 @@ async function buildExistingSuccessResponse(
         error_message: null,
       }).eq("id", session.id as string);
 
-      return new Response(
-        finishPage(
-          "Kept bank connection added",
-          `${accountCount || 1} account(s) connected successfully.`,
-          (session.redirect_to as string | null | undefined) ?? null,
-          {
-            "bank-return": "success",
-            accounts: String(accountCount || 1),
-          },
-        ),
-        { status: 200, headers: htmlHeaders },
+      return redirectOrPage(
+        "Kept bank connection added",
+        `${accountCount || 1} account(s) connected successfully.`,
+        (session.redirect_to as string | null | undefined) ?? null,
+        {
+          "bank-return": "success",
+          accounts: String(accountCount || 1),
+        },
       );
     }
 
@@ -186,7 +201,7 @@ Deno.serve(async (req) => {
   const admin = createClient(getEnv("SUPABASE_URL"), getEnv("SUPABASE_SERVICE_ROLE_KEY"));
 
   if (!state) {
-    return new Response(finishPage("Kept bank connection failed", "Missing auth state."), { status: 400, headers: htmlHeaders });
+    return redirectOrPage("Kept bank connection failed", "Missing auth state.", null, {}, 400);
   }
 
   const { data: session, error: sessionError } = await admin
@@ -196,7 +211,7 @@ Deno.serve(async (req) => {
     .maybeSingle();
 
   if (sessionError || !session) {
-    return new Response(finishPage("Kept bank connection failed", "Invalid or expired auth session."), { status: 400, headers: htmlHeaders });
+    return redirectOrPage("Kept bank connection failed", "Invalid or expired auth session.", null, {}, 400);
   }
 
   const completedSessionResponse = await buildExistingSuccessResponse(admin, session, state);
@@ -209,23 +224,17 @@ Deno.serve(async (req) => {
       status: "failed",
       error_message: errorDescription || error,
     }).eq("id", session.id);
-    return new Response(
-      finishPage("Kept bank connection failed", errorDescription || error, session.redirect_to, {
+    return redirectOrPage("Kept bank connection failed", errorDescription || error, session.redirect_to, {
         "bank-return": "failed",
         message: errorDescription || error,
-      }),
-      { status: 400, headers: htmlHeaders },
-    );
+      }, 303);
   }
 
   if (!code) {
-    return new Response(
-      finishPage("Kept bank connection failed", "Missing authorisation code.", session.redirect_to, {
+    return redirectOrPage("Kept bank connection failed", "Missing authorisation code.", session.redirect_to, {
         "bank-return": "failed",
         message: "Missing authorisation code.",
-      }),
-      { status: 400, headers: htmlHeaders },
-    );
+      }, 303);
   }
 
   try {
@@ -343,13 +352,10 @@ Deno.serve(async (req) => {
       error_message: null,
     }).eq("id", session.id);
 
-    return new Response(
-      finishPage("Kept bank connection added", `${accounts.length} account(s) connected successfully.`, session.redirect_to, {
+    return redirectOrPage("Kept bank connection added", `${accounts.length} account(s) connected successfully.`, session.redirect_to, {
         "bank-return": "success",
         accounts: String(accounts.length),
-      }),
-      { status: 200, headers: htmlHeaders },
-    );
+      });
   } catch (callbackError) {
     const message = callbackError instanceof Error ? callbackError.message : "Unknown error";
 
@@ -363,12 +369,9 @@ Deno.serve(async (req) => {
       error_message: message,
     }).eq("id", session.id);
 
-    return new Response(
-      finishPage("Kept bank connection failed", message, session.redirect_to, {
+    return redirectOrPage("Kept bank connection failed", message, session.redirect_to, {
         "bank-return": "failed",
         message,
-      }),
-      { status: 500, headers: htmlHeaders },
-    );
+      }, 303);
   }
 });
