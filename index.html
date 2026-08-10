@@ -979,6 +979,10 @@
           <div class="grip"></div>
           <h3>Add a Saving Win</h3>
           <p class="sub">Enter any amount you kept. A name is optional.</p>
+          <div class="toggle-row">
+            <div><b>Make this a quick save</b><small id="addQuickSaveNote">Save this amount for one-tap use later. Up to 3 on the free plan.</small></div>
+            <div class="switch" id="makeQuickSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
+          </div>
           <div class="field">
             <label id="origLabel">Amount kept</label>
             <div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="origInput" placeholder="0.00"></div>
@@ -987,10 +991,6 @@
           <div class="field">
             <label>Name <span class="opt">optional</span></label>
             <input type="text" class="text-in" id="nameInput" placeholder="e.g. Skipped the afternoon coffee">
-          </div>
-          <div class="toggle-row">
-            <div><b>Make this a quick save</b><small id="addQuickSaveNote">Save this amount for one-tap use later. Up to 3 on the free plan.</small></div>
-            <div class="switch" id="makeQuickSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
           </div>
           <div class="altrow">
             <div>Bought a cheaper version instead<br><small style="color:var(--muted)">e.g. cooked instead of takeaway</small></div>
