@@ -712,11 +712,14 @@
   .home-future-meta{display:block;position:relative;overflow:hidden;border:1px solid var(--hair);border-radius:22px;padding:16px 16px 14px;margin-top:16px;cursor:pointer;
     background:radial-gradient(90% 130% at 100% 0%,var(--warm-glow),transparent 58%),radial-gradient(100% 110% at 0% 100%,var(--violet-glow),transparent 62%),var(--surface-elevated);
     box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
+  .home-future-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
   .home-future-meta .cap{font-size:12px;color:var(--amber-ink);font-weight:600;display:flex;gap:6px;align-items:center}
   .home-future-meta .big{font-family:var(--font-round);font-weight:700;font-size:34px;letter-spacing:-.03em;margin:7px 0 3px;font-variant-numeric:tabular-nums}
   .home-future-meta .note{font-size:11.5px;color:var(--muted);max-width:62%}
   .home-future-curve{height:88px;margin-top:10px}
   #homeFutureCanvas{display:block;width:100%;height:100%}
+  .mini-manage-btn{border:0;background:rgba(255,255,255,.72);color:var(--accent);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);border-radius:999px;padding:7px 11px;font:650 10px var(--font-ui);cursor:pointer;display:inline-flex;align-items:center;gap:5px;flex:0 0 auto}
+  .mini-manage-btn i,.mini-manage-btn svg{font-size:12px}
   .milestone-teaser{border-radius:20px;padding:12px 14px}.milestone-teaser .big{font-size:16px}.milestone-teaser .note{font-size:10.5px}
   .future-topbar .h-screen,.settings-topbar .h-screen{margin:2px 0 0}.future-topbar .eyebrow,.settings-topbar .eyebrow{margin:0}
   .future-projection-card{padding:18px 14px 12px;border-radius:26px;background:radial-gradient(90% 95% at 100% 0%,rgba(255,226,190,.62),transparent 57%),radial-gradient(100% 90% at 0% 100%,rgba(221,213,255,.7),transparent 62%),rgba(255,255,255,.82);box-shadow:var(--card-float-shadow),inset 0 0 0 1px rgba(255,255,255,.94)}
@@ -724,9 +727,16 @@
   .future-assumption-toggle{width:100%;border:0;border-radius:18px;padding:10px 11px;background:rgba(255,255,255,.78);display:flex;align-items:center;gap:10px;text-align:left;color:var(--ink);cursor:pointer;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .future-assumption-toggle > span:nth-child(2){flex:1}.future-assumption-toggle b{display:block;font-size:12.5px}.future-assumption-toggle small{display:block;font-size:10px;color:var(--muted);margin-top:2px}.future-assumption-toggle > svg{color:var(--muted);transition:transform .2s}.future-assumption-toggle.open > svg{transform:rotate(180deg)}
   .future-assumption-panel{display:none;padding:13px 3px 2px}.future-assumption-panel.open{display:block}.future-assumption-panel .seg{margin-bottom:12px}
-  .future-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:11px 0}
+  .future-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:11px 0}
   .future-metrics > div{padding:12px 10px;border-radius:18px;background:rgba(255,255,255,.76);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .future-metrics span,.future-metrics small{display:block;font-size:9.5px;color:var(--muted)}.future-metrics b{display:block;font-size:17px;margin:5px 0 2px;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+  .toggle-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-top:14px;padding:12px 13px;border-radius:18px;background:rgba(255,255,255,.72);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
+  .toggle-row b{display:block;font-size:12.5px}
+  .toggle-row small{display:block;font-size:10px;color:var(--muted);line-height:1.4;margin-top:3px}
+  .manage-rate-card{margin-top:12px;padding:12px 13px;border-radius:18px;background:rgba(255,255,255,.72);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
+  .manage-rate-card span,.manage-rate-card small{display:block;color:var(--muted)}
+  .manage-rate-card span{font-size:10px}
+  .manage-rate-card b{display:block;font-size:22px;letter-spacing:-.03em;margin:4px 0 2px}
   .market-card{margin-top:13px}.market-row{padding:11px 12px}.market-row .name{font-size:12.5px}.market-row .meta{font-size:9.5px}.market-row .chg{font-size:16px}
   .settings-view{padding-top:8px}
   .settings-profile{display:flex;align-items:center;gap:12px;padding:14px;border-radius:22px;background:rgba(255,255,255,.78);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
@@ -853,7 +863,7 @@
           </button>
         </div>
 
-        <div class="home-section" id="quickSection">
+        <div class="home-section hidden" id="quickSection">
           <div class="section-heading"><b>Quick saves</b><button id="quickManage" type="button">Manage</button></div>
           <div class="home-quick-scroll">
             <div class="home-quick-list" id="quickActionList"></div>
@@ -872,7 +882,10 @@
         </div>
 
         <div class="home-future-meta" role="button" tabindex="0" id="teaserCard">
-          <div class="cap"><i class="ti ti-arrow-up-right"></i>Could become</div>
+          <div class="home-future-top">
+            <div class="cap"><i class="ti ti-arrow-up-right"></i>Could become</div>
+            <button class="mini-manage-btn" id="teaserManage" type="button"><i class="ti ti-adjustments"></i>Manage</button>
+          </div>
           <div class="big" id="teaserFuture">£75,900</div>
           <div class="note" id="teaserNote">estimated in 20 years · if kept and invested</div>
           <div class="home-future-curve"><canvas id="homeFutureCanvas" aria-label="Projected growth to your time horizon"></canvas></div>
@@ -920,29 +933,14 @@
           <div class="curve-wrap"><canvas id="curveCanvas" aria-label="Projected growth curve"></canvas></div>
           <button class="future-assumption-toggle" id="assumptionToggle" type="button">
             <span class="home-row-icon"><i class="ti ti-adjustments"></i></span>
-            <span><b>View assumptions</b><small>Growth rate and time horizon</small></span>
-            <i class="ti ti-chevron-down" id="assumptionChevron"></i>
+            <span><b>Manage</b><small>Growth rate, horizon, and return mode</small></span>
+            <i class="ti ti-chevron-right" id="assumptionChevron"></i>
           </button>
-          <div class="future-assumption-panel" id="assumptionPanel">
-            <div class="return-toggle" id="returnModeRow" style="display:none">
-              <div><b id="returnModeTitle">Use basic percentages</b><small id="returnModeSub">Switch this off to use the selected market watch return instead.</small></div>
-              <div class="switch" id="returnModeSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
-            </div>
-            <div class="seg" id="rateSeg">
-              <button data-rate="3">3%</button><button data-rate="5" class="on">5%</button><button data-rate="7">7%</button>
-            </div>
-            <div class="ctrl">
-              <div class="lab"><span>Time horizon</span><b id="yrsOut">20 years</b></div>
-              <input type="range" id="yrs" min="5" max="60" step="1" value="20">
-              <div class="curve-legend"><span><i class="dash solid"></i>To your horizon</span><span><i class="dash dot"></i>Beyond, up to 60y</span></div>
-            </div>
-          </div>
         </div>
 
         <div class="future-metrics">
           <div><span>Invested</span><b id="futTransferred">£0</b><small>so far</small></div>
           <div><span>This month</span><b id="futKept">£183</b><small>kept</small></div>
-          <div><span>Est. rate</span><b id="futureRateMetric">5.0%</b><small>per year</small></div>
         </div>
 
         <div class="fut-toggle" id="futureProToggle">
@@ -988,6 +986,10 @@
             <label>Name <span class="opt">optional</span></label>
             <input type="text" class="text-in" id="nameInput" placeholder="e.g. Skipped the afternoon coffee">
           </div>
+          <div class="toggle-row">
+            <div><b>Make this a quick save</b><small id="addQuickSaveNote">Save this amount for one-tap use later. Up to 3 on the free plan.</small></div>
+            <div class="switch" id="makeQuickSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
+          </div>
           <div class="altrow">
             <div>Bought a cheaper version instead<br><small style="color:var(--muted)">e.g. cooked instead of takeaway</small></div>
             <div class="switch" id="altSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
@@ -999,12 +1001,38 @@
           <div class="net-preview" id="netPreview" style="display:none">
             <span class="k">Net Saving Win</span><span class="v" id="netVal">£0.00</span>
           </div>
-          <p class="eyebrow" style="margin:18px 0 8px">Category <span class="opt">optional</span></p>
+          <p class="eyebrow" style="margin:18px 0 8px">Quick names <span class="opt">optional</span></p>
           <div class="cat-grid" id="catGrid"></div>
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost" id="addCancel" style="flex:0 0 40%">Cancel</button>
             <button class="btn primary" id="addConfirm" style="flex:1"><i class="ti ti-check"></i>Add Win</button>
           </div>
+        </div>
+      </div>
+
+      <div class="overlay" id="futureManageOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <h3>Manage future</h3>
+          <p class="sub">Adjust the growth assumptions behind your projection.</p>
+          <div class="manage-rate-card">
+            <span>Est. rate</span>
+            <b id="futureRateMetric">5.0%</b>
+            <small>per year</small>
+          </div>
+          <div class="return-toggle toggle-row" id="returnModeRow" style="display:none">
+            <div><b id="returnModeTitle">Use basic percentages</b><small id="returnModeSub">Switch this off to use the selected market watch return instead.</small></div>
+            <div class="switch" id="returnModeSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
+          </div>
+          <div class="seg" id="rateSeg">
+            <button data-rate="3">3%</button><button data-rate="5" class="on">5%</button><button data-rate="7">7%</button>
+          </div>
+          <div class="ctrl">
+            <div class="lab"><span>Time horizon</span><b id="yrsOut">20 years</b></div>
+            <input type="range" id="yrs" min="5" max="60" step="1" value="20">
+            <div class="curve-legend"><span><i class="dash solid"></i>To your horizon</span><span><i class="dash dot"></i>Beyond, up to 60y</span></div>
+          </div>
+          <button class="btn primary" id="futureManageClose" style="margin-top:18px">Done</button>
         </div>
       </div>
 
@@ -2692,15 +2720,7 @@
       const tw=c.measureText(label).width;
       return Math.min(Math.max(x, tw/2+4), w-tw/2-4);
     };
-    function homeCurveTicks(years){
-      const ratios = years<=10 ? [0.2,0.4,0.5,0.8,1] : years<=20 ? [0.1,0.25,0.5,0.75,1] : [0.125,0.25,0.5,0.75,1];
-      const seen=new Set();
-      return ratios.map(r=>Math.max(1, Math.round(years*r))).filter(v=>{
-        if(seen.has(v)) return false;
-        seen.add(v);
-        return true;
-      });
-    }
+    const homeCurveTicks=Array.from({length:5},(_,idx)=>maxYears*((idx+1)/5));
     c.beginPath(); c.moveTo(points[0][0], padT+gh);
     points.forEach(p=>c.lineTo(p[0],p[1])); c.lineTo(points[points.length-1][0], padT+gh); c.closePath();
     const fill=c.createLinearGradient(0,padT,0,padT+gh); fill.addColorStop(0, amb+'3d'); fill.addColorStop(1, amb+'00');
@@ -2709,13 +2729,14 @@
     c.strokeStyle=acc; c.lineWidth=2.5; c.lineJoin='round'; c.lineCap='round'; c.stroke();
     c.textAlign='center';
     c.font='600 9px -apple-system,system-ui';
-    homeCurveTicks(maxYears).forEach(year=>{
-      const x=padL+(year/maxYears)*gw;
+    homeCurveTicks.forEach((year,idx)=>{
+      const x=padL+(((idx+1)/homeCurveTicks.length)*gw);
       const value=balanceAt(year);
       const y=padT+gh-((value/peak)*gh);
       const valLabel=abbr(value);
+      const yearLabel=Math.max(1, Math.round(year))+'y';
       c.fillStyle=mut;
-      c.fillText(year+'y', clampX(year+'y', x), h-3);
+      c.fillText(yearLabel, clampX(yearLabel, x), h-3);
       c.fillStyle=acc;
       c.fillText(valLabel, clampX(valLabel, x), Math.max(9, y-8));
       c.beginPath(); c.arc(x, y, 3.5, 0, Math.PI*2); c.fillStyle=amb; c.fill();
@@ -2739,12 +2760,7 @@
   document.querySelectorAll('.tab[data-tab]').forEach(b=>{
     b.addEventListener('click',()=>show(b.dataset.tab));
   });
-  const assumptionPanel=document.getElementById('assumptionPanel');
-  document.getElementById('assumptionToggle').addEventListener('click',function(){
-    const open=assumptionPanel.classList.toggle('open');
-    this.classList.toggle('open',open);
-    if(open)setTimeout(drawCurve,30);
-  });
+  document.getElementById('assumptionToggle').addEventListener('click',openFutureManage);
   document.getElementById('futureInfo').addEventListener('click',()=>toast('Future estimate','Built from what you have kept, your time horizon, and the return assumption you choose.','ti-info-circle'));
 
   // ---------- milestones ----------
@@ -2764,7 +2780,7 @@
 
   // ---------- one-tap quick log ----------
   function renderQuick(){
-    const sec=document.getElementById('quickSection'); if(sec) sec.style.display = '';
+    const sec=document.getElementById('quickSection'); if(sec) sec.style.display = 'none';
     const list=document.getElementById('quickActionList');
     const addBtn=document.getElementById('quickHomeAdd');
     if(list){
@@ -2818,13 +2834,23 @@
   // ---------- add sheet ----------
   const addOv=document.getElementById('addOverlay');
   const catGrid=document.getElementById('catGrid'); let selCat=null;
+  const makeQuickSwitch=document.getElementById('makeQuickSwitch'); let makeQuickOn=false;
   cats.forEach((c)=>{ const el=document.createElement('button'); el.className='cat';
     el.innerHTML=`<i class="ti ${c.icon}"></i><span>${c.name}</span>`;
     el.addEventListener('click',()=>{ const was=el.classList.contains('sel');
       document.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel'));
-      if(was){ selCat=null; } else { selCat=c; el.classList.add('sel'); } });
+      if(was){ selCat=null; }
+      else { selCat=c; el.classList.add('sel'); document.getElementById('nameInput').value=c.name; } });
     catGrid.appendChild(el);
   });
+  function syncAddQuickToggle(){
+    makeQuickSwitch.classList.toggle('on',makeQuickOn);
+    makeQuickSwitch.setAttribute('aria-checked', String(makeQuickOn));
+    const note=document.getElementById('addQuickSaveNote');
+    if(note) note.textContent = (!hasFeatureAccess() && quick.length>=FREE_QUICK_LIMIT)
+      ? `Free plan limit reached. This win still saves, but unlock Pro to keep more than ${FREE_QUICK_LIMIT} quick saves.`
+      : `Save this amount for one-tap use later. ${hasFeatureAccess() ? 'Unlimited with Pro.' : `Up to ${FREE_QUICK_LIMIT} on the free plan.`}`;
+  }
   function focusAddAmountField(){
     const input=document.getElementById('origInput');
     if(!input) return;
@@ -2835,6 +2861,7 @@
     document.getElementById('origInput').value='';
     document.getElementById('nameInput').value='';
     selCat=null; document.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel'));
+    makeQuickOn=false; syncAddQuickToggle();
     if(altOn) altSwitch.click();
     updateNet(); addOv.classList.add('show');
     focusAddAmountField();
@@ -2848,6 +2875,14 @@
   document.getElementById('quickHomeAdd').addEventListener('click',()=>openQaEdit(null));
   document.getElementById('addCancel').addEventListener('click',closeAdd);
   addOv.addEventListener('click',e=>{if(e.target===addOv)closeAdd();});
+  makeQuickSwitch.addEventListener('click',()=>{ makeQuickOn=!makeQuickOn; syncAddQuickToggle(); });
+  document.getElementById('nameInput').addEventListener('input',()=>{
+    const value=(document.getElementById('nameInput').value||'').trim();
+    if(selCat && value!==selCat.name){
+      selCat=null;
+      document.querySelectorAll('.cat').forEach(x=>x.classList.remove('sel'));
+    }
+  });
 
   const altSwitch=document.getElementById('altSwitch'), altField=document.getElementById('altField'),
     netPrev=document.getElementById('netPreview'), origLabel=document.getElementById('origLabel');
@@ -2876,9 +2911,28 @@
     const catId = selCat ? selCat.id : 'other';
     const typed = (document.getElementById('nameInput').value||'').trim();
     const name = typed || (selCat ? (altOn?('Cheaper '+selCat.name.toLowerCase()):selCat.name) : 'Saving Win');
+    const shouldMakeQuick=makeQuickOn;
     closeAdd();
     if(catId==='subscription'){ openRecurChoice({net, name}); }
     else { logWin(net, catId, name, true); }
+    if(shouldMakeQuick){
+      if(!hasFeatureAccess() && quick.length>=FREE_QUICK_LIMIT){
+        toast('Saving Win added','Unlock Pro to keep more than 3 quick saves.','ti-lock');
+      }else{
+        const base = selCat || cats.find(c=>c.name.toLowerCase()===name.toLowerCase()) || {id:'other', icon:'ti-bolt', name};
+        const existing=quick.find(q=>q.name.toLowerCase()===name.toLowerCase());
+        if(existing){
+          existing.amt=net;
+          existing.id=base.id;
+          existing.icon=base.icon;
+        }else{
+          quick.push({id:base.id, name, icon:base.icon, amt:net});
+        }
+        refreshSettings();
+        saveState();
+        renderQuick();
+      }
+    }
   });
 
   // ---------- edit sheet + delete (rollover for transferred Wins) ----------
@@ -2976,6 +3030,7 @@
     toast(toastLabel || (P(mark)+' marked as transferred'),'You moved it — Kept just tracked it','ti-circle-check');
   }
   document.getElementById('teaserCard').addEventListener('click',()=>show('future'));
+  document.getElementById('teaserManage').addEventListener('click',e=>{ e.stopPropagation(); openFutureManage(); });
   document.getElementById('transferStatusLine').closest('.card').addEventListener('click',openTransfer);
   document.getElementById('transferConnectBank').addEventListener('click',()=>{
     if(!hasFeatureAccess()){ openUpgrade('bank','bank-transfer'); return; }
@@ -2995,6 +3050,11 @@
   });
 
   // ---------- future controls ----------
+  const futureManageOv=document.getElementById('futureManageOverlay');
+  function openFutureManage(){ futureManageOv.classList.add('show'); }
+  function closeFutureManage(){ futureManageOv.classList.remove('show'); }
+  document.getElementById('futureManageClose').addEventListener('click',closeFutureManage);
+  futureManageOv.addEventListener('click',e=>{ if(e.target===futureManageOv) closeFutureManage(); });
   document.getElementById('returnModeSwitch').addEventListener('click',function(){
     useBasicPercentages=true;
     selectedMarketId=null;
