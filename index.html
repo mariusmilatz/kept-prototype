@@ -717,8 +717,7 @@
   .home-future-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
   .home-future-meta .cap{font-size:12px;color:var(--amber-ink);font-weight:600;display:flex;gap:6px;align-items:center}
   .home-future-meta .big{font-family:var(--font-round);font-weight:700;font-size:34px;letter-spacing:-.03em;margin:7px 0 3px;font-variant-numeric:tabular-nums}
-  .home-future-meta .note{font-size:11.5px;color:var(--muted);max-width:62%}
-  .home-future-meta .meta-rate{font-size:10px;color:var(--muted);margin-top:5px}
+  .home-future-meta .note{font-size:11.5px;color:var(--muted);max-width:68%}
   .home-future-curve{height:88px;margin-top:10px}
   #homeFutureCanvas{display:block;width:100%;height:100%}
   .mini-manage-btn{border:0;background:rgba(255,255,255,.72);color:var(--accent);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);border-radius:999px;padding:7px 11px;font:650 10px var(--font-ui);cursor:pointer;display:inline-flex;align-items:center;gap:5px;flex:0 0 auto}
@@ -890,8 +889,7 @@
             <button class="mini-manage-btn" id="teaserManage" type="button"><i class="ti ti-adjustments"></i>Manage</button>
           </div>
           <div class="big" id="teaserFuture">£75,900</div>
-          <div class="note" id="teaserNote">estimated in 20 years · if kept and invested</div>
-          <div class="meta-rate" id="teaserRate">5.0% est. return / year</div>
+          <div class="note" id="teaserNote">estimated in 20 years · if kept and invested · 5.0% est. return / year</div>
           <div class="home-future-curve"><canvas id="homeFutureCanvas" aria-label="Projected growth to your time horizon"></canvas></div>
         </div>
 
@@ -2466,9 +2464,8 @@
 
     const fv = totalFV();
     document.getElementById('teaserFuture').textContent = Pn(fv);
-    document.getElementById('teaserNote').textContent = 'estimated '+horizonText(true)+' · if kept and invested';
     const rt=effectiveReturn();
-    document.getElementById('teaserRate').textContent = rt.toFixed(1)+'% est. return / year';
+    document.getElementById('teaserNote').textContent = 'estimated '+horizonText(true)+' · if kept and invested · '+rt.toFixed(1)+'% est. return / year';
     const recurAdd = projectRecurring ? annuityFV(recurMonthly(), proj.years) : 0;
     document.getElementById('futureBig').textContent = Pn(fv + recurAdd);
     document.getElementById('futureAssume').textContent = 'estimated · '+rt.toFixed(1)+'% return · '+horizonText(true) + (recurAdd>0?' · incl. subscriptions':'') + (useBasicPercentages?'':' · from selected market');
