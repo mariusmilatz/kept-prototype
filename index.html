@@ -766,9 +766,9 @@
   .home-icon-btn,.home-action,.home-quick,.quick-home-add,.future-assumption-toggle,.future-metrics>div,.settings-profile,.settings-group{background:var(--surface-solid);border-color:var(--hair);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .card,.bank-panel,.bank-inline,.fut-toggle,.ms-item,.ms-chip,.month-sec,.set-row{border-color:var(--hair)}
   .swipe-content{background:var(--surface-solid);opacity:1;z-index:2}
-  .home-progress.open-ended{background:conic-gradient(from 205deg,var(--accent-soft) 0 306deg,transparent 306deg)}
-  .home-progress.open-ended .home-progress-inner b{font-size:16px}
-  .home-progress.open-ended .home-progress-inner small{display:none}
+  .home-progress.open-ended{background:conic-gradient(from 205deg,#BFEFE2 var(--goal-progress),rgba(6,39,26,.08) 0 306deg,transparent 306deg)}
+  .home-progress.open-ended .home-progress-inner b{font-size:22px}
+  .home-progress.open-ended .home-progress-inner small{display:block}
   .home-action{min-height:62px}
   .quick-home-add{width:76px;min-width:76px;height:76px;border-radius:18px}
   :root[data-theme="dark"] body{background:#08100C}
@@ -2412,15 +2412,17 @@
     const gm = monthlyTargetVal();
     document.getElementById('goalTitle').textContent = P(allLogged())+' saved total';
     document.getElementById('goalSub').textContent = historySpanText();
-    const pct = Math.min(100, gm>0 ? rec/gm*100 : goalMode==='open' ? Math.min(100, rec/Math.max(1, monthWins(CUR).length*1000)*100) : 0);
+    const openWinCount = monthWins(CUR).length;
+    const openVisualPct = Math.min(100, (openWinCount/4)*100);
+    const pct = Math.min(100, gm>0 ? rec/gm*100 : goalMode==='open' ? openVisualPct : 0);
     document.getElementById('goalFill').style.width = pct+'%';
     const progressEl=document.getElementById('homeProgress');
     const openEnded=goalMode==='open';
     progressEl.classList.toggle('open-ended',openEnded);
-    progressEl.style.setProperty('--goal-progress',(openEnded?0:pct/100*306)+'deg');
-    document.getElementById('homeProgressPct').textContent=openEnded?'Open':Math.round(pct)+'%';
-    document.getElementById('homeProgressLabel').textContent=openEnded?'no target':'of plan';
-    document.getElementById('homeProgressGoal').textContent = openEnded ? 'No monthly goal' : 'Goal '+Pn(gm);
+    progressEl.style.setProperty('--goal-progress',(pct/100*306)+'deg');
+    document.getElementById('homeProgressPct').textContent=openEnded?String(openWinCount):Math.round(pct)+'%';
+    document.getElementById('homeProgressLabel').textContent=openEnded?(openWinCount===1?'save':'saves'):'of plan';
+    document.getElementById('homeProgressGoal').textContent = openEnded ? 'this month' : 'Goal '+Pn(gm);
     const transferCard=document.getElementById('transferCard');
     transferCard.style.display = bank.connected && bank.automationEnabled ? '' : 'none';
     document.getElementById('transferCardTitle').textContent = bank.connected && bank.automationEnabled ? 'Scheduled transfer' : 'Move money';
