@@ -2002,7 +2002,7 @@
       bank.connecting=true;
       renderBankUi();
       const { client } = await ensureBankSession();
-      const redirectTo=(location.href.split('#')[0] || location.href)+'#bank-return=pending';
+      const redirectTo=(location.href.split('#')[0] || location.href);
       const { data, error } = await client.functions.invoke('truelayer-connect', {
         body:{ redirect_to: redirectTo }
       });
@@ -2271,11 +2271,16 @@
   function handleBankReturn(){
     if(!location.hash) return;
     const hash = new URLSearchParams(location.hash.replace(/^#/, ''));
-    const state = hash.get('bank-return');
+    const states = hash.getAll('bank-return');
+    const state = states.length ? states[states.length-1] : null;
     if(!state) return;
     history.replaceState(null, '', location.pathname + location.search);
     if(state==='success'){
-      toast('Bank linked', 'Balance sync is ready — you can still move money manually whenever you want', 'ti-check');
+      const accountCount = hash.get('accounts');
+      const sub = accountCount
+        ? `${accountCount} account(s) connected. Balance sync is ready — manual move money still works too.`
+        : 'Balance sync is ready — you can still move money manually whenever you want';
+      toast('Bank linked', sub, 'ti-check');
       refreshBankData({ silent:true });
     }else if(state==='failed'){
       toast('Bank linking issue', hash.get('message') || 'Please try again', 'ti-alert-circle');
