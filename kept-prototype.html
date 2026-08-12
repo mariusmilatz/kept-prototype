@@ -1145,17 +1145,13 @@
     const client = await ensureSupabase();
     let { data:{ session } } = await client.auth.getSession();
     if(!session){
-      const { data, error } = await client.auth.signInAnonymously({ options:{ data:{ source:'kept-prototype' } } });
-      if(error){
-        const guestRes = await fetch(BANK_BOOTSTRAP_URL, {
-          method:'POST',
-          headers:{ 'Content-Type':'application/json' },
-          body: JSON.stringify({ device_id: getBankDeviceId() })
-        });
-        const guestData = await guestRes.json().catch(()=>null);
-        if(!guestRes.ok || !guestData?.session?.access_token || !guestData?.session?.refresh_token){
-          throw error;
-        }
+      const guestRes = await fetch(BANK_BOOTSTRAP_URL, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ device_id: getBankDeviceId() })
+      });
+      const guestData = await guestRes.json().catch(()=>null);
+      if(guestRes.ok && guestData?.session?.access_token && guestData?.session?.refresh_token){
         const { data: guestSessionData, error: guestSessionError } = await client.auth.setSession({
           access_token: guestData.session.access_token,
           refresh_token: guestData.session.refresh_token
@@ -1163,6 +1159,8 @@
         if(guestSessionError) throw guestSessionError;
         session = guestSessionData.session || null;
       }else{
+        const { data, error } = await client.auth.signInAnonymously({ options:{ data:{ source:'kept-prototype' } } });
+        if(error) throw error;
         session = data.session || null;
       }
     }
@@ -1342,7 +1340,7 @@
     history.replaceState(null, '', location.pathname + location.search);
     if(state==='success'){
       toast('Bank linked', 'Balance sync is ready — you can still move money manually whenever you want', 'ti-check');
-      refreshBankData({ silent:true });
+      refreshBankData({ silent:false, sync:true });
     }else if(state==='failed'){
       toast('Bank linking issue', hash.get('message') || 'Please try again', 'ti-alert-circle');
     }else{
