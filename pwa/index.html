@@ -510,7 +510,9 @@
             <label>Name <span class="opt">optional</span></label>
             <input type="text" class="text-in" id="nameInput" placeholder="e.g. Skipped the afternoon coffee">
           </div>
-          <div class="altrow">
+          <p class="eyebrow" style="margin:18px 0 8px">Category <span class="opt">optional</span></p>
+          <div class="cat-grid" id="catGrid"></div>
+          <div class="altrow" style="margin-top:18px">
             <div>Bought a cheaper version instead<br><small style="color:var(--muted)">e.g. cooked instead of takeaway</small></div>
             <div class="switch" id="altSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
           </div>
@@ -521,8 +523,6 @@
           <div class="net-preview" id="netPreview" style="display:none">
             <span class="k">Net Saving Win</span><span class="v" id="netVal">£0.00</span>
           </div>
-          <p class="eyebrow" style="margin:18px 0 8px">Category <span class="opt">optional</span></p>
-          <div class="cat-grid" id="catGrid"></div>
           <div style="display:flex;gap:10px;margin-top:18px">
             <button class="btn ghost" id="addCancel" style="flex:0 0 40%">Cancel</button>
             <button class="btn primary" id="addConfirm" style="flex:1"><i class="ti ti-check"></i>Add Win</button>
