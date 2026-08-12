@@ -1069,7 +1069,7 @@
     accountMask:'',accountCurrency:currencyCode,lastSyncedAt:null,
     availableBalanceMinor:null,currentBalanceMinor:null,protectedFloorMinor:100000,
     availableAboveFloorMinor:null,automationEnabled:false,transferCadence:'manual',
-    syncing:false,connecting:false
+    syncing:false,connecting:false,pendingLinked:false,pendingAccounts:null
   });
   let bank=bankDefault(), bankRuleDraft=false, bankFloorDraft=100000;
   function readCookie(name){
@@ -1144,25 +1144,25 @@
   async function ensureBankSession(){
     const client = await ensureSupabase();
     let { data:{ session } } = await client.auth.getSession();
-    if(!session){
-      const guestRes = await fetch(BANK_BOOTSTRAP_URL, {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json' },
-        body: JSON.stringify({ device_id: getBankDeviceId() })
+    const guestRes = await fetch(BANK_BOOTSTRAP_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ device_id: getBankDeviceId() })
+    });
+    const guestData = await guestRes.json().catch(()=>null);
+    const hasGuestSession = !!(guestRes.ok && guestData?.session?.access_token && guestData?.session?.refresh_token);
+    const guestUserId = guestData?.session?.user?.id || null;
+    if(hasGuestSession && (!session || !session.user || session.user.id !== guestUserId)){
+      const { data: guestSessionData, error: guestSessionError } = await client.auth.setSession({
+        access_token: guestData.session.access_token,
+        refresh_token: guestData.session.refresh_token
       });
-      const guestData = await guestRes.json().catch(()=>null);
-      if(guestRes.ok && guestData?.session?.access_token && guestData?.session?.refresh_token){
-        const { data: guestSessionData, error: guestSessionError } = await client.auth.setSession({
-          access_token: guestData.session.access_token,
-          refresh_token: guestData.session.refresh_token
-        });
-        if(guestSessionError) throw guestSessionError;
-        session = guestSessionData.session || null;
-      }else{
-        const { data, error } = await client.auth.signInAnonymously({ options:{ data:{ source:'kept-prototype' } } });
-        if(error) throw error;
-        session = data.session || null;
-      }
+      if(guestSessionError) throw guestSessionError;
+      session = guestSessionData.session || null;
+    }else if(!session){
+      const { data, error } = await client.auth.signInAnonymously({ options:{ data:{ source:'kept-prototype' } } });
+      if(error) throw error;
+      session = data.session || null;
     }
     if(!session?.user) throw new Error('Could not start secure bank session');
     bank.authReady=true;
@@ -1193,6 +1193,8 @@
       const snapshot = stateData.snapshot || null;
       const rule = stateData.rule || null;
       bank.userId = stateData.user_id || bank.userId;
+      bank.pendingLinked = false;
+      bank.pendingAccounts = null;
 
       bank.connected=!!connection;
       bank.connectionId=connection?.id || null;
@@ -1278,7 +1280,7 @@
     const floorTxt=moneyForCode(bank.protectedFloorMinor, bank.accountCurrency || currencyCode);
     const availableTxt=moneyForCode(bank.availableBalanceMinor, bank.accountCurrency || currencyCode);
     const aboveTxt=moneyForCode(bank.availableAboveFloorMinor, bank.accountCurrency || currencyCode);
-    const linked = bank.connected;
+    const linked = bank.connected || bank.pendingLinked;
     const transferBankGrid=document.getElementById('transferBankGrid');
     const bankSummaryGrid=document.getElementById('bankSummaryGrid');
     const bankRuleInline=document.getElementById('bankRuleInline');
@@ -1288,48 +1290,52 @@
       : (bank.error ? 'Setup issue — tap to retry' : 'Manual only — connect a bank to sync your balance');
     const transferTitle = linked ? (bank.accountName || 'Linked bank account') : 'Manual transfer';
     const transferMeta = linked
-      ? ((bank.accountMask?bank.accountMask+' · ':'')+bankSyncText())
+      ? (bank.pendingLinked
+        ? 'Finishing your first balance sync now.'
+        : ((bank.accountMask?bank.accountMask+' · ':'')+bankSyncText()))
       : 'Connect your bank when you want Kept to sync your balance before a transfer.';
     const summaryTitle = linked ? (bank.institutionName || 'Bank linked') : 'Manual only';
     const summaryMeta = linked
-      ? (bankRuleDraft ? 'Protected floor rule is on. Manual transfers stay available any time.' : 'Bank linked. Kept syncs the balance, but transfers still stay manual until you turn the rule on.')
+      ? (bank.pendingLinked
+        ? 'Bank linked. Kept is finishing the first sync now.'
+        : (bankRuleDraft ? 'Protected floor rule is on. Manual transfers stay available any time.' : 'Bank linked. Kept syncs the balance, but transfers still stay manual until you turn the rule on.'))
       : 'Kept is still manual by default. Link a bank when you want balance-aware transfer suggestions.';
     document.getElementById('setBankSub').textContent=settingsSub;
     document.getElementById('transferModeLine').textContent=bankModeText();
     document.getElementById('transferBankTitle').textContent=transferTitle;
     document.getElementById('transferBankMeta').textContent=transferMeta;
-    document.getElementById('transferBankPill').textContent=linked ? (bankRuleDraft ? 'Protected' : 'Linked') : 'Manual';
+    document.getElementById('transferBankPill').textContent=linked ? (bank.pendingLinked ? 'Syncing' : (bankRuleDraft ? 'Protected' : 'Linked')) : 'Manual';
     document.getElementById('transferBankPill').className='bank-pill '+(linked ? 'live' : 'manual');
     transferBankGrid.style.display=linked ? 'grid' : 'none';
     document.getElementById('transferBankStat1Label').textContent='Live balance';
-    document.getElementById('transferBankStat1').textContent=availableTxt;
-    document.getElementById('transferBankStat2').textContent=aboveTxt;
+    document.getElementById('transferBankStat1').textContent=bank.pendingLinked ? 'Syncing…' : availableTxt;
+    document.getElementById('transferBankStat2').textContent=bank.pendingLinked ? '—' : aboveTxt;
     document.getElementById('transferBankNote').textContent=linked
-      ? (bankRuleDraft ? 'If the balance sits above your floor, Kept can later suggest that the waiting amount is safe to move.' : 'Manual stays available even after you link a bank.')
+      ? (bank.pendingLinked ? 'Your accounts are linked. Kept is fetching the latest balances now.' : (bankRuleDraft ? 'If the balance sits above your floor, Kept can later suggest that the waiting amount is safe to move.' : 'Manual stays available even after you link a bank.'))
       : 'Manual stays available even after you link a bank.';
     document.getElementById('transferConnectBank').textContent=linked ? 'Manage bank' : 'Connect bank';
     document.getElementById('transferSyncBank').textContent=bank.syncing ? 'Syncing…' : 'Sync balance';
     document.getElementById('transferSyncBank').style.display=linked ? '' : 'none';
-    document.getElementById('transferSyncBank').disabled=!linked || bank.syncing;
+    document.getElementById('transferSyncBank').disabled=!linked || bank.syncing || bank.pendingLinked;
 
     document.getElementById('bankSummaryTitle').textContent=summaryTitle;
     document.getElementById('bankSummaryMeta').textContent=summaryMeta;
-    document.getElementById('bankSummaryPill').textContent=linked ? (bankRuleDraft ? 'Protected' : 'Linked') : 'Manual';
+    document.getElementById('bankSummaryPill').textContent=linked ? (bank.pendingLinked ? 'Syncing' : (bankRuleDraft ? 'Protected' : 'Linked')) : 'Manual';
     document.getElementById('bankSummaryPill').className='bank-pill '+(linked ? 'live' : 'manual');
     bankSummaryGrid.style.display=linked ? 'grid' : 'none';
-    document.getElementById('bankSummaryStat1').textContent=availableTxt;
-    document.getElementById('bankSummaryStat2').textContent=aboveTxt;
-    document.getElementById('bankSummaryNote').textContent = linked ? bankSyncText() : (bank.error || 'Once connected, Kept can check whether your bank balance stays above the floor you choose.');
+    document.getElementById('bankSummaryStat1').textContent=bank.pendingLinked ? 'Syncing…' : availableTxt;
+    document.getElementById('bankSummaryStat2').textContent=bank.pendingLinked ? '—' : aboveTxt;
+    document.getElementById('bankSummaryNote').textContent = linked ? (bank.pendingLinked ? 'Your bank is linked. Kept is fetching the latest balance now.' : bankSyncText()) : (bank.error || 'Once connected, Kept can check whether your bank balance stays above the floor you choose.');
     bankRuleInline.style.display = linked ? '' : 'none';
     bankFloorRow.style.display = linked ? 'flex' : 'none';
     document.getElementById('bankRuleNote').textContent = linked
-      ? (bankRuleDraft ? 'Rule on: Kept keeps this floor in mind before it later suggests a transfer.' : 'Rule off: Kept still syncs the balance, but stays fully manual.')
+      ? (bank.pendingLinked ? 'As soon as the first sync finishes, you can choose your protected floor here.' : (bankRuleDraft ? 'Rule on: Kept keeps this floor in mind before it later suggests a transfer.' : 'Rule off: Kept still syncs the balance, but stays fully manual.'))
       : 'Link a bank first, then choose a protected floor.';
     document.getElementById('bankConnectBtn').textContent = linked ? 'Reconnect bank' : 'Connect bank';
     document.getElementById('bankSyncBtn').textContent = bank.syncing ? 'Syncing…' : 'Sync now';
     document.getElementById('bankSyncBtn').style.display = linked ? '' : 'none';
-    document.getElementById('bankSyncBtn').disabled = !linked || bank.syncing;
-    document.getElementById('bankSaveBtn').disabled = !linked;
+    document.getElementById('bankSyncBtn').disabled = !linked || bank.syncing || bank.pendingLinked;
+    document.getElementById('bankSaveBtn').disabled = !linked || bank.pendingLinked;
     updateBankRuleSwitch();
   }
   function handleBankReturn(){
@@ -1339,6 +1345,16 @@
     if(!state) return;
     history.replaceState(null, '', location.pathname + location.search);
     if(state==='success'){
+      const accountCount = hash.get('accounts');
+      bank.connected = true;
+      bank.pendingLinked = true;
+      bank.pendingAccounts = accountCount ? Number(accountCount) : null;
+      bank.institutionName = 'TrueLayer sandbox';
+      bank.accountName = accountCount ? `${accountCount} account(s) linked` : 'Linked bank account';
+      bank.accountMask = '';
+      bank.error = '';
+      refreshSettings();
+      renderBankUi();
       toast('Bank linked', 'Balance sync is ready — you can still move money manually whenever you want', 'ti-check');
       refreshBankData({ silent:false, sync:true });
     }else if(state==='failed'){
@@ -1346,6 +1362,7 @@
     }else{
       refreshBankData({ silent:true });
     }
+    return true;
   }
 
   const monthWins = m => wins.filter(w=>w.month===m);
@@ -2191,7 +2208,7 @@
 
   function boot(){ applyCurrency(currencyCode); materializeRecurring(); renderQuick(); renderBankUi(); render(); setTimeout(drawCurve,60); setTimeout(queueRecurringConfirms,700); }
   const saved=loadState();
-  if(saved && saved.onboarded){ applyState(saved); boot(); handleBankReturn(); refreshBankData({ silent:true }); }
+  if(saved && saved.onboarded){ applyState(saved); boot(); if(!handleBankReturn()) refreshBankData({ silent:true }); }
   else { boot(); handleBankReturn(); startOnboarding(); }
   window.addEventListener('resize',drawCurve);
 })();
