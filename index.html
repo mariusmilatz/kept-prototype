@@ -1078,10 +1078,10 @@
               </div>
               <span class="bank-pill manual" id="transferBankPill">Manual</span>
             </div>
-            <div class="bank-grid" id="transferBankGrid">
+          <div class="bank-grid" id="transferBankGrid">
               <div class="bank-stat">
-                <div class="k" id="transferBankStat1Label">Protected floor</div>
-                <div class="v" id="transferBankStat1">€1,000.00</div>
+                <div class="k" id="transferBankStat1Label">Live balance</div>
+                <div class="v" id="transferBankStat1">—</div>
               </div>
               <div class="bank-stat">
                 <div class="k" id="transferBankStat2Label">Available above floor</div>
@@ -1089,39 +1089,12 @@
               </div>
             </div>
             <div class="bank-note" id="transferBankNote">Manual stays available even after you link a bank.</div>
-            <div class="bank-inline" id="transferRuleInline">
-              <div>
-                <b>Protect minimum balance</b>
-                <small>When this is on, Kept uses the floor below before suggesting any transfer.</small>
-              </div>
-              <div class="switch" id="transferRuleSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
-            </div>
-            <div class="bank-input-row" id="transferFloorRow">
-              <div class="field">
-                <label>Protected floor</label>
-                <div class="money-in"><span class="cur-sym">£</span><input type="text" inputmode="decimal" id="transferFloorInput" placeholder="1000"></div>
-              </div>
-            </div>
             <div class="bank-inline" id="transferAutoInline">
               <div>
                 <b>Auto transfer</b>
-                <small>Keep manual transfers anytime, and also choose a repeating transfer day.</small>
+                <small>Turn it on here, then fine-tune the schedule and floor in Linked bank.</small>
               </div>
               <div class="switch" id="transferAutoSwitch" role="switch" aria-checked="false"><div class="k"></div></div>
-            </div>
-            <div class="bank-schedule-grid" id="transferScheduleGrid">
-              <div class="field">
-                <label>Repeat</label>
-                <select class="text-in" id="transferScheduleCadence">
-                  <option value="monthly">Every month</option>
-                  <option value="weekly">Every week</option>
-                  <option value="quarterly">Every quarter</option>
-                </select>
-              </div>
-              <div class="field">
-                <label id="transferScheduleDayLabel">Transfer day</label>
-                <select class="text-in" id="transferScheduleDay"></select>
-              </div>
             </div>
             <div class="bank-actions">
               <button class="btn ghost" id="transferConnectBank" style="flex:1">Connect bank</button>
@@ -1993,7 +1966,6 @@
   function syncBankDraftInputs(){
     const floorValue=(bankFloorDraft/100).toFixed(2);
     const bankFloor=document.getElementById('bankFloorInput'); if(bankFloor) bankFloor.value=floorValue;
-    const transferFloor=document.getElementById('transferFloorInput'); if(transferFloor) transferFloor.value=floorValue;
     const ids=[['bankRuleSwitch', bankRuleDraft], ['transferRuleSwitch', bankRuleDraft], ['bankAutoSwitch', bankAutoDraft], ['transferAutoSwitch', bankAutoDraft]];
     ids.forEach(([id,on])=>{ const el=document.getElementById(id); if(!el) return; el.classList.toggle('on', !!on); el.setAttribute('aria-checked', on ? 'true' : 'false'); });
     syncScheduleFields('bank');
@@ -2198,10 +2170,7 @@
       document.getElementById('bankFloorRow').style.display='none';
       document.getElementById('bankAutoInline').style.display='none';
       document.getElementById('bankScheduleGrid').style.display='none';
-      document.getElementById('transferRuleInline').style.display='none';
-      document.getElementById('transferFloorRow').style.display='none';
       document.getElementById('transferAutoInline').style.display='none';
-      document.getElementById('transferScheduleGrid').style.display='none';
       document.getElementById('bankRuleNote').textContent='Bank sync, protected floor, and future transfer suggestions are available in Pro.';
       document.getElementById('bankConnectBtn').textContent='Start free trial';
       document.getElementById('bankSyncBtn').style.display='none';
@@ -2233,11 +2202,11 @@
     document.getElementById('transferBankPill').textContent=linked ? (bank.pendingLinked ? 'Syncing' : (bankRuleDraft ? 'Protected' : 'Linked')) : 'Manual';
     document.getElementById('transferBankPill').className='bank-pill '+(linked ? 'live' : 'manual');
     document.getElementById('transferBankGrid').style.display=linked ? 'grid' : 'none';
-    document.getElementById('transferBankStat1Label').textContent=bankRuleDraft ? 'Protected floor' : 'Live balance';
-    document.getElementById('transferBankStat1').textContent=bank.pendingLinked ? 'Syncing…' : (bankRuleDraft ? moneyForCode(bankFloorDraft, bank.accountCurrency || currencyCode) : availableTxt);
+    document.getElementById('transferBankStat1Label').textContent='Live balance';
+    document.getElementById('transferBankStat1').textContent=bank.pendingLinked ? 'Syncing…' : availableTxt;
     document.getElementById('transferBankStat2').textContent=bank.pendingLinked ? '—' : aboveTxt;
     document.getElementById('transferBankNote').textContent=linked
-      ? (bank.pendingLinked ? 'Your accounts are linked. Kept is fetching the latest balances now.' : (bankAutoDraft ? 'Auto transfer follows your schedule, and you can still transfer now or mark a transfer manually here anytime.' : (bankRuleDraft ? 'If the balance sits above your floor, Kept can later suggest that the waiting amount is safe to move.' : 'Manual stays available even after you link a bank.')))
+      ? (bank.pendingLinked ? 'Your accounts are linked. Kept is fetching the latest balances now.' : (bankAutoDraft ? ('Auto transfer is on · '+scheduleSummary()+'. You can still transfer now or mark it manually anytime.') : (bankRuleDraft ? 'Protected floor is on. Kept uses the Linked bank settings before suggesting what feels safe to move.' : 'Manual stays available even after you link a bank.')))
       : 'Manual stays available even after you link a bank.';
     document.getElementById('transferConnectBank').textContent=linked ? 'Manage bank' : 'Connect bank';
     document.getElementById('transferSyncBank').textContent=bank.syncing ? 'Syncing…' : 'Sync balance';
@@ -2256,10 +2225,7 @@
     document.getElementById('bankFloorRow').style.display = linked ? 'flex' : 'none';
     document.getElementById('bankAutoInline').style.display = linked ? '' : 'none';
     document.getElementById('bankScheduleGrid').style.display = linked && bankAutoDraft ? 'grid' : 'none';
-    document.getElementById('transferRuleInline').style.display = linked ? '' : 'none';
-    document.getElementById('transferFloorRow').style.display = linked ? 'flex' : 'none';
     document.getElementById('transferAutoInline').style.display = linked ? '' : 'none';
-    document.getElementById('transferScheduleGrid').style.display = linked && bankAutoDraft ? 'grid' : 'none';
     document.getElementById('bankRuleNote').textContent = linked
       ? (bank.pendingLinked ? 'As soon as the first sync finishes, you can choose your protected floor here.' : (bankAutoDraft ? ('Auto transfer on · '+scheduleSummary()) : (bankRuleDraft ? 'Protected floor is on. Kept uses the value above automatically before suggesting a transfer.' : 'Rule off: Kept still syncs the balance, but stays fully manual.')))
       : 'Link a bank first, then choose a protected floor.';
@@ -2313,7 +2279,6 @@
     upgradeIntent=null;
     if(intent==='bank-settings'){
       renderBankUi();
-      document.getElementById('bankFloorInput').value=(bankFloorDraft/100).toFixed(2);
       document.getElementById('bankOverlay').classList.add('show');
     }else if(intent==='bank-transfer'){
       renderBankUi();
@@ -3457,10 +3422,8 @@
   upgradeOv.addEventListener('click',e=>{ if(e.target===upgradeOv) closeUpgrade(); });
   function syncFloorInputs(fromId){
     const source=document.getElementById(fromId);
-    const other=document.getElementById(fromId==='bankFloorInput'?'transferFloorInput':'bankFloorInput');
     const v=parseM(source.value);
     bankFloorDraft=v;
-    if(other && other.value!==source.value) other.value=source.value;
     renderBankUi();
     render();
     if(bank.connected && !bank.pendingLinked) queueBankRuleSave(true);
@@ -3478,18 +3441,28 @@
     if(bank.connected && bankAutoDraft && !bank.pendingLinked) queueBankRuleSave(true);
   }
   document.getElementById('bankRuleSwitch').addEventListener('click',()=>{ bankRuleDraft=!bankRuleDraft; updateBankRuleSwitch(); renderBankUi(); render(); if(bank.connected && !bank.pendingLinked) queueBankRuleSave(false); });
-  document.getElementById('transferRuleSwitch').addEventListener('click',()=>{ bankRuleDraft=!bankRuleDraft; updateBankRuleSwitch(); renderBankUi(); render(); if(bank.connected && !bank.pendingLinked) queueBankRuleSave(false); });
   document.getElementById('bankAutoSwitch').addEventListener('click',()=>{ bankAutoDraft=!bankAutoDraft; updateBankRuleSwitch(); renderBankUi(); render(); if(bank.connected && !bank.pendingLinked) queueBankRuleSave(false); });
-  document.getElementById('transferAutoSwitch').addEventListener('click',()=>{ bankAutoDraft=!bankAutoDraft; updateBankRuleSwitch(); renderBankUi(); render(); if(bank.connected && !bank.pendingLinked) queueBankRuleSave(false); });
+  document.getElementById('transferAutoSwitch').addEventListener('click',()=>{
+    if(!bank.connected && !bank.pendingLinked){
+      if(!hasFeatureAccess()){ openUpgrade('bank','bank-transfer'); return; }
+      startBankConnect();
+      return;
+    }
+    bankAutoDraft=!bankAutoDraft;
+    updateBankRuleSwitch();
+    renderBankUi();
+    render();
+    if(bank.connected && !bank.pendingLinked) queueBankRuleSave(false);
+    if(bankAutoDraft){
+      bankOv.classList.add('show');
+    }
+  });
   document.getElementById('bankConnectBtn').addEventListener('click',()=>{ if(!hasFeatureAccess()){ openUpgrade('bank','bank-settings'); return; } startBankConnect(); });
   document.getElementById('bankSyncBtn').addEventListener('click',()=>refreshBankData({ sync:true }));
   document.getElementById('bankRefreshLink').addEventListener('click',()=>refreshBankData({ silent:true }));
   document.getElementById('bankFloorInput').addEventListener('input',()=>syncFloorInputs('bankFloorInput'));
-  document.getElementById('transferFloorInput').addEventListener('input',()=>syncFloorInputs('transferFloorInput'));
   document.getElementById('bankScheduleCadence').addEventListener('change',()=>syncScheduleDrafts('bank'));
   document.getElementById('bankScheduleDay').addEventListener('change',()=>syncScheduleDrafts('bank'));
-  document.getElementById('transferScheduleCadence').addEventListener('change',()=>syncScheduleDrafts('transfer'));
-  document.getElementById('transferScheduleDay').addEventListener('change',()=>syncScheduleDrafts('transfer'));
 
   // ---------- edit goal ----------
   const geOv=document.getElementById('goalEditOverlay');
