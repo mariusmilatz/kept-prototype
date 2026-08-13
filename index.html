@@ -694,14 +694,14 @@
   .home-goal-right span{display:block}.home-goal-right b{display:inline;font-size:10.5px;color:var(--ink)}
   .goal-bar-hidden{display:none}
   .home-primary-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
-  .home-primary-actions.auto-on{grid-template-columns:.76fr 1.24fr}
+  .home-primary-actions.auto-on{grid-template-columns:.5fr 1.5fr}
   .home-action{border:0;border-radius:20px;padding:13px 12px;background:rgba(255,255,255,.78);display:flex;align-items:center;gap:10px;text-align:left;color:var(--ink);cursor:pointer;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .home-action:active{transform:scale(.98)}
   .home-action-icon{width:36px;height:36px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:#CFF7E8;color:#0B6E58;flex:0 0 auto}
   .move-money .home-action-icon{background:#EEE9FF;color:#6956D9}
   .home-action b{display:block;font-size:12.5px;letter-spacing:-.01em}.home-action small{display:block;font-size:9.5px;color:var(--muted);margin-top:2px;white-space:nowrap}
-  .home-action.auto-transfer{align-items:flex-start;padding-right:14px}
-  .home-action.auto-transfer .home-action-icon{margin-top:1px}
+  .home-action.auto-transfer{align-items:center;padding-right:14px}
+  .home-action.auto-transfer .home-action-icon{margin-top:0}
   .home-action.auto-transfer b{font-size:12.2px}
   .home-action.auto-transfer small{white-space:normal;line-height:1.2}
   .home-action-copy{display:block;min-width:0;flex:1}
@@ -874,7 +874,7 @@
         <div class="home-primary-actions">
           <button class="home-action add-win" id="homeAddWin">
             <span class="home-action-icon"><i class="ti ti-plus"></i></span>
-            <span class="home-action-copy"><b>Add a win</b><small>Log money you kept</small></span>
+            <span class="home-action-copy"><b>Add a win</b><small id="homeAddWinSub">Log money you kept</small></span>
           </button>
           <button class="home-action move-money" id="homeMoveMoney">
             <span class="home-action-icon"><i class="ti ti-arrow-up-right" id="homeMoveIcon"></i></span>
@@ -2602,15 +2602,17 @@
     const moveSub=document.getElementById('homeMoveSub');
     const moveMeta=document.getElementById('homeMoveMeta');
     const moveIcon=document.getElementById('homeMoveIcon');
+    const addWinSub=document.getElementById('homeAddWinSub');
     if(primaryActions) primaryActions.classList.toggle('auto-on', autoOn);
     if(moveBtn) moveBtn.classList.toggle('auto-transfer', autoOn);
     if(moveIcon) moveIcon.className = autoOn ? 'ti ti-calendar-event' : 'ti ti-arrow-up-right';
     if(moveTitle) moveTitle.textContent = autoOn ? 'Auto transfer' : 'Move money';
     if(moveSub) moveSub.textContent = autoOn ? scheduleSummary() : 'Transfer or review';
+    if(addWinSub) addWinSub.classList.toggle('hidden', autoOn);
     if(moveMeta){
       if(autoOn){
-        moveMeta.textContent = P(wait)+' waiting · linked bank · auto on';
-        moveMeta.classList.remove('hidden');
+        moveMeta.textContent = '';
+        moveMeta.classList.add('hidden');
       }else{
         moveMeta.textContent = '';
         moveMeta.classList.add('hidden');
