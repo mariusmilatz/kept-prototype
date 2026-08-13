@@ -768,16 +768,13 @@
   .home-future-foot b{font-size:11px;color:var(--accent-ink)}
   .quiet-progress{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:14px;padding:14px 8px 10px;border-radius:22px;background:rgba(255,255,255,.78);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .quiet-progress-item{padding:2px 10px 0;text-align:center;position:relative}
+  .quiet-progress-item.link{cursor:pointer}
   .quiet-progress-item:not(:last-child)::after{content:"";position:absolute;right:0;top:10px;bottom:10px;width:1px;background:rgba(17,23,19,.08)}
   .quiet-progress-item .ic{width:32px;height:32px;border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent-ink);font-size:14px}
   .quiet-progress-item:nth-child(2) .ic{background:#EEE9FF;color:#5E4CC8}
   .quiet-progress-item:nth-child(3) .ic{background:#FFF1D8;color:#A56A12}
   .quiet-progress-item b{display:block;font-size:11px;line-height:1.2}
   .quiet-progress-item small{display:block;font-size:9px;line-height:1.35;color:var(--muted);margin-top:4px}
-  .journey-teaser{padding:14px 14px 12px;border-radius:22px;margin-top:14px;cursor:pointer}
-  .journey-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-  .journey-head b{font-size:13px;display:block}
-  .journey-head small{display:block;font-size:10.5px;color:var(--muted);margin-top:3px}
   .journey-track{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:13px}
   .journey-node{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
   .journey-dot{width:22px;height:22px;border-radius:999px;border:1.5px solid rgba(17,23,19,.14);display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);color:var(--muted);font-size:12px;position:relative}
@@ -966,7 +963,7 @@
             <b id="qpRecordTitle">No record yet</b>
             <small id="qpRecordSub">Your month is just getting started.</small>
           </div>
-          <div class="quiet-progress-item">
+          <div class="quiet-progress-item link" id="qpJourneyItem" role="button" tabindex="0">
             <div class="ic"><i class="ti ti-rosette-discount-check"></i></div>
             <b id="qpMilestoneTitle">0 milestones unlocked</b>
             <small id="qpMilestoneSub">Quiet progress adds up.</small>
@@ -976,17 +973,6 @@
             <b id="qpChallengeTitle">Monthly nudge</b>
             <small id="qpChallengeSub">0 of 3 saving wins this month.</small>
           </div>
-        </div>
-
-        <div class="card journey-teaser" role="button" tabindex="0" id="milestoneCard">
-          <div class="journey-head">
-            <div>
-              <b id="msJourneyTitle">Building the habit</b>
-              <small id="msJourneySub">4 of 6 complete</small>
-            </div>
-            <i class="ti ti-chevron-right" style="color:var(--muted)" aria-hidden="true"></i>
-          </div>
-          <div class="journey-track" id="journeyTrack"></div>
         </div>
       </div>
 
@@ -2799,15 +2785,14 @@
     const unlockedCount = milestoneState.filter(m=>m.unlocked).length;
     document.getElementById('qpRecordTitle').textContent = bestMonth > 0 && rec >= bestMonth ? 'New record' : 'Quiet month';
     document.getElementById('qpRecordSub').textContent = bestMonth > 0 && rec >= bestMonth ? (P(rec)+' is your best month yet.') : (P(rec)+' kept so far this month.');
-    document.getElementById('qpMilestoneTitle').textContent = unlockedCount+' milestones unlocked';
-    document.getElementById('qpMilestoneSub').textContent = milestoneState.newlyUnlocked.length ? (milestoneState.newlyUnlocked.length+' new this month.') : 'Quiet progress adds up.';
+    const journey = journeySummary(milestoneState);
+    const showJourneyOnHome = journey && journey.title && journey.title !== 'Full journey';
+    document.getElementById('qpMilestoneTitle').textContent = showJourneyOnHome ? journey.title : (unlockedCount+' milestones unlocked');
+    document.getElementById('qpMilestoneSub').textContent = showJourneyOnHome
+      ? (journey.done+' of '+journey.total+' complete')
+      : (milestoneState.newlyUnlocked.length ? (milestoneState.newlyUnlocked.length+' new this month.') : 'Quiet progress adds up.');
     document.getElementById('qpChallengeTitle').textContent = challenge.done ? 'Monthly nudge done' : 'Monthly nudge';
     document.getElementById('qpChallengeSub').textContent = challenge.current+' of '+challenge.target+' saving wins this month.';
-
-    const journey = journeySummary(milestoneState);
-    document.getElementById('msJourneyTitle').textContent = journey.title;
-    document.getElementById('msJourneySub').textContent = journey.done+' of '+journey.total+' complete';
-    renderJourneyTrack(journey);
 
     const recurAdd = projectRecurring ? annuityFV(recurMonthly(), proj.years) : 0;
     document.getElementById('futureBig').textContent = Pn(fv + recurAdd);
@@ -3132,8 +3117,9 @@
   const msOv=document.getElementById('milestonesOverlay');
   function openMilestones(){ msOv.classList.add('show'); }
   function closeMilestones(){ msOv.classList.remove('show'); }
-  document.getElementById('milestoneCard').addEventListener('click',openMilestones);
   document.getElementById('homeMilestoneButton').addEventListener('click',openMilestones);
+  document.getElementById('qpJourneyItem').addEventListener('click',openMilestones);
+  document.getElementById('qpJourneyItem').addEventListener('keydown',e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openMilestones(); } });
   document.getElementById('setMilestones').addEventListener('click',()=>{ setOv.classList.remove('show'); openMilestones(); });
   document.getElementById('msClose').addEventListener('click',closeMilestones);
   document.getElementById('msToggleAll').addEventListener('click',()=>{ msExpanded=!msExpanded; render(); });
