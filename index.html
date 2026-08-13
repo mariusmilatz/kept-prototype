@@ -466,13 +466,32 @@
   .ms-summary-copy .v{font-family:var(--font-round);font-weight:650;font-size:38px;line-height:1;letter-spacing:-.055em;color:var(--accent)}
   .ms-summary-copy .v span{display:block;font-size:17px;letter-spacing:-.02em;margin-top:4px}
   .ms-summary-copy .k{font-size:12px;color:var(--muted);margin-top:10px}
+  .ms-summary-copy .state{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent-ink);font-size:10px;font-weight:700;letter-spacing:.02em}
+  .ms-journey-card{margin:0 0 16px;padding:18px 18px 16px;background:var(--surface-elevated);border:1px solid var(--hair);border-radius:24px;box-shadow:0 18px 42px -34px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.55)}
+  .ms-kicker{font-size:10px;font-weight:750;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+  .ms-journey-title{font-family:var(--font-round);font-size:24px;font-weight:650;letter-spacing:-.04em;margin:7px 0 4px;color:var(--ink)}
+  .ms-journey-sub{font-size:12px;color:var(--muted);line-height:1.5;max-width:88%}
+  .ms-journey-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px}
+  .ms-journey-meta b{font-size:12px}
+  .ms-journey-meta small{font-size:10.5px;color:var(--muted)}
+  .ms-journey-track{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
+  .ms-journey-node{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;position:relative}
+  .ms-journey-node:not(:last-child)::after{content:"";position:absolute;top:11px;left:calc(50% + 14px);width:calc(100% - 4px);height:1.5px;background:rgba(17,23,19,.1)}
+  .ms-journey-node.done:not(:last-child)::after{background:rgba(10,120,92,.26)}
+  .ms-journey-dot{width:22px;height:22px;border-radius:999px;border:1.5px solid rgba(17,23,19,.14);display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);color:var(--muted);font-size:12px;position:relative;z-index:1}
+  .ms-journey-node.done .ms-journey-dot{background:#DFF5EE;border-color:#0A785C;color:#0A785C}
+  .ms-journey-node.next .ms-journey-dot{background:#F5F1FF;border-color:#8C7BFF;color:#6956D9;box-shadow:0 0 0 4px rgba(140,123,255,.08)}
+  .ms-journey-node span{font-size:8.5px;line-height:1.25;color:var(--muted);max-width:60px}
+  .ms-journey-node.done span,.ms-journey-node.next span{color:var(--ink)}
+  .ms-next-note{margin-top:14px;padding-top:12px;border-top:1px solid rgba(17,23,19,.07);font-size:11px;color:var(--muted)}
+  .ms-next-note b{color:var(--ink)}
   .ms-progress-ring{--ms-progress:0deg;width:94px;height:94px;border-radius:50%;background:conic-gradient(var(--accent) var(--ms-progress),var(--accent-soft) 0);padding:10px;flex:0 0 auto}
   .ms-progress-ring>div{width:100%;height:100%;border-radius:50%;background:var(--surface-solid);display:flex;align-items:center;justify-content:center;font-family:var(--font-round);font-size:22px;font-weight:650;color:var(--accent)}
   #milestonesOverlay .seg{overflow-x:auto;justify-content:flex-start;scrollbar-width:none;margin-bottom:18px;padding:4px;border-radius:18px}
   #milestonesOverlay .seg::-webkit-scrollbar{display:none}
   #milestonesOverlay .seg button{flex:0 0 auto;white-space:nowrap;padding:9px 13px}
   .ms-section-title{font-family:var(--font-round);font-size:18px;font-weight:650;letter-spacing:-.025em;margin:0 0 10px;color:var(--accent)}
-  .ms-sub{display:none}
+  .ms-sub{font-size:11.5px;color:var(--muted);line-height:1.45;margin:-4px 0 12px}
   .ms-list{display:flex;flex-direction:column;gap:9px}
   .ms-item{background:var(--card);border:1px solid var(--hair);border-radius:20px;padding:13px 14px;box-shadow:0 12px 30px -28px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.45)}
   .ms-item.top{padding:16px;border-color:color-mix(in srgb,var(--accent) 25%,var(--hair));border-radius:23px}
@@ -1528,13 +1547,21 @@
         <div class="sheet">
           <div class="ms-page-head">
             <button class="ms-head-btn" id="msClose" aria-label="Close milestones"><span aria-hidden="true">&times;</span></button>
-            <h3>Milestones</h3>
+            <h3>Journey</h3>
             <span></span>
-            <p class="sub">Small wins, quietly adding up.</p>
+            <p class="sub">Milestones, rhythm, and quiet progress.</p>
           </div>
           <div class="ms-summary">
-            <div class="ms-summary-copy"><div class="v"><b id="msUnlockedCount">0</b><span>unlocked</span></div><div class="k">Your progress</div></div>
+            <div class="ms-summary-copy"><div class="v"><b id="msUnlockedCount">0</b><span>unlocked</span></div><div class="k">Your progress</div><div class="state" id="msSaverState">Starting</div></div>
             <div class="ms-progress-ring" id="msProgressRing"><div id="msProgressPercent">0%</div></div>
+          </div>
+          <div class="ms-journey-card">
+            <div class="ms-kicker">Current chapter</div>
+            <div class="ms-journey-title" id="msJourneyPageTitle">Building the habit</div>
+            <div class="ms-journey-sub" id="msJourneyPageSub">Keep stacking small wins until the habit starts feeling natural.</div>
+            <div class="ms-journey-meta"><b id="msJourneyPageMeta">0 of 0 complete</b><small id="msJourneyPageHint">Your next milestone is waiting.</small></div>
+            <div class="ms-journey-track" id="msJourneyTrackPage"></div>
+            <div class="ms-next-note" id="msJourneyNextNote">Next up: <b>First Win</b></div>
           </div>
           <div class="seg" id="msSeg">
             <button data-cat="all" class="on">All</button>
@@ -1543,8 +1570,8 @@
             <button data-cat="money">Money</button>
             <button data-cat="commitment">Commitment</button>
           </div>
-          <div class="ms-section-title">Up next</div>
-          <p class="ms-sub" id="msCatSub">See the next few milestones without getting buried in all of them.</p>
+          <div class="ms-section-title">Milestones up next</div>
+          <p class="ms-sub" id="msCatSub">See the next few milestones without getting buried in everything at once.</p>
           <div class="ms-list" id="msNextList"></div>
           <button class="btn ghost ms-toggle" id="msToggleAll"><span>Unlocked</span><i class="ti ti-chevron-down"></i></button>
           <div class="ms-list ms-history" id="msAllList" style="display:none"></div>
@@ -2664,6 +2691,38 @@
     replaceIcons(el);
   }
 
+  function saverStateLabel(unlockedCount){
+    if(unlockedCount>=24) return 'Quietly compounding';
+    if(unlockedCount>=16) return 'Locked in';
+    if(unlockedCount>=10) return 'Consistent';
+    if(unlockedCount>=5) return 'Building';
+    return 'Starting';
+  }
+
+  function chapterDescription(title){
+    if(title==='First steps') return 'Start the loop with your first few quiet wins.';
+    if(title==='Building the habit') return 'Keep stacking small wins until the habit starts feeling natural.';
+    if(title==='Real momentum') return 'Your kept money is turning into real movement.';
+    if(title==='Locked in') return 'This is where rhythm becomes part of who you are.';
+    return 'You are building something steadier over time.';
+  }
+
+  function renderJourneyTrackPage(summary){
+    const el=document.getElementById('msJourneyTrackPage');
+    if(!el) return;
+    const milestones=summary.milestones.slice(0,5);
+    el.innerHTML='';
+    milestones.forEach((milestone, idx)=>{
+      const item=document.createElement('div');
+      const isDone=milestone.unlocked;
+      const isNext=summary.nextIndex===idx && !isDone;
+      item.className='ms-journey-node'+(isDone?' done':'')+(isNext?' next':'');
+      item.innerHTML=`<div class="ms-journey-dot"><i class="ti ${isDone ? 'ti-check' : (isNext ? 'ti-point-filled' : 'ti-lock')}</i></div><span>${milestone.name}</span>`;
+      el.appendChild(item);
+    });
+    replaceIcons(el);
+  }
+
   function render(){
     const rec=recordedThisMonth(), wait=waiting(), tr=transferredTotal();
     const milestoneState = milestoneData();
@@ -2882,8 +2941,17 @@
     const overallPct=data.length ? Math.round(unlocked.length/data.length*100) : 0;
     document.getElementById('msProgressPercent').textContent = overallPct+'%';
     document.getElementById('msProgressRing').style.setProperty('--ms-progress',(overallPct*3.6)+'deg');
+    document.getElementById('msSaverState').textContent = saverStateLabel(unlocked.length);
     document.getElementById('setMilestonesSub').textContent = unlocked.length+' of '+data.length+' earned';
     const nextOverall = locked[0];
+
+    const journey = journeySummary(data);
+    document.getElementById('msJourneyPageTitle').textContent = journey.title;
+    document.getElementById('msJourneyPageSub').textContent = chapterDescription(journey.title);
+    document.getElementById('msJourneyPageMeta').textContent = journey.done+' of '+journey.total+' complete';
+    document.getElementById('msJourneyPageHint').textContent = nextOverall ? (nextOverall.name+' is next.') : 'You have earned every milestone so far.';
+    document.getElementById('msJourneyNextNote').innerHTML = nextOverall ? ('Next up: <b>'+nextOverall.name+'</b> · '+nextOverall.progressText) : 'Everything here is unlocked.';
+    renderJourneyTrackPage(journey);
 
     document.querySelectorAll('#msSeg button').forEach(b=>b.classList.toggle('on', b.dataset.cat===msCat));
     const catInfo = msCat==='all' ? {id:'all',label:'All'} : (MILESTONE_CATS.find(c=>c.id===msCat) || MILESTONE_CATS[0]);
