@@ -694,11 +694,18 @@
   .home-goal-right span{display:block}.home-goal-right b{display:inline;font-size:10.5px;color:var(--ink)}
   .goal-bar-hidden{display:none}
   .home-primary-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
+  .home-primary-actions.auto-on{grid-template-columns:.76fr 1.24fr}
   .home-action{border:0;border-radius:20px;padding:13px 12px;background:rgba(255,255,255,.78);display:flex;align-items:center;gap:10px;text-align:left;color:var(--ink);cursor:pointer;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .home-action:active{transform:scale(.98)}
   .home-action-icon{width:36px;height:36px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:#CFF7E8;color:#0B6E58;flex:0 0 auto}
   .move-money .home-action-icon{background:#EEE9FF;color:#6956D9}
   .home-action b{display:block;font-size:12.5px;letter-spacing:-.01em}.home-action small{display:block;font-size:9.5px;color:var(--muted);margin-top:2px;white-space:nowrap}
+  .home-action.auto-transfer{align-items:flex-start;padding-right:14px}
+  .home-action.auto-transfer .home-action-icon{margin-top:1px}
+  .home-action.auto-transfer b{font-size:12.2px}
+  .home-action.auto-transfer small{white-space:normal;line-height:1.2}
+  .home-action-copy{display:block;min-width:0;flex:1}
+  .home-action-copy em{display:block;font-style:normal;font-size:8.8px;color:var(--muted);margin-top:4px;line-height:1.25;white-space:normal}
   .home-section{margin-top:17px}
   .section-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;padding:0 2px}
   .section-heading b{font-size:13px;letter-spacing:-.015em}.section-heading button{border:0;background:none;color:var(--accent-ink);font:650 10.5px var(--font-ui);cursor:pointer;padding:4px}
@@ -867,11 +874,11 @@
         <div class="home-primary-actions">
           <button class="home-action add-win" id="homeAddWin">
             <span class="home-action-icon"><i class="ti ti-plus"></i></span>
-            <span><b>Add a win</b><small>Log money you kept</small></span>
+            <span class="home-action-copy"><b>Add a win</b><small>Log money you kept</small></span>
           </button>
           <button class="home-action move-money" id="homeMoveMoney">
-            <span class="home-action-icon"><i class="ti ti-arrow-up-right"></i></span>
-            <span><b>Move money</b><small>Transfer or review</small></span>
+            <span class="home-action-icon"><i class="ti ti-arrow-up-right" id="homeMoveIcon"></i></span>
+            <span class="home-action-copy"><b id="homeMoveTitle">Move money</b><small id="homeMoveSub">Transfer or review</small><em id="homeMoveMeta" class="hidden"></em></span>
           </button>
         </div>
 
@@ -2588,10 +2595,31 @@
     document.getElementById('homeProgressPct').textContent=openEnded?String(openWinCount):Math.round(pct)+'%';
     document.getElementById('homeProgressLabel').textContent=openEnded?(openWinCount===1?'save':'saves'):'of plan';
     document.getElementById('homeProgressGoal').textContent = openEnded ? 'this month' : 'Goal '+Pn(gm);
+    const autoOn = !!(bank.connected && bankAutoDraft);
+    const primaryActions=document.querySelector('.home-primary-actions');
+    const moveBtn=document.getElementById('homeMoveMoney');
+    const moveTitle=document.getElementById('homeMoveTitle');
+    const moveSub=document.getElementById('homeMoveSub');
+    const moveMeta=document.getElementById('homeMoveMeta');
+    const moveIcon=document.getElementById('homeMoveIcon');
+    if(primaryActions) primaryActions.classList.toggle('auto-on', autoOn);
+    if(moveBtn) moveBtn.classList.toggle('auto-transfer', autoOn);
+    if(moveIcon) moveIcon.className = autoOn ? 'ti ti-calendar-event' : 'ti ti-arrow-up-right';
+    if(moveTitle) moveTitle.textContent = autoOn ? 'Auto transfer' : 'Move money';
+    if(moveSub) moveSub.textContent = autoOn ? scheduleSummary() : 'Transfer or review';
+    if(moveMeta){
+      if(autoOn){
+        moveMeta.textContent = P(wait)+' waiting · linked bank · auto on';
+        moveMeta.classList.remove('hidden');
+      }else{
+        moveMeta.textContent = '';
+        moveMeta.classList.add('hidden');
+      }
+    }
     const transferCard=document.getElementById('transferCard');
-    transferCard.style.display = bank.connected && bankAutoDraft ? '' : 'none';
-    document.getElementById('transferCardTitle').textContent = bank.connected && bankAutoDraft ? 'Scheduled transfer' : 'Move money';
-    document.getElementById('transferStatusLine').textContent = bank.connected && bankAutoDraft
+    transferCard.style.display = 'none';
+    document.getElementById('transferCardTitle').textContent = autoOn ? 'Scheduled transfer' : 'Move money';
+    document.getElementById('transferStatusLine').textContent = autoOn
       ? (P(wait)+' waiting · '+scheduleSummary())
       : bank.connected && bankRuleDraft
       ? (P(wait)+' waiting · '+moneyForCode(bank.availableAboveFloorMinor, bank.accountCurrency || currencyCode)+' above floor')
