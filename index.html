@@ -840,13 +840,13 @@
   .home-balance-card,.future-projection-card{background:radial-gradient(90% 130% at 100% 0%,var(--warm-glow),transparent 58%),radial-gradient(100% 110% at 0% 100%,var(--violet-glow),transparent 62%),var(--surface-elevated);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .home-icon-btn,.home-action,.home-quick,.quick-home-add,.future-assumption-toggle,.future-metrics>div,.settings-profile,.settings-group{background:var(--surface-solid);border-color:var(--hair);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .card,.bank-panel,.bank-inline,.fut-toggle,.ms-item,.ms-chip,.month-sec,.set-row{border-color:var(--hair)}
-  .floating-top-btn{position:absolute;right:18px;bottom:112px;z-index:36;width:42px;height:42px;border:0;border-radius:14px;background:rgba(255,255,255,.96);color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .18s,transform .18s}
-  .floating-top-btn.show{opacity:1;pointer-events:auto;transform:translateY(0)}
-  .floating-top-btn i,.floating-top-btn svg{font-size:18px}
-  .feedback-notch{position:absolute;right:0;top:50%;transform:translateY(-50%);z-index:37;border:0;background:rgba(255,255,255,.94);color:var(--accent);width:18px;height:86px;border-radius:16px 0 0 16px;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s}
+  .floating-top-btn{position:absolute;left:50%;bottom:112px;z-index:74;width:54px;height:42px;border:0;border-radius:16px;background:rgba(255,255,255,.96);color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);opacity:0;pointer-events:none;transform:translate(-50%,10px);transition:opacity .18s,transform .18s}
+  .floating-top-btn.show{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+  .floating-top-btn i,.floating-top-btn svg{font-size:24px}
+  .feedback-notch{position:absolute;right:0;top:50%;transform:translateY(-50%);z-index:73;border:0;background:rgba(255,255,255,.94);color:var(--accent);width:18px;height:86px;border-radius:16px 0 0 16px;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s}
   .feedback-notch.show{opacity:1;pointer-events:auto}
   .feedback-notch span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-  .feedback-drawer{position:absolute;top:0;right:0;bottom:0;width:min(86%,320px);z-index:61;background:var(--paper);border-radius:28px 0 0 28px;padding:18px 16px 24px;box-shadow:-18px 0 40px -30px rgba(0,0,0,.3);transform:translateX(104%);transition:transform .22s ease}
+  .feedback-drawer{position:absolute;top:0;right:0;bottom:0;width:min(86%,320px);z-index:61;background:var(--paper);border-radius:28px 0 0 28px;padding:18px 16px 24px;box-shadow:-18px 0 40px -30px rgba(0,0,0,.3);transform:translateX(104%);transition:transform .22s ease;overflow-y:auto}
   .feedback-drawer.show{transform:translateX(0)}
   .feedback-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
   .feedback-head h3{margin:0;font-family:var(--font-round);font-size:23px;line-height:1.02;letter-spacing:-.04em}
@@ -996,7 +996,7 @@
         </div>
       </div>
 
-      <button class="floating-top-btn" id="scrollTopBtn" aria-label="Back to top"><i class="ti ti-arrow-up"></i></button>
+      <button class="floating-top-btn" id="scrollTopBtn" aria-label="Back to top"><i class="ti ti-chevron-up"></i></button>
       <button class="feedback-notch" id="feedbackNotch" aria-label="Send feedback"><span>Feedback</span></button>
       <div class="overlay" id="feedbackOverlay">
         <div class="feedback-drawer" id="feedbackDrawer">
@@ -1005,7 +1005,7 @@
               <h3>Quick feedback</h3>
               <p>Tell us what feels good, confusing, or worth improving.</p>
             </div>
-            <button class="feedback-close" id="feedbackClose" aria-label="Close feedback"><i class="ti ti-x"></i></button>
+            <button class="feedback-close" id="feedbackClose" aria-label="Close feedback"><span aria-hidden="true">&times;</span></button>
           </div>
           <div class="feedback-field">
             <label for="feedbackInput">Your note</label>
@@ -1673,9 +1673,14 @@
     bolt:'<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>',
     coin:'<circle cx="12" cy="12" r="8"/><path d="M12 7.5v9M14.3 9.4C13.8 8.6 13 8.2 12 8.2c-1.4 0-2.4.8-2.4 1.9s1 1.6 2.4 1.9 2.4.8 2.4 1.9-1 1.9-2.4 1.9c-1 0-1.9-.5-2.4-1.3"/>',
     calendar:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8 3v3M16 3v3"/>',
+    'calendar-event':'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8 3v3M16 3v3"/><path d="M12 12v5M9.5 14.5h5"/>',
     'chevron-up':'<path d="M6 15l6-6 6 6"/>',
     'chevron-down':'<path d="M6 9l6 6 6-6"/>',
+    'arrow-up':'<path d="M12 19V7"/><path d="M6 13l6-6 6 6"/>',
     moon:'<path d="M20 14a8 8 0 1 1-10-10 6 6 0 0 0 10 10z"/>',
+    x:'<path d="M6 6l12 12M18 6L6 18"/>',
+    send:'<path d="M4 12l15-7-3 14-4-5-8-2z"/><path d="M12 14l7-9"/>',
+    'message-circle':'<path d="M7 18l-3 3v-5a8 8 0 1 1 3 2z"/>',
     wifi:'<path d="M5 12a10 10 0 0 1 14 0M8 15a6 6 0 0 1 8 0"/><path d="M12 18h.01"/>',
     'battery-3':'<rect x="3" y="8" width="16" height="8" rx="2"/><path d="M21 11v2"/><rect x="5" y="10" width="9" height="4" fill="currentColor" stroke="none"/>',
     'signal-4g':'<path d="M4 18v-2M9 18v-5M14 18v-8M19 18V6" stroke-width="2.2"/>',
@@ -3171,11 +3176,17 @@
   const feedbackDrawer=document.getElementById('feedbackDrawer');
   const feedbackInput=document.getElementById('feedbackInput');
   function activeViewEl(){ return cur().querySelector('.view:not(.hidden)'); }
+  function activeScrollableEl(){
+    const openSheet=document.querySelector('.overlay.show .sheet');
+    if(openSheet) return openSheet;
+    if(feedbackOv.classList.contains('show')) return feedbackDrawer;
+    return activeViewEl();
+  }
   function syncFloatingUi(){
-    const active=activeViewEl();
+    const active=activeScrollableEl();
     const shouldShowTop=!!showScrollTop && !!active && active.scrollTop>180;
     scrollTopBtn.classList.toggle('show', shouldShowTop);
-    const showNotch=!!showFeedbackNotch && !feedbackOv.classList.contains('show');
+    const showNotch=!!showFeedbackNotch && !document.querySelector('.overlay.show') && !feedbackOv.classList.contains('show');
     feedbackNotchEl.classList.toggle('show', showNotch);
   }
   function openFeedback(){
@@ -3190,7 +3201,7 @@
     syncFloatingUi();
   }
   scrollTopBtn.addEventListener('click',()=>{
-    activeViewEl()?.scrollTo({ top:0, behavior:'smooth' });
+    activeScrollableEl()?.scrollTo({ top:0, behavior:'smooth' });
   });
   feedbackNotchEl.addEventListener('click',openFeedback);
   document.getElementById('feedbackClose').addEventListener('click',closeFeedback);
@@ -3211,6 +3222,10 @@
   cur().querySelectorAll('.view').forEach(view=>{
     view.addEventListener('scroll',syncFloatingUi,{ passive:true });
   });
+  document.querySelectorAll('.sheet').forEach(sheet=>{
+    sheet.addEventListener('scroll',syncFloatingUi,{ passive:true });
+  });
+  feedbackDrawer.addEventListener('scroll',syncFloatingUi,{ passive:true });
 
   // ---------- milestones ----------
   const msOv=document.getElementById('milestonesOverlay');
