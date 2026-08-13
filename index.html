@@ -86,7 +86,7 @@
     padding:14px 26px 6px;font-size:13px;font-weight:600;font-family:var(--font-round);z-index:30}
   .statusbar .icons{display:flex;gap:6px;color:var(--ink);font-size:13px}
 
-  .view{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 20px 150px;-webkit-overflow-scrolling:touch}
+  .view{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 20px 210px;-webkit-overflow-scrolling:touch}
   .view::-webkit-scrollbar{width:0}
   .hidden{display:none}
 
@@ -216,7 +216,7 @@
     display:flex;align-items:flex-end;border-radius:36px;opacity:0;pointer-events:none;transition:opacity .28s}
   #upgradeOverlay{z-index:72}
   .overlay.show{opacity:1;pointer-events:auto}
-  .sheet{width:100%;background:var(--paper);border-radius:28px 28px 36px 36px;padding:8px 20px 104px;
+  .sheet{width:100%;background:var(--paper);border-radius:28px 28px 36px 36px;padding:8px 20px 150px;
     transform:translateY(18px);transition:transform .3s cubic-bezier(.2,.9,.2,1);max-height:92%;overflow-y:auto}
   .overlay.show .sheet{transform:translateY(0)}
   .grip{width:38px;height:5px;border-radius:3px;background:var(--hair);margin:8px auto 14px}
@@ -456,7 +456,7 @@
   .qle-mid small{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
   .qle-del{border:none;background:none;color:#B0554C;cursor:pointer;font-size:18px;padding:6px;flex:0 0 auto}
   #milestonesOverlay{background:var(--paper);backdrop-filter:none;-webkit-backdrop-filter:none;align-items:stretch}
-  #milestonesOverlay .sheet{max-height:none;height:100%;border-radius:0;padding:18px 20px 150px;background:radial-gradient(95% 45% at 100% 0%,var(--warm-glow),transparent 68%),radial-gradient(100% 50% at 0% 100%,var(--violet-glow),transparent 72%),var(--paper);transform:translateX(16px);box-shadow:none}
+  #milestonesOverlay .sheet{max-height:none;height:100%;border-radius:0;padding:18px 20px 190px;background:radial-gradient(95% 45% at 100% 0%,var(--warm-glow),transparent 68%),radial-gradient(100% 50% at 0% 100%,var(--violet-glow),transparent 72%),var(--paper);transform:translateX(16px);box-shadow:none}
   #milestonesOverlay.show .sheet{transform:translateX(0)}
   .ms-page-head{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:10px;margin:1px 0 17px}
   .ms-page-head h3{font-size:27px!important;text-align:center;margin:0!important}
@@ -840,8 +840,8 @@
   .home-balance-card,.future-projection-card{background:radial-gradient(90% 130% at 100% 0%,var(--warm-glow),transparent 58%),radial-gradient(100% 110% at 0% 100%,var(--violet-glow),transparent 62%),var(--surface-elevated);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .home-icon-btn,.home-action,.home-quick,.quick-home-add,.future-assumption-toggle,.future-metrics>div,.settings-profile,.settings-group{background:var(--surface-solid);border-color:var(--hair);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .card,.bank-panel,.bank-inline,.fut-toggle,.ms-item,.ms-chip,.month-sec,.set-row{border-color:var(--hair)}
-  .floating-top-btn{position:absolute;left:50%;bottom:78px;z-index:74;width:54px;height:42px;border:0;border-radius:16px;background:rgba(255,255,255,.96);color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);opacity:0;pointer-events:none;transform:translate(-50%,10px);transition:opacity .18s,transform .18s}
-  .floating-top-btn.overlay-pos{bottom:18px}
+  .floating-top-btn{position:absolute;left:50%;bottom:122px;z-index:74;width:54px;height:42px;border:0;border-radius:16px;background:rgba(255,255,255,.96);color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);opacity:0;pointer-events:none;transform:translate(-50%,10px);transition:opacity .18s,transform .18s}
+  .floating-top-btn.overlay-pos{bottom:20px}
   .floating-top-btn.show{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
   .floating-top-btn i,.floating-top-btn svg{font-size:24px}
   .feedback-notch{position:absolute;left:0;top:50%;transform:translateY(-50%);z-index:73;border:0;background:rgba(255,255,255,.94);color:var(--accent);width:18px;height:86px;border-radius:0 16px 16px 0;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s}
