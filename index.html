@@ -487,9 +487,15 @@
   .ms-next-note b{color:var(--ink)}
   .ms-progress-ring{--ms-progress:0deg;width:94px;height:94px;border-radius:50%;background:conic-gradient(var(--accent) var(--ms-progress),var(--accent-soft) 0);padding:10px;flex:0 0 auto}
   .ms-progress-ring>div{width:100%;height:100%;border-radius:50%;background:var(--surface-solid);display:flex;align-items:center;justify-content:center;font-family:var(--font-round);font-size:22px;font-weight:650;color:var(--accent)}
-  #milestonesOverlay .seg{overflow-x:auto;justify-content:flex-start;scrollbar-width:none;margin-bottom:18px;padding:4px;border-radius:18px}
-  #milestonesOverlay .seg::-webkit-scrollbar{display:none}
-  #milestonesOverlay .seg button{flex:0 0 auto;white-space:nowrap;padding:9px 13px}
+  .ms-chapters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:0 0 18px}
+  .ms-chapter-btn{border:1px solid var(--hair);background:var(--surface-solid);border-radius:20px;padding:12px 12px 11px;text-align:left;cursor:pointer;box-shadow:var(--card-float-shadow),inset 0 0 0 1px rgba(255,255,255,.35);display:flex;align-items:flex-start;gap:11px;color:var(--ink)}
+  .ms-chapter-btn.on{background:color-mix(in srgb,var(--accent-soft) 62%,var(--surface-solid));border-color:color-mix(in srgb,var(--accent) 24%,var(--hair))}
+  .ms-chapter-ic{width:34px;height:34px;border-radius:12px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:16px}
+  .ms-chapter-btn:nth-child(3n) .ms-chapter-ic{background:var(--amber-soft);color:var(--amber-ink)}
+  .ms-chapter-copy{min-width:0;flex:1}
+  .ms-chapter-copy b{display:block;font-family:var(--font-round);font-size:13px;line-height:1.15}
+  .ms-chapter-copy small{display:block;font-size:10px;color:var(--muted);line-height:1.35;margin-top:4px}
+  .ms-chapter-copy span{display:block;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);margin-top:6px}
   .ms-section-title{font-family:var(--font-round);font-size:18px;font-weight:650;letter-spacing:-.025em;margin:0 0 10px;color:var(--accent)}
   .ms-sub{font-size:11.5px;color:var(--muted);line-height:1.45;margin:-4px 0 12px}
   .ms-list{display:flex;flex-direction:column;gap:9px}
@@ -1563,13 +1569,7 @@
             <div class="ms-journey-track" id="msJourneyTrackPage"></div>
             <div class="ms-next-note" id="msJourneyNextNote">Next up: <b>First Win</b></div>
           </div>
-          <div class="seg" id="msSeg">
-            <button data-cat="all" class="on">All</button>
-            <button data-cat="start">Getting started</button>
-            <button data-cat="habit">Habits</button>
-            <button data-cat="money">Money</button>
-            <button data-cat="commitment">Commitment</button>
-          </div>
+          <div class="ms-chapters" id="msSeg"></div>
           <div class="ms-section-title">Milestones up next</div>
           <p class="ms-sub" id="msCatSub">See the next few milestones without getting buried in everything at once.</p>
           <div class="ms-list" id="msNextList"></div>
@@ -1743,10 +1743,11 @@
   const SOFT_CAP=10000; // £100 — Wins above this log as unverified until confirmed
   const ISO_RE=/^\d{4}-\d{2}-\d{2}$/;
   const MILESTONE_CATS=[
-    {id:'start', label:'Start', icon:'ti-bolt'},
-    {id:'habit', label:'Habit', icon:'ti-repeat'},
-    {id:'money', label:'Money', icon:'ti-coin'},
-    {id:'commitment', label:'Commitment', icon:'ti-target'}
+    {id:'all', label:'All chapters', title:'Full journey', desc:'See everything in one place', icon:'ti-map-2'},
+    {id:'start', label:'Chapter 1', title:'First steps', desc:'Your first wins and setup moments', icon:'ti-bolt'},
+    {id:'habit', label:'Chapter 2', title:'Building the habit', desc:'Rhythm, streaks, and returning', icon:'ti-repeat'},
+    {id:'money', label:'Chapter 3', title:'Real momentum', desc:'Money kept and money moved', icon:'ti-coin'},
+    {id:'commitment', label:'Chapter 4', title:'Locked in', desc:'Goals, recurring wins, and follow-through', icon:'ti-target'}
   ];
   const FREE_QUICK_LIMIT=3;
   function isNoGoalChoice(name){ return name==="Let's start saving" || name==='No goal yet'; }
@@ -2953,12 +2954,26 @@
     document.getElementById('msJourneyNextNote').innerHTML = nextOverall ? ('Next up: <b>'+nextOverall.name+'</b> · '+nextOverall.progressText) : 'Everything here is unlocked.';
     renderJourneyTrackPage(journey);
 
-    document.querySelectorAll('#msSeg button').forEach(b=>b.classList.toggle('on', b.dataset.cat===msCat));
-    const catInfo = msCat==='all' ? {id:'all',label:'All'} : (MILESTONE_CATS.find(c=>c.id===msCat) || MILESTONE_CATS[0]);
+    const seg=document.getElementById('msSeg');
+    seg.innerHTML='';
+    MILESTONE_CATS.forEach(cat=>{
+      const list = cat.id==='all' ? data : data.filter(m=>m.cat===cat.id);
+      const done = list.filter(m=>m.unlocked).length;
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='ms-chapter-btn'+(cat.id===msCat?' on':'');
+      btn.dataset.cat=cat.id;
+      btn.innerHTML=`<div class="ms-chapter-ic"><i class="ti ${cat.icon.replace('ti-','') ? cat.icon : 'ti-circle'}"></i></div><div class="ms-chapter-copy"><b>${cat.title}</b><small>${cat.desc}</small><span>${done} of ${list.length} complete</span></div>`;
+      seg.appendChild(btn);
+    });
+    replaceIcons(seg);
+    const catInfo = MILESTONE_CATS.find(c=>c.id===msCat) || MILESTONE_CATS[0];
     const inCat = msCat==='all' ? data : data.filter(m=>m.cat===msCat);
     const lockedCat = inCat.filter(m=>!m.unlocked);
     const unlockedCat = inCat.filter(m=>m.unlocked);
-    document.getElementById('msCatSub').textContent = unlockedCat.length+' of '+inCat.length+' earned'+(msCat==='all'?'.':' in '+catInfo.label+'.');
+    document.getElementById('msCatSub').textContent = msCat==='all'
+      ? (unlockedCat.length+' of '+inCat.length+' earned across your whole journey.')
+      : (unlockedCat.length+' of '+inCat.length+' complete in '+catInfo.title+'.');
 
     const nextList=document.getElementById('msNextList');
     nextList.innerHTML='';
