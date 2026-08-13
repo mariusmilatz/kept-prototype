@@ -737,6 +737,29 @@
   .home-future-meta .note{font-size:11.5px;color:var(--muted);max-width:68%}
   .home-future-curve{height:88px;margin-top:10px}
   #homeFutureCanvas{display:block;width:100%;height:100%}
+  .home-future-insight{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:7px 10px;border-radius:14px;background:rgba(238,233,255,.92);color:#5E4CC8;font-size:10px;font-weight:650;box-shadow:inset 0 0 0 1px rgba(121,104,232,.08)}
+  .home-future-insight i{font-size:12px}
+  .home-future-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;padding-top:11px;border-top:1px solid rgba(17,23,19,.07);font-size:11px;color:var(--muted)}
+  .home-future-foot b{font-size:11px;color:var(--accent-ink)}
+  .quiet-progress{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:14px;padding:14px 8px 10px;border-radius:22px;background:rgba(255,255,255,.78);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
+  .quiet-progress-item{padding:2px 10px 0;text-align:center;position:relative}
+  .quiet-progress-item:not(:last-child)::after{content:"";position:absolute;right:0;top:10px;bottom:10px;width:1px;background:rgba(17,23,19,.08)}
+  .quiet-progress-item .ic{width:32px;height:32px;border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent-ink);font-size:14px}
+  .quiet-progress-item:nth-child(2) .ic{background:#EEE9FF;color:#5E4CC8}
+  .quiet-progress-item:nth-child(3) .ic{background:#FFF1D8;color:#A56A12}
+  .quiet-progress-item b{display:block;font-size:11px;line-height:1.2}
+  .quiet-progress-item small{display:block;font-size:9px;line-height:1.35;color:var(--muted);margin-top:4px}
+  .journey-teaser{padding:14px 14px 12px;border-radius:22px;margin-top:14px;cursor:pointer}
+  .journey-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .journey-head b{font-size:13px;display:block}
+  .journey-head small{display:block;font-size:10.5px;color:var(--muted);margin-top:3px}
+  .journey-track{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:13px}
+  .journey-node{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+  .journey-dot{width:22px;height:22px;border-radius:999px;border:1.5px solid rgba(17,23,19,.14);display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);color:var(--muted);font-size:12px;position:relative}
+  .journey-node.done .journey-dot{background:#DFF5EE;border-color:#0A785C;color:#0A785C}
+  .journey-node.next .journey-dot{background:#F5F1FF;border-color:#8C7BFF;color:#6956D9;box-shadow:0 0 0 4px rgba(140,123,255,.08)}
+  .journey-node span{font-size:8.5px;line-height:1.25;color:var(--muted);max-width:56px}
+  .journey-node.done span,.journey-node.next span{color:var(--ink)}
   .mini-manage-btn{border:0;background:rgba(255,255,255,.72);color:var(--accent);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);border-radius:999px;padding:7px 11px;font:650 10px var(--font-ui);cursor:pointer;display:inline-flex;align-items:center;gap:5px;flex:0 0 auto}
   .mini-manage-btn i,.mini-manage-btn svg{font-size:12px}
   .milestone-teaser{border-radius:20px;padding:12px 14px}.milestone-teaser .big{font-size:16px}.milestone-teaser .note{font-size:10.5px}
@@ -907,20 +930,38 @@
           </div>
           <div class="big" id="teaserFuture">£75,900</div>
           <div class="note" id="teaserNote">estimated in 20 years · if kept and invested · 5.0% est. return / year</div>
+          <div class="home-future-insight" id="teaserInsight"><i class="ti ti-chart-line"></i><span id="teaserInsightText">This month moved your future up.</span></div>
           <div class="home-future-curve"><canvas id="homeFutureCanvas" aria-label="Projected growth to your time horizon"></canvas></div>
+          <div class="home-future-foot"><span id="teaserFootText">This month moved your future up.</span><b id="teaserFootValue">+£0 on your path</b></div>
         </div>
 
-        <div class="card milestone-teaser hidden" role="button" tabindex="0" id="milestoneCard">
-          <div class="row">
-            <div style="width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:18px"><i class="ti ti-target"></i></div>
-            <div class="copy">
-              <div class="cap">Milestones</div>
-              <div class="big" id="msTeaserCount">0 unlocked</div>
-              <div class="note" id="msTeaserNote">Track quiet progress across starts, habits, money, and commitment.</div>
+        <div class="quiet-progress" id="quietProgressCard">
+          <div class="quiet-progress-item">
+            <div class="ic"><i class="ti ti-chart-line"></i></div>
+            <b id="qpRecordTitle">No record yet</b>
+            <small id="qpRecordSub">Your month is just getting started.</small>
+          </div>
+          <div class="quiet-progress-item">
+            <div class="ic"><i class="ti ti-rosette-discount-check"></i></div>
+            <b id="qpMilestoneTitle">0 milestones unlocked</b>
+            <small id="qpMilestoneSub">Quiet progress adds up.</small>
+          </div>
+          <div class="quiet-progress-item">
+            <div class="ic"><i class="ti ti-target-arrow"></i></div>
+            <b id="qpChallengeTitle">Monthly nudge</b>
+            <small id="qpChallengeSub">0 of 3 saving wins this month.</small>
+          </div>
+        </div>
+
+        <div class="card journey-teaser" role="button" tabindex="0" id="milestoneCard">
+          <div class="journey-head">
+            <div>
+              <b id="msJourneyTitle">Building the habit</b>
+              <small id="msJourneySub">4 of 6 complete</small>
             </div>
             <i class="ti ti-chevron-right" style="color:var(--muted)" aria-hidden="true"></i>
           </div>
-          <div class="mini" id="msTeaserNext">No milestones yet</div>
+          <div class="journey-track" id="journeyTrack"></div>
         </div>
       </div>
 
@@ -2574,6 +2615,55 @@
     return data;
   }
 
+  function homeChallengeProgress(){
+    const winsThisMonth = monthWins(CUR).length;
+    const target = 3;
+    return { current: Math.min(winsThisMonth, target), target, done: winsThisMonth >= target };
+  }
+
+  function homeBestMonthAmount(){
+    const totals={};
+    wins.filter(w=>w.state!=='recorded').forEach(w=>{ totals[w.month]=(totals[w.month]||0)+w.net; });
+    return Math.max(0,...Object.values(totals));
+  }
+
+  function journeySummary(data){
+    const chapters=[
+      { title:'First steps', ids:['first-win','first-confirmed-win','first-transfer','first-quick-save','first-goal'] },
+      { title:'Building the habit', ids:['back-tomorrow','three-day-rhythm','week-of-intent','steady-hand','habit-builder','monthly-keeper'] },
+      { title:'Real momentum', ids:['kept-10','kept-50','kept-100','money-moved','transferred-100','real-saver'] },
+      { title:'Locked in', ids:['goal-underway','halfway-there','on-track','still-kept','subscription-slayer','consistency-pays'] }
+    ];
+    for(const chapter of chapters){
+      const milestones=chapter.ids.map(id=>data.find(m=>m.id===id)).filter(Boolean);
+      if(!milestones.length) continue;
+      const doneCount=milestones.filter(m=>m.unlocked).length;
+      if(doneCount < milestones.length){
+        const nextIndex=Math.min(doneCount, milestones.length-1);
+        return { title:chapter.title, done:doneCount, total:milestones.length, milestones, nextIndex };
+      }
+    }
+    const finalChapter=chapters[chapters.length-1];
+    const milestones=finalChapter.ids.map(id=>data.find(m=>m.id===id)).filter(Boolean);
+    return { title:'Quietly compounding', done:milestones.length, total:milestones.length, milestones, nextIndex:-1 };
+  }
+
+  function renderJourneyTrack(summary){
+    const el=document.getElementById('journeyTrack');
+    if(!el) return;
+    const milestones=summary.milestones.slice(0,5);
+    el.innerHTML='';
+    milestones.forEach((milestone, idx)=>{
+      const item=document.createElement('div');
+      const isDone=milestone.unlocked;
+      const isNext=summary.nextIndex===idx && !isDone;
+      item.className='journey-node'+(isDone?' done':'')+(isNext?' next':'');
+      item.innerHTML=`<div class="journey-dot"><i class="ti ${isDone ? 'ti-check' : (isNext ? 'ti-point-filled' : 'ti-lock')}</i></div><span>${milestone.name}</span>`;
+      el.appendChild(item);
+    });
+    replaceIcons(el);
+  }
+
   function render(){
     const rec=recordedThisMonth(), wait=waiting(), tr=transferredTotal();
     const milestoneState = milestoneData();
@@ -2633,6 +2723,32 @@
     document.getElementById('teaserFuture').textContent = Pn(fv);
     const rt=effectiveReturn();
     document.getElementById('teaserNote').textContent = 'estimated '+horizonText(true)+' · if kept and invested · '+rt.toFixed(1)+'% est. return / year';
+    const monthFuture = monthFV();
+    const bestMonth = homeBestMonthAmount();
+    const bestMonthFuture = bestMonth>0 ? fvNow(bestMonth) : 0;
+    const monthDelta = Math.max(0, monthFuture - bestMonthFuture);
+    document.getElementById('teaserInsightText').textContent = bestMonth > 0 && rec >= bestMonth ? 'Best month added more to your path.' : 'This month moved your future up.';
+    document.getElementById('teaserFootText').textContent = rec > 0 ? 'This month moved your future up.' : 'Your next saving win moves this line.';
+    document.getElementById('teaserFootValue').textContent = rec > 0
+      ? (bestMonth > 0 && rec >= bestMonth
+        ? ('+'+Pn(Math.max(monthDelta, monthFuture))+' on your path')
+        : ('+'+Pn(monthFuture)+' on your path'))
+      : 'Add a saving win';
+
+    const challenge = homeChallengeProgress();
+    const unlockedCount = milestoneState.filter(m=>m.unlocked).length;
+    document.getElementById('qpRecordTitle').textContent = bestMonth > 0 && rec >= bestMonth ? 'New record' : 'Quiet month';
+    document.getElementById('qpRecordSub').textContent = bestMonth > 0 && rec >= bestMonth ? (P(rec)+' is your best month yet.') : (P(rec)+' kept so far this month.');
+    document.getElementById('qpMilestoneTitle').textContent = unlockedCount+' milestones unlocked';
+    document.getElementById('qpMilestoneSub').textContent = milestoneState.newlyUnlocked.length ? (milestoneState.newlyUnlocked.length+' new this month.') : 'Quiet progress adds up.';
+    document.getElementById('qpChallengeTitle').textContent = challenge.done ? 'Monthly nudge done' : 'Monthly nudge';
+    document.getElementById('qpChallengeSub').textContent = challenge.current+' of '+challenge.target+' saving wins this month.';
+
+    const journey = journeySummary(milestoneState);
+    document.getElementById('msJourneyTitle').textContent = journey.title;
+    document.getElementById('msJourneySub').textContent = journey.done+' of '+journey.total+' complete';
+    renderJourneyTrack(journey);
+
     const recurAdd = projectRecurring ? annuityFV(recurMonthly(), proj.years) : 0;
     document.getElementById('futureBig').textContent = Pn(fv + recurAdd);
     document.getElementById('futureAssume').textContent = 'estimated · '+rt.toFixed(1)+'% return · '+horizonText(true) + (recurAdd>0?' · incl. subscriptions':'') + (useBasicPercentages?'':' · from selected market');
@@ -2766,11 +2882,8 @@
     const overallPct=data.length ? Math.round(unlocked.length/data.length*100) : 0;
     document.getElementById('msProgressPercent').textContent = overallPct+'%';
     document.getElementById('msProgressRing').style.setProperty('--ms-progress',(overallPct*3.6)+'deg');
-    document.getElementById('msTeaserCount').textContent = unlocked.length+' unlocked';
     document.getElementById('setMilestonesSub').textContent = unlocked.length+' of '+data.length+' earned';
     const nextOverall = locked[0];
-    document.getElementById('msTeaserNote').textContent = nextOverall ? nextOverall.name+' is next.' : 'You have earned every milestone so far.';
-    document.getElementById('msTeaserNext').textContent = nextOverall ? nextOverall.progressText : 'Everything here is unlocked.';
 
     document.querySelectorAll('#msSeg button').forEach(b=>b.classList.toggle('on', b.dataset.cat===msCat));
     const catInfo = msCat==='all' ? {id:'all',label:'All'} : (MILESTONE_CATS.find(c=>c.id===msCat) || MILESTONE_CATS[0]);
