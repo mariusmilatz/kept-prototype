@@ -487,38 +487,15 @@
   .ms-next-note b{color:var(--ink)}
   .ms-progress-ring{--ms-progress:0deg;width:94px;height:94px;border-radius:50%;background:conic-gradient(var(--accent) var(--ms-progress),var(--accent-soft) 0);padding:10px;flex:0 0 auto}
   .ms-progress-ring>div{width:100%;height:100%;border-radius:50%;background:var(--surface-solid);display:flex;align-items:center;justify-content:center;font-family:var(--font-round);font-size:22px;font-weight:650;color:var(--accent)}
-  .ms-chapters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:0 0 18px}
-  .ms-chapter-btn{position:relative;overflow:hidden;border:1px solid var(--hair);background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.92));border-radius:20px;padding:12px 14px 12px;text-align:left;cursor:pointer;box-shadow:var(--card-float-shadow),inset 0 0 0 1px rgba(255,255,255,.35);display:flex;align-items:flex-start;gap:11px;color:var(--ink);isolation:isolate}
-  .ms-chapter-btn::before{content:"";position:absolute;inset:auto 14px 10px auto;width:56px;height:56px;border-radius:18px;opacity:.12;pointer-events:none;z-index:0;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.95),rgba(255,255,255,0) 55%),linear-gradient(135deg,color-mix(in srgb,var(--accent) 52%,white),transparent 70%)}
-  .ms-chapter-btn.on{background:linear-gradient(180deg,color-mix(in srgb,var(--accent-soft) 44%,white),color-mix(in srgb,var(--accent-soft) 22%,var(--surface-solid)));border-color:color-mix(in srgb,var(--accent) 24%,var(--hair))}
-  .ms-chapter-ic{width:34px;height:34px;border-radius:12px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:16px}
-  .ms-chapter-btn:nth-child(3n) .ms-chapter-ic{background:var(--amber-soft);color:var(--amber-ink)}
-  .ms-chapter-copy,.ms-chapter-accent{position:relative;z-index:1}
-  .ms-chapter-copy{min-width:0;flex:1;padding-right:22px}
-  .ms-chapter-copy em{display:block;font-style:normal;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-  .ms-chapter-copy b{display:block;font-family:var(--font-round);font-size:13px;line-height:1.15;margin-top:3px}
-  .ms-chapter-copy small{display:block;font-size:10px;color:var(--muted);line-height:1.35;margin-top:4px;max-width:18ch}
-  .ms-chapter-copy span{display:block;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);margin-top:6px}
-  .ms-chapter-accent{position:absolute;right:12px;bottom:10px;width:40px;height:24px;pointer-events:none;opacity:.65}
-  .ms-chapter-accent i{position:absolute;display:block}
-  .ms-chapter-accent i:nth-child(1){left:0;right:0;bottom:0;height:2px;border-radius:999px;background:color-mix(in srgb,var(--accent) 30%,transparent)}
-  .ms-chapter-btn[data-accent="journey"] .ms-chapter-accent i:nth-child(1){width:34px;left:6px}
-  .ms-chapter-btn[data-accent="journey"] .ms-chapter-accent i:nth-child(2){right:2px;bottom:0;width:12px;height:12px;border-right:2px solid color-mix(in srgb,var(--accent) 38%,transparent);border-top:2px solid color-mix(in srgb,var(--accent) 38%,transparent);border-top-right-radius:12px}
-  .ms-chapter-btn[data-accent="spark"] .ms-chapter-accent i:nth-child(1){right:6px;bottom:2px;width:18px;height:18px;border:2px solid color-mix(in srgb,var(--accent) 34%,transparent);border-left-color:transparent;border-bottom-color:transparent;border-radius:50%}
-  .ms-chapter-btn[data-accent="spark"] .ms-chapter-accent i:nth-child(2){right:0;top:0;width:5px;height:5px;border-radius:50%;background:color-mix(in srgb,var(--accent) 52%,transparent)}
-  .ms-chapter-btn[data-accent="rhythm"] .ms-chapter-accent i:nth-child(1),
-  .ms-chapter-btn[data-accent="rhythm"] .ms-chapter-accent i:nth-child(2),
-  .ms-chapter-btn[data-accent="rhythm"] .ms-chapter-accent i:nth-child(3){bottom:2px;width:6px;border-radius:999px;background:color-mix(in srgb,var(--accent) 35%,transparent)}
-  .ms-chapter-btn[data-accent="rhythm"] .ms-chapter-accent i:nth-child(1){left:8px;height:10px}
-  .ms-chapter-btn[data-accent="rhythm"] .ms-chapter-accent i:nth-child(2){left:18px;height:15px}
-  .ms-chapter-btn[data-accent="rhythm"] .ms-chapter-accent i:nth-child(3){left:28px;height:7px}
-  .ms-chapter-btn[data-accent="steps"] .ms-chapter-accent i:nth-child(1){left:10px;bottom:2px;width:22px;height:2px;border-radius:999px;background:color-mix(in srgb,var(--accent) 35%,transparent);transform:rotate(-14deg);transform-origin:left center}
-  .ms-chapter-btn[data-accent="steps"] .ms-chapter-accent i:nth-child(2),
-  .ms-chapter-btn[data-accent="steps"] .ms-chapter-accent i:nth-child(3){width:7px;height:7px;border-radius:50%;background:var(--surface-solid);border:2px solid color-mix(in srgb,var(--accent) 38%,transparent)}
-  .ms-chapter-btn[data-accent="steps"] .ms-chapter-accent i:nth-child(2){left:13px;bottom:4px}
-  .ms-chapter-btn[data-accent="steps"] .ms-chapter-accent i:nth-child(3){left:26px;bottom:8px}
-  .ms-chapter-btn[data-accent="shield"] .ms-chapter-accent i:nth-child(1){right:4px;bottom:1px;width:18px;height:18px;border:2px solid color-mix(in srgb,var(--accent) 36%,transparent);border-radius:50%}
-  .ms-chapter-btn[data-accent="shield"] .ms-chapter-accent i:nth-child(2){right:10px;bottom:7px;width:6px;height:6px;border-radius:50%;background:color-mix(in srgb,var(--accent) 42%,transparent)}
+  .ms-chapters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 18px}
+  .ms-chapter-btn{border:1px solid var(--hair);background:var(--surface-solid);border-radius:20px;padding:14px 16px 15px;text-align:left;cursor:pointer;box-shadow:var(--card-float-shadow),inset 0 0 0 1px rgba(255,255,255,.35);display:block;color:var(--ink);min-height:164px}
+  .ms-chapter-btn.on{background:color-mix(in srgb,var(--accent-soft) 34%,var(--surface-solid));border-color:color-mix(in srgb,var(--accent) 20%,var(--hair))}
+  .ms-chapter-ic,.ms-chapter-accent{display:none}
+  .ms-chapter-copy{min-width:0}
+  .ms-chapter-copy em{display:block;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);line-height:1.2}
+  .ms-chapter-copy b{display:block;font-family:var(--font-round);font-size:18px;line-height:1.04;letter-spacing:-.03em;margin-top:10px;max-width:8ch}
+  .ms-chapter-copy small{display:block;font-size:11px;color:var(--muted);line-height:1.4;margin-top:12px;max-width:15ch}
+  .ms-chapter-copy span{display:block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);margin-top:14px;line-height:1.2}
   .ms-section-title{font-family:var(--font-round);font-size:18px;font-weight:650;letter-spacing:-.025em;margin:0 0 10px;color:var(--accent)}
   .ms-sub{font-size:11.5px;color:var(--muted);line-height:1.45;margin:-4px 0 12px}
   .ms-list{display:flex;flex-direction:column;gap:9px}
@@ -2986,8 +2963,7 @@
       btn.type='button';
       btn.className='ms-chapter-btn'+(cat.id===msCat?' on':'');
       btn.dataset.cat=cat.id;
-      btn.dataset.accent=cat.accent||'journey';
-      btn.innerHTML=`<div class="ms-chapter-ic"><i class="ti ${cat.icon.replace('ti-','') ? cat.icon : 'ti-circle'}"></i></div><div class="ms-chapter-copy"><em>${cat.label}</em><b>${cat.title}</b><small>${cat.desc}</small><span>${done} of ${list.length} complete</span></div><div class="ms-chapter-accent" aria-hidden="true"><i></i><i></i><i></i></div>`;
+      btn.innerHTML=`<div class="ms-chapter-copy"><em>${cat.label}</em><b>${cat.title}</b><small>${cat.desc}</small><span>${done} of ${list.length} complete</span></div>`;
       seg.appendChild(btn);
     });
     replaceIcons(seg);
