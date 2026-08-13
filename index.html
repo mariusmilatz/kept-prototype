@@ -767,6 +767,7 @@
   .home-future-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;padding-top:11px;border-top:1px solid rgba(17,23,19,.07);font-size:11px;color:var(--muted)}
   .home-future-foot b{font-size:11px;color:var(--accent-ink)}
   .quiet-progress{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:14px;padding:14px 8px 10px;border-radius:22px;background:rgba(255,255,255,.78);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
+  .quiet-progress.link{cursor:pointer}
   .quiet-progress-item{padding:2px 10px 0;text-align:center;position:relative}
   .quiet-progress-item.link{cursor:pointer}
   .quiet-progress-item:not(:last-child)::after{content:"";position:absolute;right:0;top:10px;bottom:10px;width:1px;background:rgba(17,23,19,.08)}
@@ -839,6 +840,25 @@
   .home-balance-card,.future-projection-card{background:radial-gradient(90% 130% at 100% 0%,var(--warm-glow),transparent 58%),radial-gradient(100% 110% at 0% 100%,var(--violet-glow),transparent 62%),var(--surface-elevated);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .home-icon-btn,.home-action,.home-quick,.quick-home-add,.future-assumption-toggle,.future-metrics>div,.settings-profile,.settings-group{background:var(--surface-solid);border-color:var(--hair);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .card,.bank-panel,.bank-inline,.fut-toggle,.ms-item,.ms-chip,.month-sec,.set-row{border-color:var(--hair)}
+  .floating-top-btn{position:absolute;right:18px;bottom:112px;z-index:36;width:42px;height:42px;border:0;border-radius:14px;background:rgba(255,255,255,.96);color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .18s,transform .18s}
+  .floating-top-btn.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+  .floating-top-btn i,.floating-top-btn svg{font-size:18px}
+  .feedback-notch{position:absolute;right:0;top:50%;transform:translateY(-50%);z-index:37;border:0;background:rgba(255,255,255,.94);color:var(--accent);width:18px;height:86px;border-radius:16px 0 0 16px;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s}
+  .feedback-notch.show{opacity:1;pointer-events:auto}
+  .feedback-notch span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+  .feedback-drawer{position:absolute;top:0;right:0;bottom:0;width:min(86%,320px);z-index:61;background:var(--paper);border-radius:28px 0 0 28px;padding:18px 16px 24px;box-shadow:-18px 0 40px -30px rgba(0,0,0,.3);transform:translateX(104%);transition:transform .22s ease}
+  .feedback-drawer.show{transform:translateX(0)}
+  .feedback-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+  .feedback-head h3{margin:0;font-family:var(--font-round);font-size:23px;line-height:1.02;letter-spacing:-.04em}
+  .feedback-head p{margin:6px 0 0;font-size:12px;color:var(--muted);line-height:1.45}
+  .feedback-close{border:0;background:rgba(255,255,255,.78);color:var(--accent);width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
+  .feedback-close i,.feedback-close svg{font-size:16px}
+  .feedback-field{margin-top:12px}
+  .feedback-field label{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px 2px}
+  .feedback-field textarea{width:100%;min-height:140px;resize:none;border:1px solid var(--hair);border-radius:18px;padding:14px 15px;background:rgba(255,255,255,.88);font:500 14px/1.45 var(--font-ui);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+  .feedback-field textarea:focus{outline:none;border-color:color-mix(in srgb,var(--accent) 32%,var(--hair))}
+  .feedback-actions{display:flex;gap:10px;margin-top:16px}
+  .feedback-actions .btn{margin-top:0}
   .swipe-content{background:var(--surface-solid);opacity:1;z-index:2}
   .home-progress.open-ended{background:conic-gradient(from 205deg,#BFEFE2 var(--goal-progress),rgba(6,39,26,.08) 0 306deg,transparent 306deg)}
   .home-progress.open-ended .home-progress-inner b{font-size:22px}
@@ -957,7 +977,7 @@
           <div class="home-future-foot"><span id="teaserFootText">This month moved your future up.</span><b id="teaserFootValue">+£0 on your path</b></div>
         </div>
 
-        <div class="quiet-progress" id="quietProgressCard">
+        <div class="quiet-progress link" id="quietProgressCard" role="button" tabindex="0">
           <div class="quiet-progress-item">
             <div class="ic"><i class="ti ti-chart-line"></i></div>
             <b id="qpRecordTitle">No record yet</b>
@@ -972,6 +992,28 @@
             <div class="ic"><i class="ti ti-target-arrow"></i></div>
             <b id="qpChallengeTitle">Monthly nudge</b>
             <small id="qpChallengeSub">0 of 3 saving wins this month.</small>
+          </div>
+        </div>
+      </div>
+
+      <button class="floating-top-btn" id="scrollTopBtn" aria-label="Back to top"><i class="ti ti-arrow-up"></i></button>
+      <button class="feedback-notch" id="feedbackNotch" aria-label="Send feedback"><span>Feedback</span></button>
+      <div class="overlay" id="feedbackOverlay">
+        <div class="feedback-drawer" id="feedbackDrawer">
+          <div class="feedback-head">
+            <div>
+              <h3>Quick feedback</h3>
+              <p>Tell us what feels good, confusing, or worth improving.</p>
+            </div>
+            <button class="feedback-close" id="feedbackClose" aria-label="Close feedback"><i class="ti ti-x"></i></button>
+          </div>
+          <div class="feedback-field">
+            <label for="feedbackInput">Your note</label>
+            <textarea id="feedbackInput" placeholder="What would you change, keep, or improve?"></textarea>
+          </div>
+          <div class="feedback-actions">
+            <button class="btn ghost" id="feedbackCancel" style="flex:0 0 42%">Close</button>
+            <button class="btn primary" id="feedbackSend" style="flex:1"><i class="ti ti-send"></i>Send feedback</button>
           </div>
         </div>
       </div>
@@ -1267,6 +1309,9 @@
         <div class="settings-group">
           <button class="set-row" id="setCurrency"><span><b>Currency</b><small id="setCurrencySub">—</small></span><i class="ti ti-coin"></i></button>
           <button class="set-row" id="setDob"><span><b>Date of birth</b><small id="setDobSub">—</small></span><i class="ti ti-calendar"></i></button>
+          <button class="set-row" id="setScrollTop"><span><b>Scroll-to-top button</b><small id="setScrollTopSub">Show a quick arrow once you scroll down</small></span><div class="switch on" id="setScrollTopSwitch" role="switch" aria-checked="true"><div class="k"></div></div></button>
+          <button class="set-row" id="setFeedbackNotchToggle"><span><b>Feedback notch</b><small id="setFeedbackNotchSub">Show a side tab for quick feedback</small></span><div class="switch on" id="setFeedbackNotchSwitch" role="switch" aria-checked="true"><div class="k"></div></div></button>
+          <button class="set-row" id="setFeedbackPage"><span><b>Send feedback</b><small>Open the feedback panel anytime</small></span><i class="ti ti-message-circle"></i></button>
           <button class="set-row" id="setSample"><span><b>Load sample data</b><small>See the app with example history</small></span><i class="ti ti-arrow-right"></i></button>
           <button class="set-row" id="setExport"><span><b>Export my data</b><small>Download your Wins and transfers</small></span><i class="ti ti-download"></i></button>
           <button class="set-row danger" id="setReset"><span><b>Reset app</b><small>Erase everything and start over</small></span><i class="ti ti-trash"></i></button>
@@ -1720,6 +1765,8 @@
   let accountState='guest';
   let planState='free';
   let proUiPreview=true;
+  let showScrollTop=true;
+  let showFeedbackNotch=true;
   let upgradeIntent=null;
   let upgradeFeature='pro';
   let earnedMilestones=[];
@@ -1881,7 +1928,7 @@
     try{ localStorage.setItem(LSKEY, JSON.stringify({
       onboarded:true,
       wins:wins.map(w=>({...w, date:(w.date instanceof Date? w.date.toISOString(): w.date)})),
-      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob, horizonView, earnedMilestones, accountState, planState, proUiPreview, marketWindow, marketWatch, selectedMarketId, useBasicPercentages
+      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob, horizonView, earnedMilestones, accountState, planState, proUiPreview, showScrollTop, showFeedbackNotch, marketWindow, marketWatch, selectedMarketId, useBasicPercentages
     })); }catch(e){}
   }
   function applyState(s){
@@ -1903,6 +1950,8 @@
     selectedMarketId=s.selectedMarketId || null;
     useBasicPercentages=s.useBasicPercentages!==false;
     proUiPreview=s.proUiPreview!==false;
+    showScrollTop=s.showScrollTop!==false;
+    showFeedbackNotch=s.showFeedbackNotch!==false;
     earnedMilestones=Array.isArray(s.earnedMilestones)? s.earnedMilestones : [];
     accountState=s.accountState||'guest';
     planState=s.planState||'free';
@@ -2810,6 +2859,7 @@
     renderPremiumUi();
     renderBankUi();
     replaceIcons();
+    syncFloatingUi();
     saveState();
   }
 
@@ -3106,6 +3156,7 @@
     if(tab==='future')setTimeout(drawCurve,30);
     if(tab==='settings')refreshSettings();
     cur().querySelector('.view:not(.hidden)')?.scrollTo(0,0);
+    syncFloatingUi();
   }
   document.querySelectorAll('.tab[data-tab]').forEach(b=>{
     b.addEventListener('click',()=>show(b.dataset.tab));
@@ -3113,11 +3164,61 @@
   document.getElementById('assumptionToggle').addEventListener('click',openFutureManage);
   document.getElementById('futureInfo').addEventListener('click',()=>toast('Future estimate','Built from what you have kept, your time horizon, and the return assumption you choose.','ti-info-circle'));
 
+  // ---------- floating helpers ----------
+  const scrollTopBtn=document.getElementById('scrollTopBtn');
+  const feedbackNotchEl=document.getElementById('feedbackNotch');
+  const feedbackOv=document.getElementById('feedbackOverlay');
+  const feedbackDrawer=document.getElementById('feedbackDrawer');
+  const feedbackInput=document.getElementById('feedbackInput');
+  function activeViewEl(){ return cur().querySelector('.view:not(.hidden)'); }
+  function syncFloatingUi(){
+    const active=activeViewEl();
+    const shouldShowTop=!!showScrollTop && !!active && active.scrollTop>180;
+    scrollTopBtn.classList.toggle('show', shouldShowTop);
+    const showNotch=!!showFeedbackNotch && !feedbackOv.classList.contains('show');
+    feedbackNotchEl.classList.toggle('show', showNotch);
+  }
+  function openFeedback(){
+    feedbackOv.classList.add('show');
+    feedbackDrawer.classList.add('show');
+    setTimeout(()=>feedbackInput.focus(), 60);
+    syncFloatingUi();
+  }
+  function closeFeedback(){
+    feedbackDrawer.classList.remove('show');
+    feedbackOv.classList.remove('show');
+    syncFloatingUi();
+  }
+  scrollTopBtn.addEventListener('click',()=>{
+    activeViewEl()?.scrollTo({ top:0, behavior:'smooth' });
+  });
+  feedbackNotchEl.addEventListener('click',openFeedback);
+  document.getElementById('feedbackClose').addEventListener('click',closeFeedback);
+  document.getElementById('feedbackCancel').addEventListener('click',closeFeedback);
+  feedbackOv.addEventListener('click',e=>{ if(e.target===feedbackOv) closeFeedback(); });
+  document.getElementById('feedbackSend').addEventListener('click',()=>{
+    const text=(feedbackInput.value||'').trim();
+    if(!text){ toast('Add a note first','Tell us what feels good or what should change.','ti-message-circle'); feedbackInput.focus(); return; }
+    const key='kept_feedback_v1';
+    let items=[];
+    try{ items=JSON.parse(localStorage.getItem(key)||'[]'); if(!Array.isArray(items)) items=[]; }catch(e){ items=[]; }
+    items.unshift({ id:Date.now(), text, at:new Date().toISOString() });
+    try{ localStorage.setItem(key, JSON.stringify(items.slice(0,50))); }catch(e){}
+    feedbackInput.value='';
+    closeFeedback();
+    toast('Feedback saved','Thanks — your note is stored on this device for now.','ti-check');
+  });
+  cur().querySelectorAll('.view').forEach(view=>{
+    view.addEventListener('scroll',syncFloatingUi,{ passive:true });
+  });
+
   // ---------- milestones ----------
   const msOv=document.getElementById('milestonesOverlay');
   function openMilestones(){ msOv.classList.add('show'); }
   function closeMilestones(){ msOv.classList.remove('show'); }
   document.getElementById('homeMilestoneButton').addEventListener('click',openMilestones);
+  document.getElementById('quietProgressCard').addEventListener('click',openMilestones);
+  document.getElementById('quietProgressCard').addEventListener('keydown',e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openMilestones(); } });
   document.getElementById('qpJourneyItem').addEventListener('click',openMilestones);
   document.getElementById('qpJourneyItem').addEventListener('keydown',e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openMilestones(); } });
   document.getElementById('setMilestones').addEventListener('click',()=>{ setOv.classList.remove('show'); openMilestones(); });
@@ -3540,6 +3641,12 @@
       : (bank.error ? 'Setup issue — tap to retry' : 'Manual only — connect a bank to sync your balance');
     syncProPreviewControls();
     document.getElementById('setDobSub').textContent = dob ? (horizonView==='age' ? 'Set — projections show your age' : 'Set — projections show years ahead') : 'Not set';
+    const scrollSw=document.getElementById('setScrollTopSwitch');
+    if(scrollSw){ scrollSw.classList.toggle('on', !!showScrollTop); scrollSw.setAttribute('aria-checked', showScrollTop ? 'true':'false'); }
+    const notchSw=document.getElementById('setFeedbackNotchSwitch');
+    if(notchSw){ notchSw.classList.toggle('on', !!showFeedbackNotch); notchSw.setAttribute('aria-checked', showFeedbackNotch ? 'true':'false'); }
+    document.getElementById('setScrollTopSub').textContent = showScrollTop ? 'Show a quick arrow once you scroll down' : 'Hidden';
+    document.getElementById('setFeedbackNotchSub').textContent = showFeedbackNotch ? 'Show a side tab for quick feedback' : 'Hidden — use Send feedback below';
   }
   const dobOv=document.getElementById('dobOverlay');
   function syncDobModeUi(){
@@ -3579,6 +3686,21 @@
     saveState();
     toast(proUiPreview ? 'Pro preview on' : 'Pro preview off', proUiPreview ? 'The app now behaves like Pro needs unlocking' : 'All Pro features now work for testing', 'ti-adjustments-horizontal');
   });
+  document.getElementById('setScrollTop').addEventListener('click',()=>{
+    showScrollTop=!showScrollTop;
+    refreshSettings();
+    syncFloatingUi();
+    saveState();
+    toast(showScrollTop ? 'Scroll-to-top on' : 'Scroll-to-top off', showScrollTop ? 'The quick arrow appears after you scroll down.' : 'The quick arrow is hidden.', 'ti-arrow-up');
+  });
+  document.getElementById('setFeedbackNotchToggle').addEventListener('click',()=>{
+    showFeedbackNotch=!showFeedbackNotch;
+    refreshSettings();
+    syncFloatingUi();
+    saveState();
+    toast(showFeedbackNotch ? 'Feedback notch on' : 'Feedback notch off', showFeedbackNotch ? 'The side tab is back.' : 'You can still send feedback from You.', 'ti-message-circle');
+  });
+  document.getElementById('setFeedbackPage').addEventListener('click',openFeedback);
   const bankOv=document.getElementById('bankOverlay');
   document.getElementById('setBank').addEventListener('click',()=>{
     if(!hasFeatureAccess()){ openUpgrade('bank','bank-settings'); return; }
