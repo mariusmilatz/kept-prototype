@@ -951,117 +951,153 @@
           <div class="home-progress" id="homeProgress" data-tree-stage="2" aria-label="Monthly tree progress">
             <svg class="home-tree-scene" viewBox="0 0 108 108" aria-hidden="true">
               <defs>
-                <linearGradient id="treeSoil" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stop-color="#8B6843"/>
-                  <stop offset="100%" stop-color="#5B412B"/>
+                <linearGradient id="treeGround" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#CFEEDB"/>
+                  <stop offset="50%" stop-color="#B5E3C4"/>
+                  <stop offset="100%" stop-color="#DDF3E6"/>
+                </linearGradient>
+                <linearGradient id="treeGroundDark" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#8A6749"/>
+                  <stop offset="100%" stop-color="#6A4C33"/>
                 </linearGradient>
                 <linearGradient id="treeTrunk" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stop-color="#6C5135"/>
-                  <stop offset="100%" stop-color="#4D3826"/>
+                  <stop offset="0%" stop-color="#6B4E38"/>
+                  <stop offset="100%" stop-color="#4F3828"/>
                 </linearGradient>
-                <linearGradient id="treeLeaf" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#B9F0C8"/>
-                  <stop offset="100%" stop-color="#6DBE8A"/>
+                <linearGradient id="treeLeafSoft" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#BFF2CA"/>
+                  <stop offset="100%" stop-color="#78C895"/>
                 </linearGradient>
-                <linearGradient id="treeLeafDark" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#7DCC92"/>
-                  <stop offset="100%" stop-color="#3E8A63"/>
+                <linearGradient id="treeLeafDeep" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#8BD7A2"/>
+                  <stop offset="100%" stop-color="#46966C"/>
                 </linearGradient>
+                <filter id="treeShadow" x="-30%" y="-30%" width="160%" height="160%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(66,102,83,.18)"/>
+                </filter>
               </defs>
+              <g filter="url(#treeShadow)">
+                <ellipse cx="54" cy="81" rx="20" ry="5.5" fill="rgba(34,65,53,.08)"/>
+              </g>
+              <path d="M33 78c5-4 12-6 21-6s16 2 21 6l-4 5H37Z" fill="url(#treeGroundDark)"/>
+              <path d="M38 78.5c4.5-2.8 10-4.2 16-4.2 6.2 0 11.9 1.4 16.5 4.2l-2.8 3H40.5Z" fill="url(#treeGround)"/>
               <g class="tree-stage tree-stage-1">
-                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
-                <path d="M53 28c0-2 1-3 3-3s3 2 3 5-1 7-3 7-3-3-3-9Z" fill="#6A4B30"/>
-                <path d="M56 24c-6 8-8 21-5 33" fill="none" stroke="rgba(90,69,43,.22)" stroke-width="1.25" stroke-dasharray="3 3" stroke-linecap="round"/>
-                <path class="sparkle" d="M73 34l1.2 3.2L78 38l-3.8.8L73 42l-.9-3.2-3.1-.8 3.1-.8Z" fill="#F5D68B"/>
+                <ellipse cx="54" cy="69" rx="4.2" ry="5.6" fill="#7B5638" transform="rotate(-18 54 69)"/>
+                <path d="M68 29l1.2 3 3 .8-3 .8-1.2 3-.8-3-3-.8 3-.8Z" class="sparkle" fill="#F4D993"/>
               </g>
               <g class="tree-stage tree-stage-2">
-                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
-                <ellipse cx="54" cy="75.5" rx="5" ry="6.2" fill="#6A4B30"/>
+                <ellipse cx="54" cy="69.8" rx="3.8" ry="5.4" fill="#7B5638" transform="rotate(12 54 69.8)"/>
+                <path d="M54 69c0-2.6.2-4.5 1.3-6.4" fill="none" stroke="#5CA977" stroke-width="1.8" stroke-linecap="round"/>
+                <ellipse cx="57.2" cy="62.5" rx="3.2" ry="2" transform="rotate(24 57.2 62.5)" fill="url(#treeLeafSoft)"/>
               </g>
               <g class="tree-stage tree-stage-3">
-                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
-                <path d="M54 76V64" fill="none" stroke="#4E8F69" stroke-width="2.3" stroke-linecap="round"/>
-                <ellipse cx="56.3" cy="63.2" rx="3.2" ry="5.5" transform="rotate(22 56.3 63.2)" fill="url(#treeLeaf)"/>
-                <path d="M54 74c0 4-1 7-2 10" fill="none" stroke="rgba(111,78,47,.25)" stroke-width="1.1" stroke-linecap="round"/>
-                <path d="M54 74c0 4 1 7 2 10" fill="none" stroke="rgba(111,78,47,.25)" stroke-width="1.1" stroke-linecap="round"/>
+                <path d="M54 72V60" fill="none" stroke="#5AA373" stroke-width="2.2" stroke-linecap="round"/>
+                <ellipse cx="49.5" cy="63" rx="4.4" ry="2.6" transform="rotate(-28 49.5 63)" fill="url(#treeLeafSoft)"/>
+                <ellipse cx="58.5" cy="60.5" rx="4.5" ry="2.7" transform="rotate(26 58.5 60.5)" fill="url(#treeLeafDeep)"/>
               </g>
               <g class="tree-stage tree-stage-4">
-                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
-                <path d="M54 76V58" fill="none" stroke="#4A8A65" stroke-width="2.5" stroke-linecap="round"/>
-                <ellipse cx="47" cy="61" rx="4.6" ry="7.8" transform="rotate(-48 47 61)" fill="url(#treeLeaf)"/>
-                <ellipse cx="61" cy="57" rx="4.8" ry="8.2" transform="rotate(38 61 57)" fill="url(#treeLeafDark)"/>
-                <path d="M54 74c-1 3-3 7-5 10M54 74c1 3 3 7 5 10" fill="none" stroke="rgba(111,78,47,.25)" stroke-width="1.15" stroke-linecap="round"/>
+                <path d="M54 72V55" fill="none" stroke="#548E67" stroke-width="2.5" stroke-linecap="round"/>
+                <ellipse cx="48" cy="61" rx="5" ry="3" transform="rotate(-34 48 61)" fill="url(#treeLeafSoft)"/>
+                <ellipse cx="59.5" cy="57.5" rx="5.1" ry="3.1" transform="rotate(30 59.5 57.5)" fill="url(#treeLeafDeep)"/>
+                <ellipse cx="54.8" cy="50.8" rx="4.4" ry="2.6" transform="rotate(10 54.8 50.8)" fill="url(#treeLeafSoft)"/>
               </g>
               <g class="tree-stage tree-stage-5">
-                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
-                <path d="M54 76V48" fill="none" stroke="url(#treeTrunk)" stroke-width="3" stroke-linecap="round"/>
-                <path d="M54 62c-2-5-5-7-8-9M54 56c3-4 5-6 7-10" fill="none" stroke="url(#treeTrunk)" stroke-width="2.1" stroke-linecap="round"/>
-                <ellipse cx="45.5" cy="52.5" rx="4.8" ry="8.4" transform="rotate(-40 45.5 52.5)" fill="url(#treeLeaf)"/>
-                <ellipse cx="62" cy="46" rx="4.4" ry="8" transform="rotate(28 62 46)" fill="url(#treeLeafDark)"/>
-                <ellipse cx="56" cy="41" rx="4.1" ry="7" transform="rotate(10 56 41)" fill="url(#treeLeaf)"/>
+                <path d="M54 72V49" fill="none" stroke="url(#treeTrunk)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M54 59c-3.5-4.5-6.5-6.2-9-7.8M54 55c3.3-4.2 6.2-5.9 8.5-8.8" fill="none" stroke="url(#treeTrunk)" stroke-width="2" stroke-linecap="round"/>
+                <g fill="url(#treeLeafSoft)">
+                  <ellipse cx="44.5" cy="50.5" rx="5.1" ry="3" transform="rotate(-38 44.5 50.5)"/>
+                  <ellipse cx="53.8" cy="46.5" rx="4.7" ry="2.8" transform="rotate(-4 53.8 46.5)"/>
+                </g>
+                <ellipse cx="62.7" cy="45.5" rx="5" ry="3" transform="rotate(28 62.7 45.5)" fill="url(#treeLeafDeep)"/>
               </g>
               <g class="tree-stage tree-stage-6">
-                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
-                <path d="M54 76V39" fill="none" stroke="url(#treeTrunk)" stroke-width="3.2" stroke-linecap="round"/>
-                <path d="M54 60c-5-8-9-10-13-12M54 54c4-7 8-10 11-15M54 46c-1-6 0-9 2-13" fill="none" stroke="url(#treeTrunk)" stroke-width="2.25" stroke-linecap="round"/>
-                <ellipse cx="41.5" cy="48" rx="4.8" ry="8.6" transform="rotate(-44 41.5 48)" fill="url(#treeLeaf)"/>
-                <ellipse cx="47.5" cy="39.5" rx="4.1" ry="7" transform="rotate(-16 47.5 39.5)" fill="url(#treeLeafDark)"/>
-                <ellipse cx="64" cy="38.5" rx="4.5" ry="8.4" transform="rotate(28 64 38.5)" fill="url(#treeLeaf)"/>
-                <ellipse cx="69" cy="50" rx="4.6" ry="8.2" transform="rotate(46 69 50)" fill="url(#treeLeafDark)"/>
-                <ellipse cx="57.5" cy="31.5" rx="4" ry="7.3" transform="rotate(12 57.5 31.5)" fill="url(#treeLeaf)"/>
+                <path d="M54 72V44" fill="none" stroke="url(#treeTrunk)" stroke-width="3.2" stroke-linecap="round"/>
+                <path d="M54 61c-4.6-5.8-8.5-8.2-11.8-10.4M54 56c4.5-5.4 8-7.8 11.4-11.8M54 49c-.7-4 .1-7.2 1.8-10.2" fill="none" stroke="url(#treeTrunk)" stroke-width="2.1" stroke-linecap="round"/>
+                <g fill="url(#treeLeafSoft)">
+                  <circle cx="42.5" cy="49.5" r="5.8"/>
+                  <circle cx="49" cy="41.8" r="5.4"/>
+                  <circle cx="58" cy="39" r="6"/>
+                </g>
+                <g fill="url(#treeLeafDeep)">
+                  <circle cx="65.5" cy="45.2" r="5.8"/>
+                  <circle cx="57" cy="49" r="5.1"/>
+                </g>
               </g>
               <g class="tree-stage tree-stage-7">
-                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
-                <path d="M54 76V35" fill="none" stroke="url(#treeTrunk)" stroke-width="3.4" stroke-linecap="round"/>
-                <path d="M54 60c-6-9-12-12-16-15M54 54c5-8 10-12 14-18M54 47c-2-7-1-11 2-15M54 44c4 3 7 6 10 11" fill="none" stroke="url(#treeTrunk)" stroke-width="2.35" stroke-linecap="round"/>
-                <g fill="url(#treeLeaf)">
-                  <ellipse cx="39" cy="43" rx="4.7" ry="8.2" transform="rotate(-48 39 43)"/>
-                  <ellipse cx="45" cy="36" rx="4.3" ry="7.4" transform="rotate(-10 45 36)"/>
-                  <ellipse cx="52" cy="30" rx="4.4" ry="7.6" transform="rotate(6 52 30)"/>
-                  <ellipse cx="60.5" cy="32" rx="4.2" ry="7.3" transform="rotate(18 60.5 32)"/>
-                  <ellipse cx="67.5" cy="39.5" rx="4.8" ry="8.4" transform="rotate(36 67.5 39.5)"/>
-                  <ellipse cx="71.5" cy="50.5" rx="4.4" ry="7.8" transform="rotate(48 71.5 50.5)"/>
-                  <ellipse cx="60.5" cy="47.5" rx="4.2" ry="7.2" transform="rotate(28 60.5 47.5)"/>
-                  <ellipse cx="47" cy="49.5" rx="4.5" ry="8" transform="rotate(-30 47 49.5)"/>
+                <path d="M54 72V40" fill="none" stroke="url(#treeTrunk)" stroke-width="3.3" stroke-linecap="round"/>
+                <path d="M54 61c-5.8-6.8-10.2-9.7-14-12.6M54 56c5.2-6.3 9.4-9.2 13.7-13.8M54 49c-.8-4.4 0-7.8 2-11.2M54 48c4 2.8 6.4 5.4 8.9 9.2" fill="none" stroke="url(#treeTrunk)" stroke-width="2.15" stroke-linecap="round"/>
+                <g fill="url(#treeLeafSoft)">
+                  <circle cx="40" cy="48" r="6.2"/>
+                  <circle cx="47" cy="40.5" r="6.1"/>
+                  <circle cx="55" cy="36.8" r="6.4"/>
+                  <circle cx="64.2" cy="39.8" r="6.2"/>
+                  <circle cx="69.8" cy="47.8" r="5.9"/>
+                </g>
+                <g fill="url(#treeLeafDeep)" opacity=".95">
+                  <circle cx="47" cy="49.5" r="5.2"/>
+                  <circle cx="60.5" cy="48.5" r="5.5"/>
                 </g>
               </g>
               <g class="tree-stage tree-stage-8">
-                <ellipse cx="54" cy="81" rx="26" ry="9" fill="url(#treeSoil)"/>
-                <path d="M37 84c10-4 24-5 34-2 5 1 10 4 13 7H30c2-2 4-4 7-5Z" fill="#8BCB8A"/>
-                <path d="M54 76V34" fill="none" stroke="url(#treeTrunk)" stroke-width="3.5" stroke-linecap="round"/>
-                <path d="M54 60c-7-10-13-13-18-16M54 54c5-9 12-13 16-19M54 47c-2-7-2-11 2-16M54 44c5 4 9 8 12 14" fill="none" stroke="url(#treeTrunk)" stroke-width="2.4" stroke-linecap="round"/>
-                <g fill="url(#treeLeaf)">
-                  <circle cx="39" cy="44" r="6.2"/><circle cx="45.5" cy="36" r="6.5"/><circle cx="54" cy="31" r="7.2"/><circle cx="63" cy="34" r="6.8"/><circle cx="70" cy="41" r="6.5"/><circle cx="72" cy="51" r="5.8"/><circle cx="63" cy="49" r="6"/><circle cx="47" cy="51" r="6.2"/>
+                <path d="M54 72V38" fill="none" stroke="url(#treeTrunk)" stroke-width="3.5" stroke-linecap="round"/>
+                <path d="M54 61c-6-7.5-11-10.6-15.2-13.8M54 56c5.6-6.7 10.3-9.8 14.8-14.9M54 49c-.9-4.8-.1-8.5 2-12.2M54 48c4.5 3 7.4 6.1 10.4 10.6" fill="none" stroke="url(#treeTrunk)" stroke-width="2.2" stroke-linecap="round"/>
+                <g fill="url(#treeLeafSoft)">
+                  <circle cx="38.8" cy="47" r="6.6"/>
+                  <circle cx="45.6" cy="39.2" r="6.7"/>
+                  <circle cx="54" cy="35" r="7.2"/>
+                  <circle cx="63.7" cy="38.8" r="6.9"/>
+                  <circle cx="70.8" cy="46.5" r="6.4"/>
+                  <circle cx="67.4" cy="56" r="5.8"/>
+                  <circle cx="57.2" cy="58" r="5.9"/>
+                  <circle cx="46.5" cy="55.8" r="6"/>
                 </g>
-                <g fill="url(#treeLeafDark)" opacity=".88">
-                  <ellipse cx="42" cy="42" rx="3.5" ry="6" transform="rotate(-28 42 42)"/><ellipse cx="53" cy="34" rx="3.6" ry="6.2" transform="rotate(6 53 34)"/><ellipse cx="66" cy="42" rx="3.5" ry="6" transform="rotate(30 66 42)"/><ellipse cx="57" cy="49" rx="3.2" ry="5.5" transform="rotate(24 57 49)"/>
+                <g fill="url(#treeLeafDeep)" opacity=".96">
+                  <circle cx="42.8" cy="44.5" r="4.5"/>
+                  <circle cx="52.8" cy="39" r="4.3"/>
+                  <circle cx="64.5" cy="45" r="4.6"/>
+                  <circle cx="60.5" cy="55.5" r="4.2"/>
                 </g>
               </g>
               <g class="tree-stage tree-stage-9">
-                <ellipse cx="54" cy="81" rx="26" ry="9" fill="url(#treeSoil)"/>
-                <path d="M37 84c10-4 24-5 34-2 5 1 10 4 13 7H30c2-2 4-4 7-5Z" fill="#8BCB8A"/>
-                <path d="M54 76V34" fill="none" stroke="url(#treeTrunk)" stroke-width="3.5" stroke-linecap="round"/>
-                <path d="M54 60c-7-10-13-13-18-16M54 54c5-9 12-13 16-19M54 47c-2-7-2-11 2-16M54 44c5 4 9 8 12 14" fill="none" stroke="url(#treeTrunk)" stroke-width="2.4" stroke-linecap="round"/>
-                <g fill="url(#treeLeaf)">
-                  <circle cx="39" cy="44" r="6.2"/><circle cx="45.5" cy="36" r="6.5"/><circle cx="54" cy="31" r="7.2"/><circle cx="63" cy="34" r="6.8"/><circle cx="70" cy="41" r="6.5"/><circle cx="72" cy="51" r="5.8"/><circle cx="63" cy="49" r="6"/><circle cx="47" cy="51" r="6.2"/>
+                <path d="M54 72V38" fill="none" stroke="url(#treeTrunk)" stroke-width="3.5" stroke-linecap="round"/>
+                <path d="M54 61c-6-7.5-11-10.6-15.2-13.8M54 56c5.6-6.7 10.3-9.8 14.8-14.9M54 49c-.9-4.8-.1-8.5 2-12.2M54 48c4.5 3 7.4 6.1 10.4 10.6" fill="none" stroke="url(#treeTrunk)" stroke-width="2.2" stroke-linecap="round"/>
+                <g fill="url(#treeLeafSoft)">
+                  <circle cx="38.8" cy="47" r="6.6"/>
+                  <circle cx="45.6" cy="39.2" r="6.7"/>
+                  <circle cx="54" cy="35" r="7.2"/>
+                  <circle cx="63.7" cy="38.8" r="6.9"/>
+                  <circle cx="70.8" cy="46.5" r="6.4"/>
+                  <circle cx="67.4" cy="56" r="5.8"/>
+                  <circle cx="57.2" cy="58" r="5.9"/>
+                  <circle cx="46.5" cy="55.8" r="6"/>
                 </g>
-                <g fill="#F7C8DA">
-                  <circle cx="46" cy="37.5" r="2.2"/><circle cx="58" cy="33.5" r="2.1"/><circle cx="67" cy="43" r="2.3"/><circle cx="42.5" cy="47.5" r="2.05"/><circle cx="61.5" cy="51.5" r="2.15"/>
-                </g>
-                <g fill="#FDE7F0" opacity=".72">
-                  <circle cx="52" cy="42" r="1.5"/><circle cx="69.5" cy="50.5" r="1.45"/><circle cx="49" cy="52.5" r="1.35"/>
+                <g fill="#F6C8D7">
+                  <circle cx="45.2" cy="40.2" r="2.1"/>
+                  <circle cx="56.2" cy="36.1" r="2.2"/>
+                  <circle cx="66.5" cy="44.4" r="2.2"/>
+                  <circle cx="48.2" cy="55.2" r="2.1"/>
+                  <circle cx="60.5" cy="56.3" r="2.15"/>
                 </g>
               </g>
               <g class="tree-stage tree-stage-10">
-                <ellipse cx="54" cy="81" rx="26" ry="9" fill="url(#treeSoil)"/>
-                <path d="M37 84c10-4 24-5 34-2 5 1 10 4 13 7H30c2-2 4-4 7-5Z" fill="#8BCB8A"/>
-                <path d="M54 76V34" fill="none" stroke="url(#treeTrunk)" stroke-width="3.5" stroke-linecap="round"/>
-                <path d="M54 60c-7-10-13-13-18-16M54 54c5-9 12-13 16-19M54 47c-2-7-2-11 2-16M54 44c5 4 9 8 12 14" fill="none" stroke="url(#treeTrunk)" stroke-width="2.4" stroke-linecap="round"/>
-                <g fill="url(#treeLeaf)">
-                  <circle cx="39" cy="44" r="6.2"/><circle cx="45.5" cy="36" r="6.5"/><circle cx="54" cy="31" r="7.2"/><circle cx="63" cy="34" r="6.8"/><circle cx="70" cy="41" r="6.5"/><circle cx="72" cy="51" r="5.8"/><circle cx="63" cy="49" r="6"/><circle cx="47" cy="51" r="6.2"/>
+                <path d="M54 72V38" fill="none" stroke="url(#treeTrunk)" stroke-width="3.5" stroke-linecap="round"/>
+                <path d="M54 61c-6-7.5-11-10.6-15.2-13.8M54 56c5.6-6.7 10.3-9.8 14.8-14.9M54 49c-.9-4.8-.1-8.5 2-12.2M54 48c4.5 3 7.4 6.1 10.4 10.6" fill="none" stroke="url(#treeTrunk)" stroke-width="2.2" stroke-linecap="round"/>
+                <g fill="url(#treeLeafSoft)">
+                  <circle cx="38.8" cy="47" r="6.6"/>
+                  <circle cx="45.6" cy="39.2" r="6.7"/>
+                  <circle cx="54" cy="35" r="7.2"/>
+                  <circle cx="63.7" cy="38.8" r="6.9"/>
+                  <circle cx="70.8" cy="46.5" r="6.4"/>
+                  <circle cx="67.4" cy="56" r="5.8"/>
+                  <circle cx="57.2" cy="58" r="5.9"/>
+                  <circle cx="46.5" cy="55.8" r="6"/>
                 </g>
-                <g fill="#FFC85E">
-                  <circle cx="45" cy="38.5" r="2.45"/><circle cx="58.5" cy="34.5" r="2.55"/><circle cx="68" cy="44" r="2.5"/><circle cx="61.5" cy="52" r="2.45"/><circle cx="49" cy="53" r="2.35"/>
+                <g fill="#FFBC57">
+                  <circle cx="45.3" cy="40.8" r="2.35"/>
+                  <circle cx="56.8" cy="36.8" r="2.45"/>
+                  <circle cx="66.8" cy="44.8" r="2.4"/>
+                  <circle cx="48.8" cy="55.8" r="2.3"/>
+                  <circle cx="60.7" cy="57" r="2.35"/>
                 </g>
               </g>
             </svg>
