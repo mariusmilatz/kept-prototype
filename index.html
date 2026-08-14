@@ -3172,7 +3172,7 @@
     Object.values(views).forEach(v=>document.getElementById(v).classList.add('hidden'));
     if(views[tab])document.getElementById(views[tab]).classList.remove('hidden');
     document.querySelectorAll('.tab[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
-    if(tab==='future')setTimeout(drawCurve,30);
+    if(tab==='home' || tab==='future') setTimeout(refreshProjectionCanvases,30);
     if(tab==='settings')refreshSettings();
     cur().querySelector('.view:not(.hidden)')?.scrollTo(0,0);
     syncFloatingUi();
