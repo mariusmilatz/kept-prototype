@@ -2857,8 +2857,7 @@
     document.getElementById('futKept').textContent = Pn(rec);
     document.getElementById('futureRateMetric').textContent = rt.toFixed(1)+'%';
     renderMarketWatch();
-    drawCurve();
-    drawHomeFutureCurve();
+    refreshProjectionCanvases();
     renderActivity();
     renderMilestones(milestoneState);
     maybeShowMilestoneDrop(milestoneState.newlyUnlocked||[]);
@@ -3112,12 +3111,26 @@
     c.beginPath(); c.arc(hx,hy,5,0,7); c.fillStyle=amb; c.fill();
     c.beginPath(); c.arc(hx,hy,2.2,0,7); c.fillStyle='#fff'; c.fill();
   }
+  function homeCurveYears(){
+    const maxYears=Math.max(1, Math.round(Number(proj.years)||1));
+    const ticks=[];
+    for(let idx=1; idx<=5; idx++) ticks.push(Math.max(1, Math.round((maxYears*idx)/5)));
+    ticks[ticks.length-1]=maxYears;
+    for(let idx=ticks.length-2; idx>=0; idx--) ticks[idx]=Math.min(ticks[idx], ticks[idx+1]-1);
+    return ticks.map(year=>Math.max(1, year));
+  }
+  function refreshProjectionCanvases(){
+    drawCurve();
+    drawHomeFutureCurve();
+    requestAnimationFrame(()=>{ drawCurve(); drawHomeFutureCurve(); });
+    setTimeout(()=>{ drawCurve(); drawHomeFutureCurve(); }, 90);
+  }
   function drawHomeFutureCurve(){
     const cv=document.getElementById('homeFutureCanvas'); if(!cv||!cv.clientWidth) return;
     const dpr=window.devicePixelRatio||1, w=cv.clientWidth, h=cv.clientHeight;
     cv.width=w*dpr; cv.height=h*dpr;
     const c=cv.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,w,h);
-    const maxYears=Math.max(1, proj.years), padL=8, padR=18, padT=20, padB=18;
+    const maxYears=Math.max(1, Math.round(Number(proj.years)||1)), padL=8, padR=18, padT=20, padB=18;
     const gw=w-padL-padR, gh=h-padT-padB;
     const peak=Math.max(balanceAt(maxYears)||1,1);
     const points=[]; for(let i=0;i<=72;i++){ const yr=maxYears*i/72; points.push([padL+(yr/maxYears)*gw, padT+gh-((balanceAt(yr)/peak)*gh)]); }
@@ -3126,7 +3139,7 @@
       const tw=c.measureText(label).width;
       return Math.min(Math.max(x, tw/2+4), w-tw/2-4);
     };
-    const homeCurveTicks=Array.from({length:5},(_,idx)=>maxYears*((idx+1)/5));
+    const homeCurveTicks=homeCurveYears();
     c.beginPath(); c.moveTo(points[0][0], padT+gh);
     points.forEach(p=>c.lineTo(p[0],p[1])); c.lineTo(points[points.length-1][0], padT+gh); c.closePath();
     const fill=c.createLinearGradient(0,padT,0,padT+gh); fill.addColorStop(0, amb+'3d'); fill.addColorStop(1, amb+'00');
@@ -3551,7 +3564,7 @@
   // ---------- future controls ----------
   const futureManageOv=document.getElementById('futureManageOverlay');
   function openFutureManage(){ futureManageOv.classList.add('show'); }
-  function closeFutureManage(){ futureManageOv.classList.remove('show'); }
+  function closeFutureManage(){ futureManageOv.classList.remove('show'); setTimeout(refreshProjectionCanvases, 40); }
   document.getElementById('futureManageClose').addEventListener('click',closeFutureManage);
   futureManageOv.addEventListener('click',e=>{ if(e.target===futureManageOv) closeFutureManage(); });
   document.getElementById('returnModeSwitch').addEventListener('click',function(){
@@ -3568,7 +3581,7 @@
     document.querySelectorAll('#rateSeg button').forEach(x=>x.classList.toggle('on',x===b)); render();
   });
   const yrs=document.getElementById('yrs');
-  yrs.addEventListener('input',()=>{proj.years=parseInt(yrs.value); render();});
+  yrs.addEventListener('input',()=>{proj.years=parseInt(yrs.value,10); render(); setTimeout(refreshProjectionCanvases, 40);});
   document.getElementById('projRecurSwitch').addEventListener('click',function(){
     if(!hasFeatureAccess()){ openUpgrade('subscriptions','subscriptions'); return; }
     projectRecurring=!projectRecurring;
@@ -4090,7 +4103,7 @@
   // clock
   document.getElementById('clock').textContent=NOW.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 
-  function boot(){ applyCurrency(currencyCode); materializeRecurring(); renderQuick(); render(); const handledBankReturn=handleBankReturn(); if(!handledBankReturn) refreshBankData({ silent:true }); setTimeout(()=>{ drawCurve(); drawHomeFutureCurve(); },60); setTimeout(queueRecurringConfirms,700); }
+  function boot(){ applyCurrency(currencyCode); materializeRecurring(); renderQuick(); render(); const handledBankReturn=handleBankReturn(); if(!handledBankReturn) refreshBankData({ silent:true }); setTimeout(refreshProjectionCanvases,60); setTimeout(queueRecurringConfirms,700); }
   const saved=loadState();
   if(saved && saved.onboarded){ applyState(saved); boot(); }
   else {
@@ -4099,7 +4112,7 @@
     boot();
     startOnboarding();
   }
-  window.addEventListener('resize',()=>{ drawCurve(); drawHomeFutureCurve(); });
+  window.addEventListener('resize',refreshProjectionCanvases);
 })();
 </script>
 
