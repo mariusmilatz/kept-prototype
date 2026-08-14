@@ -705,12 +705,30 @@
   .home-balance-copy .amount{font-size:43px;line-height:1;font-weight:560;letter-spacing:-.055em;font-variant-numeric:tabular-nums}
   .home-balance-copy .sub{font-size:11px;color:var(--muted);margin:7px 0 0}
   .home-balance-copy .hero-fv{margin-top:10px;font-size:10.5px;padding:5px 8px}
-  .home-progress{--goal-progress:0deg;width:108px;height:108px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(from 205deg,var(--accent) var(--goal-progress),rgba(6,39,26,.08) 0 312deg,transparent 312deg);transform:rotate(25deg);position:relative}
-  .home-progress::after{content:"";position:absolute;inset:11px;border-radius:50%;background:color-mix(in srgb,var(--card) 92%,transparent)}
-  .home-progress-inner{position:relative;z-index:1;text-align:center;transform:rotate(-25deg);display:flex;flex-direction:column;align-items:center}
-  .home-progress-inner b{font-size:19px;letter-spacing:-.04em}
-  .home-progress-inner span{font-size:9.5px;color:var(--muted);margin-top:1px}
-  .home-progress-inner small{font-size:9px;color:var(--muted);margin-top:4px;max-width:68px;line-height:1.2}
+  .home-progress{--tree-progress:0deg;width:108px;height:108px;border-radius:50%;position:relative;padding:4px;background:conic-gradient(from 205deg,color-mix(in srgb,var(--accent) 78%,#6A57D2) var(--tree-progress),rgba(234,208,160,.22) 0 312deg,transparent 312deg)}
+  .home-progress::after{content:"";position:absolute;inset:4px;border-radius:50%;background:radial-gradient(circle at 50% 24%,rgba(255,255,255,.98),rgba(255,248,236,.96) 60%,rgba(244,239,255,.88) 100%);box-shadow:inset 0 0 0 1px rgba(238,221,189,.74)}
+  .home-progress-inner{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .home-tree-scene{position:relative;z-index:1;width:100%;height:100%;display:block}
+  .home-tree-scene .tree-stage{opacity:0;transform:translateY(4px) scale(.965);transform-origin:50% 82%;transition:opacity .48s cubic-bezier(.22,1,.36,1),transform .48s cubic-bezier(.22,1,.36,1)}
+  .home-tree-scene .tree-stage .sparkle{opacity:.55}
+  .home-progress[data-tree-stage="1"] .tree-stage-1,
+  .home-progress[data-tree-stage="2"] .tree-stage-2,
+  .home-progress[data-tree-stage="3"] .tree-stage-3,
+  .home-progress[data-tree-stage="4"] .tree-stage-4,
+  .home-progress[data-tree-stage="5"] .tree-stage-5,
+  .home-progress[data-tree-stage="6"] .tree-stage-6,
+  .home-progress[data-tree-stage="7"] .tree-stage-7,
+  .home-progress[data-tree-stage="8"] .tree-stage-8,
+  .home-progress[data-tree-stage="9"] .tree-stage-9,
+  .home-progress[data-tree-stage="10"] .tree-stage-10{opacity:1;transform:translateY(0) scale(1)}
+  .home-progress[data-tree-reset="1"][data-tree-stage="1"] .tree-stage-1{animation:tree-seed-drop .84s cubic-bezier(.2,.84,.22,1) both}
+  @keyframes tree-seed-drop{
+    0%{opacity:0;transform:translateY(-18px) scale(.82)}
+    18%{opacity:1}
+    72%{transform:translateY(0) scale(1)}
+    84%{transform:translateY(-2px) scale(1.01)}
+    100%{opacity:1;transform:translateY(0) scale(1)}
+  }
   .home-goal-row{grid-column:1/-1;border-top:1px solid rgba(17,23,19,.07);margin-top:10px;padding-top:13px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
   .home-goal-row > div:first-child{min-width:0;flex:1}
   .home-goal-row b{font-size:12.5px;display:block}
@@ -930,8 +948,124 @@
             <p class="sub" id="homeCount">16 Saving Wins · July</p>
             <p class="hero-fv"><i class="ti ti-arrow-up-right"></i><span id="heroFV">≈ £498 in 20 years invested</span></p>
           </div>
-          <div class="home-progress" id="homeProgress" aria-label="Monthly goal progress">
-            <div class="home-progress-inner"><b id="homeProgressPct">0%</b><span id="homeProgressLabel">of plan</span><small id="homeProgressGoal">Goal £250</small></div>
+          <div class="home-progress" id="homeProgress" data-tree-stage="2" aria-label="Monthly tree progress">
+            <svg class="home-tree-scene" viewBox="0 0 108 108" aria-hidden="true">
+              <defs>
+                <linearGradient id="treeSoil" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#8B6843"/>
+                  <stop offset="100%" stop-color="#5B412B"/>
+                </linearGradient>
+                <linearGradient id="treeTrunk" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#6C5135"/>
+                  <stop offset="100%" stop-color="#4D3826"/>
+                </linearGradient>
+                <linearGradient id="treeLeaf" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#B9F0C8"/>
+                  <stop offset="100%" stop-color="#6DBE8A"/>
+                </linearGradient>
+                <linearGradient id="treeLeafDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#7DCC92"/>
+                  <stop offset="100%" stop-color="#3E8A63"/>
+                </linearGradient>
+              </defs>
+              <g class="tree-stage tree-stage-1">
+                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
+                <path d="M53 28c0-2 1-3 3-3s3 2 3 5-1 7-3 7-3-3-3-9Z" fill="#6A4B30"/>
+                <path d="M56 24c-6 8-8 21-5 33" fill="none" stroke="rgba(90,69,43,.22)" stroke-width="1.25" stroke-dasharray="3 3" stroke-linecap="round"/>
+                <path class="sparkle" d="M73 34l1.2 3.2L78 38l-3.8.8L73 42l-.9-3.2-3.1-.8 3.1-.8Z" fill="#F5D68B"/>
+              </g>
+              <g class="tree-stage tree-stage-2">
+                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
+                <ellipse cx="54" cy="75.5" rx="5" ry="6.2" fill="#6A4B30"/>
+              </g>
+              <g class="tree-stage tree-stage-3">
+                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
+                <path d="M54 76V64" fill="none" stroke="#4E8F69" stroke-width="2.3" stroke-linecap="round"/>
+                <ellipse cx="56.3" cy="63.2" rx="3.2" ry="5.5" transform="rotate(22 56.3 63.2)" fill="url(#treeLeaf)"/>
+                <path d="M54 74c0 4-1 7-2 10" fill="none" stroke="rgba(111,78,47,.25)" stroke-width="1.1" stroke-linecap="round"/>
+                <path d="M54 74c0 4 1 7 2 10" fill="none" stroke="rgba(111,78,47,.25)" stroke-width="1.1" stroke-linecap="round"/>
+              </g>
+              <g class="tree-stage tree-stage-4">
+                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
+                <path d="M54 76V58" fill="none" stroke="#4A8A65" stroke-width="2.5" stroke-linecap="round"/>
+                <ellipse cx="47" cy="61" rx="4.6" ry="7.8" transform="rotate(-48 47 61)" fill="url(#treeLeaf)"/>
+                <ellipse cx="61" cy="57" rx="4.8" ry="8.2" transform="rotate(38 61 57)" fill="url(#treeLeafDark)"/>
+                <path d="M54 74c-1 3-3 7-5 10M54 74c1 3 3 7 5 10" fill="none" stroke="rgba(111,78,47,.25)" stroke-width="1.15" stroke-linecap="round"/>
+              </g>
+              <g class="tree-stage tree-stage-5">
+                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
+                <path d="M54 76V48" fill="none" stroke="url(#treeTrunk)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M54 62c-2-5-5-7-8-9M54 56c3-4 5-6 7-10" fill="none" stroke="url(#treeTrunk)" stroke-width="2.1" stroke-linecap="round"/>
+                <ellipse cx="45.5" cy="52.5" rx="4.8" ry="8.4" transform="rotate(-40 45.5 52.5)" fill="url(#treeLeaf)"/>
+                <ellipse cx="62" cy="46" rx="4.4" ry="8" transform="rotate(28 62 46)" fill="url(#treeLeafDark)"/>
+                <ellipse cx="56" cy="41" rx="4.1" ry="7" transform="rotate(10 56 41)" fill="url(#treeLeaf)"/>
+              </g>
+              <g class="tree-stage tree-stage-6">
+                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
+                <path d="M54 76V39" fill="none" stroke="url(#treeTrunk)" stroke-width="3.2" stroke-linecap="round"/>
+                <path d="M54 60c-5-8-9-10-13-12M54 54c4-7 8-10 11-15M54 46c-1-6 0-9 2-13" fill="none" stroke="url(#treeTrunk)" stroke-width="2.25" stroke-linecap="round"/>
+                <ellipse cx="41.5" cy="48" rx="4.8" ry="8.6" transform="rotate(-44 41.5 48)" fill="url(#treeLeaf)"/>
+                <ellipse cx="47.5" cy="39.5" rx="4.1" ry="7" transform="rotate(-16 47.5 39.5)" fill="url(#treeLeafDark)"/>
+                <ellipse cx="64" cy="38.5" rx="4.5" ry="8.4" transform="rotate(28 64 38.5)" fill="url(#treeLeaf)"/>
+                <ellipse cx="69" cy="50" rx="4.6" ry="8.2" transform="rotate(46 69 50)" fill="url(#treeLeafDark)"/>
+                <ellipse cx="57.5" cy="31.5" rx="4" ry="7.3" transform="rotate(12 57.5 31.5)" fill="url(#treeLeaf)"/>
+              </g>
+              <g class="tree-stage tree-stage-7">
+                <ellipse cx="54" cy="80" rx="24" ry="8" fill="url(#treeSoil)"/>
+                <path d="M54 76V35" fill="none" stroke="url(#treeTrunk)" stroke-width="3.4" stroke-linecap="round"/>
+                <path d="M54 60c-6-9-12-12-16-15M54 54c5-8 10-12 14-18M54 47c-2-7-1-11 2-15M54 44c4 3 7 6 10 11" fill="none" stroke="url(#treeTrunk)" stroke-width="2.35" stroke-linecap="round"/>
+                <g fill="url(#treeLeaf)">
+                  <ellipse cx="39" cy="43" rx="4.7" ry="8.2" transform="rotate(-48 39 43)"/>
+                  <ellipse cx="45" cy="36" rx="4.3" ry="7.4" transform="rotate(-10 45 36)"/>
+                  <ellipse cx="52" cy="30" rx="4.4" ry="7.6" transform="rotate(6 52 30)"/>
+                  <ellipse cx="60.5" cy="32" rx="4.2" ry="7.3" transform="rotate(18 60.5 32)"/>
+                  <ellipse cx="67.5" cy="39.5" rx="4.8" ry="8.4" transform="rotate(36 67.5 39.5)"/>
+                  <ellipse cx="71.5" cy="50.5" rx="4.4" ry="7.8" transform="rotate(48 71.5 50.5)"/>
+                  <ellipse cx="60.5" cy="47.5" rx="4.2" ry="7.2" transform="rotate(28 60.5 47.5)"/>
+                  <ellipse cx="47" cy="49.5" rx="4.5" ry="8" transform="rotate(-30 47 49.5)"/>
+                </g>
+              </g>
+              <g class="tree-stage tree-stage-8">
+                <ellipse cx="54" cy="81" rx="26" ry="9" fill="url(#treeSoil)"/>
+                <path d="M37 84c10-4 24-5 34-2 5 1 10 4 13 7H30c2-2 4-4 7-5Z" fill="#8BCB8A"/>
+                <path d="M54 76V34" fill="none" stroke="url(#treeTrunk)" stroke-width="3.5" stroke-linecap="round"/>
+                <path d="M54 60c-7-10-13-13-18-16M54 54c5-9 12-13 16-19M54 47c-2-7-2-11 2-16M54 44c5 4 9 8 12 14" fill="none" stroke="url(#treeTrunk)" stroke-width="2.4" stroke-linecap="round"/>
+                <g fill="url(#treeLeaf)">
+                  <circle cx="39" cy="44" r="6.2"/><circle cx="45.5" cy="36" r="6.5"/><circle cx="54" cy="31" r="7.2"/><circle cx="63" cy="34" r="6.8"/><circle cx="70" cy="41" r="6.5"/><circle cx="72" cy="51" r="5.8"/><circle cx="63" cy="49" r="6"/><circle cx="47" cy="51" r="6.2"/>
+                </g>
+                <g fill="url(#treeLeafDark)" opacity=".88">
+                  <ellipse cx="42" cy="42" rx="3.5" ry="6" transform="rotate(-28 42 42)"/><ellipse cx="53" cy="34" rx="3.6" ry="6.2" transform="rotate(6 53 34)"/><ellipse cx="66" cy="42" rx="3.5" ry="6" transform="rotate(30 66 42)"/><ellipse cx="57" cy="49" rx="3.2" ry="5.5" transform="rotate(24 57 49)"/>
+                </g>
+              </g>
+              <g class="tree-stage tree-stage-9">
+                <ellipse cx="54" cy="81" rx="26" ry="9" fill="url(#treeSoil)"/>
+                <path d="M37 84c10-4 24-5 34-2 5 1 10 4 13 7H30c2-2 4-4 7-5Z" fill="#8BCB8A"/>
+                <path d="M54 76V34" fill="none" stroke="url(#treeTrunk)" stroke-width="3.5" stroke-linecap="round"/>
+                <path d="M54 60c-7-10-13-13-18-16M54 54c5-9 12-13 16-19M54 47c-2-7-2-11 2-16M54 44c5 4 9 8 12 14" fill="none" stroke="url(#treeTrunk)" stroke-width="2.4" stroke-linecap="round"/>
+                <g fill="url(#treeLeaf)">
+                  <circle cx="39" cy="44" r="6.2"/><circle cx="45.5" cy="36" r="6.5"/><circle cx="54" cy="31" r="7.2"/><circle cx="63" cy="34" r="6.8"/><circle cx="70" cy="41" r="6.5"/><circle cx="72" cy="51" r="5.8"/><circle cx="63" cy="49" r="6"/><circle cx="47" cy="51" r="6.2"/>
+                </g>
+                <g fill="#F7C8DA">
+                  <circle cx="46" cy="37.5" r="2.2"/><circle cx="58" cy="33.5" r="2.1"/><circle cx="67" cy="43" r="2.3"/><circle cx="42.5" cy="47.5" r="2.05"/><circle cx="61.5" cy="51.5" r="2.15"/>
+                </g>
+                <g fill="#FDE7F0" opacity=".72">
+                  <circle cx="52" cy="42" r="1.5"/><circle cx="69.5" cy="50.5" r="1.45"/><circle cx="49" cy="52.5" r="1.35"/>
+                </g>
+              </g>
+              <g class="tree-stage tree-stage-10">
+                <ellipse cx="54" cy="81" rx="26" ry="9" fill="url(#treeSoil)"/>
+                <path d="M37 84c10-4 24-5 34-2 5 1 10 4 13 7H30c2-2 4-4 7-5Z" fill="#8BCB8A"/>
+                <path d="M54 76V34" fill="none" stroke="url(#treeTrunk)" stroke-width="3.5" stroke-linecap="round"/>
+                <path d="M54 60c-7-10-13-13-18-16M54 54c5-9 12-13 16-19M54 47c-2-7-2-11 2-16M54 44c5 4 9 8 12 14" fill="none" stroke="url(#treeTrunk)" stroke-width="2.4" stroke-linecap="round"/>
+                <g fill="url(#treeLeaf)">
+                  <circle cx="39" cy="44" r="6.2"/><circle cx="45.5" cy="36" r="6.5"/><circle cx="54" cy="31" r="7.2"/><circle cx="63" cy="34" r="6.8"/><circle cx="70" cy="41" r="6.5"/><circle cx="72" cy="51" r="5.8"/><circle cx="63" cy="49" r="6"/><circle cx="47" cy="51" r="6.2"/>
+                </g>
+                <g fill="#FFC85E">
+                  <circle cx="45" cy="38.5" r="2.45"/><circle cx="58.5" cy="34.5" r="2.55"/><circle cx="68" cy="44" r="2.5"/><circle cx="61.5" cy="52" r="2.45"/><circle cx="49" cy="53" r="2.35"/>
+                </g>
+              </g>
+            </svg>
+            <div class="home-progress-inner"><b id="homeProgressPct">Stage 2</b><span id="homeProgressLabel">Seeded</span><small id="homeProgressGoal">Ready to grow</small></div>
           </div>
           <div class="home-goal-row">
             <div><b id="goalTitle">Invest £250 this month</b><small id="goalSub"></small></div>
@@ -1775,6 +1909,8 @@
   let proUiPreview=true;
   let showScrollTop=true;
   let showFeedbackNotch=true;
+  let treeLoopState={monthKey:null,lastStage:2,animating:false,targetStage:2};
+  let homeTreeAnimTimers=[];
   let upgradeIntent=null;
   let upgradeFeature='pro';
   let earnedMilestones=[];
@@ -1783,6 +1919,18 @@
   let onboarded=false;
   const SOFT_CAP=10000; // £100 — Wins above this log as unverified until confirmed
   const ISO_RE=/^\d{4}-\d{2}-\d{2}$/;
+  const TREE_STAGE_META=[
+    {title:'Seed drop',detail:'A new month begins'},
+    {title:'Seeded',detail:'Ready to grow'},
+    {title:'Sprouting',detail:'First quiet win'},
+    {title:'Opening',detail:'Building momentum'},
+    {title:'Sapling',detail:'Growing roots'},
+    {title:'Steady',detail:'Habit taking shape'},
+    {title:'Branching',detail:'Quiet progress'},
+    {title:'Leafing out',detail:'A fuller month'},
+    {title:'Blooming',detail:'A month in flower'},
+    {title:'Fruiting',detail:'Reward showing up'}
+  ];
   const MILESTONE_CATS=[
     {id:'all', label:'All chapters', title:'Full journey', desc:'See every chapter in one calm overview.', icon:'ti-map-2', accent:'journey'},
     {id:'start', label:'Chapter 1', title:'First steps', desc:'Tiny starts that make saving feel possible.', icon:'ti-bolt', accent:'spark'},
@@ -1936,7 +2084,7 @@
     try{ localStorage.setItem(LSKEY, JSON.stringify({
       onboarded:true,
       wins:wins.map(w=>({...w, date:(w.date instanceof Date? w.date.toISOString(): w.date)})),
-      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob, horizonView, earnedMilestones, accountState, planState, proUiPreview, showScrollTop, showFeedbackNotch, marketWindow, marketWatch, selectedMarketId, useBasicPercentages
+      transfers, goalTarget, goalName, goalMode, goalAmount, proj, quick, recurring, rollover, currencyCode, dob, horizonView, earnedMilestones, accountState, planState, proUiPreview, showScrollTop, showFeedbackNotch, marketWindow, marketWatch, selectedMarketId, useBasicPercentages, treeLoopState:{monthKey:treeLoopState.monthKey,lastStage:treeLoopState.lastStage,targetStage:treeLoopState.targetStage,animating:false}
     })); }catch(e){}
   }
   function applyState(s){
@@ -1960,6 +2108,7 @@
     proUiPreview=s.proUiPreview!==false;
     showScrollTop=s.showScrollTop!==false;
     showFeedbackNotch=s.showFeedbackNotch!==false;
+    treeLoopState=s.treeLoopState||{monthKey:null,lastStage:2,animating:false,targetStage:2};
     earnedMilestones=Array.isArray(s.earnedMilestones)? s.earnedMilestones : [];
     accountState=s.accountState||'guest';
     planState=s.planState||'free';
@@ -2529,6 +2678,91 @@
   const allLogged = ()=> wins.reduce((s,w)=>s+w.net,0);
   const waiting = ()=> wins.filter(w=>w.state==='confirmed').reduce((s,w)=>s+w.net,0);
   const transferredTotal = ()=> transfers.reduce((s,x)=>s+x.amount,0);
+  function clearHomeTreeTimers(){
+    homeTreeAnimTimers.forEach(t=>clearTimeout(t));
+    homeTreeAnimTimers=[];
+  }
+  function homeTreeTargetStage(){
+    return Math.min(10, 2 + monthWins(CUR).length);
+  }
+  function updateHomeTreeCopy(stage){
+    const progressEl=document.getElementById('homeProgress');
+    const stageMeta=TREE_STAGE_META[Math.max(1, Math.min(10, stage))-1];
+    const winsCount=monthWins(CUR).length;
+    document.getElementById('homeProgressPct').textContent='Stage '+stage;
+    document.getElementById('homeProgressLabel').textContent=stageMeta.title;
+    document.getElementById('homeProgressGoal').textContent=winsCount>0 ? (winsCount+' save'+(winsCount===1?'':'s')+' this month') : stageMeta.detail;
+    if(progressEl) progressEl.setAttribute('aria-label', `${stageMeta.title}. ${winsCount} save${winsCount===1?'':'s'} this month.`);
+  }
+  function setHomeTreeStage(stage,{reset=false}={}){
+    const progressEl=document.getElementById('homeProgress');
+    if(!progressEl) return;
+    progressEl.dataset.treeStage=String(stage);
+    progressEl.style.setProperty('--tree-progress', `${Math.max(0, ((stage-1)/9)*306)}deg`);
+    if(reset){
+      progressEl.dataset.treeReset='1';
+      const clearReset=setTimeout(()=>{
+        if(progressEl.dataset.treeReset==='1') delete progressEl.dataset.treeReset;
+      },860);
+      homeTreeAnimTimers.push(clearReset);
+    }else{
+      delete progressEl.dataset.treeReset;
+    }
+    treeLoopState.lastStage=stage;
+    treeLoopState.targetStage=Math.max(treeLoopState.targetStage||2, stage);
+    updateHomeTreeCopy(stage);
+  }
+  function animateHomeTreeTo(target,{reset=false}={}){
+    clearHomeTreeTimers();
+    treeLoopState.animating=true;
+    treeLoopState.targetStage=target;
+    if(reset){
+      treeLoopState.monthKey=CUR;
+      setHomeTreeStage(1,{reset:true});
+      let delay=720;
+      homeTreeAnimTimers.push(setTimeout(()=>setHomeTreeStage(2), delay));
+      for(let stage=3; stage<=target; stage++){
+        delay += 240;
+        homeTreeAnimTimers.push(setTimeout(()=>setHomeTreeStage(stage), delay));
+      }
+      homeTreeAnimTimers.push(setTimeout(()=>{ treeLoopState.animating=false; }, delay+40));
+      return;
+    }
+    const current=Math.max(2, treeLoopState.lastStage||2);
+    if(target<=current){
+      treeLoopState.animating=false;
+      setHomeTreeStage(target);
+      return;
+    }
+    let delay=0;
+    for(let stage=current+1; stage<=target; stage++){
+      delay += 220;
+      homeTreeAnimTimers.push(setTimeout(()=>setHomeTreeStage(stage), delay));
+    }
+    homeTreeAnimTimers.push(setTimeout(()=>{ treeLoopState.animating=false; }, delay+40));
+  }
+  function syncHomeTree(forceReset=false){
+    const target=homeTreeTargetStage();
+    if(treeLoopState.animating && treeLoopState.targetStage===target && !forceReset) return;
+    if(forceReset || treeLoopState.monthKey!==CUR){
+      animateHomeTreeTo(target,{reset:true});
+      return;
+    }
+    if(treeLoopState.lastStage==null){
+      treeLoopState.monthKey=CUR;
+      setHomeTreeStage(target);
+      return;
+    }
+    if(target<treeLoopState.lastStage){
+      setHomeTreeStage(target);
+      return;
+    }
+    if(target>treeLoopState.lastStage){
+      animateHomeTreeTo(target);
+      return;
+    }
+    setHomeTreeStage(target);
+  }
   function historySpanText(){
     if(!wins.length) return 'No history yet';
     const first = wins.reduce((earliest, w)=>w.date < earliest ? w.date : earliest, wins[0].date);
@@ -2782,12 +3016,8 @@
     const pct = Math.min(100, gm>0 ? rec/gm*100 : goalMode==='open' ? openVisualPct : 0);
     document.getElementById('goalFill').style.width = pct+'%';
     const progressEl=document.getElementById('homeProgress');
-    const openEnded=goalMode==='open';
-    progressEl.classList.toggle('open-ended',openEnded);
-    progressEl.style.setProperty('--goal-progress',(pct/100*306)+'deg');
-    document.getElementById('homeProgressPct').textContent=openEnded?String(openWinCount):Math.round(pct)+'%';
-    document.getElementById('homeProgressLabel').textContent=openEnded?(openWinCount===1?'save':'saves'):'of plan';
-    document.getElementById('homeProgressGoal').textContent = openEnded ? 'this month' : 'Goal '+Pn(gm);
+    if(progressEl) progressEl.classList.toggle('open-ended',goalMode==='open');
+    syncHomeTree();
     const autoOn = !!(bank.connected && bankAutoDraft);
     const primaryActions=document.querySelector('.home-primary-actions');
     const moveBtn=document.getElementById('homeMoveMoney');
