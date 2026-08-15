@@ -3309,16 +3309,11 @@
     return !!(
       w.quickId ||
       w.source ||
-      w.credibility==='unverified' ||
-      (w.name && w.name!=='Saving Win') ||
-      (w.cat && w.cat!=='other')
+      w.credibility==='unverified'
     );
   }
   function activityDetailItems(w){
-    const category = cats.find(c=>c.id===w.cat)?.name || w.cat;
     const items = [];
-    if(w.name && w.name!=='Saving Win') items.push(['Saved as', w.name]);
-    if(w.cat && w.cat!=='other') items.push(['Category', category]);
     if(w.quickId){
       const quickSave = quick.find(q=>q.id===w.quickId);
       if(quickSave) items.push(['Shortcut', quickSave.name]);
