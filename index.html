@@ -471,9 +471,17 @@
   .ms-level-pill{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;background:var(--accent-soft);color:var(--accent-ink);font-size:10px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
   .ms-level-rail{height:8px;border-radius:999px;background:rgba(17,23,19,.08);overflow:hidden}
   .ms-level-rail i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#0A785C 0%,#7AD6BE 100%)}
+  .ms-level-track{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;align-items:start;margin-top:4px}
+  .ms-level-node{position:relative;display:flex;align-items:center;justify-content:center;min-height:26px}
+  .ms-level-node:not(:last-child)::after{content:"";position:absolute;top:12px;left:calc(50% + 18px);width:calc(100% - 6px);height:2px;background:rgba(17,23,19,.1)}
+  .ms-level-node.done:not(:last-child)::after{background:linear-gradient(90deg,rgba(122,214,190,.7) 0%,rgba(10,120,92,.45) 100%)}
+  .ms-level-mark{width:24px;height:24px;border-radius:999px;background:rgba(255,255,255,.95);border:1.5px solid rgba(17,23,19,.12);display:flex;align-items:center;justify-content:center;color:var(--muted);position:relative;z-index:1;box-shadow:0 8px 18px -16px var(--shadow)}
+  .ms-level-node.done .ms-level-mark{background:#DFF5EE;border-color:#0A785C;color:#0A785C}
+  .ms-level-node.next .ms-level-mark{background:#F5F1FF;border-color:#8C7BFF;color:#6956D9;box-shadow:0 0 0 6px rgba(140,123,255,.06)}
   .ms-level-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:11px;color:var(--muted)}
   .ms-level-foot b{color:var(--ink);font-weight:650}
-  .ms-level-chapter{display:inline-flex;align-items:center;gap:8px;max-width:100%;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.58);border:1px solid rgba(17,23,19,.06)}
+  .ms-level-chapter{display:inline-flex;align-items:center;gap:10px;max-width:100%;padding:11px 12px;border-radius:18px;background:color-mix(in srgb,var(--accent-soft) 52%,rgba(255,255,255,.75));border:1px solid rgba(17,23,19,.06)}
+  .ms-level-chapter-dot{width:22px;height:22px;border-radius:999px;background:rgba(255,255,255,.72);border:1px solid rgba(10,120,92,.16);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:11px;flex:0 0 auto}
   .ms-level-chapter em{font-style:normal;font-size:10px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
   .ms-level-chapter b{display:block;font-family:var(--font-round);font-size:15px;line-height:1.05;letter-spacing:-.03em;color:var(--ink);margin-top:3px}
   .ms-level-chapter span{display:block;font-size:11px;color:var(--muted);margin-top:4px}
@@ -498,17 +506,32 @@
   .ms-progress-ring{--ms-progress:0deg;width:94px;height:94px;border-radius:50%;background:conic-gradient(var(--accent) var(--ms-progress),var(--accent-soft) 0);padding:10px;flex:0 0 auto}
   .ms-progress-ring>div{width:100%;height:100%;border-radius:50%;background:var(--surface-solid);display:flex;align-items:center;justify-content:center;font-family:var(--font-round);font-size:22px;font-weight:650;color:var(--accent)}
   .ms-chapters{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin:0 0 18px}
-  .ms-chapter-btn{border:1px solid var(--hair);background:var(--surface-solid);border-radius:20px;padding:14px 16px 15px;text-align:left;cursor:pointer;box-shadow:var(--card-float-shadow),inset 0 0 0 1px rgba(255,255,255,.35);display:block;color:var(--ink);min-height:unset}
-  .ms-chapter-btn.on{background:color-mix(in srgb,var(--accent-soft) 34%,var(--surface-solid));border-color:color-mix(in srgb,var(--accent) 20%,var(--hair))}
-  .ms-chapter-ic,.ms-chapter-accent{display:none}
+  .ms-chapter-btn{border:1px solid var(--hair);background:var(--surface-solid);border-radius:22px;padding:0;text-align:left;cursor:pointer;box-shadow:var(--card-float-shadow),inset 0 0 0 1px rgba(255,255,255,.35);display:block;color:var(--ink);min-height:unset;overflow:hidden}
+  .ms-chapter-btn.on{background:color-mix(in srgb,var(--accent-soft) 34%,var(--surface-solid));border-color:color-mix(in srgb,var(--accent) 24%,var(--hair));box-shadow:0 20px 36px -32px rgba(10,120,92,.35),inset 0 0 0 1px rgba(255,255,255,.35)}
+  .ms-chapter-btn:nth-child(2){margin-left:18px}
+  .ms-chapter-btn:nth-child(3){margin-left:36px}
+  .ms-chapter-btn:nth-child(4){margin-left:54px}
+  .ms-chapter-row{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:14px;padding:16px 16px 16px 14px}
+  .ms-chapter-badge{width:38px;height:38px;border-radius:999px;background:rgba(121,104,232,.10);color:#6B59D9;display:flex;align-items:center;justify-content:center;font-family:var(--font-round);font-size:19px;font-weight:650}
+  .ms-chapter-btn.on .ms-chapter-badge{background:rgba(122,214,190,.18);color:#0A785C}
   .ms-chapter-copy{min-width:0}
-  .ms-chapter-copy em{display:block;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);line-height:1.2}
-  .ms-chapter-copy b{display:block;font-family:var(--font-round);font-size:18px;line-height:1.04;letter-spacing:-.03em;margin-top:8px}
-  .ms-chapter-copy small{display:block;font-size:11.5px;color:var(--muted);line-height:1.45;margin-top:8px;max-width:28ch}
-  .ms-chapter-copy span{display:block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);margin-top:12px;line-height:1.2}
+  .ms-chapter-copy b{display:block;font-family:var(--font-round);font-size:18px;line-height:1.04;letter-spacing:-.03em}
+  .ms-chapter-copy small{display:block;font-size:12px;color:var(--muted);line-height:1.45;margin-top:6px;max-width:28ch}
+  .ms-chapter-meta{display:flex;align-items:center;gap:10px;justify-self:end}
+  .ms-chapter-count{font-size:10px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);white-space:nowrap}
+  .ms-chapter-lock{width:28px;height:28px;border-radius:999px;background:rgba(121,104,232,.08);color:#6B59D9;display:flex;align-items:center;justify-content:center;font-size:15px}
   .ms-section-title{font-family:var(--font-round);font-size:18px;font-weight:650;letter-spacing:-.025em;margin:0 0 10px;color:var(--accent)}
   .ms-sub{font-size:11.5px;color:var(--muted);line-height:1.45;margin:-4px 0 12px}
   .ms-list{display:flex;flex-direction:column;gap:9px}
+  .ms-moments{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .ms-moment{background:var(--card);border:1px solid var(--hair);border-radius:22px;padding:14px 14px 16px;box-shadow:0 12px 30px -28px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.45);min-height:138px;display:flex;flex-direction:column}
+  .ms-moment-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+  .ms-moment-ic{width:40px;height:40px;border-radius:14px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
+  .ms-moment-arrow{width:28px;height:28px;border-radius:999px;background:rgba(121,104,232,.08);color:#6B59D9;display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 auto}
+  .ms-moment b{display:block;font-family:var(--font-round);font-size:15px;line-height:1.15;margin-top:18px}
+  .ms-moment small{display:block;font-size:12px;color:var(--muted);line-height:1.45;margin-top:6px}
+  .ms-moment span{display:block;margin-top:auto;padding-top:12px;font-size:11px;color:var(--amber-ink)}
+  .ms-reflect{margin-top:14px;padding:18px 18px 19px;border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.82) 0%,rgba(238,233,255,.38) 100%);border:1px solid rgba(17,23,19,.06);box-shadow:0 18px 42px -34px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;font-family:var(--font-round);font-size:20px;letter-spacing:-.03em;color:var(--accent);text-align:center}
   .ms-item{background:var(--card);border:1px solid var(--hair);border-radius:20px;padding:13px 14px;box-shadow:0 12px 30px -28px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.45)}
   .ms-item.top{padding:16px;border-color:color-mix(in srgb,var(--accent) 25%,var(--hair));border-radius:23px}
   .ms-item.unlocked{background:color-mix(in srgb,var(--accent-soft) 48%,var(--card));border-color:color-mix(in srgb,var(--accent) 24%,var(--hair))}
@@ -529,6 +552,10 @@
   .ms-toggle i,.ms-toggle svg{transition:transform .2s}
   .ms-toggle.open i,.ms-toggle.open svg{transform:rotate(180deg)}
   .ms-history{margin-top:9px}
+  @media (max-width:420px){
+    .ms-moments{grid-template-columns:1fr}
+    .ms-chapter-btn:nth-child(2),.ms-chapter-btn:nth-child(3),.ms-chapter-btn:nth-child(4){margin-left:0}
+  }
   @media (display-mode:standalone),(max-width:480px){
     .onboarding{border-radius:0;padding-top:calc(env(safe-area-inset-top) + 20px);padding-bottom:calc(env(safe-area-inset-bottom) + 14px)}
     .stage{padding:0;min-height:100dvh;display:block;gap:0}
@@ -1631,9 +1658,10 @@
               </div>
               <div class="ms-level-pill" id="msSaverState">Starting</div>
             </div>
-            <div class="ms-level-rail" aria-hidden="true"><i id="msLevelBar"></i></div>
+            <div class="ms-level-track" id="msLevelTrack"></div>
             <div class="ms-level-foot"><span id="msLevelNote">On your way to Level 2</span><b id="msUnlockedCount">0 unlocked</b></div>
             <div class="ms-level-chapter">
+              <div class="ms-level-chapter-dot"><i class="ti ti-sparkles"></i></div>
               <div>
                 <em>Current chapter</em>
                 <b id="msLevelChapterTitle">First steps</b>
@@ -1652,9 +1680,10 @@
           <div class="ms-section-title">Chapters</div>
           <p class="ms-sub">Move through the journey one calm chapter at a time.</p>
           <div class="ms-chapters" id="msSeg"></div>
-          <div class="ms-section-title">Milestones up next</div>
+          <div class="ms-section-title">Next moments</div>
           <p class="ms-sub" id="msCatSub">See the next few milestones without getting buried in everything at once.</p>
-          <div class="ms-list" id="msNextList"></div>
+          <div class="ms-moments" id="msNextList"></div>
+          <div class="ms-reflect">Quiet progress, kept in motion.</div>
           <button class="btn ghost ms-toggle" id="msToggleAll"><span>Unlocked</span><i class="ti ti-chevron-down"></i></button>
           <div class="ms-list ms-history" id="msAllList" style="display:none"></div>
         </div>
@@ -2982,6 +3011,38 @@
     replaceIcons(el);
   }
 
+  function renderJourneyLevelTrack(summary){
+    const el=document.getElementById('msLevelTrack');
+    if(!el) return;
+    const milestones=summary.milestones.slice(0,5);
+    el.innerHTML='';
+    milestones.forEach((milestone, idx)=>{
+      const isDone=idx < summary.done;
+      const isNext=idx===summary.done && summary.done < summary.total;
+      const item=document.createElement('div');
+      item.className='ms-level-node'+(isDone?' done':'')+(isNext?' next':'');
+      item.innerHTML=`<div class="ms-level-mark"><i class="ti ${isDone ? 'ti-check' : (isNext ? 'ti-point-filled' : 'ti-circle')}</i></div>`;
+      el.appendChild(item);
+    });
+    replaceIcons(el);
+  }
+
+  function milestoneMomentItem(milestone, index){
+    const item=document.createElement('div');
+    item.className='ms-moment';
+    item.innerHTML=`
+      <div class="ms-moment-top">
+        <div class="ms-moment-ic"><i class="ti ${milestone.icon}"></i></div>
+        <div class="ms-moment-arrow"><i class="ti ti-arrow-right"></i></div>
+      </div>
+      <b>${milestone.name}</b>
+      <small>${milestone.sub}</small>
+      <span>${index===0 ? 'Next up' : milestone.progressText}</span>
+    `;
+    replaceIcons(item);
+    return item;
+  }
+
   function render(){
     const rec=recordedThisMonth(), wait=waiting(), tr=transferredTotal();
     const milestoneState = milestoneData();
@@ -3210,12 +3271,12 @@
     document.getElementById('msSaverState').textContent = saverStateLabel(unlocked.length);
     document.getElementById('msLevelTitle').textContent = 'Level '+progression.level+' · '+progression.title;
     document.getElementById('msLevelSub').textContent = chapterDescription(progression.subtitle);
-    document.getElementById('msLevelBar').style.width = progression.progressPct+'%';
     document.getElementById('msLevelNote').textContent = progression.nextLabel;
     document.getElementById('setMilestonesSub').textContent = unlocked.length+' of '+data.length+' earned';
     const nextOverall = locked[0];
 
     const journey = journeySummary(data);
+    renderJourneyLevelTrack(journey);
     document.getElementById('msLevelChapterTitle').textContent = journey.title;
     document.getElementById('msLevelChapterMeta').textContent = journey.done+' of '+journey.total+' complete';
     document.getElementById('msJourneyPageTitle').textContent = journey.title;
@@ -3227,14 +3288,26 @@
 
     const seg=document.getElementById('msSeg');
     seg.innerHTML='';
-    MILESTONE_CATS.forEach(cat=>{
+    MILESTONE_CATS.filter(cat=>cat.id!=='all').forEach((cat, index)=>{
       const list = cat.id==='all' ? data : data.filter(m=>m.cat===cat.id);
       const done = list.filter(m=>m.unlocked).length;
+      const isCurrent = cat.title===journey.title;
+      const isFuture = done===0 && !isCurrent;
       const btn=document.createElement('button');
       btn.type='button';
-      btn.className='ms-chapter-btn'+(cat.id===msCat?' on':'');
+      btn.className='ms-chapter-btn'+(isCurrent?' on':'');
       btn.dataset.cat=cat.id;
-      btn.innerHTML=`<div class="ms-chapter-copy"><em>${cat.label}</em><b>${cat.title}</b><small>${cat.desc}</small><span>${done} of ${list.length} complete</span></div>`;
+      btn.innerHTML=`
+        <div class="ms-chapter-row">
+          <div class="ms-chapter-badge">${index+1}</div>
+          <div class="ms-chapter-copy">
+            <b>${cat.title}</b>
+            <small>${cat.desc}</small>
+          </div>
+          <div class="ms-chapter-meta">
+            ${isFuture ? '<div class="ms-chapter-lock"><i class="ti ti-lock"></i></div>' : `<div class="ms-chapter-count">${done} / ${list.length}</div>`}
+          </div>
+        </div>`;
       seg.appendChild(btn);
     });
     replaceIcons(seg);
@@ -3248,9 +3321,9 @@
 
     const nextList=document.getElementById('msNextList');
     nextList.innerHTML='';
-    lockedCat.slice(0,3).forEach((m,idx)=>nextList.appendChild(milestoneItem(m, idx===0)));
+    lockedCat.slice(0,3).forEach((m,idx)=>nextList.appendChild(milestoneMomentItem(m, idx)));
     if(!nextList.children.length){
-      const empty=document.createElement('div'); empty.className='empty-note'; empty.textContent='Everything in this category is unlocked.'; nextList.appendChild(empty);
+      const empty=document.createElement('div'); empty.className='empty-note'; empty.textContent='Everything in this chapter is unlocked.'; nextList.appendChild(empty);
     }
 
     const toggle=document.getElementById('msToggleAll');
