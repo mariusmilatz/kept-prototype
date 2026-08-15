@@ -2996,7 +2996,7 @@
       const isDone=idx < summary.done;
       const isNext=idx===summary.done && summary.done < summary.total;
       item.className='journey-node'+(isDone?' done':'')+(isNext?' next':'');
-      item.innerHTML=`<div class="journey-dot"><i class="ti ${isDone ? 'ti-check' : (isNext ? 'ti-point-filled' : 'ti-lock')}</i></div><span>${milestone.name}</span>`;
+      item.innerHTML=`<div class="journey-dot"><i class="ti ${isDone ? 'ti-check' : (isNext ? 'ti-point-filled' : 'ti-lock')}"></i></div><span>${milestone.name}</span>`;
       el.appendChild(item);
     });
     replaceIcons(el);
