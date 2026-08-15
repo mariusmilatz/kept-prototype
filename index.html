@@ -3091,13 +3091,19 @@
   }
   function closeChapterSheet(){ document.getElementById('chapterDetailOverlay').classList.remove('show'); }
 
+  function setXpGuideToggleState(open){
+    const button=document.getElementById('xpGuideToggle');
+    if(!button) return;
+    button.setAttribute('aria-expanded', open ? 'true' : 'false');
+    button.innerHTML=`<span>XP guide</span><i class="ti ${open ? 'ti-chevron-up' : 'ti-chevron-down'}"></i>`;
+    replaceIcons(button);
+  }
+
   function openXpSheet(){
     const progression=progressionSummary(milestoneData());
     const guide=document.getElementById('xpGuide');
-    const toggle=document.getElementById('xpGuideToggle');
     guide.classList.remove('show');
-    toggle.setAttribute('aria-expanded','false');
-    toggle.querySelector('i').className='ti ti-chevron-down';
+    setXpGuideToggleState(false);
     document.getElementById('xpSheetTitle').textContent='Level '+progression.level+' · '+progression.title;
     document.getElementById('xpSheetMeta').textContent=progression.xp+' XP so far';
     document.getElementById('xpSheetSub').textContent='XP builds quietly from wins, confirmations, transfers, and unlocked milestones.';
@@ -3107,7 +3113,6 @@
       ? 'You have reached the current top level.'
       : ((progression.nextThreshold-progression.xp)+' XP to unlock Level '+(progression.level+1)+'.');
     renderXpGuide();
-    replaceIcons(toggle);
     document.getElementById('xpOverlay').classList.add('show');
   }
   function closeXpSheet(){ document.getElementById('xpOverlay').classList.remove('show'); }
@@ -3653,13 +3658,8 @@
   });
   document.getElementById('xpGuideToggle').addEventListener('click',()=>{
     const guide=document.getElementById('xpGuide');
-    const button=document.getElementById('xpGuideToggle');
     const open=guide.classList.toggle('show');
-    button.setAttribute('aria-expanded', open ? 'true' : 'false');
-    button.querySelector('span').textContent='XP guide';
-    const icon=button.querySelector('i');
-    icon.className='ti '+(open ? 'ti-chevron-up' : 'ti-chevron-down');
-    replaceIcons(button);
+    setXpGuideToggleState(open);
   });
   document.getElementById('xpSheetClose').addEventListener('click',closeXpSheet);
   document.getElementById('xpOverlay').addEventListener('click',e=>{ if(e.target===document.getElementById('xpOverlay')) closeXpSheet(); });
