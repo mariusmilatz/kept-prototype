@@ -178,6 +178,7 @@
   .tab.add > span:last-child{display:none}
 
   .activity-item{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--hair)}
+  .activity-item.expandable{cursor:pointer}
   .activity-item .ic{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent-ink);
     display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto}
   .activity-item .mid{flex:1;min-width:0}
@@ -185,6 +186,15 @@
   .activity-item .mt{font-size:11.5px;color:var(--muted);margin-top:1px}
   .activity-item .rt{text-align:right;flex:0 0 auto}
   .activity-item .rv{font-family:var(--font-round);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums}
+  .activity-item .more{width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:var(--muted);flex:0 0 auto}
+  .activity-item .more i,.activity-item .more svg{font-size:14px;transition:transform .18s ease}
+  .swipe-wrap.expanded .activity-item .more i,.swipe-wrap.expanded .activity-item .more svg{transform:rotate(180deg)}
+  .activity-detail{display:none;padding:0 2px 12px 52px;color:var(--muted);font-size:11px;line-height:1.45;border-bottom:1px solid var(--hair)}
+  .activity-detail.show{display:block}
+  .activity-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
+  .activity-detail-line b{display:block;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+  .activity-detail-line span{display:block;color:var(--ink)}
+  .activity-detail-note{margin-top:8px;padding-top:8px;border-top:1px solid rgba(17,23,19,.06)}
   .state-pill{font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;display:inline-block;margin-top:3px;letter-spacing:.02em}
   .st-wait{background:var(--accent-soft);color:var(--accent-ink)}
   .st-done{background:var(--amber-soft);color:var(--amber-ink)}
@@ -468,7 +478,7 @@
   .ms-level-kicker{font-size:10px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
   .ms-level-title{font-family:var(--font-round);font-weight:650;font-size:29px;line-height:1.02;letter-spacing:-.05em;color:var(--ink);margin-top:8px}
   .ms-level-sub{font-size:12px;color:var(--muted);line-height:1.45;margin-top:8px}
-  .ms-level-pill{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;background:var(--accent-soft);color:var(--accent-ink);font-size:10px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+  .ms-level-pill{display:none}
   .ms-level-rail{height:8px;border-radius:999px;background:rgba(17,23,19,.08);overflow:hidden}
   .ms-level-rail i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#0A785C 0%,#7AD6BE 100%)}
   .ms-level-track{display:grid;gap:6px;align-items:center;margin-top:4px;min-height:14px}
@@ -3222,12 +3232,14 @@
     document.getElementById('qpRecordSub').textContent = bestMonth > 0 && rec >= bestMonth ? (P(rec)+' is your best month yet.') : (P(rec)+' kept so far this month.');
     const journey = journeySummary(milestoneState);
     const showJourneyOnHome = journey && journey.title && journey.title !== 'Full journey';
-    document.getElementById('qpMilestoneTitle').textContent = showJourneyOnHome ? journey.title : (unlockedCount+' milestones unlocked');
+    document.getElementById('qpMilestoneTitle').textContent = showJourneyOnHome ? journey.title : 'Current chapter';
     document.getElementById('qpMilestoneSub').textContent = showJourneyOnHome
-      ? (journey.done+' of '+journey.total+' complete')
-      : (milestoneState.newlyUnlocked.length ? (milestoneState.newlyUnlocked.length+' new this month.') : 'Quiet progress adds up.');
+      ? (journey.done+' of '+journey.total+' complete in your journey')
+      : (unlockedCount+' milestones unlocked so far.');
     document.getElementById('qpChallengeTitle').textContent = challenge.done ? 'Monthly nudge done' : 'Monthly nudge';
-    document.getElementById('qpChallengeSub').textContent = challenge.current+' of '+challenge.target+' saving wins this month.';
+    document.getElementById('qpChallengeSub').textContent = challenge.done
+      ? ('All '+challenge.target+' saving wins done this month.')
+      : (challenge.current+' of '+challenge.target+' saving wins this month.');
 
     const recurAdd = projectRecurring ? annuityFV(recurMonthly(), proj.years) : 0;
     document.getElementById('futureBig').textContent = Pn(fv + recurAdd);
@@ -3257,6 +3269,7 @@
   function annuityFV(monthly, years){ if(monthly<=0||years<=0) return 0; const m=Math.pow(1+effectiveReturn()/100,1/12)-1; const n=Math.round(years*12); return m<=0? monthly*n : monthly*((Math.pow(1+m,n)-1)/m); }
   let rollover=0;            // signed pence carried into the next transfer from edits/deletes of transferred Wins
   let openRow=null;          // currently swiped-open row
+  let expandedWinId=null;    // expanded win row in Activity
 
   function closeOpenRow(){ if(openRow){ openRow.querySelector('.swipe-content').style.transform='translateX(0)'; openRow._open=false; openRow=null; } }
 
@@ -3287,25 +3300,77 @@
   }
 
   function confirmWin(w){ w.state='confirmed'; if(w.credibility==='unverified') w.credibility='verified'; render(); toast('Confirmed','Added to your pot','ti-circle-check'); }
+  function activityStatusLabel(w){
+    if(w.state==='transferred') return 'Transferred';
+    if(w.state==='confirmed') return 'Waiting';
+    return 'Needs confirmation';
+  }
+  function activityTypeLabel(w){
+    if(w.source) return 'Recurring save';
+    if(w.quickId) return 'Quick save';
+    if(w.credibility==='unverified') return 'Large save';
+    return 'Saving win';
+  }
+  function activityDetailItems(w){
+    const category = cats.find(c=>c.id===w.cat)?.name || w.cat;
+    const dateText = formatDateForActivity(w.date);
+    const items = [
+      ['Logged', dateText],
+      ['Status', activityStatusLabel(w)],
+      ['Category', category],
+      ['Type', activityTypeLabel(w)]
+    ];
+    if(w.quickId){
+      const quickSave = quick.find(q=>q.id===w.quickId);
+      if(quickSave) items.push(['Shortcut', quickSave.name]);
+    }
+    if(w.source){
+      const recurringSave = recurring.find(r=>r.id===w.source);
+      if(recurringSave) items.push(['Plan', recurringSave.name]);
+    }
+    return items;
+  }
+  function activityDetailNote(w){
+    if(w.source) return 'This win came from a recurring save plan.';
+    if(w.quickId) return 'Logged from one of your quick saves.';
+    if(w.credibility==='unverified') return 'Marked as a larger saving win.';
+    return '';
+  }
   function winItem(w){
     const wrap=document.createElement('div'); wrap.className='swipe-wrap'; wrap._open=false;
+    const isExpanded = expandedWinId===w.id;
+    if(isExpanded) wrap.classList.add('expanded');
     let pillCls, pillTxt, tap='';
     if(w.state==='transferred'){ pillCls='st-done'; pillTxt='Transferred'; }
     else if(w.state==='confirmed'){ pillCls='st-wait'; pillTxt='Waiting'; }
     else { pillCls='st-confirm'; pillTxt='Confirm'; tap='data-confirm="1"'; }
     const tag = w.credibility==='recurring' ? ' · Recurring' : (w.credibility==='unverified' ? ' · Large' : '');
+    const detailRows = activityDetailItems(w).map(([label,value])=>`<div class="activity-detail-line"><b>${label}</b><span>${value}</span></div>`).join('');
+    const note = activityDetailNote(w);
     wrap.innerHTML=`<div class="swipe-actions">
         <button class="sw-edit"><i class="ti ti-pencil"></i>Edit</button>
         <button class="sw-del"><i class="ti ti-trash"></i>Delete</button>
       </div>
-      <div class="swipe-content activity-item">
+      <div class="swipe-content activity-item expandable" aria-expanded="${isExpanded?'true':'false'}">
         <div class="ic"><i class="ti ${catIcon[w.cat]||'ti-circle'}"></i></div>
         <div class="mid"><div class="nm">${w.name}</div><div class="mt">${(cats.find(c=>c.id===w.cat)?.name||w.cat)+tag}</div></div>
         <div class="rt"><div class="rv">${P(w.net)}</div>
         <span class="state-pill ${pillCls}" ${tap}>${pillTxt}</span></div>
+        <div class="more"><i class="ti ti-chevron-down"></i></div>
+      </div>
+      <div class="activity-detail${isExpanded?' show':''}">
+        <div class="activity-detail-grid">${detailRows}</div>
+        ${note ? `<div class="activity-detail-note">${note}</div>` : ''}
       </div>`;
     const pill=wrap.querySelector('.state-pill[data-confirm]');
     if(pill) pill.addEventListener('click',e=>{ e.stopPropagation(); confirmWin(w); });
+    const content=wrap.querySelector('.swipe-content');
+    content.addEventListener('click',e=>{
+      if(e.target.closest('.state-pill')) return;
+      if(wrap._open){ e.stopPropagation(); closeOpenRow(); return; }
+      expandedWinId = expandedWinId===w.id ? null : w.id;
+      renderActivity();
+    });
     attachSwipe(wrap, w);
     return wrap;
   }
