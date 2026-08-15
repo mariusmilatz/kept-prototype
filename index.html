@@ -474,8 +474,7 @@
   .ms-level-track{display:grid;gap:6px;align-items:center;margin-top:4px;min-height:14px}
   .ms-level-seg{height:8px;border-radius:999px;background:rgba(17,23,19,.1);overflow:hidden;position:relative}
   .ms-level-seg.done{background:linear-gradient(90deg,rgba(122,214,190,.92) 0%,rgba(10,120,92,.78) 100%)}
-  .ms-level-seg.next{background:#ECE7FF;box-shadow:inset 0 0 0 1px rgba(140,123,255,.22)}
-  .ms-level-seg.next::after{content:"";position:absolute;inset:2px auto 2px 2px;width:42%;border-radius:999px;background:#8C7BFF;opacity:.95}
+  .ms-level-seg.next{background:#F5F1FF;box-shadow:inset 0 0 0 1.5px rgba(140,123,255,.4)}
   .ms-level-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:11px;color:var(--muted)}
   .ms-level-foot b{color:var(--ink);font-weight:650}
   .ms-xp-btn{border:0;background:none;padding:0;margin:2px 0 0;cursor:pointer;text-align:left}
@@ -2953,13 +2952,13 @@
 
   function journeySummary(data){
     const chapters=[
-      { title:'First steps', ids:['first-win','first-confirmed-win','first-transfer','first-quick-save','first-goal'] },
-      { title:'Building the habit', ids:['back-tomorrow','three-day-rhythm','week-of-intent','steady-hand','habit-builder','monthly-keeper'] },
-      { title:'Real momentum', ids:['kept-10','kept-50','kept-100','money-moved','transferred-100','real-saver'] },
-      { title:'Locked in', ids:['goal-underway','halfway-there','on-track','still-kept','subscription-slayer','consistency-pays'] }
+      { title:'First steps', cat:'start' },
+      { title:'Building the habit', cat:'habit' },
+      { title:'Real momentum', cat:'money' },
+      { title:'Locked in', cat:'commitment' }
     ];
     for(const chapter of chapters){
-      const milestones=chapter.ids.map(id=>data.find(m=>m.id===id)).filter(Boolean);
+      const milestones=data.filter(m=>m.cat===chapter.cat);
       if(!milestones.length) continue;
       const doneCount=milestones.filter(m=>m.unlocked).length;
       if(doneCount < milestones.length){
@@ -2968,7 +2967,7 @@
       }
     }
     const finalChapter=chapters[chapters.length-1];
-    const milestones=finalChapter.ids.map(id=>data.find(m=>m.id===id)).filter(Boolean);
+    const milestones=data.filter(m=>m.cat===finalChapter.cat);
     return { title:'Quietly compounding', done:milestones.length, total:milestones.length, milestones, nextIndex:-1 };
   }
 
