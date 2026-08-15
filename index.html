@@ -705,13 +705,12 @@
   .home-balance-copy .amount{font-size:43px;line-height:1;font-weight:560;letter-spacing:-.055em;font-variant-numeric:tabular-nums}
   .home-balance-copy .sub{font-size:11px;color:var(--muted);margin:7px 0 0}
   .home-balance-copy .hero-fv{margin-top:10px;font-size:10.5px;padding:5px 8px}
-  .home-progress{--tree-progress:0deg;width:108px;height:108px;border-radius:50%;position:relative;padding:4px;background:conic-gradient(from 205deg,color-mix(in srgb,var(--accent) 78%,#6A57D2) var(--tree-progress),rgba(234,208,160,.22) 0 312deg,transparent 312deg)}
-  .home-progress::after{content:"";position:absolute;inset:4px;border-radius:50%;background:radial-gradient(circle at 50% 24%,rgba(255,255,255,.98),rgba(255,248,236,.96) 60%,rgba(244,239,255,.88) 100%);box-shadow:inset 0 0 0 1px rgba(238,221,189,.74)}
-  .home-progress-inner{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-  .home-tree-scene{position:relative;z-index:1;width:100%;height:100%;display:block}
-  .home-tree-scene .tree-stage{position:absolute;inset:10px 8px 8px;display:flex;align-items:flex-end;justify-content:center;opacity:0;transform:translateY(4px) scale(.965);transform-origin:50% 82%;transition:opacity .48s cubic-bezier(.22,1,.36,1),transform .48s cubic-bezier(.22,1,.36,1)}
-  .home-tree-scene .tree-stage.is-active{opacity:1;transform:translateY(0) scale(1)}
-  .home-tree-stage-img{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;pointer-events:none;user-select:none}
+  .home-progress{--goal-progress:0deg;width:108px;height:108px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(from 205deg,var(--accent) var(--goal-progress),rgba(6,39,26,.08) 0 312deg,transparent 312deg);transform:rotate(25deg);position:relative}
+  .home-progress::after{content:"";position:absolute;inset:11px;border-radius:50%;background:color-mix(in srgb,var(--card) 92%,transparent)}
+  .home-progress-inner{position:relative;z-index:1;text-align:center;transform:rotate(-25deg);display:flex;flex-direction:column;align-items:center}
+  .home-progress-inner b{font-size:19px;letter-spacing:-.04em}
+  .home-progress-inner span{font-size:9.5px;color:var(--muted);margin-top:1px}
+  .home-progress-inner small{font-size:9px;color:var(--muted);margin-top:4px;max-width:68px;line-height:1.2}
   .home-goal-row{grid-column:1/-1;border-top:1px solid rgba(17,23,19,.07);margin-top:10px;padding-top:13px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
   .home-goal-row > div:first-child{min-width:0;flex:1}
   .home-goal-row b{font-size:12.5px;display:block}
@@ -931,31 +930,8 @@
             <p class="sub" id="homeCount">16 Saving Wins · July</p>
             <p class="hero-fv"><i class="ti ti-arrow-up-right"></i><span id="heroFV">≈ £498 in 20 years invested</span></p>
           </div>
-          <div class="home-progress" id="homeProgress" data-tree-stage="2" data-tree-frame="stage-2" aria-label="Monthly tree progress">
-            <div class="home-tree-scene" aria-hidden="true">
-              <div class="tree-stage tree-stage-1" data-tree-frame="stage-1"><img class="home-tree-stage-img" src="assets/tree-progress/tree-stage-1.png" alt=""></div>
-              <div class="tree-stage tree-stage-2 is-active" data-tree-frame="stage-2"><img class="home-tree-stage-img" src="assets/tree-progress/tree-stage-2.png" alt=""></div>
-              <div class="tree-stage tree-between-2-3" data-tree-frame="between-2-3"><img class="home-tree-stage-img" src="assets/tree-progress/tree-between-2-3.png" alt=""></div>
-              <div class="tree-stage tree-stage-3" data-tree-frame="stage-3"><img class="home-tree-stage-img" src="assets/tree-progress/tree-stage-3.png" alt=""></div>
-              <div class="tree-stage tree-between-3-4" data-tree-frame="between-3-4"><img class="home-tree-stage-img" src="assets/tree-progress/tree-between-3-4.png" alt=""></div>
-              <div class="tree-stage tree-stage-4" data-tree-frame="stage-4"><img class="home-tree-stage-img" src="assets/tree-progress/tree-stage-4.png" alt=""></div>
-              <div class="tree-stage tree-between-4-5" data-tree-frame="between-4-5"><img class="home-tree-stage-img" src="assets/tree-progress/tree-between-4-5.png" alt=""></div>
-              <div class="tree-stage tree-stage-5" data-tree-frame="stage-5"><img class="home-tree-stage-img" src="assets/tree-progress/tree-stage-5.png" alt=""></div>
-              <div class="tree-stage tree-between-5-6" data-tree-frame="between-5-6"><img class="home-tree-stage-img" src="assets/tree-progress/tree-between-5-6.png" alt=""></div>
-              <div class="tree-stage tree-stage-6" data-tree-frame="stage-6"><img class="home-tree-stage-img" src="assets/tree-progress/tree-stage-6.png" alt=""></div>
-              <div class="tree-stage tree-between-6-7" data-tree-frame="between-6-7"><img class="home-tree-stage-img" src="assets/tree-progress/tree-between-6-7.png" alt=""></div>
-              <div class="tree-stage tree-stage-7" data-tree-frame="stage-7"><img class="home-tree-stage-img" src="assets/tree-progress/tree-stage-7.png" alt=""></div>
-              <div class="tree-stage tree-between-7-8" data-tree-frame="between-7-8"><img class="home-tree-stage-img" src="assets/tree-progress/tree-between-7-8.png" alt=""></div>
-              <div class="tree-stage tree-stage-8" data-tree-frame="stage-8"><img class="home-tree-stage-img" src="assets/tree-progress/tree-stage-8.png" alt=""></div>
-              <div class="tree-stage tree-between-8-9" data-tree-frame="between-8-9"><img class="home-tree-stage-img" src="assets/tree-progress/tree-between-8-9.png" alt=""></div>
-              <div class="tree-stage tree-stage-9" data-tree-frame="stage-9"><img class="home-tree-stage-img" src="assets/tree-progress/tree-stage-9.png" alt=""></div>
-              <div class="tree-stage tree-between-9-10" data-tree-frame="between-9-10"><img class="home-tree-stage-img" src="assets/tree-progress/tree-between-9-10.png" alt=""></div>
-              <div class="tree-stage tree-stage-10" data-tree-frame="stage-10"><img class="home-tree-stage-img" src="assets/tree-progress/tree-stage-10.png" alt=""></div>
-              <div class="tree-stage tree-reset-10-0" data-tree-frame="reset-10-0"><img class="home-tree-stage-img" src="assets/tree-progress/tree-reset-10-0.png" alt=""></div>
-              <div class="tree-stage tree-reset-0-0_5" data-tree-frame="reset-0-0.5"><img class="home-tree-stage-img" src="assets/tree-progress/tree-reset-0-0_5.png" alt=""></div>
-              <div class="tree-stage tree-reset-0_5-1" data-tree-frame="reset-0.5-1"><img class="home-tree-stage-img" src="assets/tree-progress/tree-reset-0_5-1.png" alt=""></div>
-            </div>
-            <div class="home-progress-inner"><b id="homeProgressPct">Stage 2</b><span id="homeProgressLabel">Seeded</span><small id="homeProgressGoal">Ready to grow</small></div>
+          <div class="home-progress" id="homeProgress" aria-label="Monthly goal progress">
+            <div class="home-progress-inner"><b id="homeProgressPct">0%</b><span id="homeProgressLabel">of plan</span><small id="homeProgressGoal">Goal £250</small></div>
           </div>
           <div class="home-goal-row">
             <div><b id="goalTitle">Invest £250 this month</b><small id="goalSub"></small></div>
@@ -1833,16 +1809,6 @@
     9:'stage-9',
     10:'stage-10'
   };
-  const TREE_TRANSITION_FRAME_IDS={
-    '2-3':'between-2-3',
-    '3-4':'between-3-4',
-    '4-5':'between-4-5',
-    '5-6':'between-5-6',
-    '6-7':'between-6-7',
-    '7-8':'between-7-8',
-    '8-9':'between-8-9',
-    '9-10':'between-9-10'
-  };
   const TREE_RESET_FRAME_IDS=['reset-10-0','reset-0-0.5','reset-0.5-1','stage-1'];
   const MILESTONE_CATS=[
     {id:'all', label:'All chapters', title:'Full journey', desc:'See every chapter in one calm overview.', icon:'ti-map-2', accent:'journey'},
@@ -2625,6 +2591,26 @@
     treeLoopState.lastStage=stage;
     updateHomeTreeCopy(stage);
   }
+  let treeFramesDecoded=false;
+  async function preloadHomeTreeFrames(){
+    if(treeFramesDecoded) return;
+    const imgs=[...document.querySelectorAll('.home-tree-stage-img')];
+    await Promise.all(imgs.map(async img=>{
+      try{
+        if(img.complete && img.naturalWidth>0){
+          if(typeof img.decode==='function') await img.decode().catch(()=>{});
+          return;
+        }
+        await new Promise(resolve=>{
+          const done=()=>resolve();
+          img.addEventListener('load', done, {once:true});
+          img.addEventListener('error', done, {once:true});
+        });
+        if(typeof img.decode==='function') await img.decode().catch(()=>{});
+      }catch(e){}
+    }));
+    treeFramesDecoded=true;
+  }
   function animateHomeTreeTo(target,{reset=false}={}){
     clearHomeTreeTimers();
     treeLoopState.animating=true;
@@ -2634,19 +2620,14 @@
       let delay=0;
       for(const frameId of TREE_RESET_FRAME_IDS){
         homeTreeAnimTimers.push(setTimeout(()=>setHomeTreeStage(1,{frameId}), delay));
-        delay += 240;
+        delay += 280;
       }
       homeTreeAnimTimers.push(setTimeout(()=>setHomeTreeStage(2), delay));
       for(let stage=3; stage<=target; stage++){
-        const betweenId=TREE_TRANSITION_FRAME_IDS[`${stage-1}-${stage}`];
-        if(betweenId){
-          delay += 180;
-          homeTreeAnimTimers.push(setTimeout(()=>setHomeTreeStage(stage-1,{frameId:betweenId}), delay));
-        }
-        delay += 210;
+        delay += 280;
         homeTreeAnimTimers.push(setTimeout(()=>setHomeTreeStage(stage), delay));
       }
-      homeTreeAnimTimers.push(setTimeout(()=>{ treeLoopState.animating=false; }, delay+40));
+      homeTreeAnimTimers.push(setTimeout(()=>{ treeLoopState.animating=false; }, delay+80));
       return;
     }
     const current=Math.max(2, treeLoopState.lastStage||2);
@@ -2657,17 +2638,13 @@
     }
     let delay=0;
     for(let stage=current+1; stage<=target; stage++){
-      const betweenId=TREE_TRANSITION_FRAME_IDS[`${stage-1}-${stage}`];
-      if(betweenId){
-        delay += 180;
-        homeTreeAnimTimers.push(setTimeout(()=>setHomeTreeStage(stage-1,{frameId:betweenId}), delay));
-      }
-      delay += 210;
+      delay += 280;
       homeTreeAnimTimers.push(setTimeout(()=>setHomeTreeStage(stage), delay));
     }
-    homeTreeAnimTimers.push(setTimeout(()=>{ treeLoopState.animating=false; }, delay+40));
+    homeTreeAnimTimers.push(setTimeout(()=>{ treeLoopState.animating=false; }, delay+80));
   }
-  function syncHomeTree(forceReset=false){
+  async function syncHomeTree(forceReset=false){
+    await preloadHomeTreeFrames();
     const target=homeTreeTargetStage();
     if(treeLoopState.animating && treeLoopState.targetStage===target && !forceReset) return;
     if(forceReset || treeLoopState.monthKey!==CUR){
@@ -2945,8 +2922,17 @@
     const pct = Math.min(100, gm>0 ? rec/gm*100 : goalMode==='open' ? openVisualPct : 0);
     document.getElementById('goalFill').style.width = pct+'%';
     const progressEl=document.getElementById('homeProgress');
-    if(progressEl) progressEl.classList.toggle('open-ended',goalMode==='open');
-    syncHomeTree();
+    const openEnded = goalMode==='open';
+    if(progressEl){
+      progressEl.classList.toggle('open-ended',openEnded);
+      progressEl.style.setProperty('--goal-progress',(pct/100*306)+'deg');
+      progressEl.setAttribute('aria-label', openEnded
+        ? `${openWinCount} save${openWinCount===1?'':'s'} this month`
+        : `${Math.round(pct)}% of plan`);
+    }
+    document.getElementById('homeProgressPct').textContent = openEnded ? String(openWinCount) : Math.round(pct)+'%';
+    document.getElementById('homeProgressLabel').textContent = openEnded ? (openWinCount===1?'save':'saves') : 'of plan';
+    document.getElementById('homeProgressGoal').textContent = openEnded ? 'this month' : 'Goal '+Pn(gm);
     const autoOn = !!(bank.connected && bankAutoDraft);
     const primaryActions=document.querySelector('.home-primary-actions');
     const moveBtn=document.getElementById('homeMoveMoney');
