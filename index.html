@@ -462,11 +462,21 @@
   .ms-page-head h3{font-size:27px!important;text-align:center;margin:0!important}
   .ms-page-head .sub{grid-column:1/-1;text-align:center;margin:-3px 0 0!important}
   .ms-head-btn{width:42px;height:42px;border:0;border-radius:50%;background:var(--surface-solid);color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px var(--hair);cursor:pointer;font-size:18px}
-  .ms-summary{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 14px;padding:18px 20px;background:var(--surface-elevated);border:1px solid var(--hair);border-radius:24px;box-shadow:0 18px 42px -34px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.55)}
-  .ms-summary-copy .v{font-family:var(--font-round);font-weight:650;font-size:38px;line-height:1;letter-spacing:-.055em;color:var(--accent)}
-  .ms-summary-copy .v span{display:block;font-size:17px;letter-spacing:-.02em;margin-top:4px}
-  .ms-summary-copy .k{font-size:12px;color:var(--muted);margin-top:10px}
-  .ms-summary-copy .state{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent-ink);font-size:10px;font-weight:700;letter-spacing:.02em}
+  .ms-summary{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:0 0 14px;padding:18px 20px;background:var(--surface-elevated);border:1px solid var(--hair);border-radius:24px;box-shadow:0 18px 42px -34px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.55)}
+  .ms-level-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+  .ms-level-copy{min-width:0}
+  .ms-level-kicker{font-size:10px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .ms-level-title{font-family:var(--font-round);font-weight:650;font-size:29px;line-height:1.02;letter-spacing:-.05em;color:var(--ink);margin-top:8px}
+  .ms-level-sub{font-size:12px;color:var(--muted);line-height:1.45;margin-top:8px}
+  .ms-level-pill{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;background:var(--accent-soft);color:var(--accent-ink);font-size:10px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+  .ms-level-rail{height:8px;border-radius:999px;background:rgba(17,23,19,.08);overflow:hidden}
+  .ms-level-rail i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#0A785C 0%,#7AD6BE 100%)}
+  .ms-level-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:11px;color:var(--muted)}
+  .ms-level-foot b{color:var(--ink);font-weight:650}
+  .ms-level-chapter{display:inline-flex;align-items:center;gap:8px;max-width:100%;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.58);border:1px solid rgba(17,23,19,.06)}
+  .ms-level-chapter em{font-style:normal;font-size:10px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .ms-level-chapter b{display:block;font-family:var(--font-round);font-size:15px;line-height:1.05;letter-spacing:-.03em;color:var(--ink);margin-top:3px}
+  .ms-level-chapter span{display:block;font-size:11px;color:var(--muted);margin-top:4px}
   .ms-journey-card{margin:0 0 16px;padding:18px 18px 16px;background:var(--surface-elevated);border:1px solid var(--hair);border-radius:24px;box-shadow:0 18px 42px -34px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.55)}
   .ms-kicker{font-size:10px;font-weight:750;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
   .ms-journey-title{font-family:var(--font-round);font-size:24px;font-weight:650;letter-spacing:-.04em;margin:7px 0 4px;color:var(--ink)}
@@ -487,15 +497,15 @@
   .ms-next-note b{color:var(--ink)}
   .ms-progress-ring{--ms-progress:0deg;width:94px;height:94px;border-radius:50%;background:conic-gradient(var(--accent) var(--ms-progress),var(--accent-soft) 0);padding:10px;flex:0 0 auto}
   .ms-progress-ring>div{width:100%;height:100%;border-radius:50%;background:var(--surface-solid);display:flex;align-items:center;justify-content:center;font-family:var(--font-round);font-size:22px;font-weight:650;color:var(--accent)}
-  .ms-chapters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 18px}
-  .ms-chapter-btn{border:1px solid var(--hair);background:var(--surface-solid);border-radius:20px;padding:14px 16px 15px;text-align:left;cursor:pointer;box-shadow:var(--card-float-shadow),inset 0 0 0 1px rgba(255,255,255,.35);display:block;color:var(--ink);min-height:164px}
+  .ms-chapters{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin:0 0 18px}
+  .ms-chapter-btn{border:1px solid var(--hair);background:var(--surface-solid);border-radius:20px;padding:14px 16px 15px;text-align:left;cursor:pointer;box-shadow:var(--card-float-shadow),inset 0 0 0 1px rgba(255,255,255,.35);display:block;color:var(--ink);min-height:unset}
   .ms-chapter-btn.on{background:color-mix(in srgb,var(--accent-soft) 34%,var(--surface-solid));border-color:color-mix(in srgb,var(--accent) 20%,var(--hair))}
   .ms-chapter-ic,.ms-chapter-accent{display:none}
   .ms-chapter-copy{min-width:0}
   .ms-chapter-copy em{display:block;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);line-height:1.2}
-  .ms-chapter-copy b{display:block;font-family:var(--font-round);font-size:18px;line-height:1.04;letter-spacing:-.03em;margin-top:10px;max-width:8ch}
-  .ms-chapter-copy small{display:block;font-size:11px;color:var(--muted);line-height:1.4;margin-top:12px;max-width:15ch}
-  .ms-chapter-copy span{display:block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);margin-top:14px;line-height:1.2}
+  .ms-chapter-copy b{display:block;font-family:var(--font-round);font-size:18px;line-height:1.04;letter-spacing:-.03em;margin-top:8px}
+  .ms-chapter-copy small{display:block;font-size:11.5px;color:var(--muted);line-height:1.45;margin-top:8px;max-width:28ch}
+  .ms-chapter-copy span{display:block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);margin-top:12px;line-height:1.2}
   .ms-section-title{font-family:var(--font-round);font-size:18px;font-weight:650;letter-spacing:-.025em;margin:0 0 10px;color:var(--accent)}
   .ms-sub{font-size:11.5px;color:var(--muted);line-height:1.45;margin:-4px 0 12px}
   .ms-list{display:flex;flex-direction:column;gap:9px}
@@ -1613,8 +1623,23 @@
             <p class="sub">Milestones, rhythm, and quiet progress.</p>
           </div>
           <div class="ms-summary">
-            <div class="ms-summary-copy"><div class="v"><b id="msUnlockedCount">0</b><span>unlocked</span></div><div class="k">Your progress</div><div class="state" id="msSaverState">Starting</div></div>
-            <div class="ms-progress-ring" id="msProgressRing"><div id="msProgressPercent">0%</div></div>
+            <div class="ms-level-top">
+              <div class="ms-level-copy">
+                <div class="ms-level-kicker">Your saving level</div>
+                <div class="ms-level-title" id="msLevelTitle">Level 1 · Starter</div>
+                <div class="ms-level-sub" id="msLevelSub">Quiet progress adds up faster than it feels.</div>
+              </div>
+              <div class="ms-level-pill" id="msSaverState">Starting</div>
+            </div>
+            <div class="ms-level-rail" aria-hidden="true"><i id="msLevelBar"></i></div>
+            <div class="ms-level-foot"><span id="msLevelNote">On your way to Level 2</span><b id="msUnlockedCount">0 unlocked</b></div>
+            <div class="ms-level-chapter">
+              <div>
+                <em>Current chapter</em>
+                <b id="msLevelChapterTitle">First steps</b>
+                <span id="msLevelChapterMeta">0 of 0 complete</span>
+              </div>
+            </div>
           </div>
           <div class="ms-journey-card">
             <div class="ms-kicker">Current chapter</div>
@@ -1624,6 +1649,8 @@
             <div class="ms-journey-track" id="msJourneyTrackPage"></div>
             <div class="ms-next-note" id="msJourneyNextNote">Next up: <b>First Win</b></div>
           </div>
+          <div class="ms-section-title">Chapters</div>
+          <p class="ms-sub">Move through the journey one calm chapter at a time.</p>
           <div class="ms-chapters" id="msSeg"></div>
           <div class="ms-section-title">Milestones up next</div>
           <p class="ms-sub" id="msCatSub">See the next few milestones without getting buried in everything at once.</p>
@@ -3178,15 +3205,19 @@
   function renderMilestones(data){
     const unlocked = data.filter(m=>m.unlocked);
     const locked = data.filter(m=>!m.unlocked);
-    document.getElementById('msUnlockedCount').textContent = String(unlocked.length);
-    const overallPct=data.length ? Math.round(unlocked.length/data.length*100) : 0;
-    document.getElementById('msProgressPercent').textContent = overallPct+'%';
-    document.getElementById('msProgressRing').style.setProperty('--ms-progress',(overallPct*3.6)+'deg');
+    const progression = progressionSummary(data);
+    document.getElementById('msUnlockedCount').textContent = unlocked.length+' unlocked';
     document.getElementById('msSaverState').textContent = saverStateLabel(unlocked.length);
+    document.getElementById('msLevelTitle').textContent = 'Level '+progression.level+' · '+progression.title;
+    document.getElementById('msLevelSub').textContent = chapterDescription(progression.subtitle);
+    document.getElementById('msLevelBar').style.width = progression.progressPct+'%';
+    document.getElementById('msLevelNote').textContent = progression.nextLabel;
     document.getElementById('setMilestonesSub').textContent = unlocked.length+' of '+data.length+' earned';
     const nextOverall = locked[0];
 
     const journey = journeySummary(data);
+    document.getElementById('msLevelChapterTitle').textContent = journey.title;
+    document.getElementById('msLevelChapterMeta').textContent = journey.done+' of '+journey.total+' complete';
     document.getElementById('msJourneyPageTitle').textContent = journey.title;
     document.getElementById('msJourneyPageSub').textContent = chapterDescription(journey.title);
     document.getElementById('msJourneyPageMeta').textContent = journey.done+' of '+journey.total+' complete';
