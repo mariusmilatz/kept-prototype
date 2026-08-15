@@ -480,6 +480,18 @@
   .ms-level-node.next .ms-level-mark{background:#F5F1FF;border-color:#8C7BFF;color:#6956D9;box-shadow:0 0 0 6px rgba(140,123,255,.06)}
   .ms-level-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:11px;color:var(--muted)}
   .ms-level-foot b{color:var(--ink);font-weight:650}
+  .ms-xp-btn{border:0;background:none;padding:0;margin:2px 0 0;cursor:pointer;text-align:left}
+  .ms-xp-btn:focus{outline:none}
+  .ms-xp-btn:focus-visible .ms-xp-box{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 24%,transparent)}
+  .ms-xp-box{display:flex;flex-direction:column;gap:7px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.58);border:1px solid rgba(17,23,19,.06);transition:box-shadow .18s ease}
+  .ms-xp-top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:10px;font-weight:750;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .ms-xp-top b{font-size:10px;color:var(--accent-ink)}
+  .ms-xp-bar{height:7px;border-radius:999px;background:rgba(17,23,19,.08);overflow:hidden}
+  .ms-xp-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#7AD6BE 0%,#0A785C 100%)}
+  .ms-xp-note{font-size:11px;color:var(--muted)}
+  .ms-level-open{border:0;background:none;padding:0;cursor:pointer;text-align:left;color:inherit}
+  .ms-level-open:focus{outline:none}
+  .ms-level-open:focus-visible .ms-level-chapter{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 24%,transparent)}
   .ms-level-chapter{display:inline-flex;align-items:center;gap:10px;max-width:100%;padding:11px 12px;border-radius:18px;background:color-mix(in srgb,var(--accent-soft) 52%,rgba(255,255,255,.75));border:1px solid rgba(17,23,19,.06)}
   .ms-level-chapter-dot{width:22px;height:22px;border-radius:999px;background:rgba(255,255,255,.72);border:1px solid rgba(10,120,92,.16);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:11px;flex:0 0 auto}
   .ms-level-chapter em{font-style:normal;font-size:10px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
@@ -509,6 +521,7 @@
   .chapter-sheet-meta{font-size:12px;color:var(--muted);margin-top:8px}
   .chapter-sheet-group{margin-top:14px}
   .chapter-sheet-group b{display:block;font-size:11px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .chapter-sheet-toggle{margin-top:10px;width:100%;justify-content:center}
   .ms-item{background:var(--card);border:1px solid var(--hair);border-radius:20px;padding:13px 14px;box-shadow:0 12px 30px -28px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.45)}
   .ms-item.top{padding:16px;border-color:color-mix(in srgb,var(--accent) 25%,var(--hair));border-radius:23px}
   .ms-item.unlocked{background:color-mix(in srgb,var(--accent-soft) 48%,var(--card));border-color:color-mix(in srgb,var(--accent) 24%,var(--hair))}
@@ -1636,14 +1649,23 @@
             </div>
             <div class="ms-level-track" id="msLevelTrack"></div>
             <div class="ms-level-foot"><span id="msLevelNote">On your way to Level 2</span><b id="msUnlockedCount">0 unlocked</b></div>
-            <div class="ms-level-chapter">
-              <div class="ms-level-chapter-dot"><i class="ti ti-sparkles"></i></div>
-              <div>
-                <em>Current chapter</em>
-                <b id="msLevelChapterTitle">First steps</b>
-                <span id="msLevelChapterMeta">0 of 0 complete</span>
+            <button class="ms-xp-btn" id="msXpButton" type="button">
+              <div class="ms-xp-box">
+                <div class="ms-xp-top"><span>XP progress</span><b id="msXpTop">0 / 40 XP</b></div>
+                <div class="ms-xp-bar" aria-hidden="true"><i id="msXpBar"></i></div>
+                <div class="ms-xp-note" id="msXpNote">Tap to see how your level grows.</div>
               </div>
-            </div>
+            </button>
+            <button class="ms-level-open" id="msLevelChapterButton" type="button">
+              <div class="ms-level-chapter">
+                <div class="ms-level-chapter-dot"><i class="ti ti-sparkles"></i></div>
+                <div>
+                  <em>Current chapter</em>
+                  <b id="msLevelChapterTitle">First steps</b>
+                  <span id="msLevelChapterMeta">0 of 0 complete</span>
+                </div>
+              </div>
+            </button>
           </div>
           <div class="ms-section-title">Chapters</div>
           <p class="ms-sub">Move through the journey one calm chapter at a time.</p>
@@ -1665,10 +1687,29 @@
           <div class="chapter-sheet-group">
             <b>Up next</b>
             <div class="ms-list" id="chapterSheetNext"></div>
+            <button class="btn ghost chapter-sheet-toggle" id="chapterSheetToggleNext" type="button" style="display:none">Show more</button>
           </div>
           <div class="chapter-sheet-group">
             <b>Unlocked</b>
             <div class="ms-list" id="chapterSheetUnlocked"></div>
+          </div>
+        </div>
+      </div>
+      <div class="overlay" id="xpOverlay">
+        <div class="sheet">
+          <div class="grip"></div>
+          <div class="chapter-sheet-head">
+            <div>
+              <h3 id="xpSheetTitle">Level 1 · Starter</h3>
+              <div class="chapter-sheet-meta" id="xpSheetMeta">0 XP so far</div>
+            </div>
+            <button class="ms-head-btn" id="xpSheetClose" aria-label="Close XP details"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <p class="sub" id="xpSheetSub">Quiet actions build your level in the background.</p>
+          <div class="ms-xp-box">
+            <div class="ms-xp-top"><span>Progress to next level</span><b id="xpSheetTop">0 / 40 XP</b></div>
+            <div class="ms-xp-bar" aria-hidden="true"><i id="xpSheetBar"></i></div>
+            <div class="ms-xp-note" id="xpSheetNote">40 XP needed for Level 2.</div>
           </div>
         </div>
       </div>
@@ -2957,8 +2998,8 @@
     const winCount = wins.length;
     const confirmedCount = wins.filter(w=>w.state==='confirmed' || w.state==='transferred').length;
     const transferCount = transfers.length;
-    const xp = (winCount*10) + (confirmedCount*8) + (transferCount*18) + (unlocked*26);
-    const levelThresholds = [0, 60, 140, 240, 360, 500, 660, 840, 1040, 1260, 1500];
+    const xp = (winCount*3) + (confirmedCount*6) + (transferCount*10) + (unlocked*10);
+    const levelThresholds = [0, 80, 180, 320, 500, 720, 980, 1280, 1620, 2000, 2420];
     const titles = ['Starter','Keeper','First Steps','Habit Builder','Steady Saver','Quiet Investor','Long Game','Future Builder','Wealth Grower','Fig Keeper','Kept Master'];
     let level = 1;
     for(let index=1; index<levelThresholds.length; index++){
@@ -2974,6 +3015,8 @@
       level,
       title: titles[level-1],
       progressPct,
+      currentFloor,
+      nextThreshold,
       subtitle: journeySummary(data).title,
       nextLabel: level >= titles.length ? 'Top level reached' : ('On your way to Level ' + nextLevel)
     };
@@ -3007,9 +3050,12 @@
     document.getElementById('chapterSheetSub').textContent=catInfo.desc;
     const nextEl=document.getElementById('chapterSheetNext');
     const unlockedEl=document.getElementById('chapterSheetUnlocked');
+    const nextToggle=document.getElementById('chapterSheetToggleNext');
     nextEl.innerHTML='';
     unlockedEl.innerHTML='';
-    locked.slice(0,3).forEach((milestone, index)=>nextEl.appendChild(milestoneItem(milestone, index===0)));
+    const showAll = nextToggle.dataset.expanded==='true';
+    const lockedVisible = showAll ? locked : locked.slice(0,3);
+    lockedVisible.forEach((milestone, index)=>nextEl.appendChild(milestoneItem(milestone, index===0)));
     unlocked.slice().reverse().slice(0,4).forEach(milestone=>unlockedEl.appendChild(milestoneItem(milestone, false)));
     if(!nextEl.children.length){
       const empty=document.createElement('div');
@@ -3017,15 +3063,32 @@
       empty.textContent='Everything in this chapter is unlocked.';
       nextEl.appendChild(empty);
     }
+    nextToggle.style.display = locked.length > 3 ? '' : 'none';
+    nextToggle.textContent = showAll ? 'Show less' : ('Show all · ' + locked.length);
     if(!unlockedEl.children.length){
       const empty=document.createElement('div');
       empty.className='empty-note';
       empty.textContent='Nothing unlocked here yet.';
       unlockedEl.appendChild(empty);
     }
+    nextToggle.dataset.catId=catId;
     document.getElementById('chapterDetailOverlay').classList.add('show');
   }
   function closeChapterSheet(){ document.getElementById('chapterDetailOverlay').classList.remove('show'); }
+
+  function openXpSheet(){
+    const progression=progressionSummary(milestoneData());
+    document.getElementById('xpSheetTitle').textContent='Level '+progression.level+' · '+progression.title;
+    document.getElementById('xpSheetMeta').textContent=progression.xp+' XP so far';
+    document.getElementById('xpSheetSub').textContent='XP builds quietly from wins, confirmations, transfers, and unlocked milestones.';
+    document.getElementById('xpSheetTop').textContent=progression.xp+' / '+progression.nextThreshold+' XP';
+    document.getElementById('xpSheetBar').style.width=progression.progressPct+'%';
+    document.getElementById('xpSheetNote').textContent=progression.level >= 11
+      ? 'You have reached the current top level.'
+      : ((progression.nextThreshold-progression.xp)+' XP to unlock Level '+(progression.level+1)+'.');
+    document.getElementById('xpOverlay').classList.add('show');
+  }
+  function closeXpSheet(){ document.getElementById('xpOverlay').classList.remove('show'); }
 
   function render(){
     const rec=recordedThisMonth(), wait=waiting(), tr=transferredTotal();
@@ -3250,17 +3313,21 @@
   function renderMilestones(data){
     const unlocked = data.filter(m=>m.unlocked);
     const progression = progressionSummary(data);
+    const journey = journeySummary(data);
     document.getElementById('msUnlockedCount').textContent = unlocked.length+' unlocked';
     document.getElementById('msSaverState').textContent = saverStateLabel(unlocked.length);
     document.getElementById('msLevelTitle').textContent = 'Level '+progression.level+' · '+progression.title;
     document.getElementById('msLevelSub').textContent = chapterDescription(progression.subtitle);
     document.getElementById('msLevelNote').textContent = progression.nextLabel;
     document.getElementById('setMilestonesSub').textContent = unlocked.length+' of '+data.length+' earned';
-
-    const journey = journeySummary(data);
     renderJourneyLevelTrack(journey);
     document.getElementById('msLevelChapterTitle').textContent = journey.title;
     document.getElementById('msLevelChapterMeta').textContent = journey.done+' of '+journey.total+' complete';
+    document.getElementById('msXpTop').textContent = progression.xp+' / '+progression.nextThreshold+' XP';
+    document.getElementById('msXpBar').style.width = progression.progressPct+'%';
+    document.getElementById('msXpNote').textContent = progression.level >= 11
+      ? 'You reached the current top level.'
+      : ((progression.nextThreshold-progression.xp)+' XP until Level '+(progression.level+1)+'.');
 
     const seg=document.getElementById('msSeg');
     seg.innerHTML='';
@@ -3510,7 +3577,26 @@
   document.getElementById('msClose').addEventListener('click',closeMilestones);
   document.getElementById('msSeg').addEventListener('click',e=>{
     const b=e.target.closest('button'); if(!b) return;
+    document.getElementById('chapterSheetToggleNext').dataset.expanded='false';
     msCat=b.dataset.cat; openChapterSheet(msCat);
+  });
+  document.getElementById('msLevelTrack').addEventListener('click',()=>{
+    const journey=journeySummary(milestoneData());
+    document.getElementById('chapterSheetToggleNext').dataset.expanded='false';
+    openChapterSheet((MILESTONE_CATS.find(cat=>cat.title===journey.title)||{}).id || 'start');
+  });
+  document.getElementById('msLevelChapterButton').addEventListener('click',()=>{
+    const journey=journeySummary(milestoneData());
+    document.getElementById('chapterSheetToggleNext').dataset.expanded='false';
+    openChapterSheet((MILESTONE_CATS.find(cat=>cat.title===journey.title)||{}).id || 'start');
+  });
+  document.getElementById('msXpButton').addEventListener('click',openXpSheet);
+  document.getElementById('xpSheetClose').addEventListener('click',closeXpSheet);
+  document.getElementById('xpOverlay').addEventListener('click',e=>{ if(e.target===document.getElementById('xpOverlay')) closeXpSheet(); });
+  document.getElementById('chapterSheetToggleNext').addEventListener('click',()=>{
+    const toggle=document.getElementById('chapterSheetToggleNext');
+    toggle.dataset.expanded = toggle.dataset.expanded==='true' ? 'false' : 'true';
+    openChapterSheet(toggle.dataset.catId || 'start');
   });
   msOv.addEventListener('click',e=>{ if(e.target===msOv) closeMilestones(); });
   document.getElementById('chapterSheetClose').addEventListener('click',closeChapterSheet);
