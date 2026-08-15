@@ -477,7 +477,7 @@
   .ms-level-seg.next{background:#F5F1FF;box-shadow:inset 0 0 0 1.5px rgba(140,123,255,.4)}
   .ms-level-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:11px;color:var(--muted)}
   .ms-level-foot b{color:var(--ink);font-weight:650}
-  .ms-xp-btn{display:block;width:100%;border:0;background:none;padding:0;margin:2px 0 0;cursor:pointer;text-align:left;appearance:none;-webkit-appearance:none;position:relative;z-index:2;pointer-events:auto;touch-action:manipulation}
+  .ms-xp-btn{display:block;width:100%;border:0;background:none;padding:0;margin:2px 0 0;cursor:pointer;text-align:left;appearance:none;-webkit-appearance:none;position:relative;z-index:2;pointer-events:auto}
   .ms-xp-btn:focus{outline:none}
   .ms-xp-btn:focus-visible .ms-xp-box{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 24%,transparent)}
   .ms-xp-box{display:flex;flex-direction:column;gap:7px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.58);border:1px solid rgba(17,23,19,.06);transition:box-shadow .18s ease}
@@ -1652,7 +1652,7 @@
             </div>
             <div class="ms-level-track" id="msLevelTrack"></div>
             <div class="ms-level-foot"><span id="msLevelNote">On your way to Level 2</span><b id="msUnlockedCount">0 unlocked</b></div>
-            <button class="ms-xp-btn" id="msXpButton" type="button" onclick="return window.__keptOpenXp(event)">
+            <button class="ms-xp-btn" id="msXpButton" type="button">
               <div class="ms-xp-box">
                 <div class="ms-xp-top"><span>XP progress</span><b id="msXpTop">0 / 40 XP</b></div>
                 <div class="ms-xp-bar" aria-hidden="true"><i id="msXpBar"></i></div>
@@ -3118,20 +3118,6 @@
   function closeXpSheet(){ document.getElementById('xpOverlay').classList.remove('show'); }
   window.openXpSheet = openXpSheet;
   window.closeXpSheet = closeXpSheet;
-  window.__keptOpenXp = function(event){
-    if(event){
-      if(typeof event.preventDefault === 'function') event.preventDefault();
-      if(typeof event.stopPropagation === 'function') event.stopPropagation();
-    }
-    try{
-      openXpSheet();
-    }catch(error){
-      console.error('XP sheet open failed', error);
-      const fallback=document.getElementById('xpOverlay');
-      if(fallback) fallback.classList.add('show');
-    }
-    return false;
-  };
   function renderXpGuide(){
     const guide=document.getElementById('xpGuideList');
     if(!guide) return;
@@ -3650,11 +3636,10 @@
     openChapterSheet((MILESTONE_CATS.find(cat=>cat.title===journey.title)||{}).id || 'start');
   });
   const msXpButton=document.getElementById('msXpButton');
-  msXpButton.addEventListener('click',window.__keptOpenXp);
-  msXpButton.addEventListener('touchend',window.__keptOpenXp,{ passive:false });
-  msXpButton.addEventListener('pointerup',window.__keptOpenXp);
-  document.querySelector('.ms-summary')?.addEventListener('click',e=>{
-    if(e.target.closest('#msXpButton')) window.__keptOpenXp(e);
+  msXpButton.addEventListener('click',e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    openXpSheet();
   });
   document.getElementById('xpGuideToggle').addEventListener('click',()=>{
     const guide=document.getElementById('xpGuide');
