@@ -700,12 +700,14 @@
   .home-journey-link{display:block;min-width:0;flex:1;border:0;background:none;padding:0;margin:0;text-align:left;color:inherit;cursor:pointer}
   .home-journey-link:focus{outline:none}
   .home-journey-link:focus-visible .home-journey-summary{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 26%,transparent)}
-  .home-journey-summary{margin-top:5px;display:flex;flex-direction:column;gap:5px;max-width:210px;border-radius:14px;padding:1px 2px 1px 0;transition:box-shadow .18s ease,transform .18s ease}
-  .home-journey-summary b{font-size:11.5px;line-height:1.1;letter-spacing:-.015em;color:var(--ink);font-weight:650}
-  .home-journey-summary span{font-size:10.5px;line-height:1.15;color:var(--muted)}
-  .home-journey-bar{width:100%;height:4px;border-radius:999px;background:rgba(17,23,19,.08);overflow:hidden}
+  .home-journey-summary{margin-top:4px;display:grid;grid-template-columns:minmax(0,1fr) 58px;align-items:center;column-gap:12px;row-gap:2px;max-width:258px;border-radius:14px;padding:1px 2px 1px 0;transition:box-shadow .18s ease,transform .18s ease}
+  .home-journey-copy{min-width:0;display:flex;flex-direction:column;gap:2px}
+  .home-journey-summary b{font-size:11.5px;line-height:1.08;letter-spacing:-.015em;color:var(--ink);font-weight:650}
+  .home-journey-summary span{font-size:10px;line-height:1.1;color:var(--muted)}
+  .home-journey-note{font-size:9px;color:var(--muted);line-height:1.1}
+  .home-journey-meter{display:flex;align-items:center;justify-content:flex-end}
+  .home-journey-bar{width:58px;height:6px;border-radius:999px;background:rgba(17,23,19,.08);overflow:hidden}
   .home-journey-bar i{display:block;height:100%;width:var(--journey-progress,0%);border-radius:999px;background:linear-gradient(90deg,#0A785C 0%,#7AD6BE 100%)}
-  .home-journey-note{font-size:9.5px;color:var(--muted);line-height:1.15}
   .home-icon-btn{width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.76);color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:inset 0 0 0 1px var(--hair)}
   .home-icon-btn:focus{outline:none}.home-icon-btn:focus-visible{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--accent) 36%,transparent)}
   .home-icon-btn svg{font-size:19px}
@@ -928,10 +930,14 @@
           <button class="home-journey-link" id="homeJourneyLink" type="button" aria-label="Open journey">
             <div class="home-brand">Kept</div>
             <div class="home-journey-summary">
-              <b id="homeLevelTitle">Level 1 · Starter</b>
-              <span id="homeLevelSubtitle">Building your saving habit</span>
-              <div class="home-journey-bar" aria-hidden="true"><i id="homeLevelBar"></i></div>
-              <div class="home-journey-note" id="homeLevelNote">On your way to Level 2</div>
+              <div class="home-journey-copy">
+                <b id="homeLevelTitle">Level 1 · Starter</b>
+                <span id="homeLevelSubtitle">Building your saving habit</span>
+                <div class="home-journey-note" id="homeLevelNote">On your way to Level 2</div>
+              </div>
+              <div class="home-journey-meter">
+                <div class="home-journey-bar" aria-hidden="true"><i id="homeLevelBar"></i></div>
+              </div>
             </div>
           </button>
         </div>
