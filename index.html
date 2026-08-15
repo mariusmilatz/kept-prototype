@@ -3305,26 +3305,20 @@
   }
 
   function confirmWin(w){ w.state='confirmed'; if(w.credibility==='unverified') w.credibility='verified'; render(); toast('Confirmed','Added to your pot','ti-circle-check'); }
-  function activityStatusLabel(w){
-    if(w.state==='transferred') return 'Transferred';
-    if(w.state==='confirmed') return 'Waiting';
-    return 'Needs confirmation';
-  }
-  function activityTypeLabel(w){
-    if(w.source) return 'Recurring save';
-    if(w.quickId) return 'Quick save';
-    if(w.credibility==='unverified') return 'Large save';
-    return 'Saving win';
+  function hasActivityDetails(w){
+    return !!(
+      w.quickId ||
+      w.source ||
+      w.credibility==='unverified' ||
+      (w.name && w.name!=='Saving Win') ||
+      (w.cat && w.cat!=='other')
+    );
   }
   function activityDetailItems(w){
     const category = cats.find(c=>c.id===w.cat)?.name || w.cat;
-    const dateText = formatDateForActivity(w.date);
-    const items = [
-      ['Logged', dateText],
-      ['Status', activityStatusLabel(w)],
-      ['Category', category],
-      ['Type', activityTypeLabel(w)]
-    ];
+    const items = [];
+    if(w.name && w.name!=='Saving Win') items.push(['Saved as', w.name]);
+    if(w.cat && w.cat!=='other') items.push(['Category', category]);
     if(w.quickId){
       const quickSave = quick.find(q=>q.id===w.quickId);
       if(quickSave) items.push(['Shortcut', quickSave.name]);
@@ -3333,6 +3327,8 @@
       const recurringSave = recurring.find(r=>r.id===w.source);
       if(recurringSave) items.push(['Plan', recurringSave.name]);
     }
+    if(w.credibility==='unverified') items.push(['Status', 'Large save waiting for confirmation']);
+    if(items.length) items.push(['Logged', formatDateForActivity(w.date)]);
     return items;
   }
   function activityDetailNote(w){
@@ -3343,39 +3339,43 @@
   }
   function winItem(w){
     const wrap=document.createElement('div'); wrap.className='swipe-wrap'; wrap._open=false;
-    const isExpanded = expandedWinId===w.id;
+    const hasDetails = hasActivityDetails(w);
+    const isExpanded = hasDetails && expandedWinId===w.id;
     if(isExpanded) wrap.classList.add('expanded');
     let pillCls, pillTxt, tap='';
     if(w.state==='transferred'){ pillCls='st-done'; pillTxt='Transferred'; }
     else if(w.state==='confirmed'){ pillCls='st-wait'; pillTxt='Waiting'; }
     else { pillCls='st-confirm'; pillTxt='Confirm'; tap='data-confirm="1"'; }
     const tag = w.credibility==='recurring' ? ' · Recurring' : (w.credibility==='unverified' ? ' · Large' : '');
-    const detailRows = activityDetailItems(w).map(([label,value])=>`<div class="activity-detail-line"><b>${label}</b><span>${value}</span></div>`).join('');
-    const note = activityDetailNote(w);
+    const detailRows = hasDetails ? activityDetailItems(w).map(([label,value])=>`<div class="activity-detail-line"><b>${label}</b><span>${value}</span></div>`).join('') : '';
+    const note = hasDetails ? activityDetailNote(w) : '';
     wrap.innerHTML=`<div class="swipe-actions">
         <button class="sw-edit"><i class="ti ti-pencil"></i>Edit</button>
         <button class="sw-del"><i class="ti ti-trash"></i>Delete</button>
       </div>
-      <div class="swipe-content activity-item expandable" aria-expanded="${isExpanded?'true':'false'}">
+      <div class="swipe-content activity-item${hasDetails?' expandable':''}" ${hasDetails?`aria-expanded="${isExpanded?'true':'false'}"`:''}>
         <div class="ic"><i class="ti ${catIcon[w.cat]||'ti-circle'}"></i></div>
         <div class="mid"><div class="nm">${w.name}</div><div class="mt">${(cats.find(c=>c.id===w.cat)?.name||w.cat)+tag}</div></div>
         <div class="rt"><div class="rv">${P(w.net)}</div>
         <span class="state-pill ${pillCls}" ${tap}>${pillTxt}</span></div>
-        <div class="more"><i class="ti ti-chevron-down"></i></div>
+        ${hasDetails?'<button class="more" type="button" aria-label="Show more details"><i class="ti ti-chevron-down"></i></button>':''}
       </div>
-      <div class="activity-detail${isExpanded?' show':''}">
+      ${hasDetails?`<div class="activity-detail${isExpanded?' show':''}">
         <div class="activity-detail-grid">${detailRows}</div>
         ${note ? `<div class="activity-detail-note">${note}</div>` : ''}
-      </div>`;
+      </div>`:''}`;
     const pill=wrap.querySelector('.state-pill[data-confirm]');
     if(pill) pill.addEventListener('click',e=>{ e.stopPropagation(); confirmWin(w); });
-    const content=wrap.querySelector('.swipe-content');
-    content.addEventListener('click',e=>{
-      if(e.target.closest('.state-pill')) return;
-      if(wrap._open){ e.stopPropagation(); closeOpenRow(); return; }
-      expandedWinId = expandedWinId===w.id ? null : w.id;
-      renderActivity();
-    });
+    const moreBtn=wrap.querySelector('.more');
+    if(moreBtn){
+      moreBtn.addEventListener('click',e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        if(wrap._open){ closeOpenRow(); return; }
+        expandedWinId = expandedWinId===w.id ? null : w.id;
+        renderActivity();
+      });
+    }
     attachSwipe(wrap, w);
     return wrap;
   }
