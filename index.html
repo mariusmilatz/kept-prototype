@@ -2986,22 +2986,6 @@
     return { title:'Quietly compounding', done:milestones.length, total:milestones.length, milestones, nextIndex:-1 };
   }
 
-  function renderJourneyTrack(summary){
-    const el=document.getElementById('journeyTrack');
-    if(!el) return;
-    const milestones=summary.milestones.slice(0,5);
-    el.innerHTML='';
-    milestones.forEach((milestone, idx)=>{
-      const item=document.createElement('div');
-      const isDone=idx < summary.done;
-      const isNext=idx===summary.done && summary.done < summary.total;
-      item.className='journey-node'+(isDone?' done':'')+(isNext?' next':'');
-      item.innerHTML=`<div class="journey-dot"><i class="ti ${isDone ? 'ti-check' : (isNext ? 'ti-point-filled' : 'ti-lock')}"></i></div><span>${milestone.name}</span>`;
-      el.appendChild(item);
-    });
-    replaceIcons(el);
-  }
-
   function saverStateLabel(unlockedCount){
     if(unlockedCount>=24) return 'Quietly compounding';
     if(unlockedCount>=16) return 'Locked in';
