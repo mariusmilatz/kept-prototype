@@ -242,8 +242,12 @@
   .learn-note{display:flex;gap:10px;align-items:flex-start;background:var(--accent-soft);color:var(--accent-ink);
     border-radius:14px;padding:11px 13px;font-size:11.5px;line-height:1.45;margin-bottom:14px}
   .learn-note i{font-size:16px;flex:0 0 auto;margin-top:1px}
+  .learn-note.tappable{cursor:pointer}
+  .learn-note.tappable span{flex:1;min-width:0}
+  .learn-note .chev-note{font-size:15px;margin-top:0;align-self:center;opacity:.8}
+  .learn-note.tappable:active{transform:scale(.99)}
   .learn-section-head{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
-    font-weight:650;margin:20px 2px 10px}
+    font-weight:650;margin:20px 2px 10px;scroll-margin-top:12px}
   .learn-lesson{background:var(--surface-solid);border:1px solid var(--hair);border-radius:16px;margin-bottom:10px;overflow:hidden;scroll-margin-top:12px}
   .learn-lesson-head{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer;background:none;border:none;
     width:100%;text-align:left;font-family:inherit;color:var(--ink)}
@@ -3853,8 +3857,20 @@
       return `<button type="button" data-c="${c.code}" class="${soon?'soon':''}${on}"><span class="flag">${c.flag}</span>${c.name}${tag}</button>`;
     }).join('');
     wrap.querySelectorAll('button[data-c]').forEach(b=>{
-      b.addEventListener('click',()=>{ learnCountry=b.dataset.c; renderLearn(); });
+      b.addEventListener('click',()=>{
+        const already=b.dataset.c===learnCountry;
+        learnCountry=b.dataset.c;
+        renderLearn();
+        // tapping the already-selected live country again jumps to its section
+        const c=learnCountries.find(x=>x.code===learnCountry);
+        if(already && c && c.status==='live') scrollToCountrySection();
+      });
     });
+  }
+
+  function scrollToCountrySection(){
+    const sec=document.getElementById('learnCountrySection');
+    if(sec) requestAnimationFrame(()=>sec.scrollIntoView({behavior:'smooth',block:'start'}));
   }
 
   function lessonCard(l,green){
@@ -3873,14 +3889,17 @@
     const country=learnCountries.find(c=>c.code===learnCountry);
     const noteEl=document.getElementById('learnCountryNote');
     if(country && country.status==='live'){
-      noteEl.innerHTML=`<div class="learn-note"><i class="ti ti-circle-check"></i><span>Showing basics plus tax &amp; broker guidance for <strong>${country.name}</strong> ${country.flag}.</span></div>`;
+      noteEl.innerHTML=`<div class="learn-note tappable" role="button" tabindex="0"><i class="ti ti-circle-check"></i><span>Showing basics plus tax &amp; broker guidance for <strong>${country.name}</strong> ${country.flag}.</span><i class="ti ti-chevron-down chev-note"></i></div>`;
+      const noteBtn=noteEl.querySelector('.learn-note');
+      noteBtn.addEventListener('click',scrollToCountrySection);
+      noteBtn.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); scrollToCountrySection(); } });
     } else {
       noteEl.innerHTML=`<div class="learn-note"><i class="ti ti-info-circle"></i><span>Country-specific guidance for <strong>${country?country.name:'this country'}</strong> is in development. The universal basics below apply everywhere — check your local tax rules before investing.</span></div>`;
     }
     let html=`<div class="learn-section-head">The basics — everywhere</div>`;
     html+=learnBasics.map(l=>lessonCard(l,false)).join('');
     if(country && country.status==='live' && learnByCountry[country.code]){
-      html+=`<div class="learn-section-head">For ${country.name} ${country.flag}</div>`;
+      html+=`<div class="learn-section-head" id="learnCountrySection">For ${country.name} ${country.flag}</div>`;
       html+=learnByCountry[country.code].map(l=>lessonCard(l,false)).join('');
     }
     const box=document.getElementById('learnContent');
@@ -3898,9 +3917,6 @@
         }
       });
     });
-    // open the first lesson so the page doesn't look empty
-    const first=box.querySelector('.learn-lesson');
-    if(first) first.classList.add('open');
   }
   renderLearn();
 
