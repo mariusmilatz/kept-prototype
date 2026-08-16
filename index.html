@@ -328,12 +328,12 @@
   .fut-toggle .ft-txt b{font-family:var(--font-round);font-weight:600;font-size:13.5px;display:block}
   .fut-toggle .ft-txt small{font-size:11.5px;color:var(--muted);line-height:1.4;display:block;margin-top:1px}
   .swipe-wrap{position:relative;overflow:hidden}
-  .swipe-actions{position:absolute;top:0;left:0;bottom:0;display:flex}
-  .swipe-actions button{border:none;color:#fff;font-family:var(--font-round);font-weight:600;font-size:11px;
-    width:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
-  .swipe-actions button i,.swipe-actions button svg{font-size:18px}
-  .swipe-actions .sw-edit{background:var(--accent)}
-  .swipe-actions .sw-del{background:#B0554C}
+  .swipe-actions{position:absolute;top:0;left:0;bottom:0;display:flex;align-items:center;gap:8px;padding-left:6px}
+  .swipe-actions button{border:none;font-family:var(--font-round);font-weight:650;font-size:10px;letter-spacing:.01em;
+    width:60px;height:calc(100% - 16px);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer}
+  .swipe-actions button i,.swipe-actions button svg{font-size:17px}
+  .swipe-actions .sw-edit{background:var(--accent-soft);color:var(--accent-ink)}
+  .swipe-actions .sw-del{background:color-mix(in srgb,#B0554C 15%,transparent);color:#C56B61}
   .swipe-content{position:relative;background:var(--card);will-change:transform;touch-action:pan-y;transition:transform .18s cubic-bezier(.2,.9,.2,1)}
   .swipe-content.dragging{transition:none}
   .month-body > *:last-child .activity-item,.month-body > .activity-item:last-child{border-bottom:none}
@@ -2912,7 +2912,6 @@
       {id:'first-confirmed-win',cat:'start',name:'First Confirmed Win',icon:'ti-circle-check',detail:'Confirm your first real saving.', eval:()=>({done:cWins.length>=1, ...milestoneProgress(cWins.length,1,'confirmed wins')})},
       {id:'first-transfer',cat:'start',name:'First Transfer',icon:'ti-arrow-up-right',detail:'Complete your first transfer.', eval:()=>({done:transfers.some(t=>t.amount>0), ...milestoneProgress(transfers.filter(t=>t.amount>0).length,1,'transfers')})},
       {id:'first-quick-save',cat:'start',name:'First Quick Save',icon:'ti-bolt',detail:'Use a quick save to log a win.', eval:()=>({done:bestQuickUse>=1, ...milestoneProgress(bestQuickUse,1,'quick saves')})},
-      {id:'first-goal',cat:'start',name:'First Goal',icon:'ti-target',detail:'Set a goal in onboarding or settings.', eval:()=>({done:goalConfigured(), current:goalConfigured()?1:0,target:1,text:goalConfigured()?'Goal is set':'Set a goal'})},
       {id:'first-recurring-save',cat:'start',name:'First Recurring Save',icon:'ti-repeat',detail:'Confirm your first recurring saving.', eval:()=>({done:Object.keys(recurMonths).length>=1, ...milestoneProgress(Object.keys(recurMonths).length,1,'recurring saves')})},
       {id:'back-tomorrow',cat:'habit',name:'Back Tomorrow',icon:'ti-repeat',detail:'Confirm wins on two separate days.', dropTrack:'confirmed-streak', dropRank:2, eval:()=>({done:cDays.length>=2, ...milestoneProgress(cDays.length,2,'days')})},
       {id:'three-day-rhythm',cat:'habit',name:'Three-Day Rhythm',icon:'ti-repeat',detail:'Confirm wins on three days in a row.', dropTrack:'confirmed-streak', dropRank:3, eval:()=>({done:cStreak>=3, ...milestoneProgress(cStreak,3,'days in a row')})},
@@ -3292,6 +3291,7 @@
   function confirmWin(w){ w.state='confirmed'; if(w.credibility==='unverified') w.credibility='verified'; render(); toast('Confirmed','Added to your pot','ti-circle-check'); }
   function hasActivityDetails(w){
     return !!(
+      w.orig>0 ||
       w.quickId ||
       w.source ||
       w.credibility==='unverified'
@@ -3299,6 +3299,11 @@
   }
   function activityDetailItems(w){
     const items = [];
+    if(w.orig>0){
+      items.push(['Original price', P(w.orig)]);
+      items.push(['You paid', P(w.spent||0)]);
+      items.push(['You saved', P(w.net)]);
+    }
     if(w.quickId){
       const quickSave = quick.find(q=>q.id===w.quickId);
       if(quickSave) items.push(['Shortcut', quickSave.name]);
@@ -3312,6 +3317,7 @@
     return items;
   }
   function activityDetailNote(w){
+    if(w.orig>0) return 'You bought a cheaper version and kept the difference.';
     if(w.source) return 'This win came from a recurring save plan.';
     if(w.quickId) return 'Logged from one of your quick saves.';
     if(w.credibility==='unverified') return 'Marked as a larger saving win.';
@@ -3585,6 +3591,7 @@
   // ---------- tabs ----------
   const views={home:'view-home',activity:'view-activity',future:'view-future',settings:'settingsOverlay'};
   function show(tab){
+    if(tab!=='activity'){ expandedWinId=null; closeOpenRow(); }
     Object.values(views).forEach(v=>document.getElementById(v).classList.add('hidden'));
     if(views[tab])document.getElementById(views[tab]).classList.remove('hidden');
     document.querySelectorAll('.tab[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
@@ -3737,9 +3744,10 @@
   function projSub(net){ return '≈ '+Pn(fvNow(net))+' '+horizonText(true)+', invested'; }
 
   let lastWinId=null;
-  function logWin(net,cat,name,quickToast,quickId){
+  function logWin(net,cat,name,quickToast,quickId,extra){
     const big=net>SOFT_CAP;
-    const w={id:Date.now(),net,cat,name, state:big?'recorded':'confirmed', credibility:big?'unverified':'verified', month:CUR,date:new Date(), quickId:quickId||null};
+    const w={id:Date.now(),net,cat,name, state:big?'recorded':'confirmed', credibility:big?'unverified':'verified', month:CUR,date:new Date(), quickId:quickId||null,
+      ...(extra && extra.orig>0 && extra.orig>extra.spent ? {orig:extra.orig, spent:extra.spent} : {})};
     wins.push(w); lastWinId=w.id;
     render();
     const a=document.getElementById('homeAmount'); a.classList.add('pulse'); setTimeout(()=>a.classList.remove('pulse'),450);
@@ -3870,9 +3878,12 @@
     const typed = (document.getElementById('nameInput').value||'').trim();
     const name = typed || (selCat ? (altOn?('Cheaper '+selCat.name.toLowerCase()):selCat.name) : 'Saving Win');
     const shouldMakeQuick=makeQuickOn;
+    const origVal = parseM(document.getElementById('origInput').value);
+    const spentVal = altOn ? parseM(document.getElementById('altInput').value) : 0;
+    const winExtra = altOn ? {orig:origVal, spent:spentVal} : null;
     closeAdd();
     if(catId==='subscription'){ openRecurChoice({net, name}); }
-    else { logWin(net, catId, name, true); }
+    else { logWin(net, catId, name, true, null, winExtra); }
     if(shouldMakeQuick){
       if(!hasFeatureAccess() && quick.length>=FREE_QUICK_LIMIT){
         toast('Saving Win added','Unlock Pro to keep more than 3 quick saves.','ti-lock');
