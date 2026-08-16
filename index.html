@@ -244,7 +244,7 @@
   .learn-note i{font-size:16px;flex:0 0 auto;margin-top:1px}
   .learn-section-head{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
     font-weight:650;margin:20px 2px 10px}
-  .learn-lesson{background:var(--surface-solid);border:1px solid var(--hair);border-radius:16px;margin-bottom:10px;overflow:hidden}
+  .learn-lesson{background:var(--surface-solid);border:1px solid var(--hair);border-radius:16px;margin-bottom:10px;overflow:hidden;scroll-margin-top:12px}
   .learn-lesson-head{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer;background:none;border:none;
     width:100%;text-align:left;font-family:inherit;color:var(--ink)}
   .learn-lesson-ic{width:36px;height:36px;border-radius:11px;background:var(--accent-soft);color:var(--accent-ink);
@@ -3881,7 +3881,7 @@
     html+=learnBasics.map(l=>lessonCard(l,false)).join('');
     if(country && country.status==='live' && learnByCountry[country.code]){
       html+=`<div class="learn-section-head">For ${country.name} ${country.flag}</div>`;
-      html+=learnByCountry[country.code].map(l=>lessonCard(l,true)).join('');
+      html+=learnByCountry[country.code].map(l=>lessonCard(l,false)).join('');
     }
     const box=document.getElementById('learnContent');
     box.innerHTML=html;
@@ -3891,7 +3891,11 @@
         const wasOpen=lesson.classList.contains('open');
         // close every lesson, then open this one (unless it was already open)
         box.querySelectorAll('.learn-lesson.open').forEach(o=>o.classList.remove('open'));
-        if(!wasOpen) lesson.classList.add('open');
+        if(!wasOpen){
+          lesson.classList.add('open');
+          // snap the opened lesson's top to the top of the view so reading starts at the top
+          requestAnimationFrame(()=>lesson.scrollIntoView({behavior:'smooth',block:'start'}));
+        }
       });
     });
     // open the first lesson so the page doesn't look empty
