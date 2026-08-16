@@ -3886,7 +3886,13 @@
     const box=document.getElementById('learnContent');
     box.innerHTML=html;
     box.querySelectorAll('.learn-lesson-head').forEach(h=>{
-      h.addEventListener('click',()=>h.parentElement.classList.toggle('open'));
+      h.addEventListener('click',()=>{
+        const lesson=h.parentElement;
+        const wasOpen=lesson.classList.contains('open');
+        // close every lesson, then open this one (unless it was already open)
+        box.querySelectorAll('.learn-lesson.open').forEach(o=>o.classList.remove('open'));
+        if(!wasOpen) lesson.classList.add('open');
+      });
     });
     // open the first lesson so the page doesn't look empty
     const first=box.querySelector('.learn-lesson');
