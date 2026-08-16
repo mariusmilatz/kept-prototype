@@ -247,8 +247,8 @@
   .learn-note .chev-note{font-size:15px;margin-top:0;align-self:center;opacity:.8}
   .learn-note.tappable:active{transform:scale(.99)}
   .learn-section-head{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
-    font-weight:650;margin:20px 2px 10px;scroll-margin-top:12px}
-  .learn-lesson{background:var(--surface-solid);border:1px solid var(--hair);border-radius:16px;margin-bottom:10px;overflow:hidden;scroll-margin-top:12px}
+    font-weight:650;margin:20px 2px 10px;scroll-margin-top:calc(env(safe-area-inset-top) + 24px)}
+  .learn-lesson{background:var(--surface-solid);border:1px solid var(--hair);border-radius:16px;margin-bottom:10px;overflow:hidden;scroll-margin-top:calc(env(safe-area-inset-top) + 24px)}
   .learn-lesson-head{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer;background:none;border:none;
     width:100%;text-align:left;font-family:inherit;color:var(--ink)}
   .learn-lesson-ic{width:36px;height:36px;border-radius:11px;background:var(--accent-soft);color:var(--accent-ink);
@@ -3483,9 +3483,9 @@
         <div class="swipe-content activity-item${hasDetails?' expandable':''}" ${hasDetails?`aria-expanded="${isExpanded?'true':'false'}"`:''}>
           <div class="ic"><i class="ti ${catIcon[w.cat]||'ti-circle'}"></i></div>
           <div class="mid"><div class="nm">${w.name}</div><div class="mt">${(cats.find(c=>c.id===w.cat)?.name||w.cat)+tag}</div></div>
+          ${hasDetails?'<button class="more" type="button" aria-label="Show more details"><i class="ti ti-chevron-down"></i></button>':''}
           <div class="rt"><div class="rv">${P(w.net)}</div>
           <span class="state-pill ${pillCls}" ${tap}>${pillTxt}</span></div>
-          ${hasDetails?'<button class="more" type="button" aria-label="Show more details"><i class="ti ti-chevron-down"></i></button>':''}
         </div>
       </div>
       ${hasDetails?`<div class="activity-detail${isExpanded?' show':''}">
