@@ -222,6 +222,51 @@
   .disclaimer{font-size:11px;color:var(--muted);line-height:1.5;margin-top:14px;
     background:var(--card);border:1px solid var(--hair);border-radius:12px;padding:11px 13px}
 
+  /* ---------- Learn / Knowledge ---------- */
+  .goal-activity-link{align-self:center;flex:0 0 auto;display:inline-flex;align-items:center;gap:2px;
+    background:var(--accent-soft);color:var(--accent-ink);border:none;font-family:var(--font-round);
+    font-weight:650;font-size:11.5px;padding:7px 8px 7px 11px;border-radius:12px;cursor:pointer;white-space:nowrap}
+  .goal-activity-link i{font-size:14px}
+  .learn-intro{font-size:12.5px;color:var(--muted);line-height:1.5;margin:2px 2px 14px}
+  .learn-label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:650;margin:2px 2px 8px}
+  .learn-country{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px;margin:0 -2px 6px;scrollbar-width:none}
+  .learn-country::-webkit-scrollbar{display:none}
+  .learn-country button{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--hair);
+    background:var(--surface-solid);color:var(--ink);font-family:var(--font-round);font-weight:600;font-size:12.5px;
+    padding:8px 12px;border-radius:13px;cursor:pointer;position:relative}
+  .learn-country button .flag{font-size:15px;line-height:1}
+  .learn-country button.on{background:var(--accent-soft);color:var(--accent-ink);border-color:transparent}
+  .learn-country button.soon{color:var(--muted)}
+  .learn-country button .soon-tag{font-size:8.5px;letter-spacing:.04em;text-transform:uppercase;font-weight:700;
+    background:var(--card-2);color:var(--muted);padding:2px 5px;border-radius:6px}
+  .learn-note{display:flex;gap:10px;align-items:flex-start;background:var(--accent-soft);color:var(--accent-ink);
+    border-radius:14px;padding:11px 13px;font-size:11.5px;line-height:1.45;margin-bottom:14px}
+  .learn-note i{font-size:16px;flex:0 0 auto;margin-top:1px}
+  .learn-section-head{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+    font-weight:650;margin:20px 2px 10px}
+  .learn-lesson{background:var(--surface-solid);border:1px solid var(--hair);border-radius:16px;margin-bottom:10px;overflow:hidden}
+  .learn-lesson-head{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer;background:none;border:none;
+    width:100%;text-align:left;font-family:inherit;color:var(--ink)}
+  .learn-lesson-ic{width:36px;height:36px;border-radius:11px;background:var(--accent-soft);color:var(--accent-ink);
+    display:grid;place-items:center;font-size:18px;flex:0 0 auto}
+  .learn-lesson-ic.g{background:var(--amber-soft);color:var(--amber-ink)}
+  .learn-lesson-t{flex:1;min-width:0}
+  .learn-lesson-t b{font-size:14px;font-weight:600;display:block}
+  .learn-lesson-t small{font-size:11px;color:var(--muted);display:block;margin-top:1px}
+  .learn-lesson-head .chev{color:var(--muted);font-size:16px;transition:transform .2s ease;flex:0 0 auto}
+  .learn-lesson.open .learn-lesson-head .chev{transform:rotate(180deg)}
+  .learn-lesson-body{display:none;padding:0 14px 15px 62px;font-size:12.5px;line-height:1.55;color:var(--muted)}
+  .learn-lesson.open .learn-lesson-body{display:block}
+  .learn-lesson-body h4{font-size:12px;font-weight:700;color:var(--ink);margin:13px 0 3px}
+  .learn-lesson-body h4:first-child{margin-top:2px}
+  .learn-lesson-body p{margin:5px 0}
+  .learn-lesson-body ul{margin:5px 0;padding-left:16px}
+  .learn-lesson-body li{margin:3px 0}
+  .learn-lesson-body strong{color:var(--ink);font-weight:650}
+  .learn-lesson-body .pill-fact{display:inline-block;background:var(--accent-soft);color:var(--accent-ink);
+    font-weight:650;border-radius:8px;padding:2px 7px;margin:2px 0;font-size:11.5px}
+  .learn-lesson-body code{background:var(--card-2);border-radius:5px;padding:1px 5px;font-size:11.5px;color:var(--ink)}
+
   .overlay{position:absolute;inset:0;z-index:60;background:color-mix(in srgb,var(--ink) 34%,transparent);
     display:flex;align-items:flex-end;border-radius:36px;opacity:0;pointer-events:none;transition:opacity .28s}
   #upgradeOverlay{z-index:72}
@@ -1073,6 +1118,7 @@
           </div>
           <div class="home-goal-row">
             <div><b id="goalTitle">Invest £250 this month</b><small id="goalSub"></small></div>
+            <button class="goal-activity-link" id="homeActivityLink" type="button" aria-label="Open activity">Activity<i class="ti ti-chevron-right"></i></button>
             <div class="goal-bar-hidden"><div id="goalFill"></div></div>
           </div>
         </div>
@@ -1169,6 +1215,19 @@
           <button data-f="transfer">Transfers</button>
         </div>
         <div id="activityList"></div>
+      </div>
+
+      <!-- LEARN / KNOWLEDGE -->
+      <div class="view hidden" id="view-learn">
+        <p class="eyebrow" style="margin-top:8px">Start here</p>
+        <h2 class="h-screen">Learn to invest</h2>
+        <p class="learn-intro">The basics of long-term investing, in plain language. No jargon, no stock tips — just a starting point so you know what you're looking at.</p>
+        <span aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;opacity:0;pointer-events:none"><i class="ti ti-target"></i><i class="ti ti-chart-line"></i><i class="ti ti-shopping-bag"></i><i class="ti ti-adjustments"></i><i class="ti ti-list-details"></i><i class="ti ti-circle-check"></i><i class="ti ti-calendar-clock"></i><i class="ti ti-repeat"></i><i class="ti ti-arrow-up-right"></i><i class="ti ti-info-circle"></i><i class="ti ti-chevron-down"></i></span>
+        <div class="learn-label">Your country</div>
+        <div class="learn-country" id="learnCountry"></div>
+        <div id="learnCountryNote"></div>
+        <div id="learnContent"></div>
+        <div class="disclaimer" style="margin-top:18px">Educational information only — not financial or tax advice. Figures and examples are simplified. Rules change and depend on your situation; check current sources or a licensed adviser before you invest.</div>
       </div>
 
       <!-- FUTURE -->
@@ -1815,7 +1874,7 @@
       <!-- TAB BAR -->
       <nav class="tabbar">
         <button class="tab active" data-tab="home"><i class="ti ti-home"></i><span>Home</span></button>
-        <button class="tab" data-tab="activity"><i class="ti ti-list-details"></i><span>Activity</span></button>
+        <button class="tab" data-tab="learn"><i class="ti ti-info-circle"></i><span>Learn</span></button>
         <button class="tab add" id="tabAdd"><span class="plus"><i class="ti ti-plus"></i><span class="save-label">Save</span></span><span>Save</span></button>
         <button class="tab" data-tab="future"><i class="ti ti-chart-line"></i><span>Future</span></button>
         <button class="tab" data-tab="settings"><i class="ti ti-adjustments"></i><span>You</span></button>
@@ -3668,7 +3727,7 @@
   }
 
   // ---------- tabs ----------
-  const views={home:'view-home',activity:'view-activity',future:'view-future',settings:'settingsOverlay'};
+  const views={home:'view-home',activity:'view-activity',learn:'view-learn',future:'view-future',settings:'settingsOverlay'};
   function show(tab){
     if(tab!=='activity'){ expandedWinId=null; closeOpenRow(); }
     Object.values(views).forEach(v=>document.getElementById(v).classList.add('hidden'));
@@ -3682,6 +3741,159 @@
   document.querySelectorAll('.tab[data-tab]').forEach(b=>{
     b.addEventListener('click',()=>show(b.dataset.tab));
   });
+
+  // ---------- Home → Activity shortcut ----------
+  document.getElementById('homeActivityLink').addEventListener('click',()=>show('activity'));
+
+  // ---------- Learn / Knowledge ----------
+  // To add a country later: add an entry here (status:'live') and a matching
+  // key in learnByCountry with its country-specific lessons.
+  const learnCountries=[
+    {code:'DE',name:'Germany',flag:'🇩🇪',status:'live'},
+    {code:'AT',name:'Austria',flag:'🇦🇹',status:'soon'},
+    {code:'CH',name:'Switzerland',flag:'🇨🇭',status:'soon'},
+    {code:'NL',name:'Netherlands',flag:'🇳🇱',status:'soon'},
+    {code:'FR',name:'France',flag:'🇫🇷',status:'soon'},
+    {code:'GB',name:'United Kingdom',flag:'🇬🇧',status:'soon'}
+  ];
+  let learnCountry='DE';
+
+  const learnBasics=[
+    {ic:'ti-target',title:'Mindset comes first',sub:'Behaviour matters more than picking winners',body:`
+      <p>The biggest driver of investing success isn't which fund you pick — it's how you behave. Most people underperform the market because they buy when excited (prices high) and sell when scared (prices low).</p>
+      <p><em>"Doing well with money has little to do with how smart you are and a lot to do with how you behave."</em> — Morgan Housel, <strong>The Psychology of Money</strong></p>
+      <h4>Focus on what you can control</h4>
+      <ul><li>How much you save</li><li>How long you stay invested</li><li>Keeping costs and taxes low</li></ul>
+      <h4>Before you invest</h4>
+      <p>Keep <strong>3–6 months of expenses in cash</strong> first — an emergency buffer — so you never have to sell investments at a bad time.</p>`},
+    {ic:'ti-chart-line',title:'Passive beats active',sub:'Match the market instead of trying to beat it',body:`
+      <p><strong>Active</strong> investing means trying to beat the market by picking stocks or funds. <strong>Passive</strong> means buying the whole market cheaply through an index fund / ETF and simply matching its return.</p>
+      <h4>Why passive usually wins</h4>
+      <ul><li>80–90% of active funds underperform the market over 10+ years (after fees)</li><li>Active funds cost more — often 1–2% a year</li><li>Very few managers beat the market over decades</li></ul>
+      <h4>What is TER?</h4>
+      <p>The <strong>Total Expense Ratio</strong> is an ETF's yearly cost. A 0.2% TER on €10,000 is about €20 a year. Lower is better — aim for <strong>≤0.3%</strong> on your core fund.</p>
+      <p><span class="pill-fact">€10,000 over 30y: 0.2% fund ≈ €76,000 vs 1% fund ≈ €57,000 — ~€19,000 lost to fees</span></p>`},
+    {ic:'ti-shopping-bag',title:'What is an ETF?',sub:'One purchase that buys the whole market',body:`
+      <p>An <strong>ETF</strong> (Exchange-Traded Fund) is a basket of stocks that tracks an index. Buy one share and you instantly own hundreds or thousands of companies — traded like a stock, diversified like a fund.</p>
+      <h4>Common indices</h4>
+      <ul><li><strong>MSCI World</strong> — ~1,500 large companies across 23 developed countries</li><li><strong>MSCI ACWI</strong> — MSCI World plus emerging markets (~2,900 companies)</li><li><strong>S&P 500</strong> — the 500 largest US companies</li></ul>
+      <h4>Accumulating vs distributing</h4>
+      <ul><li><strong>Accumulating</strong> (thesaurierend) — dividends reinvested automatically; good while building wealth</li><li><strong>Distributing</strong> (ausschüttend) — dividends paid to you as cash; useful for income</li></ul>
+      <h4>Look for "UCITS"</h4>
+      <p>A European standard meaning the fund follows EU investor-protection rules.</p>`},
+    {ic:'ti-adjustments',title:'Build a simple portfolio',sub:'One global fund is often enough',body:`
+      <p>Your portfolio is just how you split money between <strong>stocks</strong> (growth, more ups and downs) and <strong>bonds / cash</strong> (stability, lower returns).</p>
+      <h4>The beginner default — core-only</h4>
+      <p>Put everything into one broad global equity ETF (e.g. MSCI World or ACWI). Simple, already diversified across thousands of companies, low maintenance.</p>
+      <h4>A rough guide to stock %</h4>
+      <p>Some use <code>110 − your age</code> as a rough stock allocation (a 30-year-old ≈ 70–80% stocks). More stocks = more growth and more swings.</p>
+      <h4>Rebalancing</h4>
+      <p>If you hold stocks + bonds, once a year nudge things back to your target mix (e.g. 80/20). This keeps your risk level steady.</p>`},
+    {ic:'ti-list-details',title:'Choosing an ETF',sub:'Six things to check before you buy',body:`
+      <ul>
+        <li><strong>Index</strong> — pick a broad, global one (avoid narrow sector bets as a beginner)</li>
+        <li><strong>Cost (TER)</strong> — ≤0.3% for a core ETF</li>
+        <li><strong>Fund size</strong> — over €100m is safer (less chance of closure)</li>
+        <li><strong>Replication</strong> — physical (owns the real stocks) is preferred</li>
+        <li><strong>Domicile</strong> — Ireland is tax-efficient for many EU investors</li>
+        <li><strong>Payout</strong> — accumulating while you're growing wealth</li>
+      </ul>
+      <h4>Where to compare</h4>
+      <p>Tools like <strong>justETF.com</strong> let you filter and check these details on any ETF's factsheet.</p>`},
+    {ic:'ti-circle-check',title:'Stay the course',sub:'Discipline matters more than timing',body:`
+      <h4>Crashes are normal</h4>
+      <ul><li>~10% dip roughly once a year</li><li>~20% drop every few years</li><li>Big ~50% crashes are rare but happen (2008, dot-com)</li></ul>
+      <p>Historically, markets have always recovered and reached new highs. The MSCI World fell ~50% in 2008 and fully recovered within about 5 years.</p>
+      <h4>Dollar-cost averaging (DCA)</h4>
+      <p>Invest a fixed amount every month regardless of price. You automatically buy more when prices are low, fewer when high — and remove emotion from the decision.</p>
+      <h4>When markets fall</h4>
+      <ul><li>Don't panic-sell — a loss is only real if you sell</li><li>Keep your monthly plan going — you're buying cheaper</li><li>Check once a year, not daily</li></ul>`},
+    {ic:'ti-calendar-clock',title:'From saving to retirement',sub:'How you use the money later',body:`
+      <h4>Two phases</h4>
+      <ul><li><strong>Building (accumulation)</strong> — high stock allocation, reinvest dividends, automate</li><li><strong>Retirement (decumulation)</strong> — gradually add bonds / cash and withdraw carefully</li></ul>
+      <h4>The 4% rule</h4>
+      <p>A common guideline: you can withdraw about <strong>4% of your portfolio per year</strong> (inflation-adjusted) and it should last ~30 years.</p>
+      <p>Reverse it to set a target: <code>annual spending × 25</code> ≈ the portfolio you're aiming for (e.g. €30,000/yr → €750,000).</p>`}
+  ];
+
+  const learnByCountry={
+    DE:[
+      {ic:'ti-circle-check',title:'German taxes, simply',sub:'What your broker handles for you',body:`
+        <h4>Abgeltungssteuer (capital gains tax)</h4>
+        <p>A flat <strong>25% tax on investment profits</strong>, plus a 5.5% solidarity surcharge (and church tax if it applies to you).</p>
+        <h4>Sparer-Pauschbetrag (tax-free allowance)</h4>
+        <p><strong>€1,000</strong> of investment income per year is tax-free (€2,000 for couples). Activate it by giving your broker a <strong>Freistellungsauftrag</strong>.</p>
+        <h4>Teilfreistellung (partial exemption)</h4>
+        <p>For equity ETFs (≥51% stocks), <strong>30% of your gains are automatically tax-free</strong>.</p>
+        <h4>Vorabpauschale</h4>
+        <p>A small yearly advance tax on accumulating ETFs — calculated and deducted automatically by your broker. Nothing to do manually.</p>`},
+      {ic:'ti-repeat',title:'Brokers & savings plans',sub:'Where to buy, and automating it',body:`
+        <h4>Popular German brokers</h4>
+        <ul><li><strong>Trade Republic</strong> — €1 ETF plans, mobile-first, very low cost</li><li><strong>Scalable Capital</strong> — €0 ETF plans with PRIME</li><li><strong>ING</strong> — broad selection, beginner-friendly</li><li><strong>Comdirect</strong> — reliable, solid savings-plan options</li></ul>
+        <h4>ETF-Sparplan (savings plan)</h4>
+        <p>Automate a monthly purchase (e.g. €50–500) into your core ETF. No market timing, builds the habit, less stress.</p>`},
+      {ic:'ti-arrow-up-right',title:'Your first steps in Germany',sub:'A €100 / month example',body:`
+        <ul>
+          <li>Open a low-cost broker account (Trade Republic, Scalable, ING)</li>
+          <li>Set up a <strong>Freistellungsauftrag</strong> so your €1,000 allowance is active</li>
+          <li>Start a <strong>Sparplan of €100/month</strong> into a core ETF (a MSCI World UCITS — accumulating, Irish domicile)</li>
+          <li>That's it — the broker buys monthly and handles the tax paperwork</li>
+        </ul>
+        <p>Example core ETF from the guide: <strong>iShares Core MSCI World UCITS ETF</strong> (ISIN IE00B4L5Y983) — TER 0.20%, physical, accumulating.</p>
+        <p style="font-size:11px;opacity:.85">Fund names are examples for learning, not a recommendation.</p>`}
+    ]
+  };
+
+  function renderLearnCountry(){
+    const wrap=document.getElementById('learnCountry');
+    wrap.innerHTML=learnCountries.map(c=>{
+      const on=c.code===learnCountry?' on':'';
+      const soon=c.status==='soon';
+      const tag=soon?'<span class="soon-tag">Soon</span>':'';
+      return `<button type="button" data-c="${c.code}" class="${soon?'soon':''}${on}"><span class="flag">${c.flag}</span>${c.name}${tag}</button>`;
+    }).join('');
+    wrap.querySelectorAll('button[data-c]').forEach(b=>{
+      b.addEventListener('click',()=>{ learnCountry=b.dataset.c; renderLearn(); });
+    });
+  }
+
+  function lessonCard(l,green){
+    return `<div class="learn-lesson">
+      <button class="learn-lesson-head" type="button">
+        <span class="learn-lesson-ic${green?' g':''}"><i class="ti ${l.ic}"></i></span>
+        <span class="learn-lesson-t"><b>${l.title}</b><small>${l.sub}</small></span>
+        <i class="ti ti-chevron-down chev"></i>
+      </button>
+      <div class="learn-lesson-body">${l.body}</div>
+    </div>`;
+  }
+
+  function renderLearn(){
+    renderLearnCountry();
+    const country=learnCountries.find(c=>c.code===learnCountry);
+    const noteEl=document.getElementById('learnCountryNote');
+    if(country && country.status==='live'){
+      noteEl.innerHTML=`<div class="learn-note"><i class="ti ti-circle-check"></i><span>Showing basics plus tax &amp; broker guidance for <strong>${country.name}</strong> ${country.flag}.</span></div>`;
+    } else {
+      noteEl.innerHTML=`<div class="learn-note"><i class="ti ti-info-circle"></i><span>Country-specific guidance for <strong>${country?country.name:'this country'}</strong> is in development. The universal basics below apply everywhere — check your local tax rules before investing.</span></div>`;
+    }
+    let html=`<div class="learn-section-head">The basics — everywhere</div>`;
+    html+=learnBasics.map(l=>lessonCard(l,false)).join('');
+    if(country && country.status==='live' && learnByCountry[country.code]){
+      html+=`<div class="learn-section-head">For ${country.name} ${country.flag}</div>`;
+      html+=learnByCountry[country.code].map(l=>lessonCard(l,true)).join('');
+    }
+    const box=document.getElementById('learnContent');
+    box.innerHTML=html;
+    box.querySelectorAll('.learn-lesson-head').forEach(h=>{
+      h.addEventListener('click',()=>h.parentElement.classList.toggle('open'));
+    });
+    // open the first lesson so the page doesn't look empty
+    const first=box.querySelector('.learn-lesson');
+    if(first) first.classList.add('open');
+  }
+  renderLearn();
+
   document.getElementById('assumptionToggle').addEventListener('click',openFutureManage);
   document.getElementById('futureInfo').addEventListener('click',()=>toast('Future estimate','Built from what you have kept, your time horizon, and the return assumption you choose.','ti-info-circle'));
 
