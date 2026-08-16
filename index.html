@@ -328,6 +328,7 @@
   .fut-toggle .ft-txt b{font-family:var(--font-round);font-weight:600;font-size:13.5px;display:block}
   .fut-toggle .ft-txt small{font-size:11.5px;color:var(--muted);line-height:1.4;display:block;margin-top:1px}
   .swipe-wrap{position:relative;overflow:hidden}
+  .swipe-row{position:relative}
   .swipe-actions{position:absolute;top:0;left:0;bottom:0;display:flex;align-items:center;gap:8px;padding-left:6px}
   .swipe-actions button{border:none;font-family:var(--font-round);font-weight:650;font-size:10px;letter-spacing:.01em;
     width:60px;height:calc(100% - 16px);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer}
@@ -3411,16 +3412,18 @@
     const tag = w.credibility==='recurring' ? ' · Recurring' : (w.credibility==='unverified' ? ' · Large' : '');
     const detailRows = hasDetails ? activityDetailItems(w).map(([label,value])=>`<div class="activity-detail-line"><b>${label}</b><span>${value}</span></div>`).join('') : '';
     const note = hasDetails ? activityDetailNote(w) : '';
-    wrap.innerHTML=`<div class="swipe-actions">
-        <button class="sw-edit"><i class="ti ti-pencil"></i>Edit</button>
-        <button class="sw-del"><i class="ti ti-trash"></i>Delete</button>
-      </div>
-      <div class="swipe-content activity-item${hasDetails?' expandable':''}" ${hasDetails?`aria-expanded="${isExpanded?'true':'false'}"`:''}>
-        <div class="ic"><i class="ti ${catIcon[w.cat]||'ti-circle'}"></i></div>
-        <div class="mid"><div class="nm">${w.name}</div><div class="mt">${(cats.find(c=>c.id===w.cat)?.name||w.cat)+tag}</div></div>
-        <div class="rt"><div class="rv">${P(w.net)}</div>
-        <span class="state-pill ${pillCls}" ${tap}>${pillTxt}</span></div>
-        ${hasDetails?'<button class="more" type="button" aria-label="Show more details"><i class="ti ti-chevron-down"></i></button>':''}
+    wrap.innerHTML=`<div class="swipe-row">
+        <div class="swipe-actions">
+          <button class="sw-edit"><i class="ti ti-pencil"></i>Edit</button>
+          <button class="sw-del"><i class="ti ti-trash"></i>Delete</button>
+        </div>
+        <div class="swipe-content activity-item${hasDetails?' expandable':''}" ${hasDetails?`aria-expanded="${isExpanded?'true':'false'}"`:''}>
+          <div class="ic"><i class="ti ${catIcon[w.cat]||'ti-circle'}"></i></div>
+          <div class="mid"><div class="nm">${w.name}</div><div class="mt">${(cats.find(c=>c.id===w.cat)?.name||w.cat)+tag}</div></div>
+          <div class="rt"><div class="rv">${P(w.net)}</div>
+          <span class="state-pill ${pillCls}" ${tap}>${pillTxt}</span></div>
+          ${hasDetails?'<button class="more" type="button" aria-label="Show more details"><i class="ti ti-chevron-down"></i></button>':''}
+        </div>
       </div>
       ${hasDetails?`<div class="activity-detail${isExpanded?' show':''}">
         <div class="activity-detail-grid">${detailRows}</div>
