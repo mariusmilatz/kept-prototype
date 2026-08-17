@@ -4728,10 +4728,13 @@
     return activeViewEl();
   }
   function syncFloatingUi(){
+    const overlayOpen=!!document.querySelector('.overlay.show') || feedbackOv.classList.contains('show');
     const active=activeScrollableEl();
-    const shouldShowTop=!!showScrollTop && !!active && active.scrollTop>180;
+    // The back-to-top arrow is a page-level control. While a modal sheet or the
+    // feedback drawer is open it would float over the sheet's own buttons, so hide it.
+    const shouldShowTop=!!showScrollTop && !overlayOpen && !!active && active.scrollTop>180;
     scrollTopBtn.classList.toggle('show', shouldShowTop);
-    scrollTopBtn.classList.toggle('overlay-pos', !!document.querySelector('.overlay.show'));
+    scrollTopBtn.classList.toggle('overlay-pos', false);
     const showNotch=!!showFeedbackNotch && !document.querySelector('.overlay.show') && !feedbackOv.classList.contains('show');
     feedbackNotchEl.classList.toggle('show', showNotch);
   }
