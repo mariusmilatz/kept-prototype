@@ -276,7 +276,7 @@
   .learn-row-soon{flex:0 0 auto;font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;
     color:var(--muted);background:var(--card-2);padding:2px 6px;border-radius:6px}
   /* ---- full-screen lesson player ---- */
-  #learnPlayer{display:none}
+  #learnPlayer{display:none;padding-bottom:88px}
   .lp-top{display:flex;align-items:center;justify-content:space-between;gap:10px;
     padding-top:calc(env(safe-area-inset-top) - 4px);min-height:34px}
   .lp-nav{width:34px;height:34px;border-radius:11px;border:none;background:var(--surface-solid);color:var(--ink);
@@ -389,10 +389,12 @@
     border-bottom:1.5px dotted var(--accent);-webkit-appearance:none;appearance:none}
   .lp-term-b::after{content:"ⓘ";font-size:.72em;margin-left:3px;opacity:.7;vertical-align:top}
   .lp-term.open .lp-term-b{background:var(--accent);color:#fff;border-bottom-color:transparent}
-  .lp-term-pop{display:none}
-  .lp-term.open .lp-term-pop{display:block;text-align:left;font-weight:400;margin:9px 0 3px;padding:11px 13px;
-    background:var(--card-2);border:1px solid var(--hair);border-radius:12px;
-    font-size:12.5px;line-height:1.5;color:var(--muted)}
+  .lp-term-pop{position:fixed;z-index:90;display:none;text-align:left;font-weight:400;
+    width:min(280px,82vw);padding:12px 14px;background:var(--card-2);
+    border:1px solid var(--hair);border-radius:14px;box-shadow:var(--card-float-shadow);
+    font-size:12.5px;line-height:1.5;color:var(--muted);white-space:normal}
+  .lp-term.open .lp-term-pop{display:block}
+  .lp-term-backdrop{position:fixed;inset:0;z-index:89;background:transparent}
   /* Buffett-style quote */
   .lp-quote{position:relative;background:var(--surface-solid);border:1px solid var(--hair);
     border-left:3px solid var(--accent);border-radius:14px;padding:14px 16px 13px;margin:0 0 20px}
@@ -4336,7 +4338,12 @@
   // ---------- lesson player ----------
   let learnIdx=0;
   function scrollLearnTop(){ document.getElementById('view-learn').scrollTo(0,0); }
+  function closeTermPop(){
+    document.querySelectorAll('.lp-term.open').forEach(t=>t.classList.remove('open'));
+    const bd=document.querySelector('.lp-term-backdrop'); if(bd) bd.remove();
+  }
   function openLesson(i){
+    closeTermPop();
     learnIdx=i;
     document.getElementById('learnHome').style.display='none';
     document.getElementById('learnPlayer').style.display='block';
@@ -4344,6 +4351,7 @@
     scrollLearnTop();
   }
   function closePlayer(){
+    closeTermPop();
     document.getElementById('learnPlayer').style.display='none';
     document.getElementById('learnHome').style.display='block';
     renderLearn();
@@ -4458,9 +4466,30 @@
       learnDone.add(l.id); saveLearnDone();
       if(learnIdx===total-1) closePlayer(); else openLesson(learnIdx+1);
     });
-    // tappable glossary terms
-    p.querySelectorAll('.lp-term-b').forEach(b=>b.addEventListener('click',()=>{
-      b.parentElement.classList.toggle('open');
+    // tappable glossary terms — floating popup, tap outside (or scroll) to close
+    const positionPop=(b)=>{
+      const pop=b.parentElement.querySelector('.lp-term-pop');
+      const r=b.getBoundingClientRect();
+      const pw=pop.offsetWidth, ph=pop.offsetHeight;
+      let left=r.left+r.width/2-pw/2;
+      left=Math.max(10, Math.min(left, window.innerWidth-pw-10));
+      let top=r.bottom+8;
+      if(top+ph>window.innerHeight-10) top=Math.max(10, r.top-ph-8);
+      pop.style.left=left+'px'; pop.style.top=top+'px';
+    };
+    p.querySelectorAll('.lp-term-b').forEach(b=>b.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      const term=b.parentElement;
+      const wasOpen=term.classList.contains('open');
+      closeTermPop();
+      if(wasOpen) return;
+      term.classList.add('open');
+      positionPop(b);
+      const bd=document.createElement('div');
+      bd.className='lp-term-backdrop';
+      bd.addEventListener('click',closeTermPop);
+      document.body.appendChild(bd);
+      document.getElementById('view-learn').addEventListener('scroll',closeTermPop,{once:true});
     }));
     p.querySelectorAll('[data-toast]').forEach(b=>b.addEventListener('click',()=>{
       toast('Coming soon',"Live broker fee comparison is on the way. For now, check each broker's current pricing directly.",'ti-info-circle');
