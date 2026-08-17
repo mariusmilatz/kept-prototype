@@ -246,30 +246,92 @@
   .learn-note.tappable span{flex:1;min-width:0}
   .learn-note .chev-note{font-size:15px;margin-top:0;align-self:center;opacity:.8}
   .learn-note.tappable:active{transform:scale(.99)}
-  .learn-section-head{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
-    font-weight:650;margin:20px 2px 10px;scroll-margin-top:calc(env(safe-area-inset-top) + 24px)}
-  .learn-lesson{background:var(--surface-solid);border:1px solid var(--hair);border-radius:16px;margin-bottom:10px;overflow:hidden;scroll-margin-top:calc(env(safe-area-inset-top) + 24px)}
-  .learn-lesson-head{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer;background:none;border:none;
-    width:100%;text-align:left;font-family:inherit;color:var(--ink)}
-  .learn-lesson-ic{width:36px;height:36px;border-radius:11px;background:var(--accent-soft);color:var(--accent-ink);
-    display:grid;place-items:center;font-size:18px;flex:0 0 auto}
-  .learn-lesson-ic.g{background:var(--amber-soft);color:var(--amber-ink)}
-  .learn-lesson-t{flex:1;min-width:0}
-  .learn-lesson-t b{font-size:14px;font-weight:600;display:block}
-  .learn-lesson-t small{font-size:11px;color:var(--muted);display:block;margin-top:1px}
-  .learn-lesson-head .chev{color:var(--muted);font-size:16px;transition:transform .2s ease;flex:0 0 auto}
-  .learn-lesson.open .learn-lesson-head .chev{transform:rotate(180deg)}
-  .learn-lesson-body{display:none;padding:0 14px 15px 62px;font-size:12.5px;line-height:1.55;color:var(--muted)}
-  .learn-lesson.open .learn-lesson-body{display:block}
-  .learn-lesson-body h4{font-size:12px;font-weight:700;color:var(--ink);margin:13px 0 3px}
-  .learn-lesson-body h4:first-child{margin-top:2px}
-  .learn-lesson-body p{margin:5px 0}
-  .learn-lesson-body ul{margin:5px 0;padding-left:16px}
-  .learn-lesson-body li{margin:3px 0}
-  .learn-lesson-body strong{color:var(--ink);font-weight:650}
-  .learn-lesson-body .pill-fact{display:inline-block;background:var(--accent-soft);color:var(--accent-ink);
-    font-weight:650;border-radius:8px;padding:2px 7px;margin:2px 0;font-size:11.5px}
-  .learn-lesson-body code{background:var(--card-2);border-radius:5px;padding:1px 5px;font-size:11.5px;color:var(--ink)}
+  /* progress summary */
+  .learn-progress{background:var(--surface-solid);border:1px solid var(--hair);border-radius:16px;padding:14px 15px;margin:8px 0 2px}
+  .learn-progress-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:9px}
+  .learn-progress-top b{font-size:14px;font-weight:700}
+  .learn-progress-top span{font-size:12px;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+  .learn-progress-bar{height:7px;border-radius:99px;background:var(--card-2);overflow:hidden}
+  .learn-progress-bar i{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width .4s cubic-bezier(.2,.9,.2,1)}
+  /* chapters + lesson rows */
+  .learn-chapter{margin-top:20px}
+  .learn-chapter-head{display:flex;align-items:center;gap:8px;margin:0 2px 10px}
+  .learn-chapter-n{font-family:var(--font-round);font-size:11px;font-weight:700;color:var(--accent-ink);
+    background:var(--accent-soft);border-radius:7px;padding:2px 6px;letter-spacing:.02em}
+  .learn-chapter-t{font-size:12.5px;font-weight:700;color:var(--ink)}
+  .learn-chapter-soon{margin-left:auto;font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;
+    color:var(--muted);background:var(--card-2);padding:2px 6px;border-radius:6px}
+  .learn-rows{display:flex;flex-direction:column;gap:8px}
+  .learn-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font-family:inherit;color:var(--ink);
+    background:var(--surface-solid);border:1px solid var(--hair);border-radius:15px;padding:12px 13px;cursor:pointer}
+  .learn-row:active{transform:scale(.99)}
+  .learn-row-ic{width:38px;height:38px;border-radius:12px;background:var(--accent-soft);display:grid;place-items:center;font-size:19px;flex:0 0 auto}
+  .learn-row-t{flex:1;min-width:0}
+  .learn-row-t b{font-size:13.5px;font-weight:600;display:block}
+  .learn-row-t small{font-size:11px;color:var(--muted);display:block;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .learn-row-state{flex:0 0 auto;width:22px;height:22px;display:grid;place-items:center;color:var(--muted)}
+  .learn-row.done .learn-row-state{color:#fff;background:var(--accent);border-radius:50%}
+  .learn-row.locked{cursor:default;opacity:.6}
+  .learn-row.locked .learn-row-ic{background:var(--card-2)}
+  .learn-row-soon{flex:0 0 auto;font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;
+    color:var(--muted);background:var(--card-2);padding:2px 6px;border-radius:6px}
+  /* ---- full-screen lesson player ---- */
+  #learnPlayer{display:none}
+  .lp-top{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding-top:calc(env(safe-area-inset-top) - 4px);min-height:34px}
+  .lp-nav{width:34px;height:34px;border-radius:11px;border:none;background:var(--surface-solid);color:var(--ink);
+    display:grid;place-items:center;cursor:pointer;flex:0 0 auto}
+  .lp-nav:active{transform:scale(.94)}
+  .lp-count{font-size:11px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .lp-bar{height:5px;border-radius:99px;background:var(--card-2);overflow:hidden;margin:8px 0 20px}
+  .lp-bar span{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width .35s cubic-bezier(.2,.9,.2,1)}
+  .lp-title{font-family:var(--font-round);font-size:23px;font-weight:750;line-height:1.14;text-align:center;margin:2px 6px 6px}
+  .lp-tagline{font-size:12.5px;color:var(--muted);text-align:center;margin:0 12px 20px;line-height:1.4}
+  .lp-idea{font-size:15.5px;line-height:1.45;font-weight:600;color:var(--ink);margin:0 2px 18px;text-align:center}
+  .lp-visual{margin:0 0 20px}
+  .lp-why{font-size:13px;line-height:1.6;color:var(--muted);margin:0 2px 20px}
+  .lp-why strong{color:var(--ink);font-weight:650}
+  /* quiz */
+  .lp-quiz{background:var(--surface-solid);border:1px solid var(--hair);border-radius:18px;padding:15px;margin:0 0 20px}
+  .lp-quiz-q{font-size:13.5px;font-weight:650;color:var(--ink);line-height:1.4;margin-bottom:12px}
+  .lp-opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font-family:inherit;font-size:13px;color:var(--ink);
+    background:var(--card);border:1.5px solid var(--hair);border-radius:12px;padding:12px 13px;margin-bottom:8px;cursor:pointer;
+    transition:border-color .15s,background .15s}
+  .lp-opt:last-child{margin-bottom:0}
+  .lp-opt-k{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--hair);display:grid;place-items:center;
+    font-size:11px;font-weight:700;color:var(--muted);flex:0 0 auto}
+  .lp-opt-txt{flex:1;min-width:0}
+  .lp-opt-mark{flex:0 0 auto;width:20px;height:20px;display:grid;place-items:center;opacity:0}
+  .lp-quiz.answered .lp-opt{cursor:default}
+  .lp-opt.correct{border-color:var(--accent);background:var(--accent-soft)}
+  .lp-opt.correct .lp-opt-k{background:var(--accent);border-color:var(--accent);color:#fff}
+  .lp-opt.correct .lp-opt-mark{opacity:1;color:var(--accent-ink)}
+  .lp-opt.wrong{border-color:#d98b8b;background:color-mix(in srgb,#d98b8b 15%,transparent)}
+  .lp-opt.picked-reflect{border-color:var(--accent);background:var(--accent-soft)}
+  .lp-opt.picked-reflect .lp-opt-k{background:var(--accent);border-color:var(--accent);color:#fff}
+  .lp-explain{font-size:12px;line-height:1.55;color:var(--muted);margin-top:11px;padding-top:11px;
+    border-top:1px solid var(--hair);display:none}
+  .lp-quiz.answered .lp-explain{display:block}
+  .lp-explain strong{color:var(--ink)}
+  /* takeaway */
+  .lp-takeaway{background:var(--accent-soft);color:var(--accent-ink);border-radius:15px;padding:13px 15px;
+    font-size:13px;font-weight:600;line-height:1.45;margin:0 0 20px}
+  .lp-takeaway-l{display:block;font-size:9px;letter-spacing:.09em;text-transform:uppercase;font-weight:750;opacity:.72;margin-bottom:3px}
+  /* reusable lesson visuals */
+  .lp-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .lp-card{background:var(--surface-solid);border:1px solid var(--hair);border-radius:15px;padding:13px 8px;text-align:center}
+  .lp-card-e{font-size:26px;line-height:1;margin-bottom:8px}
+  .lp-card b{font-size:12px;font-weight:700;display:block}
+  .lp-card small{font-size:10px;color:var(--muted);display:block;margin-top:3px;line-height:1.3}
+  .lp-example{background:var(--surface-solid);border:1px solid var(--hair);border-radius:15px;padding:14px;text-align:center}
+  .lp-example-r{font-size:12px;color:var(--muted);line-height:1.5}
+  .lp-example-b{font-family:var(--font-round);font-size:19px;font-weight:750;color:var(--ink);margin-top:5px}
+  .lp-flow{display:flex;flex-direction:column;gap:10px}
+  .lp-flow-row{display:flex;align-items:center;gap:12px;background:var(--surface-solid);border:1px solid var(--hair);border-radius:14px;padding:12px 14px}
+  .lp-flow-e{font-size:26px;line-height:1;flex:0 0 auto}
+  .lp-flow-t b{font-size:13px;font-weight:700;display:block}
+  .lp-flow-t small{font-size:11.5px;color:var(--muted);display:block;margin-top:1px}
+  .lp-hero{text-align:center;font-size:50px;line-height:1;margin:2px 0 8px}
 
   .overlay{position:absolute;inset:0;z-index:60;background:color-mix(in srgb,var(--ink) 34%,transparent);
     display:flex;align-items:flex-end;border-radius:36px;opacity:0;pointer-events:none;transition:opacity .28s}
@@ -1223,15 +1285,17 @@
 
       <!-- LEARN / KNOWLEDGE -->
       <div class="view hidden" id="view-learn">
-        <p class="eyebrow" style="margin-top:8px">Start here</p>
-        <h2 class="h-screen">Learn to invest</h2>
-        <p class="learn-intro">The basics of long-term investing, in plain language. No jargon, no stock tips — just a starting point so you know what you're looking at.</p>
-        <span aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;opacity:0;pointer-events:none"><i class="ti ti-target"></i><i class="ti ti-chart-line"></i><i class="ti ti-shopping-bag"></i><i class="ti ti-adjustments"></i><i class="ti ti-list-details"></i><i class="ti ti-circle-check"></i><i class="ti ti-calendar-clock"></i><i class="ti ti-repeat"></i><i class="ti ti-arrow-up-right"></i><i class="ti ti-info-circle"></i><i class="ti ti-chevron-down"></i></span>
-        <div class="learn-label">Your country</div>
-        <div class="learn-country" id="learnCountry"></div>
-        <div id="learnCountryNote"></div>
-        <div id="learnContent"></div>
-        <div class="disclaimer" style="margin-top:18px">Educational information only — not financial or tax advice. Figures and examples are simplified. Rules change and depend on your situation; check current sources or a licensed adviser before you invest.</div>
+        <div id="learnHome">
+          <p class="eyebrow" style="margin-top:8px">Start here</p>
+          <h2 class="h-screen">Learn to invest</h2>
+          <p class="learn-intro">Short, bite-sized lessons on the basics of long-term investing — one idea at a time. No jargon, no stock tips.</p>
+          <div class="learn-label">Your country</div>
+          <div class="learn-country" id="learnCountry"></div>
+          <div id="learnCountryNote"></div>
+          <div id="learnContent"></div>
+          <div class="disclaimer" style="margin-top:18px">Educational information only — not financial or tax advice. Figures and examples are simplified. Rules change and depend on your situation; check current sources or a licensed adviser before you invest.</div>
+        </div>
+        <div id="learnPlayer"></div>
       </div>
 
       <!-- FUTURE -->
@@ -3762,92 +3826,101 @@
   ];
   let learnCountry='DE';
 
-  const learnBasics=[
-    {ic:'ti-target',title:'Mindset comes first',sub:'Behaviour matters more than picking winners',body:`
-      <p>The biggest driver of investing success isn't which fund you pick — it's how you behave. Most people underperform the market because they buy when excited (prices high) and sell when scared (prices low).</p>
-      <p><em>"Doing well with money has little to do with how smart you are and a lot to do with how you behave."</em> — Morgan Housel, <strong>The Psychology of Money</strong></p>
-      <h4>Focus on what you can control</h4>
-      <ul><li>How much you save</li><li>How long you stay invested</li><li>Keeping costs and taxes low</li></ul>
-      <h4>Before you invest</h4>
-      <p>Keep <strong>3–6 months of expenses in cash</strong> first — an emergency buffer — so you never have to sell investments at a bad time.</p>`},
-    {ic:'ti-chart-line',title:'Passive beats active',sub:'Match the market instead of trying to beat it',body:`
-      <p><strong>Active</strong> investing means trying to beat the market by picking stocks or funds. <strong>Passive</strong> means buying the whole market cheaply through an index fund / ETF and simply matching its return.</p>
-      <h4>Why passive usually wins</h4>
-      <ul><li>80–90% of active funds underperform the market over 10+ years (after fees)</li><li>Active funds cost more — often 1–2% a year</li><li>Very few managers beat the market over decades</li></ul>
-      <h4>What is TER?</h4>
-      <p>The <strong>Total Expense Ratio</strong> is an ETF's yearly cost. A 0.2% TER on €10,000 is about €20 a year. Lower is better — aim for <strong>≤0.3%</strong> on your core fund.</p>
-      <p><span class="pill-fact">€10,000 over 30y: 0.2% fund ≈ €76,000 vs 1% fund ≈ €57,000 — ~€19,000 lost to fees</span></p>`},
-    {ic:'ti-shopping-bag',title:'What is an ETF?',sub:'One purchase that buys the whole market',body:`
-      <p>An <strong>ETF</strong> (Exchange-Traded Fund) is a basket of stocks that tracks an index. Buy one share and you instantly own hundreds or thousands of companies — traded like a stock, diversified like a fund.</p>
-      <h4>Common indices</h4>
-      <ul><li><strong>MSCI World</strong> — ~1,500 large companies across 23 developed countries</li><li><strong>MSCI ACWI</strong> — MSCI World plus emerging markets (~2,900 companies)</li><li><strong>S&P 500</strong> — the 500 largest US companies</li></ul>
-      <h4>Accumulating vs distributing</h4>
-      <ul><li><strong>Accumulating</strong> (thesaurierend) — dividends reinvested automatically; good while building wealth</li><li><strong>Distributing</strong> (ausschüttend) — dividends paid to you as cash; useful for income</li></ul>
-      <h4>Look for "UCITS"</h4>
-      <p>A European standard meaning the fund follows EU investor-protection rules.</p>`},
-    {ic:'ti-adjustments',title:'Build a simple portfolio',sub:'One global fund is often enough',body:`
-      <p>Your portfolio is just how you split money between <strong>stocks</strong> (growth, more ups and downs) and <strong>bonds / cash</strong> (stability, lower returns).</p>
-      <h4>The beginner default — core-only</h4>
-      <p>Put everything into one broad global equity ETF (e.g. MSCI World or ACWI). Simple, already diversified across thousands of companies, low maintenance.</p>
-      <h4>A rough guide to stock %</h4>
-      <p>Some use <code>110 − your age</code> as a rough stock allocation (a 30-year-old ≈ 70–80% stocks). More stocks = more growth and more swings.</p>
-      <h4>Rebalancing</h4>
-      <p>If you hold stocks + bonds, once a year nudge things back to your target mix (e.g. 80/20). This keeps your risk level steady.</p>`},
-    {ic:'ti-list-details',title:'Choosing an ETF',sub:'Six things to check before you buy',body:`
-      <ul>
-        <li><strong>Index</strong> — pick a broad, global one (avoid narrow sector bets as a beginner)</li>
-        <li><strong>Cost (TER)</strong> — ≤0.3% for a core ETF</li>
-        <li><strong>Fund size</strong> — over €100m is safer (less chance of closure)</li>
-        <li><strong>Replication</strong> — physical (owns the real stocks) is preferred</li>
-        <li><strong>Domicile</strong> — Ireland is tax-efficient for many EU investors</li>
-        <li><strong>Payout</strong> — accumulating while you're growing wealth</li>
-      </ul>
-      <h4>Where to compare</h4>
-      <p>Tools like <strong>justETF.com</strong> let you filter and check these details on any ETF's factsheet.</p>`},
-    {ic:'ti-circle-check',title:'Stay the course',sub:'Discipline matters more than timing',body:`
-      <h4>Crashes are normal</h4>
-      <ul><li>~10% dip roughly once a year</li><li>~20% drop every few years</li><li>Big ~50% crashes are rare but happen (2008, dot-com)</li></ul>
-      <p>Historically, markets have always recovered and reached new highs. The MSCI World fell ~50% in 2008 and fully recovered within about 5 years.</p>
-      <h4>Dollar-cost averaging (DCA)</h4>
-      <p>Invest a fixed amount every month regardless of price. You automatically buy more when prices are low, fewer when high — and remove emotion from the decision.</p>
-      <h4>When markets fall</h4>
-      <ul><li>Don't panic-sell — a loss is only real if you sell</li><li>Keep your monthly plan going — you're buying cheaper</li><li>Check once a year, not daily</li></ul>`},
-    {ic:'ti-calendar-clock',title:'From saving to retirement',sub:'How you use the money later',body:`
-      <h4>Two phases</h4>
-      <ul><li><strong>Building (accumulation)</strong> — high stock allocation, reinvest dividends, automate</li><li><strong>Retirement (decumulation)</strong> — gradually add bonds / cash and withdraw carefully</li></ul>
-      <h4>The 4% rule</h4>
-      <p>A common guideline: you can withdraw about <strong>4% of your portfolio per year</strong> (inflation-adjusted) and it should last ~30 years.</p>
-      <p>Reverse it to set a target: <code>annual spending × 25</code> ≈ the portfolio you're aiming for (e.g. €30,000/yr → €750,000).</p>`}
+  // ---------- Learn: lesson data ----------
+  const svgBack='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
+  const svgClose='<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+  const svgCheck='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+  const svgChev='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+
+  const LEARN_TOTAL_PLANNED=15;
+
+  // Chapter 01 — Before you invest (fully built, playable)
+  const learnCh01=[
+    {
+      id:'job', emoji:'🎯',
+      title:'Give your money a job',
+      tagline:"Know what you're investing for.",
+      idea:"Money you need soon shouldn't usually be in stocks. Money you won't need for many years can take more risk.",
+      visual:`<div class="lp-cards">
+        <div class="lp-card"><div class="lp-card-e">☂️</div><b>&lt; 3 years</b><small>Keep in cash</small></div>
+        <div class="lp-card"><div class="lp-card-e">🌱</div><b>3–10 years</b><small>Be balanced</small></div>
+        <div class="lp-card"><div class="lp-card-e">🚀</div><b>10+ years</b><small>Invest for growth</small></div>
+      </div>`,
+      why:"Investments rise and fall in the short term. Giving each pot of money a <strong>time frame</strong> is how you avoid being forced to sell at a bad moment.",
+      quiz:{ q:'You want this money for a house deposit in about 2 years. Where does it usually belong?',
+        options:['A broad stock ETF','Mostly cash or very low risk','All-in on one fast grower'],
+        answer:1,
+        explain:"Money you need within a few years is usually kept safe — a short-term market dip could hit right when you need it." },
+      takeaway:'Match the money to the timeline before you pick anything.'
+    },
+    {
+      id:'buffer', emoji:'🛡️',
+      title:'Build your safety buffer',
+      tagline:'Invest without worrying about tomorrow.',
+      idea:'Before investing long-term, keep enough easy-access cash for unexpected expenses.',
+      visual:`<div class="lp-hero">🛡️</div>
+        <div class="lp-example"><div class="lp-example-r">€2,000 monthly essentials → a 3-month buffer</div><div class="lp-example-b">= €6,000 set aside</div></div>`,
+      why:"How much you need depends on your <strong>income stability, household expenses and situation</strong> — not one universal number. A cushion means a surprise bill never forces you to sell investments at the wrong time.",
+      quiz:{ q:'Your car suddenly needs an €800 repair. Where should that money ideally come from?',
+        options:['Sell some of your ETF','Your emergency buffer','A new short-term loan'],
+        answer:1,
+        explain:"That's exactly what the buffer is for — it keeps your long-term investments untouched." },
+      takeaway:'Emergency money = stability. Investment money = long term.'
+    },
+    {
+      id:'stay', emoji:'🧭',
+      title:'Why staying invested matters',
+      tagline:'Behaviour can matter more than picking the perfect fund.',
+      idea:'The most common way people hurt their returns is buying in excitement and selling in fear.',
+      visual:`<div class="lp-flow">
+        <div class="lp-flow-row"><span class="lp-flow-e">😃</span><span class="lp-flow-t"><b>Market rises</b><small>“I should invest!”</small></span></div>
+        <div class="lp-flow-row"><span class="lp-flow-e">😨</span><span class="lp-flow-t"><b>Market falls</b><small>“I should sell!”</small></span></div>
+      </div>`,
+      why:"Buying high and selling low is the trap. <strong>This is exactly the behaviour long-term investors try to avoid.</strong>",
+      quiz:{ q:'The market drops 20%. What would a long-term monthly plan normally do?',
+        options:['Stop everything','Sell before it falls further','Stick to the plan'],
+        answer:2,
+        explain:"For a long-term plan, steady contributions through the ups and downs is the usual approach — you're buying at lower prices, not locking in the drop." },
+      takeaway:'Time in the market usually beats timing the market.'
+    }
   ];
 
-  const learnByCountry={
-    DE:[
-      {ic:'ti-circle-check',title:'German taxes, simply',sub:'What your broker handles for you',body:`
-        <h4>Abgeltungssteuer (capital gains tax)</h4>
-        <p>A flat <strong>25% tax on investment profits</strong>, plus a 5.5% solidarity surcharge (and church tax if it applies to you).</p>
-        <h4>Sparer-Pauschbetrag (tax-free allowance)</h4>
-        <p><strong>€1,000</strong> of investment income per year is tax-free (€2,000 for couples). Activate it by giving your broker a <strong>Freistellungsauftrag</strong>.</p>
-        <h4>Teilfreistellung (partial exemption)</h4>
-        <p>For equity ETFs (≥51% stocks), <strong>30% of your gains are automatically tax-free</strong>.</p>
-        <h4>Vorabpauschale</h4>
-        <p>A small yearly advance tax on accumulating ETFs — calculated and deducted automatically by your broker. Nothing to do manually.</p>`},
-      {ic:'ti-repeat',title:'Brokers & savings plans',sub:'Where to buy, and automating it',body:`
-        <h4>Popular German brokers</h4>
-        <ul><li><strong>Trade Republic</strong> — €1 ETF plans, mobile-first, very low cost</li><li><strong>Scalable Capital</strong> — €0 ETF plans with PRIME</li><li><strong>ING</strong> — broad selection, beginner-friendly</li><li><strong>Comdirect</strong> — reliable, solid savings-plan options</li></ul>
-        <h4>ETF-Sparplan (savings plan)</h4>
-        <p>Automate a monthly purchase (e.g. €50–500) into your core ETF. No market timing, builds the habit, less stress.</p>`},
-      {ic:'ti-arrow-up-right',title:'Your first steps in Germany',sub:'A €100 / month example',body:`
-        <ul>
-          <li>Open a low-cost broker account (Trade Republic, Scalable, ING)</li>
-          <li>Set up a <strong>Freistellungsauftrag</strong> so your €1,000 allowance is active</li>
-          <li>Start a <strong>Sparplan of €100/month</strong> into a core ETF (a MSCI World UCITS — accumulating, Irish domicile)</li>
-          <li>That's it — the broker buys monthly and handles the tax paperwork</li>
-        </ul>
-        <p>Example core ETF from the guide: <strong>iShares Core MSCI World UCITS ETF</strong> (ISIN IE00B4L5Y983) — TER 0.20%, physical, accumulating.</p>
-        <p style="font-size:11px;opacity:.85">Fund names are examples for learning, not a recommendation.</p>`}
-    ]
-  };
+  // Upcoming chapters — listed so the course shape is visible; unlock as they're built.
+  const learnCh02=[
+    {id:'etf',title:'What is an ETF?',tagline:'One fund, many companies',emoji:'🛒'},
+    {id:'global',title:'What does “global” mean?',tagline:'Not every index is the whole world',emoji:'🌍'},
+    {id:'passive',title:"You don't have to pick winners",tagline:'Passive vs active, simply',emoji:'📈'},
+    {id:'fees',title:'Small fees become big fees',tagline:'Costs compound over decades',emoji:'💸'},
+    {id:'portfolio',title:'Build a simple portfolio',tagline:'Growth vs stability',emoji:'⚖️'},
+    {id:'choose',title:'Choosing an ETF',tagline:'A beginner checklist',emoji:'✅'}
+  ];
+  const learnCh03=[
+    {id:'falls',title:'When markets fall',tagline:'What a drop really means',emoji:'📉'},
+    {id:'retire',title:'Your money in retirement',tagline:'Turning savings into income',emoji:'🏖️'}
+  ];
+  const learnDE=[
+    {id:'de-tax',title:'German taxes — simply',tagline:'What your broker handles',emoji:'🧾'},
+    {id:'de-broker',title:'Brokers & savings plans',tagline:'Where to buy and automate',emoji:'🏦'},
+    {id:'de-steps',title:'Your first steps in Germany',tagline:'A simple path to start',emoji:'🚀'}
+  ];
 
+  const learnChapters=[
+    {n:'01', title:'Before you invest', status:'live', lessons:learnCh01},
+    {n:'02', title:'Investing simply', status:'soon', lessons:learnCh02},
+    {n:'03', title:'Actually doing it', status:'soon', lessons:learnCh03}
+  ];
+  const learnCountryChapters={ DE:{ title:'For Germany', flag:'🇩🇪', status:'soon', lessons:learnDE } };
+
+  // playable (live) lessons in order — the player walks these
+  const learnPlayable=learnChapters.filter(c=>c.status==='live').flatMap(c=>c.lessons);
+
+  // ---------- progress persistence ----------
+  const LEARN_DONE_KEY='kept_learn_done_v1';
+  let learnDone;
+  try{ learnDone=new Set(JSON.parse(localStorage.getItem(LEARN_DONE_KEY)||'[]')); }catch(e){ learnDone=new Set(); }
+  function saveLearnDone(){ try{ localStorage.setItem(LEARN_DONE_KEY, JSON.stringify([...learnDone])); }catch(e){} }
+
+  // ---------- country selector ----------
   function renderLearnCountry(){
     const wrap=document.getElementById('learnCountry');
     wrap.innerHTML=learnCountries.map(c=>{
@@ -3857,31 +3930,32 @@
       return `<button type="button" data-c="${c.code}" class="${soon?'soon':''}${on}"><span class="flag">${c.flag}</span>${c.name}${tag}</button>`;
     }).join('');
     wrap.querySelectorAll('button[data-c]').forEach(b=>{
-      b.addEventListener('click',()=>{
-        const already=b.dataset.c===learnCountry;
-        learnCountry=b.dataset.c;
-        renderLearn();
-        // tapping the already-selected live country again jumps to its section
-        const c=learnCountries.find(x=>x.code===learnCountry);
-        if(already && c && c.status==='live') scrollToCountrySection();
-      });
+      b.addEventListener('click',()=>{ learnCountry=b.dataset.c; renderLearn(); });
     });
   }
 
-  function scrollToCountrySection(){
-    const sec=document.getElementById('learnCountrySection');
-    if(sec) requestAnimationFrame(()=>sec.scrollIntoView({behavior:'smooth',block:'start'}));
-  }
-
-  function lessonCard(l,green){
-    return `<div class="learn-lesson">
-      <button class="learn-lesson-head" type="button">
-        <span class="learn-lesson-ic${green?' g':''}"><i class="ti ${l.ic}"></i></span>
-        <span class="learn-lesson-t"><b>${l.title}</b><small>${l.sub}</small></span>
-        <i class="ti ti-chevron-down chev"></i>
-      </button>
-      <div class="learn-lesson-body">${l.body}</div>
-    </div>`;
+  // ---------- landing (chapter + lesson list) ----------
+  function learnChapterBlock(ch){
+    const soon=ch.status!=='live';
+    let rows='';
+    ch.lessons.forEach(l=>{
+      if(soon){
+        rows+=`<div class="learn-row locked"><span class="learn-row-ic">${l.emoji||'📘'}</span>`+
+          `<span class="learn-row-t"><b>${l.title}</b><small>${l.tagline||''}</small></span>`+
+          `<span class="learn-row-soon">Soon</span></div>`;
+      } else {
+        const idx=learnPlayable.indexOf(l);
+        const done=learnDone.has(l.id);
+        rows+=`<button class="learn-row${done?' done':''}" data-lesson="${idx}">`+
+          `<span class="learn-row-ic">${l.emoji||'📘'}</span>`+
+          `<span class="learn-row-t"><b>${l.title}</b><small>${l.tagline||''}</small></span>`+
+          `<span class="learn-row-state">${done?svgCheck:svgChev}</span></button>`;
+      }
+    });
+    return `<div class="learn-chapter"><div class="learn-chapter-head">`+
+      `${ch.n?`<span class="learn-chapter-n">${ch.n}</span>`:''}<span class="learn-chapter-t">${ch.title} ${ch.flag||''}</span>`+
+      `${soon?'<span class="learn-chapter-soon">Building next</span>':''}</div>`+
+      `<div class="learn-rows">${rows}</div></div>`;
   }
 
   function renderLearn(){
@@ -3889,35 +3963,89 @@
     const country=learnCountries.find(c=>c.code===learnCountry);
     const noteEl=document.getElementById('learnCountryNote');
     if(country && country.status==='live'){
-      noteEl.innerHTML=`<div class="learn-note tappable" role="button" tabindex="0"><i class="ti ti-circle-check"></i><span>Showing basics plus tax &amp; broker guidance for <strong>${country.name}</strong> ${country.flag}.</span><i class="ti ti-chevron-down chev-note"></i></div>`;
-      const noteBtn=noteEl.querySelector('.learn-note');
-      noteBtn.addEventListener('click',scrollToCountrySection);
-      noteBtn.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); scrollToCountrySection(); } });
+      noteEl.innerHTML=`<div class="learn-note"><span style="font-size:16px">🇩🇪</span><span>Basics apply everywhere. Tax &amp; broker lessons for <strong>${country.name}</strong> are coming in that section below.</span></div>`;
     } else {
-      noteEl.innerHTML=`<div class="learn-note"><i class="ti ti-info-circle"></i><span>Country-specific guidance for <strong>${country?country.name:'this country'}</strong> is in development. The universal basics below apply everywhere — check your local tax rules before investing.</span></div>`;
+      noteEl.innerHTML=`<div class="learn-note"><span style="font-size:16px">🧭</span><span>Country lessons for <strong>${country?country.name:'this country'}</strong> are in development. The universal basics below apply everywhere — check your local tax rules before investing.</span></div>`;
     }
-    let html=`<div class="learn-section-head">The basics — everywhere</div>`;
-    html+=learnBasics.map(l=>lessonCard(l,false)).join('');
-    if(country && country.status==='live' && learnByCountry[country.code]){
-      html+=`<div class="learn-section-head" id="learnCountrySection">For ${country.name} ${country.flag}</div>`;
-      html+=learnByCountry[country.code].map(l=>lessonCard(l,false)).join('');
+    const doneCount=learnPlayable.filter(l=>learnDone.has(l.id)).length;
+    let html=`<div class="learn-progress"><div class="learn-progress-top"><b>ETF Basics</b>`+
+      `<span>${doneCount} / ${LEARN_TOTAL_PLANNED} lessons</span></div>`+
+      `<div class="learn-progress-bar"><i style="width:${Math.round(doneCount/LEARN_TOTAL_PLANNED*100)}%"></i></div></div>`;
+    html+=learnChapters.map(learnChapterBlock).join('');
+    if(country && country.status==='live' && learnCountryChapters[country.code]){
+      html+=learnChapterBlock(learnCountryChapters[country.code]);
     }
     const box=document.getElementById('learnContent');
     box.innerHTML=html;
-    box.querySelectorAll('.learn-lesson-head').forEach(h=>{
-      h.addEventListener('click',()=>{
-        const lesson=h.parentElement;
-        const wasOpen=lesson.classList.contains('open');
-        // close every lesson, then open this one (unless it was already open)
-        box.querySelectorAll('.learn-lesson.open').forEach(o=>o.classList.remove('open'));
-        if(!wasOpen){
-          lesson.classList.add('open');
-          // snap the opened lesson's top to the top of the view so reading starts at the top
-          requestAnimationFrame(()=>lesson.scrollIntoView({behavior:'smooth',block:'start'}));
-        }
-      });
+    box.querySelectorAll('.learn-row[data-lesson]').forEach(b=>{
+      b.addEventListener('click',()=>openLesson(+b.dataset.lesson));
     });
   }
+
+  // ---------- lesson player ----------
+  let learnIdx=0;
+  function scrollLearnTop(){ document.getElementById('view-learn').scrollTo(0,0); }
+  function openLesson(i){
+    learnIdx=i;
+    document.getElementById('learnHome').style.display='none';
+    document.getElementById('learnPlayer').style.display='block';
+    renderPlayer();
+    scrollLearnTop();
+  }
+  function closePlayer(){
+    document.getElementById('learnPlayer').style.display='none';
+    document.getElementById('learnHome').style.display='block';
+    renderLearn();
+    scrollLearnTop();
+  }
+  function quizBlock(q){
+    const opts=q.options.map((t,i)=>`<button class="lp-opt" data-opt="${i}">`+
+      `<span class="lp-opt-k">${String.fromCharCode(65+i)}</span>`+
+      `<span class="lp-opt-txt">${t}</span>`+
+      `<span class="lp-opt-mark">${svgCheck}</span></button>`).join('');
+    return `<div class="lp-quiz" id="lpQuiz"><div class="lp-quiz-q">${q.q}</div>${opts}`+
+      `<div class="lp-explain">${q.explain}</div></div>`;
+  }
+  function renderPlayer(){
+    const l=learnPlayable[learnIdx], total=learnPlayable.length;
+    const p=document.getElementById('learnPlayer');
+    p.innerHTML=`<div class="lp-top">`+
+        `<button class="lp-nav" data-act="prev" aria-label="Back">${svgBack}</button>`+
+        `<span class="lp-count">Lesson ${learnIdx+1} of ${total}</span>`+
+        `<button class="lp-nav" data-act="close" aria-label="Close">${svgClose}</button>`+
+      `</div>`+
+      `<div class="lp-bar"><span style="width:${Math.round((learnIdx+1)/total*100)}%"></span></div>`+
+      `<h2 class="lp-title">${l.title}</h2>`+
+      `<p class="lp-tagline">${l.tagline}</p>`+
+      `<p class="lp-idea">${l.idea}</p>`+
+      (l.visual?`<div class="lp-visual">${l.visual}</div>`:'')+
+      (l.why?`<p class="lp-why">${l.why}</p>`:'')+
+      (l.quiz?quizBlock(l.quiz):'')+
+      (l.takeaway?`<div class="lp-takeaway"><span class="lp-takeaway-l">Kept takeaway</span>${l.takeaway}</div>`:'')+
+      `<button class="btn primary" data-act="continue">${learnIdx===total-1?'Finish':'Continue'}</button>`;
+    p.querySelector('[data-act="prev"]').addEventListener('click',()=>{ if(learnIdx>0) openLesson(learnIdx-1); else closePlayer(); });
+    p.querySelector('[data-act="close"]').addEventListener('click',closePlayer);
+    p.querySelector('[data-act="continue"]').addEventListener('click',()=>{
+      learnDone.add(l.id); saveLearnDone();
+      if(learnIdx===total-1) closePlayer(); else openLesson(learnIdx+1);
+    });
+    if(l.quiz){
+      const quiz=p.querySelector('#lpQuiz');
+      quiz.querySelectorAll('.lp-opt').forEach(opt=>{
+        opt.addEventListener('click',()=>{
+          if(quiz.classList.contains('answered')) return;
+          quiz.classList.add('answered');
+          const pick=+opt.dataset.opt, ans=l.quiz.answer;
+          if(ans<0){ opt.classList.add('picked-reflect'); }
+          else {
+            quiz.querySelector('[data-opt="'+ans+'"]').classList.add('correct');
+            if(pick!==ans) opt.classList.add('wrong');
+          }
+        });
+      });
+    }
+  }
+
   renderLearn();
 
   document.getElementById('assumptionToggle').addEventListener('click',openFutureManage);
