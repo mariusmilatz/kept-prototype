@@ -381,6 +381,37 @@
   .lp-assume{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.4}
   .lp-note{font-size:11px;color:var(--muted);background:var(--card-2);border-radius:12px;padding:10px 12px;
     line-height:1.45;margin:0 0 20px}
+  .lp-note strong{color:var(--ink);font-weight:700}
+  /* tappable glossary term */
+  .lp-term{position:relative;display:inline}
+  .lp-term-b{font:inherit;font-weight:inherit;color:var(--accent-ink);background:var(--accent-soft);
+    border:0;padding:0 5px;border-radius:6px;cursor:pointer;line-height:1.35;
+    border-bottom:1.5px dotted var(--accent);-webkit-appearance:none;appearance:none}
+  .lp-term-b::after{content:"ⓘ";font-size:.72em;margin-left:3px;opacity:.7;vertical-align:top}
+  .lp-term.open .lp-term-b{background:var(--accent);color:#fff;border-bottom-color:transparent}
+  .lp-term-pop{display:none}
+  .lp-term.open .lp-term-pop{display:block;text-align:left;font-weight:400;margin:9px 0 3px;padding:11px 13px;
+    background:var(--card-2);border:1px solid var(--hair);border-radius:12px;
+    font-size:12.5px;line-height:1.5;color:var(--muted)}
+  /* Buffett-style quote */
+  .lp-quote{position:relative;background:var(--surface-solid);border:1px solid var(--hair);
+    border-left:3px solid var(--accent);border-radius:14px;padding:14px 16px 13px;margin:0 0 20px}
+  .lp-quote-mark{position:absolute;top:2px;left:12px;font-family:var(--font-round);font-size:30px;
+    color:var(--accent);opacity:.35;line-height:1}
+  .lp-quote p{margin:0 0 6px;font-size:14px;line-height:1.5;font-weight:600;color:var(--ink);font-style:italic}
+  .lp-quote cite{font-style:normal;font-size:11.5px;font-weight:700;color:var(--muted)}
+  .lp-quote cite::before{content:"— "}
+  /* good/okay/bad examples */
+  .lp-ex-h{font-size:11px;font-weight:750;letter-spacing:.02em;text-transform:uppercase;color:var(--muted);margin:0 2px 8px}
+  .lp-ex{display:flex;flex-direction:column;gap:8px}
+  .lp-ex-row{display:flex;gap:11px;align-items:flex-start;background:var(--surface-solid);
+    border:1px solid var(--hair);border-radius:13px;padding:11px 13px}
+  .lp-ex-row.good{border-left:3px solid var(--accent)}
+  .lp-ex-row.ok{border-left:3px solid var(--amber)}
+  .lp-ex-row.bad{border-left:3px solid #c56b61}
+  .lp-ex-i{font-size:16px;line-height:1.3;flex:0 0 auto}
+  .lp-ex-row b{display:block;font-size:12.5px;color:var(--ink);margin-bottom:2px}
+  .lp-ex-row small{font-size:11px;color:var(--muted);line-height:1.4}
   /* market-fall step */
   .lp-drop{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--surface-solid);
     border:1px solid var(--hair);border-radius:16px;padding:18px 12px;text-align:center}
@@ -3198,6 +3229,7 @@
       {id:'first-transfer',cat:'start',name:'First Transfer',icon:'ti-arrow-up-right',detail:'Complete your first transfer.', eval:()=>({done:transfers.some(t=>t.amount>0), ...milestoneProgress(transfers.filter(t=>t.amount>0).length,1,'transfers')})},
       {id:'first-quick-save',cat:'start',name:'First Quick Save',icon:'ti-bolt',detail:'Use a quick save to log a win.', eval:()=>({done:bestQuickUse>=1, ...milestoneProgress(bestQuickUse,1,'quick saves')})},
       {id:'first-recurring-save',cat:'start',name:'First Recurring Save',icon:'ti-repeat',detail:'Confirm your first recurring saving.', eval:()=>({done:Object.keys(recurMonths).length>=1, ...milestoneProgress(Object.keys(recurMonths).length,1,'recurring saves')})},
+      {id:'learn-complete',cat:'start',name:'Investing Basics',icon:'ti-book',detail:'Finish the Learn course.', eval:()=>{const d=learnCourseComplete(); return {done:d, current:d?1:0, target:1, text:d?'Course complete':'Finish the Learn course'};}},
       {id:'back-tomorrow',cat:'habit',name:'Back Tomorrow',icon:'ti-repeat',detail:'Confirm wins on two separate days.', dropTrack:'confirmed-streak', dropRank:2, eval:()=>({done:cDays.length>=2, ...milestoneProgress(cDays.length,2,'days')})},
       {id:'three-day-rhythm',cat:'habit',name:'Three-Day Rhythm',icon:'ti-repeat',detail:'Confirm wins on three days in a row.', dropTrack:'confirmed-streak', dropRank:3, eval:()=>({done:cStreak>=3, ...milestoneProgress(cStreak,3,'days in a row')})},
       {id:'week-of-intent',cat:'habit',name:'Week of Intent',icon:'ti-repeat',detail:'Confirm wins on seven consecutive days.', dropTrack:'confirmed-streak', dropRank:7, eval:()=>({done:cStreak>=7, ...milestoneProgress(cStreak,7,'days in a row')})},
@@ -3916,6 +3948,23 @@
   function eur(n){ return '€'+Math.round(n).toLocaleString('en-US'); }
   function fvMonthly(m,annualPct,years){ const i=annualPct/100/12, n=years*12; return i===0? m*n : m*((Math.pow(1+i,n)-1)/i); }
 
+  // Learn course completion flag (persisted, read by the milestone system)
+  const LEARN_COURSE_KEY='kept_learn_course_done_v1';
+  function learnCourseComplete(){ try{ return localStorage.getItem(LEARN_COURSE_KEY)==='1'; }catch(e){ return false; } }
+
+  // ---------- tappable glossary terms ----------
+  const learnGloss={
+    stock:'A stock (or share) is a small piece of ownership in one single company. Its price rises and falls with how that company does.',
+    etf:'An ETF (exchange-traded fund) is a single investment you buy like a share — but it usually holds many companies at once, so you get instant variety in one purchase.',
+    fund:"A fund pools lots of people's money together and buys a basket of investments with it. Everyone then owns a slice of the whole basket.",
+    index:'An index is just a fixed list that tracks part of the market — for example “the biggest companies in the world”. Many ETFs simply copy an index.',
+    bond:'A bond is basically a loan you give to a government or company. They pay you interest and return your money later. Usually steadier than stocks, with lower expected growth.',
+    portfolio:"Your portfolio is simply everything you've invested in, all added together — your whole collection in one word.",
+    ter:'The TER (total expense ratio) is a fund’s yearly running cost, shown as a small % that’s taken automatically each year — you never get a separate bill.'
+  };
+  function T(key,label){ const d=learnGloss[key]||''; return `<span class="lp-term"><button type="button" class="lp-term-b">${label||key}</button><span class="lp-term-pop">${d}</span></span>`; }
+  function quoteBlock(q){ return `<div class="lp-quote"><span class="lp-quote-mark">“</span><p>${q.text}</p><cite>${q.who}</cite></div>`; }
+
   // Chapter 01 — Before you invest
   const learnCh01=[
     {
@@ -3928,7 +3977,7 @@
         <div class="lp-card"><div class="lp-card-e">🌱</div><b>3–10 years</b><small>Be balanced</small></div>
         <div class="lp-card"><div class="lp-card-e">🚀</div><b>10+ years</b><small>Invest for growth</small></div>
       </div>`,
-      why:"Investments rise and fall in the short term. Giving each pot of money a <strong>time frame</strong> is how you avoid being forced to sell at a bad moment.",
+      why:`Investments like ${T('stock','stocks')} or a broad ${T('etf','ETF')} rise and fall in the short term. Giving each pot of money a <strong>time frame</strong> is how you avoid being forced to sell at a bad moment.`,
       quiz:{ q:'You want this money for a house deposit in about 2 years. Where does it usually belong?',
         options:['A broad stock ETF','Mostly cash or very low risk','All-in on one fast grower'],
         answer:1,
@@ -3959,6 +4008,7 @@
         <div class="lp-flow-row"><span class="lp-flow-e">😨</span><span class="lp-flow-t"><b>Market falls</b><small>“I should sell!”</small></span></div>
       </div>`,
       why:"Buying high and selling low is the trap. <strong>This is exactly the behaviour long-term investors try to avoid.</strong>",
+      quote:{ text:'Be fearful when others are greedy, and greedy when others are fearful.', who:'Warren Buffett' },
       quiz:{ q:'The market drops 20%. What would a long-term monthly plan normally do?',
         options:['Stop everything','Sell before it falls further','Stick to the plan'],
         answer:2,
@@ -3973,7 +4023,7 @@
       id:'etf', emoji:'🛒',
       title:'What is an ETF?',
       tagline:'One fund can spread your money across hundreds of companies.',
-      idea:'An ETF is a fund you can buy and sell on an exchange. Many simply follow an index — so one purchase can hold hundreds or thousands of investments.',
+      idea:`An ETF is a ${T('fund','fund')} you can buy and sell on an exchange. Many simply follow an ${T('index','index')} — so one purchase can hold hundreds or thousands of investments.`,
       visual:`<div class="lp-etf-flow">
         <span class="lp-etf-amt">€100</span><span class="lp-etf-arrow">→</span>
         <span class="lp-etf-node">ETF</span><span class="lp-etf-arrow">→</span>
@@ -4008,14 +4058,15 @@
       id:'passive', emoji:'📈',
       title:"You don't have to pick winners",
       tagline:'Passive vs active, simply.',
-      idea:'Active means trying to beat the market by picking. Passive means simply following a market index.',
+      idea:'Active means paying professionals to pick investments and beat the market. Passive means simply following a market index. Either way, you are not the one picking.',
       visual:`<div class="lp-two">
         <div class="lp-panel"><div class="lp-panel-e">🎯</div><h5>Active</h5>
-          <ul><li>Someone picks investments</li><li>Tries to beat the market</li><li>Usually costs more</li></ul></div>
+          <ul><li>Fund managers pick — not you</li><li>They try to beat the market</li><li>Usually costs more</li></ul></div>
         <div class="lp-panel"><div class="lp-panel-e">📉</div><h5>Passive</h5>
-          <ul><li>Follows a market index</li><li>Aims to match the market</li><li>Usually low cost</li></ul></div>
+          <ul><li>Automatically follows an index</li><li>Aims to match the market</li><li>Usually low cost</li></ul></div>
       </div>`,
-      why:"Over long periods, many active fund categories have struggled to beat their benchmarks after costs. Passive keeps things simple and cheap — you accept the market's return instead of trying to outguess it.",
+      why:"A common myth is that you have to hand-pick winning companies. You don't. With <strong>active</strong>, a professional team picks for you (and charges for it). With <strong>passive</strong>, an index does the choosing automatically. Over long periods, many active categories have struggled to beat their benchmark after costs.",
+      quote:{ text:'A low-cost index fund is the most sensible equity investment for the great majority of investors.', who:'Warren Buffett' },
       quiz:{ q:'What does a passive index fund try to do?',
         options:['Beat the market','Match the market','Predict crashes'],
         answer:1,
@@ -4032,7 +4083,8 @@
         <div class="lp-fee-row"><span class="lp-fee-k">1.0% fee</span><div class="lp-fee-track"><i style="width:79%;opacity:.55"></i></div><span class="lp-fee-v">≈ €43,000</span></div>
         <div class="lp-assume">Illustration: €10,000 invested for 30 years at 6% / year before fees.</div>
       </div>`,
-      why:"A fund's <strong>TER</strong> is its yearly cost — but it isn't every cost. Also consider trading spreads and how closely the ETF tracks its index. Lower cost helps, but it isn't the only thing that makes an ETF good.",
+      why:`Almost every investment has a cost. A fund's ${T('ter','TER')} is its yearly running cost — but it isn't the only cost. Trading spreads and how closely the ETF tracks its index matter too. Lower cost helps, but it isn't the only thing that makes an ETF good.`,
+      note:"Two kinds of cost worth knowing: an <strong>ongoing yearly fee</strong> (an ETF's TER, taken automatically) and a <strong>per-trade cost</strong> — a fee or spread each time you buy or sell (this is where buying individual stocks often adds up). A monthly ETF savings plan keeps both low.",
       quiz:{ q:'Over decades, paying 1% a year instead of 0.2% usually…',
         options:['Barely matters','Can cost thousands','Only matters if you sell'],
         answer:1,
@@ -4043,17 +4095,22 @@
       id:'portfolio', emoji:'⚖️',
       title:'Build a simple portfolio',
       tagline:'Growth vs stability.',
-      idea:'Your mix of stocks and safer assets sets both your growth and your swings.',
+      idea:`Your ${T('portfolio','portfolio')} — your mix of ${T('stock','stocks')} and safer assets like ${T('bond','bonds')} — sets both your growth and your swings.`,
       visual:`<div class="lp-two">
         <div class="lp-panel"><div class="lp-panel-e">📈</div><h5>More stocks</h5>
           <ul><li>Higher expected long-term growth</li><li>Bigger short-term swings</li></ul></div>
         <div class="lp-panel"><div class="lp-panel-e">🏦</div><h5>More cash / bonds</h5>
           <ul><li>More stability</li><li>Generally lower expected return</li></ul></div>
       </div>`,
-      why:"The right mix depends on how much of a temporary drop you could sit through <strong>without selling</strong>. For some long-term investors, one broadly diversified equity ETF may already be a very simple portfolio.",
+      why:`The right mix depends on how much of a temporary drop you could sit through <strong>without selling</strong>. For some long-term investors, one broadly diversified equity ETF may already be a very simple ${T('portfolio','portfolio')}.`,
       quiz:{ q:'Could you watch €10,000 temporarily become €7,000 without selling?',
         options:['Yes','Not sure','No'],
         answer:-1,
+        results:[
+          "Comfortable holding through a big drop? Leaning more on stocks / a broad equity ETF may suit you — historically more growth, but bigger swings you have to sit through.",
+          "Unsure is completely normal. A blend — a broad ETF plus some bonds or cash — softens the falls while still growing. You can always adjust as you learn.",
+          "Prefer not to watch it fall? Holding more in bonds and cash trades away some growth for a smoother ride — and a mix you can actually stick with beats a bold one you'll abandon."
+        ],
         explain:"There's no right answer here — knowing your honest reaction is how you find a mix you can actually stick with." },
       takeaway:'Pick a mix you can hold through the scary days.'
     },
@@ -4069,6 +4126,11 @@
         <div class="lp-check-row"><span class="lp-check-n">4</span><span class="lp-check-t"><b>How does it replicate the index?</b><small>Physical and synthetic structures both exist.</small></span></div>
         <div class="lp-check-row"><span class="lp-check-n">5</span><span class="lp-check-t"><b>Accumulating or distributing?</b><small>One reinvests; the other pays cash.</small></span></div>
         <div class="lp-check-row"><span class="lp-check-n">6</span><span class="lp-check-t"><b>Is it UCITS?</b><small>An EU regulatory framework for retail investors.</small></span></div>
+      </div>`,
+      examples:`<div class="lp-ex-h">A few examples</div><div class="lp-ex">
+        <div class="lp-ex-row good"><span class="lp-ex-i">✅</span><span><b>A broad global index ETF</b><small>Thousands of companies across the world, low yearly cost — a simple, diversified core.</small></span></div>
+        <div class="lp-ex-row ok"><span class="lp-ex-i">⚠️</span><span><b>A single-country or single-sector ETF</b><small>e.g. only tech, or only one country. Fine as a small extra, but less spread out — so it swings harder.</small></span></div>
+        <div class="lp-ex-row bad"><span class="lp-ex-i">🚩</span><span><b>Last year's hottest theme</b><small>Narrow trend bets are often pricier and can fall as fast as they climbed. Easy to buy high.</small></span></div>
       </div>`,
       note:"Level 2 (for later): domicile, tracking difference, replication method and securities lending. Useful detail — not essential to start.",
       quiz:{ q:'For a beginner core holding, which usually makes more sense?',
@@ -4092,10 +4154,11 @@
         <span><span class="lp-drop-v">€8,000</span><span class="lp-drop-tag">after a fall</span></span>
       </div>`,
       why:"Selling locks in today's lower price and removes your ability to benefit from any future recovery. Broad markets have recovered from past major downturns — but future recovery times aren't guaranteed.",
+      quote:{ text:'Opportunities come infrequently. When it rains gold, put out the bucket, not the thimble.', who:'Warren Buffett' },
       quiz:{ q:'The value drops to €8,000. Have you permanently lost €2,000?',
         options:["Yes, it's gone","Not yet","Only if I sell"],
-        answer:1,
-        explain:"The value is down now, but it isn't permanent unless you sell — staying invested keeps the chance to recover (though recoveries aren't guaranteed)." },
+        answer:[1,2],
+        explain:"Both B and C are right: the loss isn't real yet, and it only becomes real if you sell. Stay invested and you keep the chance to recover (though recoveries aren't guaranteed)." },
       takeaway:'Drops are part of investing; reacting to them is the real risk.'
     },
     {
@@ -4105,6 +4168,7 @@
       idea:"Later, the question flips from “how do I grow this?” to “how do I spend it safely?”",
       visual:`<div class="lp-example"><div class="lp-example-r">A €750,000 portfolio × 4%</div><div class="lp-example-b">≈ €30,000 in the first year</div></div>`,
       why:"The <strong>4% rule</strong> is a historical rule of thumb, not a guarantee. Actual sustainable withdrawals depend on returns, inflation, taxes, your portfolio mix and how long retirement lasts.",
+      note:"The smaller the slice you take, the safer it is — and if you withdraw only about <strong>3% or less</strong> a year, in many years the portfolio can even keep growing, because the returns outpace what you take out. Take out too much and you risk running it down.",
       quiz:{ q:'The 4% rule is best described as…',
         options:['A guaranteed income','A rough planning guideline','A law you must follow'],
         answer:1,
@@ -4322,30 +4386,39 @@
           `<button class="lp-rate-opt on" data-rate="6">6%</button>`+
           `<button class="lp-rate-opt" data-rate="8">8%</button>`+
         `</span></div>`+
+        `<div class="lp-rate">Time horizon<span class="lp-rate-opts">`+
+          `<button class="lp-rate-opt" data-yr="10">10y</button>`+
+          `<button class="lp-rate-opt" data-yr="20">20y</button>`+
+          `<button class="lp-rate-opt on" data-yr="30">30y</button>`+
+          `<button class="lp-rate-opt" data-yr="40">40y</button>`+
+        `</span></div>`+
         `<div class="lp-out">`+
           `<div class="lp-out-cell"><small>Contributed</small><b id="lpContrib">€36,000</b></div>`+
           `<div class="lp-out-cell grow"><small>Could become</small><b id="lpValue">€100,451</b></div>`+
         `</div>`+
       `</div>`+
-      `<p class="lp-disclaim">A simple illustration over 30 years — not a prediction. Real returns vary, aren't guaranteed, and ignore fees, taxes and inflation here.</p>`;
+      `<p class="lp-disclaim">A simple illustration over <span id="lpHorizon">30</span> years — not a prediction. Real returns vary, aren't guaranteed, and ignore fees, taxes and inflation here.</p>`;
   }
   function renderPlayer(){
     const l=learnPlayable[learnIdx], total=learnPlayable.length;
     const p=document.getElementById('learnPlayer');
     if(l.finale){
-      p.innerHTML=topBar(total)+finaleBody()+`<button class="btn primary" data-act="future">See it in Future →</button>`;
+      p.innerHTML=topBar(total)+finaleBody()+`<button class="btn primary" data-act="start">Let's start saving →</button>`;
       p.querySelector('[data-act="prev"]').addEventListener('click',()=>{ if(learnIdx>0) openLesson(learnIdx-1); else closePlayer(); });
       p.querySelector('[data-act="close"]').addEventListener('click',closePlayer);
-      p.querySelector('[data-act="future"]').addEventListener('click',()=>{
-        learnDone.add(l.id); saveLearnDone(); closePlayer(); show('future');
+      p.querySelector('[data-act="start"]').addEventListener('click',()=>{
+        learnDone.add(l.id); saveLearnDone();
+        try{ localStorage.setItem(LEARN_COURSE_KEY,'1'); }catch(e){}
+        closePlayer(); show('home'); render(); saveState();
       });
-      // projection wiring
-      let amt=100, rate=6;
+      // projection wiring (time horizon is local to this lesson; default 30)
+      let amt=100, rate=6, years=30;
       const amtInput=p.querySelector('#lpAmt');
       const update=()=>{
         amt=Math.max(0, Math.min(100000, parseFloat(amtInput.value)||0));
-        p.querySelector('#lpContrib').textContent=eur(amt*12*30);
-        p.querySelector('#lpValue').textContent=eur(fvMonthly(amt,rate,30));
+        p.querySelector('#lpContrib').textContent=eur(amt*12*years);
+        p.querySelector('#lpValue').textContent=eur(fvMonthly(amt,rate,years));
+        const hz=p.querySelector('#lpHorizon'); if(hz) hz.textContent=years;
       };
       amtInput.addEventListener('input',()=>{
         p.querySelectorAll('.lp-preset').forEach(b=>b.classList.toggle('on', +b.dataset.amt===parseFloat(amtInput.value)));
@@ -4355,9 +4428,13 @@
         p.querySelectorAll('.lp-preset').forEach(x=>x.classList.remove('on')); b.classList.add('on');
         amtInput.value=b.dataset.amt; update();
       }));
-      p.querySelectorAll('.lp-rate-opt').forEach(b=>b.addEventListener('click',()=>{
-        p.querySelectorAll('.lp-rate-opt').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+      p.querySelectorAll('.lp-rate-opt[data-rate]').forEach(b=>b.addEventListener('click',()=>{
+        p.querySelectorAll('.lp-rate-opt[data-rate]').forEach(x=>x.classList.remove('on')); b.classList.add('on');
         rate=+b.dataset.rate; update();
+      }));
+      p.querySelectorAll('.lp-rate-opt[data-yr]').forEach(b=>b.addEventListener('click',()=>{
+        p.querySelectorAll('.lp-rate-opt[data-yr]').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+        years=+b.dataset.yr; update();
       }));
       update();
       return;
@@ -4366,9 +4443,11 @@
       `<h2 class="lp-title">${l.title}</h2>`+
       `<p class="lp-tagline">${l.tagline}</p>`+
       (l.updated?`<div class="lp-updated-wrap"><span class="lp-updated">Updated ${l.updated}</span></div>`:'')+
-      `<p class="lp-idea">${l.idea}</p>`+
+      `<div class="lp-idea">${l.idea}</div>`+
       (l.visual?`<div class="lp-visual">${l.visual}</div>`:'')+
-      (l.why?`<p class="lp-why">${l.why}</p>`:'')+
+      (l.examples?`<div class="lp-visual">${l.examples}</div>`:'')+
+      (l.why?`<div class="lp-why">${l.why}</div>`:'')+
+      (l.quote?quoteBlock(l.quote):'')+
       (l.quiz?quizBlock(l.quiz):'')+
       (l.note?`<div class="lp-note">${l.note}</div>`:'')+
       (l.takeaway?`<div class="lp-takeaway"><span class="lp-takeaway-l">Kept takeaway</span>${l.takeaway}</div>`:'')+
@@ -4379,18 +4458,30 @@
       learnDone.add(l.id); saveLearnDone();
       if(learnIdx===total-1) closePlayer(); else openLesson(learnIdx+1);
     });
+    // tappable glossary terms
+    p.querySelectorAll('.lp-term-b').forEach(b=>b.addEventListener('click',()=>{
+      b.parentElement.classList.toggle('open');
+    }));
     p.querySelectorAll('[data-toast]').forEach(b=>b.addEventListener('click',()=>{
       toast('Coming soon',"Live broker fee comparison is on the way. For now, check each broker's current pricing directly.",'ti-info-circle');
     }));
     if(l.quiz){
       const quiz=p.querySelector('#lpQuiz');
+      const ans=l.quiz.answer;
       quiz.querySelectorAll('.lp-opt').forEach(opt=>{
         opt.addEventListener('click',()=>{
           if(quiz.classList.contains('answered')) return;
           quiz.classList.add('answered');
-          const pick=+opt.dataset.opt, ans=l.quiz.answer;
-          if(ans<0){ opt.classList.add('picked-reflect'); }
-          else {
+          const pick=+opt.dataset.opt;
+          if(Array.isArray(ans)){
+            ans.forEach(a=>{ const el=quiz.querySelector('[data-opt="'+a+'"]'); if(el) el.classList.add('correct'); });
+            if(!ans.includes(pick)) opt.classList.add('wrong');
+          } else if(ans<0){
+            opt.classList.add('picked-reflect');
+            if(l.quiz.results && l.quiz.results[pick]){
+              const ex=quiz.querySelector('.lp-explain'); if(ex) ex.innerHTML=l.quiz.results[pick];
+            }
+          } else {
             quiz.querySelector('[data-opt="'+ans+'"]').classList.add('correct');
             if(pick!==ans) opt.classList.add('wrong');
           }
