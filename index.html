@@ -414,6 +414,50 @@
   .lp-ex-i{font-size:16px;line-height:1.3;flex:0 0 auto}
   .lp-ex-row b{display:block;font-size:12.5px;color:var(--ink);margin-bottom:2px}
   .lp-ex-row small{font-size:11px;color:var(--muted);line-height:1.4}
+  /* two-column compare (e.g. normal account vs ISA) */
+  .lp-compare{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .lp-compare-col{background:var(--surface-solid);border:1px solid var(--hair);border-radius:15px;padding:13px 11px;text-align:center}
+  .lp-compare-col.win{border-color:transparent;background:var(--accent-soft)}
+  .lp-compare-h{font-size:11px;font-weight:700;color:var(--muted);line-height:1.3;margin-bottom:7px;min-height:26px;display:flex;align-items:center;justify-content:center}
+  .lp-compare-col.win .lp-compare-h{color:var(--accent-ink)}
+  .lp-compare-fig{font-family:var(--font-round);font-size:17px;font-weight:750;color:var(--ink);line-height:1.2}
+  .lp-compare-tag{display:inline-block;margin-top:8px;font-size:10px;font-weight:650;line-height:1.35;
+    color:var(--muted);background:var(--card-2);border-radius:8px;padding:4px 8px}
+  .lp-compare-col.win .lp-compare-tag{color:var(--accent-ink);background:rgba(255,255,255,.55)}
+  /* big single-figure card */
+  .lp-figure{background:var(--accent-soft);border-radius:16px;padding:15px 14px;text-align:center;margin:0}
+  .lp-figure-l{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--accent-ink);opacity:.85}
+  .lp-figure-n{font-family:var(--font-round);font-size:30px;font-weight:750;color:var(--accent-ink);line-height:1.1;margin:3px 0 5px}
+  .lp-figure-s{font-size:11.5px;color:var(--accent-ink);opacity:.9;line-height:1.45}
+  /* stepped flow (gain calc, LISA penalty) */
+  .lp-flow{background:var(--surface-solid);border:1px solid var(--hair);border-radius:15px;padding:6px 14px}
+  .lp-flow-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;
+    border-bottom:1px solid var(--hair);font-size:12.5px;color:var(--muted)}
+  .lp-flow-row:last-child{border-bottom:0}
+  .lp-flow-row b{font-family:var(--font-round);font-size:15px;font-weight:750;color:var(--ink)}
+  .lp-flow-row.total b{color:var(--accent-ink)}
+  .lp-flow-row.minus b{color:#c56b61}
+  /* wrapper cards (ISA / LISA / pension) */
+  .lp-wrap{display:flex;flex-direction:column;gap:9px}
+  .lp-wrapc{background:var(--surface-solid);border:1px solid var(--hair);border-radius:15px;padding:12px 14px}
+  .lp-wrapc.win{border-left:3px solid var(--accent)}
+  .lp-wrapc-h{display:flex;align-items:baseline;gap:8px;margin-bottom:7px;flex-wrap:wrap}
+  .lp-wrapc-h b{font-size:13px;color:var(--ink)}
+  .lp-wrapc-h span{font-size:10.5px;color:var(--muted)}
+  .lp-wrapc ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+  .lp-wrapc li{position:relative;padding-left:15px;font-size:11.5px;color:var(--muted);line-height:1.4}
+  .lp-wrapc li::before{content:"";position:absolute;left:3px;top:7px;width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.6}
+  .lp-wrapc li.warn::before{background:#c56b61;opacity:.8}
+  .lp-wrapc li.warn{color:var(--ink)}
+  /* source label + learn-more */
+  .lp-src{display:block;font-size:9.5px;letter-spacing:.03em;text-transform:uppercase;font-weight:650;color:var(--muted);opacity:.75;margin:7px 2px 0}
+  .lp-more{margin:0 0 20px;background:var(--card-2);border-radius:12px;overflow:hidden}
+  .lp-more>summary{list-style:none;cursor:pointer;font-size:11.5px;font-weight:650;color:var(--accent-ink);padding:11px 13px;display:flex;align-items:center;gap:6px}
+  .lp-more>summary::-webkit-details-marker{display:none}
+  .lp-more>summary::after{content:"＋";margin-left:auto;font-size:14px;opacity:.7}
+  .lp-more[open]>summary::after{content:"−"}
+  .lp-more-body{font-size:11.5px;color:var(--muted);line-height:1.5;padding:0 13px 12px}
+  .lp-more-body strong{color:var(--ink);font-weight:700}
   /* market-fall step */
   .lp-drop{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--surface-solid);
     border:1px solid var(--hair);border-radius:16px;padding:18px 12px;text-align:center}
@@ -3937,7 +3981,7 @@
     {code:'CH',name:'Switzerland',flag:'🇨🇭',status:'soon'},
     {code:'NL',name:'Netherlands',flag:'🇳🇱',status:'soon'},
     {code:'FR',name:'France',flag:'🇫🇷',status:'soon'},
-    {code:'GB',name:'United Kingdom',flag:'🇬🇧',status:'soon'}
+    {code:'GB',name:'United Kingdom',flag:'🇬🇧',status:'live'}
   ];
   let learnCountry='DE';
 
@@ -3962,7 +4006,12 @@
     index:'An index is just a fixed list that tracks part of the market — for example “the biggest companies in the world”. Many ETFs simply copy an index.',
     bond:'A bond is basically a loan you give to a government or company. They pay you interest and return your money later. Usually steadier than stocks, with lower expected growth.',
     portfolio:"Your portfolio is simply everything you've invested in, all added together — your whole collection in one word.",
-    ter:'The TER (total expense ratio) is a fund’s yearly running cost, shown as a small % that’s taken automatically each year — you never get a separate bill.'
+    ter:'The TER (total expense ratio) is a fund’s yearly running cost, shown as a small % that’s taken automatically each year — you never get a separate bill.',
+    capitalgains:'A capital gain is the profit you make when you sell an investment for more than you paid. Only the profit — not the whole sale amount — is what tax looks at.',
+    dividend:'A dividend is a slice of a company’s profits paid out to the people who own its shares — a bit like the investment paying you a small income.',
+    wrapper:'A “wrapper” is the type of account your investments sit inside — like an ISA or a pension. The same fund can be held in different wrappers, each with its own tax rules.',
+    fca:'The FCA (Financial Conduct Authority) is the UK regulator for financial firms. If a firm is FCA authorised, it’s allowed to offer these services and must follow UK rules.',
+    fscs:'The FSCS (Financial Services Compensation Scheme) can pay compensation if a regulated UK firm fails and can’t return your money or assets. It does not cover normal investment losses from markets falling.'
   };
   function T(key,label){ const d=learnGloss[key]||''; return `<span class="lp-term"><button type="button" class="lp-term-b">${label||key}</button><span class="lp-term-pop">${d}</span></span>`; }
   function quoteBlock(q){ return `<div class="lp-quote"><span class="lp-quote-mark">“</span><p>${q.text}</p><cite>${q.who}</cite></div>`; }
@@ -4243,6 +4292,144 @@
     }
   ];
 
+  // United Kingdom 🇬🇧
+  // Key figures kept as data so a yearly refresh is a one-line edit, not a lesson rewrite.
+  const gbFig={
+    taxYear:'2026/27',
+    isaAllowance:'£20,000',
+    cgtExempt:'£3,000',
+    divAllowance:'£500',
+    divRates:'10.75%, 35.75% or 39.35%',
+    lisaMax:'£4,000',
+    lisaBonusMax:'£1,000',
+    lisaHomeCap:'£450,000',
+    pensionAllowance:'£60,000',
+    fscsInvest:'£85,000',
+    fscsCash:'£120,000'
+  };
+  const learnGB=[
+    {
+      id:'gb-isa', emoji:'🛡️',
+      title:'Investing tax-free with an ISA',
+      tagline:'Why the account matters.',
+      updated:'Aug 2026',
+      idea:'A Stocks & Shares ISA is an investment account where your investments can grow without UK tax on capital gains or investment income.',
+      visual:`<div class="lp-compare">
+        <div class="lp-compare-col"><div class="lp-compare-h">Normal investment account</div><div class="lp-compare-fig">£10,000 → £15,000</div><span class="lp-compare-tag">Tax may apply</span></div>
+        <div class="lp-compare-col win"><div class="lp-compare-h">Stocks &amp; Shares ISA</div><div class="lp-compare-fig">£10,000 → £15,000</div><span class="lp-compare-tag">£0 UK tax inside the ISA ✓</span></div>
+      </div>`,
+      examples:`<div class="lp-figure">
+        <div class="lp-figure-l">${gbFig.taxYear} ISA allowance</div>
+        <div class="lp-figure-n">${gbFig.isaAllowance} / year</div>
+        <div class="lp-figure-s">You can put up to ${gbFig.isaAllowance} across your ISAs during the tax year, which runs 6 April to 5 April. Gains and income inside an ISA don't normally go on a tax return.</div>
+        <span class="lp-src">Source: GOV.UK</span>
+      </div>
+      <details class="lp-more"><summary>Coming from 6 April 2027</summary><div class="lp-more-body">For people under 65, the <strong>Cash ISA</strong> limit is set to fall to £12,000, while the overall ISA limit stays at ${gbFig.isaAllowance} — Stocks &amp; Shares capacity sits within that overall limit. New rules will also restrict moving money from non-cash ISAs into Cash ISAs.<span class="lp-src">Source: GOV.UK</span></div></details>`,
+      why:`A ${T('capitalgains','capital gain')} or ${T('dividend','dividend')} earned inside a Stocks &amp; Shares ISA is generally free of UK tax — and normally doesn't need reporting. The ISA is the <strong>account</strong>; what you hold inside it is still up to you.`,
+      quiz:{ q:'What does a Stocks & Shares ISA mainly change?',
+        options:['Which investments you can buy','The UK tax treatment of your gains and income',"It guarantees your investment won't fall"],
+        answer:1,
+        explain:'An ISA is a tax wrapper: it changes how your gains and income are taxed — not whether the investments rise or fall.' },
+      note:"<strong>Good to know:</strong> you don't lose the ISA tax protection when you withdraw. But whether you can replace that money without using more of your allowance depends on whether your ISA is <strong>flexible</strong>.",
+      takeaway:"If you're eligible and investing long term, it's worth understanding your ISA before investing through a normal account."
+    },
+    {
+      id:'gb-tax', emoji:'🧾',
+      title:'UK investment taxes — simply',
+      tagline:'What happens outside an ISA.',
+      updated:'Aug 2026',
+      idea:'Outside an ISA, a profit when you sell — or dividends you receive — may be taxed. The key detail: tax looks at your profit, not the whole sale value.',
+      visual:`<div class="lp-flow">
+        <div class="lp-flow-row"><span>Bought for</span><b>£10,000</b></div>
+        <div class="lp-flow-row"><span>Sold for</span><b>£14,000</b></div>
+        <div class="lp-flow-row total"><span>Gain — what tax looks at</span><b>£4,000</b></div>
+      </div>`,
+      examples:`<div class="lp-check">
+        <div class="lp-check-row"><span class="lp-check-n">%</span><span class="lp-check-t"><b>Capital Gains Tax — ${gbFig.taxYear} exempt amount: ${gbFig.cgtExempt}</b><small>You generally have an annual CGT exempt amount of ${gbFig.cgtExempt}. Gains above it may be taxed.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">£</span><span class="lp-check-t"><b>Dividend allowance — ${gbFig.divAllowance} / year</b><small>Dividends above it are taxed at your dividend rate (${gbFig.divRates}, depending on your band).</small></span></div>
+      </div>
+      <div class="lp-ex-h" style="margin-top:16px">Inside an ISA</div>
+      <div class="lp-check">
+        <div class="lp-check-row"><span class="lp-check-n">✓</span><span class="lp-check-t"><b>Capital gains</b><small>Tax-free inside the ISA.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">✓</span><span class="lp-check-t"><b>Dividends</b><small>Tax-free inside the ISA.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">✓</span><span class="lp-check-t"><b>Tax-return reporting</b><small>Normally none for ISA gains or income.</small></span></div>
+      </div>
+      <span class="lp-src">Source: GOV.UK</span>`,
+      why:`Only the ${T('capitalgains','gain')} is taxed — not the amount you sold for. ${T('dividend','Dividends')} work similarly: a tax-free allowance first, then your dividend rate above it. Held inside an ISA, both are generally tax-free.`,
+      quiz:{ q:'You sell an investment outside an ISA. Capital Gains Tax is based on…',
+        options:['The full amount you sold it for','The profit — your gain over what you paid','The amount you originally paid'],
+        answer:1,
+        explain:'CGT looks at your gain (sale minus cost), not the whole sale value — and only above your annual exempt amount.' },
+      takeaway:'The account you hold an investment in can matter almost as much as the investment itself.'
+    },
+    {
+      id:'gb-wrappers', emoji:'🏠',
+      title:'ISA, LISA or pension?',
+      tagline:'Choose the right wrapper for the goal.',
+      updated:'Aug 2026',
+      idea:`Different accounts — or ${T('wrapper','wrappers')} — suit different goals. The UK's three big ones work very differently, so it helps not to treat them as interchangeable.`,
+      visual:`<div class="lp-wrap">
+        <div class="lp-wrapc win"><div class="lp-wrapc-h"><b>📈 Stocks &amp; Shares ISA</b><span>flexible investing</span></div><ul>
+          <li>Investments can grow tax-free</li>
+          <li>${gbFig.isaAllowance} total ISA allowance in ${gbFig.taxYear}</li>
+          <li>Withdrawals generally possible whenever you want</li>
+        </ul></div>
+        <div class="lp-wrapc"><div class="lp-wrapc-h"><b>🏠 Lifetime ISA</b><span>first home or later life</span></div><ul>
+          <li>Open before age 40, contribute up to ${gbFig.lisaMax}/year</li>
+          <li>Government adds 25% — up to ${gbFig.lisaBonusMax}/year</li>
+          <li>Contributions stop at age 50</li>
+          <li class="warn">Withdraw for another reason and a 25% charge normally applies</li>
+        </ul></div>
+        <div class="lp-wrapc"><div class="lp-wrapc-h"><b>👴 Pension</b><span>built for retirement</span></div><ul>
+          <li>Contributions can receive tax relief</li>
+          <li>Standard annual allowance ${gbFig.pensionAllowance} in ${gbFig.taxYear} (can be lower for some)</li>
+          <li>Much less accessible than ISA money</li>
+        </ul></div>
+      </div>
+      <span class="lp-src">Source: GOV.UK</span>`,
+      why:`For a first home, a LISA property must currently cost ${gbFig.lisaHomeCap} or less, and your first LISA contribution must be at least 12 months old. A ${T('wrapper','wrapper')} isn't good or bad on its own — it either fits the goal you have in mind, or it doesn't.`,
+      note:`<div class="lp-ex-h">Why the LISA charge matters</div>
+      <div class="lp-flow">
+        <div class="lp-flow-row"><span>You save</span><b>£800</b></div>
+        <div class="lp-flow-row"><span>+ 25% government bonus</span><b>£200</b></div>
+        <div class="lp-flow-row total"><span>= In your LISA</span><b>£1,000</b></div>
+        <div class="lp-flow-row minus"><span>Early non-qualifying withdrawal (25% charge)</span><b>− £250</b></div>
+        <div class="lp-flow-row"><span>= You get back</span><b>£750</b></div>
+      </div>
+      <span class="lp-src">The charge doesn't just claw back the £200 bonus — here you end up £50 below the £800 you put in. Source: GOV.UK</span>`,
+      quiz:{ q:'You want money you can access anytime for a flexible goal. Which wrapper fits best?',
+        options:['A pension','A Stocks & Shares ISA','A Lifetime ISA'],
+        answer:1,
+        explain:'A Stocks & Shares ISA is the flexible one — a pension and a LISA both restrict when you can take money out without a penalty.' },
+      takeaway:'ISA = flexible. LISA = specific goals. Pension = retirement.'
+    },
+    {
+      id:'gb-platform', emoji:'🏦',
+      title:'Choosing a UK investment platform',
+      tagline:'What to check before you open one.',
+      updated:'Aug 2026',
+      idea:`Before funding any account, a few quick checks matter — starting with whether the firm is ${T('fca','FCA')} authorised.`,
+      visual:`<div class="lp-check">
+        <div class="lp-check-row"><span class="lp-check-n">1</span><span class="lp-check-t"><b>Is the firm FCA authorised?</b><small>Check the firm's details and permissions on the FCA Financial Services Register.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">2</span><span class="lp-check-t"><b>Does it offer the account you need?</b><small>Stocks &amp; Shares ISA · General Investment Account · SIPP · LISA.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">3</span><span class="lp-check-t"><b>What do you actually pay?</b><small>Platform fee · trading fee · FX fee · fund/ETF fee.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">4</span><span class="lp-check-t"><b>Understand FSCS protection</b><small>What it does — and doesn't — cover.</small></span></div>
+      </div>`,
+      examples:`<div class="lp-ex">
+        <div class="lp-ex-row good"><span class="lp-ex-i">🏢</span><span><b>FSCS may protect you if…</b><small>a regulated UK investment firm fails and there's an eligible shortfall in your money or assets — up to ${gbFig.fscsInvest} per eligible person, per firm.</small></span></div>
+        <div class="lp-ex-row bad"><span class="lp-ex-i">📉</span><span><b>It does not cover…</b><small>normal investment losses when markets simply fall. FSCS is about a firm failing, not market movements.</small></span></div>
+      </div>
+      <span class="lp-src">Source: FSCS</span>
+      <details class="lp-more"><summary>Learn more: cash vs investments</summary><div class="lp-more-body">The FSCS limits differ by type. UK <strong>cash deposits</strong> are protected up to ${gbFig.fscsCash} per eligible person, per authorised firm (since December 2025), while the <strong>investment</strong> limit stays at ${gbFig.fscsInvest}.<span class="lp-src">Source: FSCS</span></div></details>`,
+      why:`This ties back to <strong>small fees become big fees</strong>: platform, trading, FX and fund costs all stack up over decades. And ${T('fscs','FSCS')} protection is about a firm failing — never a guarantee against markets falling.`,
+      quiz:{ q:'FSCS investment protection mainly means…',
+        options:["Your investments can't lose value",'You may be compensated if a regulated firm fails and can\'t return your assets','The government guarantees your returns'],
+        answer:1,
+        explain:"FSCS can step in if a regulated firm fails and can't return your money or assets — it doesn't protect against normal market losses." },
+      takeaway:'Check the account and its protections before you fund it.'
+    }
+  ];
+
   // Finale
   const learnFinale={ id:'finale', emoji:'🎉', title:'You made it', tagline:'Your recap + see it on your money', finale:true };
 
@@ -4251,7 +4438,10 @@
     {n:'02', title:'Investing simply', status:'live', lessons:learnCh02},
     {n:'03', title:'Actually doing it', status:'live', lessons:learnCh03}
   ];
-  const learnCountryChapters={ DE:{ title:'For Germany', flag:'🇩🇪', status:'live', lessons:learnDE } };
+  const learnCountryChapters={
+    DE:{ title:'For Germany', flag:'🇩🇪', status:'live', lessons:learnDE },
+    GB:{ title:'For United Kingdom', flag:'🇬🇧', status:'live', lessons:learnGB }
+  };
 
   // build the ordered playable sequence for the selected country (+ finale last)
   let learnPlayable=[];
@@ -4312,7 +4502,7 @@
     const country=learnCountries.find(c=>c.code===learnCountry);
     const noteEl=document.getElementById('learnCountryNote');
     if(country && country.status==='live'){
-      noteEl.innerHTML=`<div class="learn-note"><span style="font-size:16px">${country.flag}</span><span>Basics apply everywhere. You'll also find tax &amp; broker lessons for <strong>${country.name}</strong> below.</span></div>`;
+      noteEl.innerHTML=`<div class="learn-note"><span style="font-size:16px">${country.flag}</span><span>Basics apply everywhere. You'll also find tax &amp; account lessons for <strong>${country.name}</strong> below.</span></div>`;
     } else {
       noteEl.innerHTML=`<div class="learn-note"><span style="font-size:16px">🧭</span><span>Country lessons for <strong>${country?country.name:'this country'}</strong> are in development. The universal basics below apply everywhere — check your local tax rules before investing.</span></div>`;
     }
