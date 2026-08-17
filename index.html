@@ -332,6 +332,87 @@
   .lp-flow-t b{font-size:13px;font-weight:700;display:block}
   .lp-flow-t small{font-size:11.5px;color:var(--muted);display:block;margin-top:1px}
   .lp-hero{text-align:center;font-size:50px;line-height:1;margin:2px 0 8px}
+  .lp-updated-wrap{text-align:center;margin:-8px 0 18px}
+  .lp-updated{display:inline-block;font-size:9px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;
+    color:var(--muted);background:var(--card-2);padding:3px 9px;border-radius:7px}
+  /* €100 → ETF flow */
+  .lp-etf-flow{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
+    background:var(--surface-solid);border:1px solid var(--hair);border-radius:16px;padding:16px 12px}
+  .lp-etf-amt{font-family:var(--font-round);font-weight:750;font-size:17px}
+  .lp-etf-node{background:var(--accent);color:#fff;font-family:var(--font-round);font-weight:750;font-size:13px;
+    padding:8px 12px;border-radius:11px}
+  .lp-etf-arrow{color:var(--muted);font-size:16px}
+  .lp-etf-co{font-size:22px;line-height:1.3;text-align:center;margin-top:2px}
+  .lp-etf-co small{display:block;font-size:10.5px;color:var(--muted);margin-top:2px}
+  /* two comparison panels */
+  .lp-two{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .lp-panel{background:var(--surface-solid);border:1px solid var(--hair);border-radius:15px;padding:13px}
+  .lp-panel h5{font-size:12.5px;font-weight:750;margin:0 0 6px}
+  .lp-panel .lp-panel-e{font-size:20px;line-height:1;margin-bottom:6px}
+  .lp-panel ul{margin:0;padding-left:15px}
+  .lp-panel li{font-size:11px;color:var(--muted);line-height:1.4;margin:3px 0}
+  .lp-panel small.tag{display:block;font-size:10px;font-weight:700;color:var(--muted);margin-top:5px}
+  /* numbered checklist / steps */
+  .lp-check{display:flex;flex-direction:column;gap:9px}
+  .lp-check-row{display:flex;gap:11px;align-items:flex-start;background:var(--surface-solid);border:1px solid var(--hair);
+    border-radius:14px;padding:12px 13px}
+  .lp-check-n{width:24px;height:24px;border-radius:8px;background:var(--accent-soft);color:var(--accent-ink);
+    display:grid;place-items:center;font-family:var(--font-round);font-weight:750;font-size:12px;flex:0 0 auto}
+  .lp-check-t b{font-size:12.5px;font-weight:650;display:block}
+  .lp-check-t small{font-size:11.5px;color:var(--muted);display:block;margin-top:1px;line-height:1.4}
+  /* broker rows */
+  .lp-brokers{display:flex;flex-direction:column;gap:8px}
+  .lp-broker{display:flex;align-items:center;gap:11px;background:var(--surface-solid);border:1px solid var(--hair);
+    border-radius:13px;padding:11px 13px}
+  .lp-broker-e{font-size:20px;flex:0 0 auto}
+  .lp-broker b{font-size:12.5px;display:block}
+  .lp-broker small{font-size:11px;color:var(--muted)}
+  .lp-inline-btn{display:inline-flex;align-items:center;gap:5px;margin-top:12px;background:var(--accent-soft);
+    color:var(--accent-ink);border:none;font-family:var(--font-round);font-weight:700;font-size:12.5px;
+    padding:9px 13px;border-radius:11px;cursor:pointer}
+  /* fees comparison bars */
+  .lp-fees{display:flex;flex-direction:column;gap:11px;background:var(--surface-solid);border:1px solid var(--hair);
+    border-radius:16px;padding:15px}
+  .lp-fee-row{display:flex;align-items:center;gap:10px}
+  .lp-fee-k{font-size:11.5px;font-weight:700;width:58px;flex:0 0 auto}
+  .lp-fee-track{flex:1;height:12px;border-radius:99px;background:var(--card-2);overflow:hidden}
+  .lp-fee-track i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+  .lp-fee-v{font-family:var(--font-round);font-weight:750;font-size:13px;width:70px;text-align:right;flex:0 0 auto}
+  .lp-assume{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.4}
+  .lp-note{font-size:11px;color:var(--muted);background:var(--card-2);border-radius:12px;padding:10px 12px;
+    line-height:1.45;margin:0 0 20px}
+  /* market-fall step */
+  .lp-drop{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--surface-solid);
+    border:1px solid var(--hair);border-radius:16px;padding:18px 12px;text-align:center}
+  .lp-drop-v{font-family:var(--font-round);font-weight:750;font-size:20px}
+  .lp-drop-tag{font-size:11px;color:var(--muted);display:block;margin-top:2px}
+  .lp-drop-arrow{color:#c56b61;font-weight:750;font-size:13px}
+  /* finale projection */
+  .lp-finale-stat{text-align:center;font-size:12px;color:var(--muted);margin:0 0 16px}
+  .lp-finale-stat b{color:var(--accent-ink);background:var(--accent-soft);padding:3px 9px;border-radius:8px;font-size:12px}
+  .lp-invest{background:var(--surface-solid);border:1px solid var(--hair);border-radius:16px;padding:15px;margin:0 0 16px}
+  .lp-invest-label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:8px}
+  .lp-invest-input{display:flex;align-items:center;gap:6px;font-family:var(--font-round);font-size:18px;font-weight:750;margin-bottom:13px}
+  .lp-invest-input input{width:96px;font:inherit;border:none;border-bottom:2px solid var(--accent);background:transparent;
+    color:var(--ink);text-align:center;padding:2px 4px;-moz-appearance:textfield}
+  .lp-invest-input input::-webkit-outer-spin-button,.lp-invest-input input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .lp-invest-input span.unit{font-size:13px;color:var(--muted);font-weight:600}
+  .lp-presets{display:flex;gap:8px;margin-bottom:14px}
+  .lp-preset{flex:1;border:1px solid var(--hair);background:var(--card);border-radius:10px;padding:9px;
+    font-family:var(--font-round);font-weight:700;font-size:13px;color:var(--ink);cursor:pointer}
+  .lp-preset.on{background:var(--accent-soft);color:var(--accent-ink);border-color:transparent}
+  .lp-rate{display:flex;align-items:center;gap:8px;margin-bottom:15px;font-size:11px;color:var(--muted);font-weight:600}
+  .lp-rate-opts{display:flex;gap:6px;margin-left:auto}
+  .lp-rate-opt{border:1px solid var(--hair);background:var(--card);border-radius:9px;padding:5px 11px;
+    font-family:var(--font-round);font-weight:700;font-size:12px;cursor:pointer;color:var(--ink)}
+  .lp-rate-opt.on{background:var(--accent);color:#fff;border-color:transparent}
+  .lp-out{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .lp-out-cell{background:var(--card);border-radius:12px;padding:12px 10px;text-align:center}
+  .lp-out-cell small{display:block;font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;margin-bottom:4px}
+  .lp-out-cell b{font-family:var(--font-round);font-size:17px;font-weight:750;display:block}
+  .lp-out-cell.grow{background:var(--accent-soft)}
+  .lp-out-cell.grow b{color:var(--accent-ink)}
+  .lp-disclaim{font-size:10.5px;color:var(--muted);text-align:center;margin:12px 2px 20px;line-height:1.45}
 
   .overlay{position:absolute;inset:0;z-index:60;background:color-mix(in srgb,var(--ink) 34%,transparent);
     display:flex;align-items:flex-end;border-radius:36px;opacity:0;pointer-events:none;transition:opacity .28s}
@@ -3832,9 +3913,10 @@
   const svgCheck='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
   const svgChev='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
 
-  const LEARN_TOTAL_PLANNED=15;
+  function eur(n){ return '€'+Math.round(n).toLocaleString('en-US'); }
+  function fvMonthly(m,annualPct,years){ const i=annualPct/100/12, n=years*12; return i===0? m*n : m*((Math.pow(1+i,n)-1)/i); }
 
-  // Chapter 01 — Before you invest (fully built, playable)
+  // Chapter 01 — Before you invest
   const learnCh01=[
     {
       id:'job', emoji:'🎯',
@@ -3885,34 +3967,235 @@
     }
   ];
 
-  // Upcoming chapters — listed so the course shape is visible; unlock as they're built.
+  // Chapter 02 — Investing simply
   const learnCh02=[
-    {id:'etf',title:'What is an ETF?',tagline:'One fund, many companies',emoji:'🛒'},
-    {id:'global',title:'What does “global” mean?',tagline:'Not every index is the whole world',emoji:'🌍'},
-    {id:'passive',title:"You don't have to pick winners",tagline:'Passive vs active, simply',emoji:'📈'},
-    {id:'fees',title:'Small fees become big fees',tagline:'Costs compound over decades',emoji:'💸'},
-    {id:'portfolio',title:'Build a simple portfolio',tagline:'Growth vs stability',emoji:'⚖️'},
-    {id:'choose',title:'Choosing an ETF',tagline:'A beginner checklist',emoji:'✅'}
+    {
+      id:'etf', emoji:'🛒',
+      title:'What is an ETF?',
+      tagline:'One fund can spread your money across hundreds of companies.',
+      idea:'An ETF is a fund you can buy and sell on an exchange. Many simply follow an index — so one purchase can hold hundreds or thousands of investments.',
+      visual:`<div class="lp-etf-flow">
+        <span class="lp-etf-amt">€100</span><span class="lp-etf-arrow">→</span>
+        <span class="lp-etf-node">ETF</span><span class="lp-etf-arrow">→</span>
+        <span class="lp-etf-co">🏢 🏦 💻 🧪 🚗 🛒<small>+ hundreds more</small></span>
+      </div>`,
+      why:"Instead of betting on one company, an index ETF spreads your money across many. Traded like a share, diversified like a fund. (Not every ETF holds stocks or follows an index — but the beginner-friendly ones usually do.)",
+      quiz:{ q:'Which is more diversified?',
+        options:['One company','50 companies','1,000+ companies'],
+        answer:2,
+        explain:"Diversification means no single company can make or break you — a broad index ETF spreads the risk widely." },
+      takeaway:'One ETF, many companies — so no single one decides your outcome.'
+    },
+    {
+      id:'global', emoji:'🌍',
+      title:'What does “global” mean?',
+      tagline:'Not every “global” index covers the whole world.',
+      idea:'Two popular “global” indexes are not the same — one leaves out emerging markets.',
+      visual:`<div class="lp-two">
+        <div class="lp-panel"><div class="lp-panel-e">🌐</div><h5>MSCI World</h5>
+          <ul><li>23 developed markets</li><li>≈1,300 large &amp; mid-cap companies</li><li>❌ No emerging markets</li></ul></div>
+        <div class="lp-panel"><div class="lp-panel-e">🌏</div><h5>MSCI ACWI</h5>
+          <ul><li>Developed <strong>+</strong> emerging markets</li><li>≈2,900 companies</li><li>China, India, Brazil…</li></ul></div>
+      </div>`,
+      why:"MSCI describes MSCI World as large- and mid-cap stocks across 23 developed markets — so it isn't literally the entire world. ACWI adds emerging markets. (Exact company counts change over time.)",
+      quiz:{ q:'Which one includes emerging markets like China and India?',
+        options:['MSCI World','MSCI ACWI','They are the same'],
+        answer:1,
+        explain:"MSCI World is developed markets only. MSCI ACWI adds emerging markets — a wider slice of the world." },
+      takeaway:'“Global” can mean developed-only or the whole world — check which one you are buying.'
+    },
+    {
+      id:'passive', emoji:'📈',
+      title:"You don't have to pick winners",
+      tagline:'Passive vs active, simply.',
+      idea:'Active means trying to beat the market by picking. Passive means simply following a market index.',
+      visual:`<div class="lp-two">
+        <div class="lp-panel"><div class="lp-panel-e">🎯</div><h5>Active</h5>
+          <ul><li>Someone picks investments</li><li>Tries to beat the market</li><li>Usually costs more</li></ul></div>
+        <div class="lp-panel"><div class="lp-panel-e">📉</div><h5>Passive</h5>
+          <ul><li>Follows a market index</li><li>Aims to match the market</li><li>Usually low cost</li></ul></div>
+      </div>`,
+      why:"Over long periods, many active fund categories have struggled to beat their benchmarks after costs. Passive keeps things simple and cheap — you accept the market's return instead of trying to outguess it.",
+      quiz:{ q:'What does a passive index fund try to do?',
+        options:['Beat the market','Match the market','Predict crashes'],
+        answer:1,
+        explain:"Passive aims to match a market index — not beat it — usually at a lower cost." },
+      takeaway:"You don't have to beat the market to do well — you can just match it."
+    },
+    {
+      id:'fees', emoji:'💸',
+      title:'Small fees become big fees',
+      tagline:'Costs compound over decades.',
+      idea:'A yearly fee looks tiny, but over decades it quietly compounds into a large amount.',
+      visual:`<div class="lp-fees">
+        <div class="lp-fee-row"><span class="lp-fee-k">0.2% fee</span><div class="lp-fee-track"><i style="width:100%"></i></div><span class="lp-fee-v">≈ €54,000</span></div>
+        <div class="lp-fee-row"><span class="lp-fee-k">1.0% fee</span><div class="lp-fee-track"><i style="width:79%;opacity:.55"></i></div><span class="lp-fee-v">≈ €43,000</span></div>
+        <div class="lp-assume">Illustration: €10,000 invested for 30 years at 6% / year before fees.</div>
+      </div>`,
+      why:"A fund's <strong>TER</strong> is its yearly cost — but it isn't every cost. Also consider trading spreads and how closely the ETF tracks its index. Lower cost helps, but it isn't the only thing that makes an ETF good.",
+      quiz:{ q:'Over decades, paying 1% a year instead of 0.2% usually…',
+        options:['Barely matters','Can cost thousands','Only matters if you sell'],
+        answer:1,
+        explain:"Small percentages compound. Over 30 years the gap can easily be thousands — money that stays invested instead of paying fees." },
+      takeaway:'Costs are one of the few things you can control — keep them low.'
+    },
+    {
+      id:'portfolio', emoji:'⚖️',
+      title:'Build a simple portfolio',
+      tagline:'Growth vs stability.',
+      idea:'Your mix of stocks and safer assets sets both your growth and your swings.',
+      visual:`<div class="lp-two">
+        <div class="lp-panel"><div class="lp-panel-e">📈</div><h5>More stocks</h5>
+          <ul><li>Higher expected long-term growth</li><li>Bigger short-term swings</li></ul></div>
+        <div class="lp-panel"><div class="lp-panel-e">🏦</div><h5>More cash / bonds</h5>
+          <ul><li>More stability</li><li>Generally lower expected return</li></ul></div>
+      </div>`,
+      why:"The right mix depends on how much of a temporary drop you could sit through <strong>without selling</strong>. For some long-term investors, one broadly diversified equity ETF may already be a very simple portfolio.",
+      quiz:{ q:'Could you watch €10,000 temporarily become €7,000 without selling?',
+        options:['Yes','Not sure','No'],
+        answer:-1,
+        explain:"There's no right answer here — knowing your honest reaction is how you find a mix you can actually stick with." },
+      takeaway:'Pick a mix you can hold through the scary days.'
+    },
+    {
+      id:'choose', emoji:'🔎',
+      title:'Choosing an ETF',
+      tagline:'A beginner checklist.',
+      idea:'A few simple checks help you compare broad ETFs — without needing to be an expert.',
+      visual:`<div class="lp-check">
+        <div class="lp-check-row"><span class="lp-check-n">1</span><span class="lp-check-t"><b>What does it track?</b><small>A broad global market, or something narrow?</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">2</span><span class="lp-check-t"><b>How expensive is it?</b><small>Check the TER and trading costs.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">3</span><span class="lp-check-t"><b>How large / established is it?</b><small>Very tiny funds may have higher closure risk.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">4</span><span class="lp-check-t"><b>How does it replicate the index?</b><small>Physical and synthetic structures both exist.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">5</span><span class="lp-check-t"><b>Accumulating or distributing?</b><small>One reinvests; the other pays cash.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">6</span><span class="lp-check-t"><b>Is it UCITS?</b><small>An EU regulatory framework for retail investors.</small></span></div>
+      </div>`,
+      note:"Level 2 (for later): domicile, tracking difference, replication method and securities lending. Useful detail — not essential to start.",
+      quiz:{ q:'For a beginner core holding, which usually makes more sense?',
+        options:['A narrow single-sector ETF','A broad global ETF','Whatever rose most last year'],
+        answer:1,
+        explain:"A broad, global fund spreads risk widely — a simple, diversified core to build around." },
+      takeaway:'Start broad and cheap; the fine print can come later.'
+    }
   ];
+
+  // Chapter 03 — Actually doing it
   const learnCh03=[
-    {id:'falls',title:'When markets fall',tagline:'What a drop really means',emoji:'📉'},
-    {id:'retire',title:'Your money in retirement',tagline:'Turning savings into income',emoji:'🏖️'}
+    {
+      id:'falls', emoji:'📉',
+      title:'When markets fall',
+      tagline:'What a drop really means.',
+      idea:'A falling market is normal — what you do next matters more than the drop itself.',
+      visual:`<div class="lp-drop">
+        <span><span class="lp-drop-v">€10,000</span><span class="lp-drop-tag">today</span></span>
+        <span class="lp-drop-arrow">−20%</span>
+        <span><span class="lp-drop-v">€8,000</span><span class="lp-drop-tag">after a fall</span></span>
+      </div>`,
+      why:"Selling locks in today's lower price and removes your ability to benefit from any future recovery. Broad markets have recovered from past major downturns — but future recovery times aren't guaranteed.",
+      quiz:{ q:'The value drops to €8,000. Have you permanently lost €2,000?',
+        options:["Yes, it's gone","Not yet","Only if I sell"],
+        answer:1,
+        explain:"The value is down now, but it isn't permanent unless you sell — staying invested keeps the chance to recover (though recoveries aren't guaranteed)." },
+      takeaway:'Drops are part of investing; reacting to them is the real risk.'
+    },
+    {
+      id:'retire', emoji:'🏖️',
+      title:'Your money in retirement',
+      tagline:'Turning savings into income.',
+      idea:"Later, the question flips from “how do I grow this?” to “how do I spend it safely?”",
+      visual:`<div class="lp-example"><div class="lp-example-r">A €750,000 portfolio × 4%</div><div class="lp-example-b">≈ €30,000 in the first year</div></div>`,
+      why:"The <strong>4% rule</strong> is a historical rule of thumb, not a guarantee. Actual sustainable withdrawals depend on returns, inflation, taxes, your portfolio mix and how long retirement lasts.",
+      quiz:{ q:'The 4% rule is best described as…',
+        options:['A guaranteed income','A rough planning guideline','A law you must follow'],
+        answer:1,
+        explain:"It's a historical guideline — helpful for setting a target, not a promise about the future." },
+      takeaway:'Use rules of thumb to aim, not to guarantee.'
+    }
   ];
+
+  // Germany 🇩🇪
   const learnDE=[
-    {id:'de-tax',title:'German taxes — simply',tagline:'What your broker handles',emoji:'🧾'},
-    {id:'de-broker',title:'Brokers & savings plans',tagline:'Where to buy and automate',emoji:'🏦'},
-    {id:'de-steps',title:'Your first steps in Germany',tagline:'A simple path to start',emoji:'🚀'}
+    {
+      id:'de-tax', emoji:'🧾',
+      title:'German taxes — simply',
+      tagline:'What your broker handles for you.',
+      updated:'Aug 2026',
+      idea:'In Germany, investment income is generally taxed — and a German broker usually handles it for you.',
+      visual:`<div class="lp-check">
+        <div class="lp-check-row"><span class="lp-check-n">%</span><span class="lp-check-t"><b>Capital-gains tax</b><small>Investment income is generally taxed at 25%.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">+</span><span class="lp-check-t"><b>Solidarity surcharge</b><small>5.5% of the tax (not of your gain). Church tax may also apply.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">€</span><span class="lp-check-t"><b>Sparer-Pauschbetrag</b><small>€1,000/yr tax-free (€2,000 for couples) — activate with a Freistellungsauftrag.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">−</span><span class="lp-check-t"><b>Teilfreistellung</b><small>For qualifying equity funds, 30% of gains are tax-exempt.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">↻</span><span class="lp-check-t"><b>Vorabpauschale</b><small>Some fund returns can be taxed before you sell; a German broker calculates it automatically.</small></span></div>
+      </div>`,
+      why:"With a German broker that handles tax at source, most of this happens automatically — but it helps to know what's being deducted and why.",
+      quiz:{ q:'The 5.5% solidarity surcharge is charged on…',
+        options:['Your total gain','The tax amount','Your whole portfolio'],
+        answer:1,
+        explain:"Soli is 5.5% of the tax owed — not 5.5% of your gains. So it's a small add-on to the tax, not to your profit." },
+      takeaway:'Your broker usually handles the paperwork — you mainly need to file a Freistellungsauftrag.'
+    },
+    {
+      id:'de-broker', emoji:'🏦',
+      title:'Brokers & savings plans',
+      tagline:'Where to buy, and automating it.',
+      updated:'Aug 2026',
+      idea:'You buy ETFs through a broker, and a savings plan (Sparplan) automates it each month.',
+      visual:`<div class="lp-brokers">
+        <div class="lp-broker"><span class="lp-broker-e">📱</span><span><b>Trade Republic</b><small>Mobile-first broker · ETF savings plans available</small></span></div>
+        <div class="lp-broker"><span class="lp-broker-e">📊</span><span><b>Scalable Capital</b><small>Broker + savings plans</small></span></div>
+        <div class="lp-broker"><span class="lp-broker-e">🏛️</span><span><b>ING</b><small>Traditional bank + brokerage</small></span></div>
+        <div class="lp-broker"><span class="lp-broker-e">💻</span><span><b>Comdirect</b><small>Traditional online broker</small></span></div>
+      </div>
+      <button class="lp-inline-btn" data-toast="fees">Compare current fees ›</button>`,
+      why:"Pricing changes often, so check each broker's current fees before choosing. A <strong>Sparplan</strong> buys automatically each month — building the habit without trying to time the market.",
+      quiz:{ q:'What does an ETF Sparplan actually do?',
+        options:['Guarantees a profit','Invests a set amount each month','Picks the best stocks for you'],
+        answer:1,
+        explain:"A savings plan just automates regular buying — no timing, no stock-picking. Consistency is the point." },
+      takeaway:'Automate a monthly amount you can repeat — consistency beats timing.'
+    },
+    {
+      id:'de-steps', emoji:'🚀',
+      title:'Your first steps in Germany',
+      tagline:'A simple path to get started.',
+      updated:'Aug 2026',
+      idea:'You don\'t need the “perfect” fund to begin — just a clear, simple path.',
+      visual:`<div class="lp-check">
+        <div class="lp-check-row"><span class="lp-check-n">1</span><span class="lp-check-t"><b>Choose what the money is for</b><small>Give it a goal and a time frame.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">2</span><span class="lp-check-t"><b>Keep an emergency buffer</b><small>Cash for surprises, first.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">3</span><span class="lp-check-t"><b>Open a regulated broker account</b><small>Pick one that suits you.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">4</span><span class="lp-check-t"><b>Set up a Freistellungsauftrag</b><small>So your €1,000 allowance is active.</small></span></div>
+        <div class="lp-check-row"><span class="lp-check-n">5</span><span class="lp-check-t"><b>Start a Sparplan into a broad ETF</b><small>An amount you can repeat every month.</small></span></div>
+      </div>`,
+      why:"A broad, low-cost, regulated ETF and a repeatable monthly amount is enough to begin. You can refine the details as you learn.",
+      quiz:{ q:'What should you set up so your €1,000 allowance is applied automatically?',
+        options:['A Freistellungsauftrag','A new bank account','Nothing — it just happens'],
+        answer:0,
+        explain:"A Freistellungsauftrag tells your broker to apply the €1,000 tax-free allowance for you." },
+      takeaway:'Start small, stay regular, and let time do the work.'
+    }
   ];
+
+  // Finale
+  const learnFinale={ id:'finale', emoji:'🎉', title:'You made it', tagline:'Your recap + see it on your money', finale:true };
 
   const learnChapters=[
     {n:'01', title:'Before you invest', status:'live', lessons:learnCh01},
-    {n:'02', title:'Investing simply', status:'soon', lessons:learnCh02},
-    {n:'03', title:'Actually doing it', status:'soon', lessons:learnCh03}
+    {n:'02', title:'Investing simply', status:'live', lessons:learnCh02},
+    {n:'03', title:'Actually doing it', status:'live', lessons:learnCh03}
   ];
-  const learnCountryChapters={ DE:{ title:'For Germany', flag:'🇩🇪', status:'soon', lessons:learnDE } };
+  const learnCountryChapters={ DE:{ title:'For Germany', flag:'🇩🇪', status:'live', lessons:learnDE } };
 
-  // playable (live) lessons in order — the player walks these
-  const learnPlayable=learnChapters.filter(c=>c.status==='live').flatMap(c=>c.lessons);
+  // build the ordered playable sequence for the selected country (+ finale last)
+  let learnPlayable=[];
+  function computePlayable(){
+    const country=learnCountries.find(c=>c.code===learnCountry);
+    let seq=learnChapters.flatMap(c=>c.lessons);
+    if(country && country.status==='live' && learnCountryChapters[country.code]) seq=seq.concat(learnCountryChapters[country.code].lessons);
+    seq=seq.concat(learnFinale);
+    return seq;
+  }
 
   // ---------- progress persistence ----------
   const LEARN_DONE_KEY='kept_learn_done_v1';
@@ -3934,47 +4217,51 @@
     });
   }
 
-  // ---------- landing (chapter + lesson list) ----------
+  // ---------- landing (chapters + lesson rows) ----------
+  function learnRow(l){
+    const idx=learnPlayable.indexOf(l);
+    const done=learnDone.has(l.id);
+    return `<button class="learn-row${done?' done':''}" data-lesson="${idx}">`+
+      `<span class="learn-row-ic">${l.emoji||'📘'}</span>`+
+      `<span class="learn-row-t"><b>${l.title}</b><small>${l.tagline||''}</small></span>`+
+      `<span class="learn-row-state">${done?svgCheck:svgChev}</span></button>`;
+  }
   function learnChapterBlock(ch){
-    const soon=ch.status!=='live';
-    let rows='';
-    ch.lessons.forEach(l=>{
-      if(soon){
-        rows+=`<div class="learn-row locked"><span class="learn-row-ic">${l.emoji||'📘'}</span>`+
-          `<span class="learn-row-t"><b>${l.title}</b><small>${l.tagline||''}</small></span>`+
-          `<span class="learn-row-soon">Soon</span></div>`;
-      } else {
-        const idx=learnPlayable.indexOf(l);
-        const done=learnDone.has(l.id);
-        rows+=`<button class="learn-row${done?' done':''}" data-lesson="${idx}">`+
-          `<span class="learn-row-ic">${l.emoji||'📘'}</span>`+
-          `<span class="learn-row-t"><b>${l.title}</b><small>${l.tagline||''}</small></span>`+
-          `<span class="learn-row-state">${done?svgCheck:svgChev}</span></button>`;
-      }
-    });
+    if(ch.status!=='live'){
+      const rows=ch.lessons.map(l=>`<div class="learn-row locked"><span class="learn-row-ic">${l.emoji||'📘'}</span>`+
+        `<span class="learn-row-t"><b>${l.title}</b><small>${l.tagline||''}</small></span>`+
+        `<span class="learn-row-soon">Soon</span></div>`).join('');
+      return `<div class="learn-chapter"><div class="learn-chapter-head">`+
+        `${ch.n?`<span class="learn-chapter-n">${ch.n}</span>`:''}<span class="learn-chapter-t">${ch.title} ${ch.flag||''}</span>`+
+        `<span class="learn-chapter-soon">Building next</span></div><div class="learn-rows">${rows}</div></div>`;
+    }
     return `<div class="learn-chapter"><div class="learn-chapter-head">`+
-      `${ch.n?`<span class="learn-chapter-n">${ch.n}</span>`:''}<span class="learn-chapter-t">${ch.title} ${ch.flag||''}</span>`+
-      `${soon?'<span class="learn-chapter-soon">Building next</span>':''}</div>`+
-      `<div class="learn-rows">${rows}</div></div>`;
+      `${ch.n?`<span class="learn-chapter-n">${ch.n}</span>`:''}<span class="learn-chapter-t">${ch.title} ${ch.flag||''}</span></div>`+
+      `<div class="learn-rows">${ch.lessons.map(learnRow).join('')}</div></div>`;
   }
 
   function renderLearn(){
+    learnPlayable=computePlayable();
     renderLearnCountry();
     const country=learnCountries.find(c=>c.code===learnCountry);
     const noteEl=document.getElementById('learnCountryNote');
     if(country && country.status==='live'){
-      noteEl.innerHTML=`<div class="learn-note"><span style="font-size:16px">🇩🇪</span><span>Basics apply everywhere. Tax &amp; broker lessons for <strong>${country.name}</strong> are coming in that section below.</span></div>`;
+      noteEl.innerHTML=`<div class="learn-note"><span style="font-size:16px">${country.flag}</span><span>Basics apply everywhere. You'll also find tax &amp; broker lessons for <strong>${country.name}</strong> below.</span></div>`;
     } else {
       noteEl.innerHTML=`<div class="learn-note"><span style="font-size:16px">🧭</span><span>Country lessons for <strong>${country?country.name:'this country'}</strong> are in development. The universal basics below apply everywhere — check your local tax rules before investing.</span></div>`;
     }
+    const total=learnPlayable.length;
     const doneCount=learnPlayable.filter(l=>learnDone.has(l.id)).length;
     let html=`<div class="learn-progress"><div class="learn-progress-top"><b>ETF Basics</b>`+
-      `<span>${doneCount} / ${LEARN_TOTAL_PLANNED} lessons</span></div>`+
-      `<div class="learn-progress-bar"><i style="width:${Math.round(doneCount/LEARN_TOTAL_PLANNED*100)}%"></i></div></div>`;
+      `<span>${doneCount} / ${total} lessons</span></div>`+
+      `<div class="learn-progress-bar"><i style="width:${Math.round(doneCount/total*100)}%"></i></div></div>`;
     html+=learnChapters.map(learnChapterBlock).join('');
     if(country && country.status==='live' && learnCountryChapters[country.code]){
       html+=learnChapterBlock(learnCountryChapters[country.code]);
     }
+    // finish line
+    html+=`<div class="learn-chapter"><div class="learn-chapter-head"><span class="learn-chapter-t">Finish line 🎉</span></div>`+
+      `<div class="learn-rows">${learnRow(learnFinale)}</div></div>`;
     const box=document.getElementById('learnContent');
     box.innerHTML=html;
     box.querySelectorAll('.learn-row[data-lesson]').forEach(b=>{
@@ -4006,21 +4293,84 @@
     return `<div class="lp-quiz" id="lpQuiz"><div class="lp-quiz-q">${q.q}</div>${opts}`+
       `<div class="lp-explain">${q.explain}</div></div>`;
   }
-  function renderPlayer(){
-    const l=learnPlayable[learnIdx], total=learnPlayable.length;
-    const p=document.getElementById('learnPlayer');
-    p.innerHTML=`<div class="lp-top">`+
+  function topBar(total){
+    return `<div class="lp-top">`+
         `<button class="lp-nav" data-act="prev" aria-label="Back">${svgBack}</button>`+
         `<span class="lp-count">Lesson ${learnIdx+1} of ${total}</span>`+
         `<button class="lp-nav" data-act="close" aria-label="Close">${svgClose}</button>`+
       `</div>`+
-      `<div class="lp-bar"><span style="width:${Math.round((learnIdx+1)/total*100)}%"></span></div>`+
+      `<div class="lp-bar"><span style="width:${Math.round((learnIdx+1)/total*100)}%"></span></div>`;
+  }
+  function finaleBody(){
+    const total=learnPlayable.length;
+    const done=learnPlayable.filter(l=>learnDone.has(l.id) && l.id!=='finale').length;
+    const goal=total-1;
+    return `<div class="lp-hero">🎉</div>`+
+      `<h2 class="lp-title">You made it</h2>`+
+      `<p class="lp-tagline">You now understand the fundamentals of investing.</p>`+
+      `<div class="lp-finale-stat">Lessons completed <b>${done} / ${goal}</b></div>`+
+      `<div class="lp-invest">`+
+        `<div class="lp-invest-label">See it on your money</div>`+
+        `<div class="lp-invest-input">€<input id="lpAmt" type="number" inputmode="numeric" value="100"><span class="unit">/ month</span></div>`+
+        `<div class="lp-presets">`+
+          `<button class="lp-preset" data-amt="50">€50</button>`+
+          `<button class="lp-preset on" data-amt="100">€100</button>`+
+          `<button class="lp-preset" data-amt="200">€200</button>`+
+        `</div>`+
+        `<div class="lp-rate">Return assumption<span class="lp-rate-opts">`+
+          `<button class="lp-rate-opt" data-rate="4">4%</button>`+
+          `<button class="lp-rate-opt on" data-rate="6">6%</button>`+
+          `<button class="lp-rate-opt" data-rate="8">8%</button>`+
+        `</span></div>`+
+        `<div class="lp-out">`+
+          `<div class="lp-out-cell"><small>Contributed</small><b id="lpContrib">€36,000</b></div>`+
+          `<div class="lp-out-cell grow"><small>Could become</small><b id="lpValue">€100,451</b></div>`+
+        `</div>`+
+      `</div>`+
+      `<p class="lp-disclaim">A simple illustration over 30 years — not a prediction. Real returns vary, aren't guaranteed, and ignore fees, taxes and inflation here.</p>`;
+  }
+  function renderPlayer(){
+    const l=learnPlayable[learnIdx], total=learnPlayable.length;
+    const p=document.getElementById('learnPlayer');
+    if(l.finale){
+      p.innerHTML=topBar(total)+finaleBody()+`<button class="btn primary" data-act="future">See it in Future →</button>`;
+      p.querySelector('[data-act="prev"]').addEventListener('click',()=>{ if(learnIdx>0) openLesson(learnIdx-1); else closePlayer(); });
+      p.querySelector('[data-act="close"]').addEventListener('click',closePlayer);
+      p.querySelector('[data-act="future"]').addEventListener('click',()=>{
+        learnDone.add(l.id); saveLearnDone(); closePlayer(); show('future');
+      });
+      // projection wiring
+      let amt=100, rate=6;
+      const amtInput=p.querySelector('#lpAmt');
+      const update=()=>{
+        amt=Math.max(0, Math.min(100000, parseFloat(amtInput.value)||0));
+        p.querySelector('#lpContrib').textContent=eur(amt*12*30);
+        p.querySelector('#lpValue').textContent=eur(fvMonthly(amt,rate,30));
+      };
+      amtInput.addEventListener('input',()=>{
+        p.querySelectorAll('.lp-preset').forEach(b=>b.classList.toggle('on', +b.dataset.amt===parseFloat(amtInput.value)));
+        update();
+      });
+      p.querySelectorAll('.lp-preset').forEach(b=>b.addEventListener('click',()=>{
+        p.querySelectorAll('.lp-preset').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+        amtInput.value=b.dataset.amt; update();
+      }));
+      p.querySelectorAll('.lp-rate-opt').forEach(b=>b.addEventListener('click',()=>{
+        p.querySelectorAll('.lp-rate-opt').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+        rate=+b.dataset.rate; update();
+      }));
+      update();
+      return;
+    }
+    p.innerHTML=topBar(total)+
       `<h2 class="lp-title">${l.title}</h2>`+
       `<p class="lp-tagline">${l.tagline}</p>`+
+      (l.updated?`<div class="lp-updated-wrap"><span class="lp-updated">Updated ${l.updated}</span></div>`:'')+
       `<p class="lp-idea">${l.idea}</p>`+
       (l.visual?`<div class="lp-visual">${l.visual}</div>`:'')+
       (l.why?`<p class="lp-why">${l.why}</p>`:'')+
       (l.quiz?quizBlock(l.quiz):'')+
+      (l.note?`<div class="lp-note">${l.note}</div>`:'')+
       (l.takeaway?`<div class="lp-takeaway"><span class="lp-takeaway-l">Kept takeaway</span>${l.takeaway}</div>`:'')+
       `<button class="btn primary" data-act="continue">${learnIdx===total-1?'Finish':'Continue'}</button>`;
     p.querySelector('[data-act="prev"]').addEventListener('click',()=>{ if(learnIdx>0) openLesson(learnIdx-1); else closePlayer(); });
@@ -4029,6 +4379,9 @@
       learnDone.add(l.id); saveLearnDone();
       if(learnIdx===total-1) closePlayer(); else openLesson(learnIdx+1);
     });
+    p.querySelectorAll('[data-toast]').forEach(b=>b.addEventListener('click',()=>{
+      toast('Coming soon',"Live broker fee comparison is on the way. For now, check each broker's current pricing directly.",'ti-info-circle');
+    }));
     if(l.quiz){
       const quiz=p.querySelector('#lpQuiz');
       quiz.querySelectorAll('.lp-opt').forEach(opt=>{
