@@ -4953,6 +4953,27 @@
     setTimeout(focusAddAmountField,240);
   }
   function closeAdd(){ addOv.classList.remove('show'); }
+  // Deep-link hook for the native quick-save widget (keptwidget://add-win).
+  // The native wrapper calls this after the web app has loaded; guard against
+  // re-opening if the sheet is already up, and make sure we're on Home first.
+  window.__keptOpenAddWin=function(){
+    try{
+      if(addOv.classList.contains('show')) return;
+      if(typeof show==='function') show('home');
+      openAdd();
+    }catch(e){}
+  };
+  // Cold-launch path: the wrapper appends ?open=add-win (or #open=add-win) to the
+  // start URL when it can't inject JS yet. Honour it once on load.
+  (function(){
+    try{
+      const q=new URLSearchParams(location.search);
+      const h=new URLSearchParams((location.hash||'').replace(/^#/,''));
+      if(q.get('open')==='add-win' || h.get('open')==='add-win'){
+        setTimeout(()=>{ window.__keptOpenAddWin(); }, 60);
+      }
+    }catch(e){}
+  })();
   document.getElementById('tabAdd').addEventListener('click',openAdd);
   document.getElementById('homeAddWin').addEventListener('click',openAdd);
   document.getElementById('quickHomeAdd').addEventListener('click',()=>openQaEdit(null));
