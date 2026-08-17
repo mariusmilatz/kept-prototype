@@ -1177,7 +1177,7 @@
   .home-balance-card,.future-projection-card{background:radial-gradient(90% 130% at 100% 0%,var(--warm-glow),transparent 58%),radial-gradient(100% 110% at 0% 100%,var(--violet-glow),transparent 62%),var(--surface-elevated);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .home-icon-btn,.home-action,.home-quick,.quick-home-add,.future-assumption-toggle,.future-metrics>div,.settings-profile,.settings-group{background:var(--surface-solid);border-color:var(--hair);box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair)}
   .card,.bank-panel,.bank-inline,.fut-toggle,.ms-item,.ms-chip,.month-sec,.set-row{border-color:var(--hair)}
-  .floating-top-btn{position:absolute;left:50%;bottom:122px;z-index:74;width:54px;height:42px;border:0;border-radius:16px;background:rgba(255,255,255,.96);color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);opacity:0;pointer-events:none;transform:translate(-50%,10px);transition:opacity .18s,transform .18s}
+  .floating-top-btn{position:absolute;left:50%;bottom:122px;z-index:58;width:54px;height:42px;border:0;border-radius:16px;background:rgba(255,255,255,.96);color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:var(--card-float-shadow),inset 0 0 0 1px var(--hair);opacity:0;pointer-events:none;transform:translate(-50%,10px);transition:opacity .18s,transform .18s}
   .floating-top-btn.overlay-pos{bottom:20px}
   .floating-top-btn.show{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
   .floating-top-btn i,.floating-top-btn svg{font-size:24px}
@@ -4775,6 +4775,12 @@
     sheet.addEventListener('scroll',syncFloatingUi,{ passive:true });
   });
   feedbackDrawer.addEventListener('scroll',syncFloatingUi,{ passive:true });
+  // Overlays are opened from many code paths; re-run the hide logic whenever any
+  // overlay's `show` state toggles so the back-to-top arrow can't sit over a sheet.
+  const floatingUiObserver=new MutationObserver(syncFloatingUi);
+  document.querySelectorAll('.overlay').forEach(ov=>{
+    floatingUiObserver.observe(ov,{ attributes:true, attributeFilter:['class'] });
+  });
 
   // ---------- milestones ----------
   const msOv=document.getElementById('milestonesOverlay');
